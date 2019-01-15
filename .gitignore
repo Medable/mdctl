@@ -32,9 +32,6 @@ bower_components
 # Editors
 .idea
 
-# Lib
-lib
-
 # Compiled binary addons (https://nodejs.org/api/addons.html)
 build/Release
 
