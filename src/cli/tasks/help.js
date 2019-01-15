@@ -24,7 +24,7 @@ class Help extends Task {
       return console.log(`
       Available commands: 
       
-        ${taskNames.map(value => `${pad(padTo, value)} - ${tasks[value].synopsis}`).join('\n          ')}
+        ${taskNames.map(value => `${pad(padTo, value)} - ${tasks[value].synopsis}`).join('\n        ')}
         
       Type "mdctl help [task]" for command options.
       `)
