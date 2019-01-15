@@ -35,9 +35,11 @@ class Task {
       if (!success) return false
       if (_.isString(command)) {
         return this.exec(command)
-      } else if (Array.isArray(command)) {
+      }
+      if (Array.isArray(command)) {
         return this.exec(...command)
-      } else if (_.isFunction(command)) {
+      }
+      if (_.isFunction(command)) {
         return !!command()
       }
       return !!command

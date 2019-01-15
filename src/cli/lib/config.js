@@ -1,5 +1,3 @@
-'use strict'
-
 const cloneObject = require('clone'),
       { merge } = require('lodash'),
       { loadJsonOrYaml } = require('../../utils'),
@@ -62,7 +60,9 @@ class Config {
   getAccessor() {
 
     const accessor = (path, defaultValue) => this.get(path, defaultValue),
-          { get, match, update, clone, flush, load } = this
+          {
+            get, match, update, clone, flush, load
+          } = this
 
     Object.assign(accessor, {
       instance: this,

@@ -1,52 +1,53 @@
-const Task = require('../lib/task'),
-      fs = require('fs'),
+/* eslint-disable class-methods-use-this */
+
+const fs = require('fs'),
       path = require('path'),
-      _ = require('lodash')
+      _ = require('lodash'),
+      Task = require('../lib/task')
 
 class Dev extends Task {
 
   async run(cli) {
 
-    const arg2 = cli.args('2')
+    const arg2 = cli.args('2'),
+          handler = `${cli.args('1')}@${arg2}`
 
     if (arg2 === null) {
       return console.log(Dev.help(cli))
     }
 
-    let handler = `${cli.args('1')}@${arg2}`
-
     if (!_.isFunction(this[handler])) {
-      throw new Error(`Invalid command`)
+      throw new Error('Invalid command')
     }
     return this[handler](cli)
   }
 
-  async 'auth@clear'(cli) {
+  async 'auth@clear'() {
 
     console.log('mdctl dev auth clear')
   }
 
-  async 'auth@login'(cli) {
+  async 'auth@login'() {
 
     console.log('mdctl dev auth login')
   }
 
-  async 'auth@status'(cli) {
+  async 'auth@status'() {
 
     console.log('mdctl dev auth status')
   }
 
-  async 'env@export'(cli) {
+  async 'env@export'() {
 
     console.log('mdctl dev env export')
   }
 
-  async 'env@import'(cli) {
+  async 'env@import'() {
 
     console.log('mdctl dev env import')
   }
 
-  // -------------------------------------------------------------------------------------------------------------------
+  // ----------------------------------------------------------------------------------------------
 
   static get synopsis() {
     return 'developer tools'
@@ -54,11 +55,12 @@ class Dev extends Task {
 
   static help(cli) {
 
-    let command = cli.args('2') || cli.args('1')
+    const command = cli.args('2') || cli.args('1')
 
     switch (command) {
       case 'auth': return this.authHelp()
       case 'env': return this.envHelp()
+      default:
     }
 
     return `    
