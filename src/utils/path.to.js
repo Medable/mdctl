@@ -3,7 +3,7 @@ const { isString } = require('lodash'),
 
 let Undefined
 
-module.exports = function(object, path, value, returnTopOnWrite) {
+module.exports = function pathTo(object, path, value, returnTopOnWrite) {
 
   if (object === null || object === Undefined) {
     return Undefined

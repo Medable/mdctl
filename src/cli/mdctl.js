@@ -1,8 +1,9 @@
 const path = require('path'),
       fs = require('fs'),
       yargs = require('yargs'),
-      { createTask } = require('./tasks'),
       { privatesAccessor } = require('../utils/privates'),
+      { createTask } = require('./tasks'),
+
       { createConfig } = require('./lib/config')
 
 async function readConfig(config, from) {
@@ -30,7 +31,13 @@ module.exports = class MdCtlCli {
         {},
         yargs.help('').version('').argv,
         process.argv.slice(2)
-      ))
+      )),
+
+      // the current task
+      task: null,
+
+      // the loaded config
+      config: {}
 
     })
 
@@ -48,6 +55,10 @@ module.exports = class MdCtlCli {
     return privatesAccessor(this, 'args')
   }
 
+  get task() {
+    return privatesAccessor(this, 'task')
+  }
+
   async run(taskName = process.argv[2]) {
 
     const privates = privatesAccessor(this),
@@ -61,6 +72,8 @@ module.exports = class MdCtlCli {
     ))
 
     await this.configure()
+
+    privatesAccessor(this).task = task
 
     return task.run(this)
 

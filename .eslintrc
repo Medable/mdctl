@@ -1,5 +1,8 @@
 {
-  "extends": ["standard"],
+  "extends": [
+    "eslint-config-airbnb-base",
+    "eslint-config-airbnb-base/rules/strict"
+  ],
   "parserOptions": {
     "ecmaVersion": 2017,
     "ecmaFeatures": {
@@ -21,6 +24,8 @@
   },
   "rules": {
     "camelcase": "error",
+    "comma-dangle": 0,
+    "no-use-before-define": ["error", { "functions": false }],
     "indent": ["warn", 2, { "VariableDeclarator": {"var": 2, "let": 2, "const": 3}, "SwitchCase": 1 }],
     "keyword-spacing": "warn",
     "new-cap": ["warn", {"properties": false}],

@@ -29,7 +29,8 @@ class Help extends Task {
       Type "mdctl help [task]" for command options.
       `)
 
-    } else if (!task) {
+    }
+    if (!task) {
 
       return console.log(`
       Command "${taskName}" does not exist.                

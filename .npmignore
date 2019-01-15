@@ -15,6 +15,7 @@ yarn.lock
 # project files
 test
 examples
+lint
 CHANGELOG.md
 .travis.yml
 .editorconfig
