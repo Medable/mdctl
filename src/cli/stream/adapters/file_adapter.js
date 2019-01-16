@@ -1,74 +1,58 @@
-const jsyaml = require('js-yaml'),
-      process = require('process'),
-      Stream = require('../index'),
-      Section = require('./sections'),
-      KEYS = ['env', 'objects', 'scripts', 'templates', 'views']
+const { Writable } = require('stream'),
+      jsYaml = require('js-yaml'),
+      fs = require('fs')
 
-class JSONFile {
+class FileAdapter extends Writable {
 
-  constructor(blob) {
-    this.blob = blob
+  constructor(outputPath, format = 'json', options = {}) {
+    super(Object.assign({
+      objectMode: true
+    }, options))
+    this.format = format
+    this.output = outputPath || `${process.cwd()}/output`
+    this.ensure(this.output)
   }
 
-  stringify(blob = null) {
-    return JSON.stringify(blob || this.blob || {})
+  ensure(path) {
+    !fs.existsSync(path) && fs.mkdirSync(path, { recursive: true })
   }
 
-}
-
-class YAMLFile {
-
-  constructor(blob) {
-    this.blob = blob
-  }
-
-  stringify(blob = null) {
-    return jsyaml.safeDump(blob || this.blob || {})
-  }
-
-}
-
-const layout = Stream.output.FILE
-
-class FileAdapter {
-
-  constructor(blob, options, emitter) {
-    this.options = Object.assign({
-      outputDir: `${process.cwd()}/output`
-    }, options)
-    this.blob = blob
-    this.source = []
-    this.emitter = emitter
-  }
-
-  static getFormatClass(format) {
-    switch (format) {
-      case 'yaml':
-        return new YAMLFile()
-      default:
-        return new JSONFile()
+  parseContent(content) {
+    if(this.format === 'yaml') {
+      return jsYaml.safeDump(content)
     }
+    return JSON.stringify(content)
   }
 
-  async save(format = 'json') {
-    const blobKeys = Object.keys(this.blob)
-    blobKeys.forEach((k) => {
-      if (KEYS.indexOf(k) > -1) {
-        this.source.push(Section.getSection(k, this.blob[k], this.options))
+  _write(chunk, enc, done) {
+    if(chunk.key !== 'env') {
+      const path = `${this.output}/${chunk.key}`
+      this.ensure(path)
+      if (chunk.key === 'scripts') {
+        this.ensure(`${path}/library`)
+        this.ensure(`${path}/job`)
+        this.ensure(`${path}/route`)
+        this.ensure(`${path}/trigger`)
+        this.ensure(`${path}/js`)
       }
-    })
-    await this.processFiles(format)
-  }
 
-  processFiles(format) {
-    for (const section of this.source) {
-      section.save(format, FileAdapter.getFormatClass(format))
+      for (let item of chunk.content) {
+        const name = item.name || item.code || item.label
+        if(chunk.key === 'scripts') {
+          fs.writeFileSync(`${path}/${item.type}/${name}.${this.format}`, this.parseContent(item))
+        } else {
+          fs.writeFileSync(`${path}/${name}.${this.format}`, this.parseContent(item))
+        }
+      }
+      done()
+
+    } else {
+      // save file directly
+      fs.writeFileSync(`${this.output}/${chunk.key}.${this.format}`, JSON.stringify(chunk.content))
+      done()
     }
   }
 
 }
 
-module.exports = {
-  adapter: FileAdapter,
-  layout
-}
+module.exports = FileAdapter
