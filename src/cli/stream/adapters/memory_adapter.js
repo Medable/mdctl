@@ -1,20 +1,13 @@
-const jsyaml = require('js-yaml'),
-      Stream = require('../index'),
-      ConsoleAdapter = require('./console_adapter').adapter,
-      Section = require('./sections'),
-      KEYS = ['env', 'objects', 'scripts', 'templates', 'views'],
-
-      layout = Stream.output.MEMORY
+const { Writable } = require('stream'),
+      ConsoleAdapter = require('./console_adapter')
 
 class MemoryAdapter extends ConsoleAdapter {
 
-  processFiles() {
-    return this.source
+  _write(chunk, encoding, cb) {
+    this.push({ [chunk.key]: chunk.blob })
+    cb()
   }
 
 }
 
-module.exports = {
-  adapter: MemoryAdapter,
-  layout
-}
+module.exports = ConsoleAdapter

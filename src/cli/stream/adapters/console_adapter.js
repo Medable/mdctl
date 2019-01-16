@@ -1,37 +1,20 @@
-const jsyaml = require('js-yaml'),
-      Stream = require('../index'),
-      Section = require('./sections'),
-      KEYS = ['env', 'objects', 'scripts', 'templates', 'views']
+const { Writable } = require('stream')
 
-const layout = Stream.output.CONSOLE
+class ConsoleAdapter extends Writable {
 
-class ConsoleAdapter {
-
-  constructor(blob, options, emitter) {
-    this.options = options
-    this.blob = blob
-    this.source = {}
-    this.emitter = emitter
+  constructor(options) {
+    super(Object.assign({
+      objectMode: true
+    }, options))
   }
 
-  async save() {
-    const blobKeys = Object.keys(this.blob)
-    blobKeys.forEach((k) => {
-      if (KEYS.indexOf(k) > -1) {
-        this.source[k] = Section.getSection(k, this.blob[k], this.options)
-      }
-    })
-    const result = await this.processFiles()
-    return result
-  }
-
-  processFiles() {
-    console.log(JSON.stringify(this.source))
+  _write(chunk, encoding, cb){
+    const obj = {}
+    obj[chunk.key] = chunk.blob
+    console.log(JSON.stringify(obj))
+    cb()
   }
 
 }
 
-module.exports = {
-  adapter: ConsoleAdapter,
-  layout
-}
+module.exports = ConsoleAdapter

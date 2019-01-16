@@ -46,6 +46,7 @@
     "mocha": "^5.0.0"
   },
   "dependencies": {
+    "JSONStream": "^1.3.5",
     "clone": "^2.1.2",
     "extend": "^3.0.2",
     "inquirer": "^6.2.1",

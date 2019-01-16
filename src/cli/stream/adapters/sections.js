@@ -1,170 +1,130 @@
 const fs = require('fs')
 
+class SectionBase {
+
+  constructor(content, key = '') {
+    this.content = content
+    this.key = key
+    if (new.target === SectionBase) {
+      Object.freeze(this)
+    }
+  }
+
+  get name() {
+    return this.key
+  }
+
+}
+
+class EnvSection extends SectionBase {
+
+  constructor(content) {
+    super(content)
+    this.key = 'env'
+    this.namespace = ['']
+    if (new.target === EnvSection) {
+      Object.freeze(this)
+    }
+  }
+
+}
+
+class ScriptSection extends SectionBase {
+
+  constructor(content) {
+    super(content)
+    this.key = 'scripts'
+    this.namespaces = ['/scripts', '/scripts/js']
+    this.jsInScript = {}
+    if (new.target === ScriptSection) {
+      Object.freeze(this)
+    }
+    this.extractPaths()
+    this.extractScriptCode()
+  }
+
+  extractPaths() {
+    this.content.forEach((script) => {
+      const path = `${this.namespaces[0]}/${script.type}`
+      if(this.namespaces.indexOf(path) === -1) {
+        this.namespaces.push(path)
+      }
+    })
+  }
+
+  extractScriptCode() {
+    this.content.forEach((script) => {
+      this.jsInScript[script.code] = script.script
+    })
+  }
+
+  get jsScripts() {
+    return this.jsInScript
+  }
+
+}
+
+class ObjectSection extends SectionBase {
+
+  constructor(content) {
+    super(content)
+    this.key = 'objects'
+    this.namespaces = ['/objects']
+    if (new.target === ObjectSection) {
+      Object.freeze(this)
+    }
+  }
+
+}
+
+class TemplateSection extends SectionBase {
+
+  constructor(content) {
+    super(content)
+    this.key = 'templates'
+    this.namespaces = ['/templates']
+    if (new.target === TemplateSection) {
+      Object.freeze(this)
+    }
+    this.extractPaths()
+  }
+
+  extractPaths() {
+    this.content.forEach((template) => {
+      const path = `${this.namespaces[0]}/${template.type}`
+      if(this.namespaces.indexOf(path) === -1) {
+        this.namespaces.push(path)
+      }
+    })
+  }
+
+}
+
+class ViewSection extends SectionBase {
+
+  constructor(content) {
+    super(content)
+    this.key = 'views'
+    this.namespaces = ['/views']
+    Object.freeze(this)
+  }
+
+}
+
+const classList = {
+  env: EnvSection,
+  scripts: ScriptSection,
+  objects: ObjectSection,
+  templates: TemplateSection,
+  views: ViewSection,
+}
+
 class Section {
 
-  constructor(blob, options) {
-    this.blob = blob
-    this.options = options
-    this.paths = []
-  }
-
-  ensure(path) {
-    !fs.existsSync(path) && fs.mkdirSync(path, { recursive: true })
-  }
-
-  getPaths() {
-    return this.paths
-  }
-
-  createPaths() {
-    const paths = this.getPaths()
-    paths.forEach((p) => {
-      this.ensure(p)
-    })
-  }
-
-  async save(name, content) {
-    return new Promise((resolve, reject) => {
-      fs.writeFile(name, content, (err) => {
-        if (err) {
-          return reject(err)
-        }
-        return resolve()
-      })
-    })
+  constructor(key, content) {
+    return new classList[key](content)
   }
 
 }
 
-class EnvSection extends Section {
-
-  getPaths() {
-    return [`${this.options.outputDir}`]
-  }
-
-  async save(format, parserClass) {
-    this.createPaths()
-    await super.save(`${this.getPaths()[0]}/env.${format}`, parserClass.stringify(this.blob))
-  }
-}
-
-class ObjectSection extends Section {
-
-  getPaths() {
-    return [
-      `${this.options.outputDir}/objects`
-    ]
-  }
-
-  async save(format, parserClass) {
-    this.createPaths()
-    // Process scripts
-    const promises = []
-    for (const obj of this.blob) {
-      promises.push(super.save(`${this.getPaths()[0]}/${obj.name}.${format}`, parserClass.stringify(obj)))
-    }
-    await Promise.all(promises)
-  }
-
-}
-
-class ScriptSection extends Section {
-
-  constructor(blob, options) {
-    super(blob, options)
-    this.jsPath = `${this.options.outputDir}/scripts/js`
-    this.mainPath = `${this.options.outputDir}/scripts`
-  }
-
-  getPaths() {
-    return [
-      this.mainPath,
-      `${this.mainPath}/library`,
-      `${this.mainPath}/job`,
-      `${this.mainPath}/route`,
-      `${this.mainPath}/trigger`,
-      this.jsPath
-    ]
-  }
-
-  async save(format, parserClass) {
-    this.createPaths()
-    // Process scripts
-    const promises = []
-    for (const script of this.blob) {
-      const scriptJS = script.script,
-            name = script.name || script.code || script.label,
-            fileJs = `${this.jsPath}/${name}.js`
-      promises.push(super.save(fileJs, scriptJS))
-      script.script = fileJs.replace(`${this.options.outputDir}/`, '')
-      promises.push(super.save(`${this.getPaths()[0]}/${script.type}/${name}.${format}`, parserClass.stringify(script)))
-    }
-
-    await Promise.all(promises)
-  }
-
-}
-
-class TemplateSection extends Section {
-
-  getPaths() {
-    return [
-      `${this.options.outputDir}/templates`
-    ]
-  }
-
-  async save(format, parserClass) {
-    this.createPaths()
-    // Process scripts
-    const promises = []
-    for (const template of this.blob) {
-      promises.push(super.save(
-        `${this.getPaths()[0]}/${template.type}_${template.name}.${format}`,
-        parserClass.stringify(template)
-      ))
-    }
-    await Promise.all(promises)
-  }
-
-}
-
-class ViewSection extends Section {
-
-  getPaths() {
-    return [
-      `${this.options.outputDir}/views`
-    ]
-  }
-
-  async save(format, parserClass) {
-    this.createPaths()
-    // Process scripts
-    const promises = []
-    for (const view of this.blob) {
-      promises.push(super.save(
-        `${this.getPaths()[0]}/${view.name}.${format}`,
-        parserClass.stringify(view)
-      ))
-    }
-    await Promise.all(promises)
-  }
-
-}
-
-class SectionFactory {
-
-  static getSection(key, blob, options) {
-    const sections = {
-      env: EnvSection,
-      objects: ObjectSection,
-      scripts: ScriptSection,
-      templates: TemplateSection,
-      views: ViewSection
-    }
-
-    return new sections[key](blob, options)
-  }
-
-}
-
-module.exports = SectionFactory
+module.exports = Section
