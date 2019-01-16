@@ -1,7 +1,6 @@
 const jsyaml = require('js-yaml'),
       process = require('process'),
-      EVENT_NAMES = require('./event_names'),
-      BaseAdapter = require('./base'),
+      Stream = require('../index'),
       Section = require('./sections'),
       KEYS = ['env', 'objects', 'scripts', 'templates', 'views']
 
@@ -29,25 +28,17 @@ class YAMLFile {
 
 }
 
-class FileAdapter extends BaseAdapter {
+const layout = Stream.output.FILE
 
-  constructor(options) {
-    super()
-    this.layout = 'file'
+class FileAdapter {
+
+  constructor(blob, options, emitter) {
     this.options = Object.assign({
-      layout: 'file',
       outputDir: `${process.cwd()}/output`
     }, options)
+    this.blob = blob
     this.source = []
-    this.startListeners()
-  }
-
-  startListeners() {
-    this.on(EVENT_NAMES.SAVE_TO_FILE, (data) => {
-      if (data.layout === this.layout) {
-        this.saveToFile(data.blob, data.format)
-      }
-    })
+    this.emitter = emitter
   }
 
   static getFormatClass(format) {
@@ -59,11 +50,11 @@ class FileAdapter extends BaseAdapter {
     }
   }
 
-  async saveToFile(blob, format = 'json') {
-    const blobKeys = Object.keys(blob)
+  async save(format = 'json') {
+    const blobKeys = Object.keys(this.blob)
     blobKeys.forEach((k) => {
       if (KEYS.indexOf(k) > -1) {
-        this.source.push(Section.getSection(k, blob[k], this.options))
+        this.source.push(Section.getSection(k, this.blob[k], this.options))
       }
     })
     await this.processFiles(format)
@@ -77,4 +68,7 @@ class FileAdapter extends BaseAdapter {
 
 }
 
-module.exports = FileAdapter
+module.exports = {
+  adapter: FileAdapter,
+  layout
+}
