@@ -6,8 +6,8 @@ const path = require('path'),
       jsyaml = require('js-yaml'),
       Task = require('../lib/task'),
       { createConfig } = require('../lib/config'),
-      { loadJsonOrYaml, question, yn } = require('../../utils'),
-      { isSet } = require('../../utils/values')
+      { loadJsonOrYaml, question, yn } = require('../../lib/utils'),
+      { isSet } = require('../../lib/utils/values')
 
 class Configure extends Task {
 
