@@ -76,7 +76,7 @@ class Environment {
   }
 
   get version() {
-    return privatesAccessor(this).env
+    return privatesAccessor(this).version
   }
 
   get url() {
