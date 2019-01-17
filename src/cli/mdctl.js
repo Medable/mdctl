@@ -1,7 +1,7 @@
 const path = require('path'),
       fs = require('fs'),
       yargs = require('yargs'),
-      { privatesAccessor } = require('../utils/privates'),
+      { privatesAccessor } = require('../lib/privates'),
       { createTask } = require('./tasks'),
 
       { createConfig } = require('./lib/config')

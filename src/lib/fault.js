@@ -1,6 +1,6 @@
 const isPlainObject = require('lodash.isplainobject'),
-      pathTo = require('./path.to'),
-      { rString, rArray } = require('./values')
+      pathTo = require('./utils/path.to'),
+      { rString, rArray } = require('./utils/values')
 
 class Fault extends Error {
 

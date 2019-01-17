@@ -69,9 +69,9 @@ function rBool(boolValue, defaultValue) {
   return !!(boolValue === Undefined ? defaultValue : boolValue)
 }
 
-function getValidDate(d = null, defaultValue = null) {
+function rDate(d = null, defaultValue = null) {
   if (d === null) {
-    return defaultValue === null ? null : getValidDate(defaultValue)
+    return defaultValue === null ? null : rDate(defaultValue)
   }
   if (_.isDate(d)) {
     if (Number.isNaN(d.getTime())) {
@@ -87,7 +87,7 @@ function getValidDate(d = null, defaultValue = null) {
   } catch (err) {
     // eslint-disable-line no-empty
   }
-  return defaultValue === null ? null : getValidDate(defaultValue)
+  return defaultValue === null ? null : rDate(defaultValue)
 
 }
 
@@ -162,7 +162,7 @@ module.exports = {
   rInt,
   rString,
   rBool,
-  getValidDate,
+  rDate,
   pad,
   clamp,
   resolveCallbackArguments
