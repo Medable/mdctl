@@ -1,8 +1,8 @@
 const cloneObject = require('clone'),
       { merge } = require('lodash'),
-      { loadJsonOrYaml } = require('../../utils'),
-      pathTo = require('../../utils/path.to'),
-      { privatesAccessor } = require('../../utils/privates')
+      { loadJsonOrYaml } = require('../../lib/utils'),
+      pathTo = require('../../lib/utils/path.to'),
+      { privatesAccessor } = require('../../lib/privates')
 
 let Undefined
 

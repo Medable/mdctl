@@ -3,7 +3,7 @@
 
 const _ = require('lodash'),
       sh = require('shelljs'),
-      { throwIfNot } = require('../../utils')
+      { throwIfNot } = require('../../lib/utils')
 
 class Task {
 
