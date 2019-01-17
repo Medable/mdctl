@@ -11,7 +11,8 @@ class StreamTransform extends Transform {
   }
 
   _transform(chunk, enc, done) {
-    if(KEYS.indexOf(chunk.key) > -1) {
+    // Lets push only the allowed keys
+    if (KEYS.indexOf(chunk.key) > -1) {
       this.push(new Section(chunk.key, chunk.value))
     }
     done()

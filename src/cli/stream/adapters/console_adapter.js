@@ -10,8 +10,7 @@ class ConsoleAdapter extends Writable {
 
   _write(chunk, encoding, cb){
     const obj = {}
-    obj[chunk.key] = chunk.blob
-    console.log(JSON.stringify(obj))
+    console.log(JSON.stringify(chunk))
     cb()
   }
 
