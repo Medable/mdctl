@@ -36,6 +36,21 @@ class Credentials {
     return !!privatesAccessor(this).apiKey
   }
 
+  get authType() {
+    const privates = privatesAccessor(this)
+    if (type === 'auto') {
+      if (privates.jwt) {
+        type = 'token'
+      } else if (privates.secret) {
+        type = 'signed'
+      } else if (privates.username) {
+        type = 'basic'
+      } else {
+        type = 'none'
+      }
+    }
+  }
+
   /**
    * @param input
    *  type    detected based on options force to: ['auto', token', 'signed', 'basic', 'none']

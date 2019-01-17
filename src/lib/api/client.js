@@ -1,26 +1,58 @@
 
-const { EventEmitter } = require('events'),
+const request = require('request'),
       { privatesAccessor } = require('../privates'),
-      { rString, isSet } = require('../utils/values'),
-      { signPath } = require('./signer'),
+      { rBool, rString, isSet } = require('../utils/values'),
+      App = require('./app'),
+      Credentials = require('./credentials'),
+      Environment = require('./environment'),
       Request = require('./request')
 
-class Client extends EventEmitter {
+
+function loadCredentials(privates, credentials) {
+
+  if (credentials) {
+    return (credentials instanceof Credentials) ? credentials : new Credentials(credentials)
+  }
+  return privates.credentials
+}
+
+class Client {
 
   /**
    * @param input
+   *
    *  environment
    *  app
    *  credentials
-   *
    */
   constructor(input) {
 
-    super()
+    const privates = privatesAccessor(this),
+          options = Object.assign({}, isSet(input) ? input : {}),
+          app = (options.app instanceof App) ? options.app : new App(options.app),
+          environment = (options.environment instanceof Environment)
+            ? options.environment
+            : new Environment(options.environment),
+          credentials = options.credentials && (options.credentials instanceof Credentials)
+            ? options.credentials
+            : new Credentials(options.credentials)
 
-    Object.assign(privatesAccessor(this), {
+    Object.assign(privates, {
 
-      csrfToken: null
+      // for apps using csrf tokens
+      csrfToken: null,
+
+      // for session-based requests
+      cookieJar: request.jar(),
+
+      // app
+      app,
+
+      // environment endpoint
+      environment,
+
+      // default credentials for the client
+      credentials
 
     })
 
@@ -28,78 +60,72 @@ class Client extends EventEmitter {
 
   // --------------------------------------------------------
 
-  getOptions({method = 'GET', headers = {}, body, ...rest}) {
-    let options = {
-      credentials: 'include',
-      headers: this.getHeaders(headers),
-      method,
-      ...rest,
-    }
-
-    return (body) ? {...options, body: utils.stringify(body)} : options
-  }
-
-  getURL(path, query = {}) {
-
-    let url = (path) ? this.getBaseURI() + path : this.getBaseURI()
-    for (let arg in query) {
-      query[arg] = toJS(query[arg])
-      if (query.hasOwnProperty(arg) && !Array.isArray(query[arg])) {
-        query[arg] = utils.stringify(query[arg])
-      }
-    }
-    return withQuery(url, query)
-  }
-
-  // --------------------------------------------------------
-
   /**
-   *
-   * @param uri
+   * @param path
    * @param input
+   *  credentials - defaults to client.credentials
+   *  principal - set calling principal for signed requests
+   *  authType - type of auth headers to use. defaults to 'auto'. [auto,token,signed,basic,none]
+   *  method - request method
+   *  body - request body for patch put and post
+   *  json - defaults to true. if true, body must be an object.
+   *  cookies - defaults
+   *  query - request uri query parameters
+   *  request - custom request options, passed directly to the request (https://github.com/request)
    * @returns {Promise<*>}
    */
-  async call(uri, input) {
+  async call(path, input) {
 
     const privates = privatesAccessor(this),
           options = Object.assign({}, isSet(input) ? input : {}),
-          request = new Request()
+          requestOptions = Object.assign({
+            qs: options.query,
+            method: rString(options.method, 'GET').toUpperCase(),
+            json: rBool(options.json, true)
+          }, options.request),
+          req = new Request(),
+          credentials = loadCredentials(options.credentials),
+          uri = options.environment.buildUrl(path)
 
-    options.headers = Object.assign({}, isSet(options.headers) ? options.headers : {})
+    requestOptions.headers = Object.assign(
+      credentials.getAuthorizationHeaders({
+        type: options.authType, path, method: options.method, principal: options.principal
+      }),
+      isSet(requestOptions.headers) ? requestOptions.headers : {}
+    )
 
-    request.on('response', response => {
+    if (privates.csrfToken) {
+      requestOptions.headers['medable-csrf-token'] = privates.csrfToken
+    }
+
+    req.on('response', (response) => {
+
       if (response.hasHeader('medable-csrf-token')) {
         privates.csrfToken = response.getHeader('medable-csrf-token')
       }
     })
 
-    if (privates.csrfToken) {
-      options.headers['medable-csrf-token'] = privates.csrfToken
-    }
-
-    return request.run(Object.assign({ uri }, options))
+    return req.run(Object.assign({ uri }, requestOptions))
   }
 
-  get (path, options = {}) {
-    const { query = {} } = options
-    return this.call(this.getURL(path, query), this.getOptions(options))
+  get(path, options = {}) {
+    return this.call(path, Object.assign({ method: 'GET' }, options))
   }
-
 
   post(path, body = {}, options = {}) {
-    return this.call(this.getURL(path), this.getOptions({method: 'POST', body, ...options}))
+    return this.call(path, Object.assign({ method: 'POST', body }, options))
   }
 
   put(path, body = {}, options = {}) {
-    return this.call(this.getURL(path), this.getOptions({method: 'PUT', body, ...options}))
+    return this.call(path, Object.assign({ method: 'PUT', body }, options))
   }
 
   patch(path, body = [], options = {}) {
-    return this.call(this.getURL(path), this.getOptions({method: 'PATCH', body, ...options}))
+    return this.call(path, Object.assign({ method: 'PATCH', body }, options))
   }
 
-  delete(path) {
-    return this.call(this.getURL(path), this.getOptions({method: 'DELETE'}))
+  delete(path, options = {}) {
+    return this.call(path, Object.assign({ method: 'DELETE' }, options))
   }
 
 }
