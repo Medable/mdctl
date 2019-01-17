@@ -1,7 +1,9 @@
 const { Writable } = require('stream'),
       jsYaml = require('js-yaml'),
       fs = require('fs'),
-      pathTo = require('../../../utils/path.to')
+      jp = require('jsonpath'),
+      _ = require('lodash'),
+      Adapter = require('./adapter')
 
 class Layout extends Writable {
 
@@ -55,7 +57,17 @@ class SingleFileLayout extends Layout {
     this.data = {}
   }
 
+  rollbackScripts(chunk) {
+    if(chunk.jsInScript) {
+      for(let js in chunk.jsInScript) {
+        jp.value(chunk.content, js, chunk.jsInScript[js].value)
+      }
+      chunk.clearScripts()
+    }
+  }
+
   _write(chunk, enc, cb) {
+    this.rollbackScripts(chunk)
     const { data } = chunk
     this.data[chunk.key] = data instanceof Array ? data : data.content
     cb()
@@ -68,11 +80,10 @@ class SingleFileLayout extends Layout {
 
 }
 
-class FileAdapter extends Writable {
+class FileAdapter extends Adapter {
 
   constructor(outputPath, options = { format: 'json', layout: 'files' }) {
-    super({ objectMode: true })
-
+    super()
     this.format = options.format
     this.layout = options.layout
     this.output = outputPath || `${process.cwd()}/output`

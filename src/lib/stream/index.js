@@ -1,6 +1,6 @@
 const { PassThrough, Transform } = require('stream'),
       JSONStream = require('JSONStream'),
-      Section = require('./adapters/sections'),
+      Section = require('./section_factory'),
       KEYS = ['env', 'objects', 'scripts', 'templates', 'views']
 
 class StreamTransform extends Transform {

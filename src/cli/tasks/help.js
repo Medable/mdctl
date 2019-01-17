@@ -3,7 +3,7 @@
 
 const Task = require('../lib/task'),
       { getRegisteredTasks } = require('./index'),
-      { pad } = require('../../utils/values')
+      { pad } = require('../../lib/utils/values')
 
 class Help extends Task {
 
