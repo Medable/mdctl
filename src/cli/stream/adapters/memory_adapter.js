@@ -1,13 +1,19 @@
-const { Writable } = require('stream'),
-      ConsoleAdapter = require('./console_adapter')
+const { Duplex } = require('stream')
 
-class MemoryAdapter extends ConsoleAdapter {
+class MemoryAdapter extends Duplex {
+
+  constructor(options) {
+    super(Object.assign({
+      objectMode: true
+    }, options))
+  }
 
   _write(chunk, encoding, cb) {
-    this.push({ [chunk.key]: chunk.blob })
+    this.push({ [chunk.key]: chunk.content })
     cb()
   }
 
+  _read() {}
 }
 
-module.exports = ConsoleAdapter
+module.exports = MemoryAdapter
