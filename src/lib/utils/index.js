@@ -4,7 +4,7 @@ const requestModule = require('request'),
       fs = require('fs'),
       jsyaml = require('js-yaml'),
       path = require('path'),
-      Fault = require('./fault'),
+      Fault = require('../fault'),
       pathTo = require('./path.to')
 
 let Undefined

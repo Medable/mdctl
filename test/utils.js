@@ -1,7 +1,7 @@
 
 const { assert } = require('chai'),
-      { throwIf, tryCatch } = require('../src/utils'),
-      { isSet } = require('../src/utils/values')
+      { throwIf, tryCatch } = require('../src/lib/utils'),
+      { isSet } = require('../src/lib/utils/values')
 
 describe('Utils', () => {
 

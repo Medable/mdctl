@@ -123,6 +123,7 @@ class Dev extends Task {
         --env - sets the environment [${fs.readdirSync(path.join(__dirname, '../../environments/')).filter(f => path.extname(f) === '.yaml').map(f => path.basename(f, '.yaml'))}].              
         --quiet - suppress confirmations
         --manifest - defaults to $cwd/manifest.json
+        --sparse - sparse manifest?
         --format - export format (json, yaml) defaults to json                        
     `
 

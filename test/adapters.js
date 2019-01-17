@@ -1,9 +1,9 @@
 const { assert } = require('chai'),
       fs = require('fs'),
-      Stream = require('../src/cli/stream'),
-      FileAdapter = require('../src/cli/stream/adapters/file_adapter'),
-      ConsoleAdapter = require('../src/cli/stream/adapters/console_adapter'),
-      MemoryAdapter = require('../src/cli/stream/adapters/memory_adapter')
+      Stream = require('../src/lib/stream'),
+      FileAdapter = require('../src/lib/stream/adapters/file_adapter'),
+      ConsoleAdapter = require('../src/lib/stream/adapters/console_adapter'),
+      MemoryAdapter = require('../src/lib/stream/adapters/memory_adapter')
 
 describe('Adapters', () => {
 
