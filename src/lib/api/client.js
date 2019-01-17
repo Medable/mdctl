@@ -2,7 +2,7 @@
 const request = require('request'),
       { privatesAccessor } = require('../privates'),
       { rBool, rString, isSet } = require('../utils/values'),
-      App = require('./app'),
+      pathTo = require('../utils/path.to'),
       Credentials = require('./credentials'),
       Environment = require('./environment'),
       Request = require('./request')
@@ -22,14 +22,13 @@ class Client {
    * @param input
    *
    *  environment
-   *  app
    *  credentials
+   *  request
    */
   constructor(input) {
 
     const privates = privatesAccessor(this),
           options = Object.assign({}, isSet(input) ? input : {}),
-          app = (options.app instanceof App) ? options.app : new App(options.app),
           environment = (options.environment instanceof Environment)
             ? options.environment
             : new Environment(options.environment),
@@ -45,17 +44,33 @@ class Client {
       // for session-based requests
       cookieJar: request.jar(),
 
-      // app
-      app,
-
       // environment endpoint
       environment,
 
       // default credentials for the client
-      credentials
+      credentials,
+
+      // default request options
+      request: Object.assign({}, isSet(options.request) ? options.request : {})
 
     })
 
+  }
+
+  get credentials() {
+    return privatesAccessor(this).credentials
+  }
+
+  get environment() {
+    return privatesAccessor(this).environment
+  }
+
+  getRequestOption(option) {
+    return pathTo(privatesAccessor(this).request, option)
+  }
+
+  setRequestOption(option, value) {
+    pathTo(privatesAccessor(this).request, option, value)
   }
 
   // --------------------------------------------------------
@@ -69,7 +84,7 @@ class Client {
    *  method - request method
    *  body - request body for patch put and post
    *  json - defaults to true. if true, body must be an object.
-   *  cookies - defaults
+   *  cookies - defaults to true. set to false to prevent sending cookies
    *  query - request uri query parameters
    *  request - custom request options, passed directly to the request (https://github.com/request)
    * @returns {Promise<*>}
@@ -78,14 +93,20 @@ class Client {
 
     const privates = privatesAccessor(this),
           options = Object.assign({}, isSet(input) ? input : {}),
-          requestOptions = Object.assign({
-            qs: options.query,
-            method: rString(options.method, 'GET').toUpperCase(),
-            json: rBool(options.json, true)
-          }, options.request),
+          requestOptions = Object.assign(
+            {
+              qs: options.query,
+              body: options.body,
+              method: rString(options.method, 'GET').toUpperCase(),
+              json: rBool(options.json, true),
+              jar: rBool(options.cookies, true) && privates.cookieJar
+            },
+            privates.request,
+            options.request
+          ),
           req = new Request(),
-          credentials = loadCredentials(options.credentials),
-          uri = options.environment.buildUrl(path)
+          credentials = loadCredentials(privates, options.credentials),
+          uri = privates.environment.buildUrl(path)
 
     requestOptions.headers = Object.assign(
       credentials.getAuthorizationHeaders({
@@ -100,9 +121,14 @@ class Client {
 
     req.on('response', (response) => {
 
-      if (response.hasHeader('medable-csrf-token')) {
-        privates.csrfToken = response.getHeader('medable-csrf-token')
+      if (isSet(response.headers['medable-csrf-token'])) {
+        privates.csrfToken = response.headers['medable-csrf-token']
       }
+    })
+
+    // catch error so the emitter does not throw unhandled.
+    req.on('error', () => {
+
     })
 
     return req.run(Object.assign({ uri }, requestOptions))

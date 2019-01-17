@@ -3,7 +3,7 @@ const request = require('request'),
       { EventEmitter } = require('events'),
       { privatesAccessor } = require('../privates'),
       pathTo = require('../utils/path.to'),
-      { isSet, rBool } = require('../utils'),
+      { isSet, rBool } = require('../utils/values'),
       Fault = require('../fault')
 
 /**
@@ -74,7 +74,7 @@ class Request extends EventEmitter {
           reject(err)
         } else {
           this.emit('result', result)
-          resolve(data)
+          resolve(result)
         }
 
       })

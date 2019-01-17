@@ -33,22 +33,21 @@ class Credentials {
   }
 
   get apiKey() {
-    return !!privatesAccessor(this).apiKey
+    return privatesAccessor(this).apiKey
   }
 
   get authType() {
     const privates = privatesAccessor(this)
-    if (type === 'auto') {
-      if (privates.jwt) {
-        type = 'token'
-      } else if (privates.secret) {
-        type = 'signed'
-      } else if (privates.username) {
-        type = 'basic'
-      } else {
-        type = 'none'
-      }
+    if (privates.jwt) {
+      return 'token'
     }
+    if (privates.secret) {
+      return 'signed'
+    }
+    if (privates.username) {
+      return 'basic'
+    }
+    return 'none'
   }
 
   /**
@@ -56,7 +55,7 @@ class Credentials {
    *  type    detected based on options force to: ['auto', token', 'signed', 'basic', 'none']
    *  path    required for signed requests (default '/')
    *  method  required for signed requests (default 'GET')
-   *  principal optional. for signed requests.
+   *  principal optional. for signed requests. defaults to apiPrincipal
    */
   getAuthorizationHeaders(input) {
 
@@ -70,7 +69,7 @@ class Credentials {
     if (type === 'auto') {
       if (privates.jwt) {
         type = 'token'
-      } else if (privates.secret) {
+      } else if (privates.apiSecret) {
         type = 'signed'
       } else if (privates.username) {
         type = 'basic'
@@ -104,7 +103,7 @@ class Credentials {
           })
 
           if (principal) {
-            headers['medable-client-principal'] = principal
+            headers['medable-client-account'] = principal
           }
         }
         break
