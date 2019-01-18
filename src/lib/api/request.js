@@ -3,7 +3,7 @@ const request = require('request'),
       { EventEmitter } = require('events'),
       { privatesAccessor } = require('../privates'),
       pathTo = require('../utils/path.to'),
-      { isSet } = require('../utils'),
+      { isSet, rBool } = require('../utils/values'),
       Fault = require('../fault')
 
 /**
@@ -29,6 +29,7 @@ class Request extends EventEmitter {
 
   /**
    * @param input
+   *  json: boolean defaults to true.
    * @returns {Promise<*>}
    */
   async run(input) {
@@ -42,7 +43,7 @@ class Request extends EventEmitter {
       throw new RangeError('request already running.')
     }
 
-    options.json = true // for now hardcode json input/output
+    options.json = rBool(input.json, true) // explicit default to json.
 
     return new Promise((resolve, reject) => {
 
@@ -55,7 +56,7 @@ class Request extends EventEmitter {
           err = Fault.from(error)
         } else if (pathTo(data, 'object') === 'fault') {
           err = Fault.from(data)
-        } else if (pathTo(data, 'object') === 'result') {
+        } else if (options.json && pathTo(data, 'object') === 'result') {
           result = data.data
         } else {
           result = data
@@ -73,7 +74,7 @@ class Request extends EventEmitter {
           reject(err)
         } else {
           this.emit('result', result)
-          resolve(data)
+          resolve(result)
         }
 
       })
