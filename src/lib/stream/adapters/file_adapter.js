@@ -1,9 +1,7 @@
 const { Writable } = require('stream'),
       jsYaml = require('js-yaml'),
       fs = require('fs'),
-      jp = require('jsonpath'),
-      _ = require('lodash'),
-      Adapter = require('./adapter')
+      jp = require('jsonpath')
 
 class Layout extends Writable {
 
@@ -34,18 +32,31 @@ class FilesLayout extends Layout {
 
   _write(chunk, enc, cb) {
     chunk.namespaces.forEach(n => this.ensure(`${this.output}/${n}`))
-    const dataChunk = chunk.data
+    const dataChunk = chunk.data,
+          promises = []
     if (dataChunk instanceof Array) {
-      for (const item of dataChunk) {
+      dataChunk.forEach((item) => {
         const name = item.name || item.content.name || item.content.code || item.content.label
-        fs.writeFileSync(`${this.output}${chunk.getPath(item)}/${name}.${item.format || this.format}`,
-          item.plain ? item.content : this.parseContent(item.content))
-      }
+        promises.push(new Promise((resolve, reject) => {
+          fs.writeFile(`${this.output}${chunk.getPath(item)}/${name}.${item.format || this.format}`,
+            item.plain ? item.content : this.parseContent(item.content), (err) => {
+              if (err) return reject(err)
+              return resolve()
+            })
+        }))
+      })
     } else {
-      fs.writeFileSync(`${this.output}${chunk.getPath()}/${chunk.key}.${this.format}`,
-        this.parseContent(dataChunk.content))
+      promises.push(new Promise((resolve, reject) => {
+        fs.writeFile(`${this.output}${chunk.getPath()}/${chunk.key}.${this.format}`,
+          this.parseContent(dataChunk.content), (err) => {
+            if (err) return reject(err)
+            return resolve()
+          })
+      }))
     }
-    cb()
+    return Promise.all(promises).then(() => {
+      cb()
+    }).catch(e => cb(e))
   }
 
 }
@@ -58,10 +69,11 @@ class SingleFileLayout extends Layout {
   }
 
   rollbackScripts(chunk) {
-    if(chunk.jsInScript) {
-      for(let js in chunk.jsInScript) {
+    if (chunk.jsInScript) {
+      const scripts = Object.keys(chunk.jsInScript)
+      scripts.forEach((js) => {
         jp.value(chunk.content, js, chunk.jsInScript[js].value)
-      }
+      })
       chunk.clearScripts()
     }
   }
@@ -74,33 +86,26 @@ class SingleFileLayout extends Layout {
   }
 
   _final(cb) {
-    fs.writeFileSync(`${this.output}/exported.${this.format}`, this.parseContent(this.data))
-    cb()
+    return new Promise((resolve, reject) => {
+      fs.writeFile(`${this.output}/exported.${this.format}`, this.parseContent(this.data), (err) => {
+        if (err) return reject(err)
+        return resolve()
+      })
+    }).then(cb).catch(e => cb(e))
   }
 
 }
 
-class FileAdapter extends Adapter {
+class FileAdapter {
 
   constructor(outputPath, options = { format: 'json', layout: 'files' }) {
-    super()
-    this.format = options.format
-    this.layout = options.layout
-    this.output = outputPath || `${process.cwd()}/output`
-    this.stream = new FilesLayout(this.output, this.format)
-    if (this.layout === 'single_file') {
-      this.stream = new SingleFileLayout(this.output, this.format)
+    const { layout, format } = options,
+          output = outputPath || `${process.cwd()}/output`
+    this.stream = new FilesLayout(output, format)
+    if (layout === 'blob') {
+      this.stream = new SingleFileLayout(output, format)
     }
-  }
-
-  _write(chunk, enc, done) {
-    this.stream.write(chunk)
-    done()
-  }
-
-  _final(callback) {
-    this.stream.end()
-    callback()
+    return this.stream
   }
 
 }

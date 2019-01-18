@@ -4,11 +4,11 @@ const slugify = require('slugify'),
 
 class SectionBase {
 
-  constructor(content, key = '') {
+  constructor(content, key = '', jsNs = '', namespaces = ['']) {
     this.content = content
     this.key = key
-    this.jsNs = ''
-    this.namespaces = ['', this.jsNs]
+    this.jsNs = jsNs
+    this.namespaces = jsNs ? [...namespaces, this.jsNs] : namespaces
     this.jsInScript = {}
     this.extractScriptCode()
     if (new.target === SectionBase) {

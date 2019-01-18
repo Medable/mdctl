@@ -1,7 +1,7 @@
-const Adapter = require('./adapter')
+const AdapterBase = require('./base')
 
 
-class MemoryAdapter extends Adapter {
+class MemoryAdapter extends AdapterBase {
 
   _write(chunk, encoding, cb) {
     this.rollbackScripts(chunk)
