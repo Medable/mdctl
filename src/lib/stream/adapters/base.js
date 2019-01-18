@@ -1,7 +1,7 @@
 const { Duplex } = require('stream'),
       jp = require('jsonpath')
 
-class Adapter extends Duplex {
+class AdapterBase extends Duplex {
 
   constructor(options) {
     super(Object.assign({
@@ -11,13 +11,18 @@ class Adapter extends Duplex {
 
   rollbackScripts(chunk) {
     if (chunk.jsInScript) {
-      for (const js in chunk.jsInScript) {
+      const scripts = Object.keys(chunk.jsInScript)
+      scripts.forEach((js) => {
         jp.value(chunk.content, js, chunk.jsInScript[js].value)
-      }
+      })
       chunk.clearScripts()
     }
   }
 
+  _read() {}
+
+  _write() {}
+
 }
 
-module.exports = Adapter
+module.exports = AdapterBase

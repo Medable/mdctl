@@ -3,11 +3,9 @@ const SectionBase = require('./base')
 class TemplateSection extends SectionBase {
 
   constructor(content) {
-    super(content)
-    this.key = 'templates'
-    this.namespaces = ['/templates']
+    super(content, 'templates', '', ['/templates'])
     this.extractPaths()
-    if (new.target === SectionBase) {
+    if (new.target === TemplateSection) {
       Object.seal(this)
     }
   }
@@ -20,6 +18,7 @@ class TemplateSection extends SectionBase {
       }
     })
   }
+
 }
 
 module.exports = TemplateSection

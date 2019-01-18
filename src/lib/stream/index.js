@@ -4,6 +4,7 @@ const { PassThrough, Transform } = require('stream'),
       KEYS = ['env', 'objects', 'scripts', 'templates', 'views']
 
 class StreamTransform extends Transform {
+
   constructor(options) {
     super(Object.assign({
       objectMode: true
@@ -18,6 +19,7 @@ class StreamTransform extends Transform {
     done()
 
   }
+
 }
 
 class StreamBlob extends PassThrough {

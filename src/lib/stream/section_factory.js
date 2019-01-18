@@ -1,5 +1,4 @@
-const fs = require('fs'),
-      EnvSection = require('./map/env'),
+const EnvSection = require('./map/env'),
       ScriptSection = require('./map/script'),
       ObjectSection = require('./map/object'),
       TemplateSection = require('./map/template'),

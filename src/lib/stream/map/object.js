@@ -3,10 +3,8 @@ const SectionBase = require('./base')
 class ObjectSection extends SectionBase {
 
   constructor(content) {
-    super(content)
-    this.key = 'objects'
-    this.namespaces = ['/objects']
-    if (new.target === SectionBase) {
+    super(content, 'objects', '', ['/objects'])
+    if (new.target === ObjectSection) {
       Object.seal(this)
     }
   }

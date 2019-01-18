@@ -1,11 +1,12 @@
-const Adapter = require('./adapter')
+const AdapterBase = require('./base')
 
-class ConsoleAdapter extends Adapter {
+class ConsoleAdapter extends AdapterBase {
 
   _write(chunk, encoding, cb) {
     const obj = {}
     this.rollbackScripts(chunk)
-    console.log(JSON.stringify(chunk))
+    obj[chunk.key] = chunk.content
+    console.log(JSON.stringify(obj))
     cb()
   }
 

@@ -3,12 +3,9 @@ const SectionBase = require('./base')
 class ScriptSection extends SectionBase {
 
   constructor(content) {
-    super(content)
-    this.key = 'scripts'
-    this.jsNs = '/scripts/js'
-    this.namespaces = ['/scripts', this.jsNs]
+    super(content, 'scripts', '/scripts/js', ['/scripts'])
     this.extractPaths()
-    if (new.target === SectionBase) {
+    if (new.target === ScriptSection) {
       Object.seal(this)
     }
   }
