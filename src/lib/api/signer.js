@@ -24,7 +24,7 @@ function sign(command, method, secret, timestamp) {
   return {
     timestamp: ms,
     signature: hmac.digest('hex'),
-    nonce: randomAlphaNum
+    nonce: randomAlphaNum(16)
   }
 }
 
