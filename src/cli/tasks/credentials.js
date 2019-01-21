@@ -178,7 +178,7 @@ class Credentials extends Task {
       case 'text':
         {
           const table = new Table({
-            head: ['Endpoint', 'Env', 'Version', 'Type', 'Account', 'ApiKey'],
+            head: ['Endpoint', 'Env (Org Code)', 'Version', 'Type', 'Account', 'ApiKey'],
             colWidths: [32, 30, 9, 11, 32, 24]
           })
 
