@@ -9,6 +9,10 @@
   "bugs": {
     "url": "https://github.com/Medable/mdctl/issues"
   },
+  "engines": {
+    "node": ">=8",
+    "npm": ">=6"
+  },
   "homepage": "https://github.com/Medable/mdctl#readme",
   "repository": {
     "type": "git",
