@@ -1,48 +1,58 @@
 
 const { URL } = require('url'),
       { privatesAccessor } = require('../privates'),
-      { rString, isSet, rBool } = require('../utils/values'),
+      { rString, isSet } = require('../utils/values'),
       supportedProtocols = new Set(['http:', 'https:']),
       supportedVersions = new Set(['v2'])
 
 function fixPath(path) {
-
   return rString(path, '').trim().replace(/\/{2,}/g, '/').replace(/^\/|\/$/g, '')
-
 }
 
 class Environment {
 
+  /**
+   * @param input
+   *  string
+   *  object {endpoint, env}
+   */
   constructor(input) {
 
-    const privates = privatesAccessor(this)
+    let str = input
 
-    if (rString(input)) {
-
-      const url = new URL('', input),
-            [, env,, version] = fixPath(url.pathname).match(/(^[^/]+)(\/(v[0-9]{1,}))?/) || []
-
-      Object.assign(privates, {
-        secure: url.protocol.endsWith('s:'),
-        protocol: url.protocol,
-        host: url.host,
-        env: rString(env, ''),
-        version: rString(version, 'v2')
-      })
-
-    } else {
+    if (!rString(input)) {
 
       const options = isSet(input) ? input : {},
-            secure = rBool(options.secure, true)
+            endpoint = rString(options.endpoint, '').replace(/[/]+$/, ''),
+            env = rString(options.env, '').replace(/\//g, ''),
+            version = rString(options.version, 'v2').replace(/\//g, '')
 
-      Object.assign(privates, {
-        secure,
-        protocol: secure ? 'https:' : 'http:',
-        host: rString(options.endpoint, 'api.dev.medable.com'),
-        env: rString(options.env, ''),
-        version: rString(options.version, 'v2')
-      })
+      str = `${endpoint}/${env}/${version}`
+    }
 
+    if (!str.includes('://')) { // be a little forgiving and assume https://
+      str = `https://${str}`
+    }
+
+    const privates = privatesAccessor(this),
+          url = new URL('', str),
+          [, env,, version] = fixPath(url.pathname).match(/(^[^/]+)(\/(v[0-9]{1,}))?/) || []
+
+
+    Object.assign(privates, {
+      secure: url.protocol.endsWith('s:'),
+      protocol: url.protocol,
+      host: url.host,
+      env: rString(env, ''),
+      version: rString(version, 'v2')
+    })
+
+    if (!(rString(privates.env, ''))) {
+      throw new TypeError(`Invalid environment env for ${this.url}. Expected and org env/code`)
+    }
+
+    if (!supportedProtocols.has(privates.protocol)) {
+      throw new TypeError(`Invalid environment protocol. Supported protocols are: ${Object.values(supportedProtocols)}`)
     }
 
     if (!supportedProtocols.has(privates.protocol)) {
@@ -69,6 +79,10 @@ class Environment {
 
   get host() {
     return privatesAccessor(this).host
+  }
+
+  get endpoint() {
+    return `${this.protocol}//${this.host}`
   }
 
   get env() {
