@@ -3,7 +3,7 @@ const request = require('request'),
       { privatesAccessor } = require('../privates'),
       { rBool, rString, isSet } = require('../utils/values'),
       pathTo = require('../utils/path.to'),
-      Credentials = require('./credentials'),
+      { Credentials } = require('./credentials'),
       Environment = require('./environment'),
       Request = require('./request')
 
@@ -80,7 +80,7 @@ class Client {
    * @param input
    *  credentials - defaults to client.credentials
    *  principal - set calling principal for signed requests
-   *  authType - type of auth headers to use. defaults to 'auto'. [auto,token,signed,basic,none]
+   *  authType - type of headers to use. defaults to 'auto'. [auto,token,signature,password,none]
    *  method - request method
    *  body - request body for patch put and post
    *  json - defaults to true. if true, body must be an object.
