@@ -233,10 +233,6 @@ class TokenSecret extends Secret {
     super('token', environment, jwt['cortex/eml'], jwt.iss, options.token)
   }
 
-  get username() {
-    return ''
-  }
-
   get credentials() {
 
     const { password } = privatesAccessor(this)

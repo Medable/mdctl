@@ -1,6 +1,6 @@
 {
   "name": "mdctl",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "Medable Developer Tools",
   "main": "./src/index.js",
   "bin": {
@@ -15,7 +15,8 @@
     "url": "git+https://github.com/Medable/mdctl.git"
   },
   "keywords": [
-    "medable"
+    "medable",
+    "cortex"
   ],
   "author": "Medable, Inc. <mdctl@medable.com>",
   "license": "MIT",
