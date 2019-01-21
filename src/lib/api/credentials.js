@@ -1,12 +1,14 @@
 /* eslint-disable class-methods-use-this */
 
 const jsonwebtoken = require('jsonwebtoken'),
+      { URL } = require('url'),
       keytar = require('keytar'),
       { privatesAccessor } = require('../privates'),
       { rString, isSet } = require('../utils/values'),
       { signPath } = require('./signer'),
       Environment = require('./environment'),
-      serviceName = 'com.medable.mdctl'
+      serviceName = 'com.medable.mdctl',
+      typeNames = ['password', 'signature', 'token']
 
 class Credentials {
 
@@ -16,8 +18,8 @@ class Credentials {
    *  apiKey,    // required if no token is passed
    *  apiSecret, // for signed requests
    *  apiPrincipal, // for signed requests, sets the default principal
-   *  username,  // for basic auth only
-   *  password   // for basic auth only
+   *  username,  // for password auth only
+   *  password   // for password auth only
    */
   constructor(input) {
 
@@ -46,17 +48,17 @@ class Credentials {
       return 'token'
     }
     if (privates.secret) {
-      return 'sign'
+      return 'signature'
     }
     if (privates.username) {
-      return 'basic'
+      return 'password'
     }
     return 'none'
   }
 
   /**
    * @param input
-   *  type    detected based on options force to: ['auto', token', 'sign', 'basic', 'none']
+   *  type    detected based on options force to: ['auto', token', 'signature', 'password', 'none']
    *  path    required for signed requests (default '/')
    *  method  required for signed requests (default 'GET')
    *  principal optional. for signed requests. defaults to apiPrincipal
@@ -74,9 +76,9 @@ class Credentials {
       if (privates.jwt) {
         type = 'token'
       } else if (privates.apiSecret) {
-        type = 'sign'
+        type = 'signature'
       } else if (privates.username) {
-        type = 'basic'
+        type = 'password'
       } else {
         type = 'none'
       }
@@ -89,7 +91,7 @@ class Credentials {
         headers.authorization = `Bearer ${privates.token}`
         break
 
-      case 'sign':
+      case 'signature':
 
         {
           const { signature, nonce, timestamp } = signPath(
@@ -112,7 +114,7 @@ class Credentials {
         }
         break
 
-      case 'basic':
+      case 'password':
 
         headers.authorization = `Basic ${Buffer.from(`${privates.username}:${privates.password}`).toString('base64')}`
         break
@@ -127,48 +129,86 @@ class Credentials {
 
 }
 
-// -----------------------------------------------------------------------------------------------0
+// ------------------------------------------------------------------------------------------------
+// secrets are stored for a balanced lookup.
+//  - the known elements are in the service (service + . + type)
+//  - the username is made up of protocol/host/endpoint/env/version/key/username
+//    where username is anything after the version (protocol//host/env/version/username)
+//  - passwords and secrets are stored in the password field as is.
+
 
 class Secret {
 
-  constructor(typeName, environment, username, password) {
+  constructor(typeName, environment, username, key, password) {
 
     Object.assign(privatesAccessor(this), {
-      typeName, environment, username, password
+      typeName, environment, username, key, password
     })
   }
 
-  get service() {
-    const { typeName, environment } = privatesAccessor(this)
-    return `${serviceName}.${typeName}@${environment.url}`
+  get type() {
+    return privatesAccessor(this).typeName
+  }
+
+  get environment() {
+    return privatesAccessor(this).environment
   }
 
   get username() {
     return privatesAccessor(this).username
   }
 
+  get key() {
+    return privatesAccessor(this).key
+  }
+
   get password() {
     return privatesAccessor(this).password
   }
 
+  get service() {
+    const { typeName } = privatesAccessor(this)
+    return `${serviceName}.${typeName}`
+  }
+
+  get encoded() {
+    const { environment, username, key } = privatesAccessor(this)
+    return `${environment.url}/${key}/${username}`
+  }
+
+  toJSON() {
+    const { typeName, environment } = privatesAccessor(this)
+    return {
+      type: typeName,
+      url: environment.url
+    }
+  }
+
 }
 
-class BasicSecret extends Secret {
+class PasswordSecret extends Secret {
 
   constructor(environment, input) {
 
     const options = isSet(input) ? input : {}
 
     if (!rString(options.username)) {
-      throw new TypeError('Invalid basic credentials. expected a username.')
+      throw new TypeError('Invalid password credentials. expected a username.')
     }
-    super('basic', environment, options.username, rString(options.password, ''))
+    super('password', environment, options.username, '', rString(options.password, ''))
   }
 
   get credentials() {
 
     const { username, password } = privatesAccessor(this)
     return new Credentials({ username, password })
+  }
+
+  toJSON() {
+    return Object.assign(super.toJSON(), {
+      email: this.username,
+      password: this.password
+    })
   }
 
 }
@@ -183,7 +223,16 @@ class TokenSecret extends Secret {
     if (!jwt) {
       throw new TypeError('Invalid jwt token credentials.')
     }
-    super('token', environment, jwt['cortex/eml'] || jwt.sub, options.token)
+    if (!jwt['cortex/eml']) {
+      throw new TypeError('Token secrets used here must include the cortex/eml claim for username lookup.')
+    }
+    validateApiKey(jwt.iss)
+
+    super('token', environment, jwt['cortex/eml'], jwt.iss, options.token)
+  }
+
+  get username() {
+    return ''
   }
 
   get credentials() {
@@ -192,9 +241,15 @@ class TokenSecret extends Secret {
     return new Credentials({ token: password })
   }
 
+  toJSON() {
+    return Object.assign(super.toJSON(), {
+      token: this.password
+    })
+  }
+
 }
 
-class SignSecret extends Secret {
+class SignatureSecret extends Secret {
 
   constructor(environment, input) {
 
@@ -203,42 +258,73 @@ class SignSecret extends Secret {
     if (!rString(options.key) || !rString(options.secret)) {
       throw new TypeError('Invalid signing credentials. expected a key and secret.')
     }
-    super('sign', environment, options.key, options.secret)
+    validateApiKey(options.key)
+    validateApiSecret(options.secret)
+
+    super('signature', environment, '', options.key, options.secret)
   }
 
   get credentials() {
 
-    const { username, password } = privatesAccessor(this)
-    return new Credentials({ apiKey: username, apiSecret: password })
+    const { key, password } = privatesAccessor(this)
+    return new Credentials({ apiKey: key, apiSecret: password })
+  }
+
+  toJSON() {
+    return Object.assign(super.toJSON(), {
+      apiKey: this.key,
+      apiSecret: this.password
+    })
   }
 
 }
 
-// -----------------------------------------------------------------------------------------------0
+// ------------------------------------------------------------------------------------------------
 
 class CredentialsManager {
 
 
-  static async list() {
-    throw new RangeError('not implemented')
+  static decode(inputService, inputAccount, inputSecret) {
+
+    const service = rString(inputService, ''),
+          account = rString(inputAccount, ''),
+          secret = rString(inputSecret, ''),
+          type = service.startsWith(serviceName) && service.substr(serviceName.length + 1),
+          url = new URL('', account),
+          [, env, version, key, username] = url.pathname.split('/'),
+          environment = new Environment(`${url.protocol}//${url.host}/${env}/${version}`)
+
+    switch (type) {
+      case 'password':
+        return new PasswordSecret(environment, { username, password: secret })
+      case 'token':
+        return new TokenSecret(environment, { token: secret })
+      case 'signature':
+        return new SignatureSecret(environment, { key, secret })
+      default:
+        throw new TypeError('Unsupported credentials type. Expected password, token or signature.')
+    }
+
   }
 
-  static async find() {
-    throw new RangeError('not implemented')
-  }
+  static create(environment, input) {
 
-  static async clear() {
-    throw new RangeError('not implemented')
-  }
+    const env = (environment instanceof Environment) ? environment : new Environment(environment),
+          options = isSet(input) ? input : {},
+          type = detectAuthType(options)
 
-  static async get() {
-    throw new RangeError('not implemented')
-  }
+    switch (type) {
+      case 'password':
+        return new PasswordSecret(env, options)
+      case 'token':
+        return new TokenSecret(env, options)
+      case 'signature':
+        return new SignatureSecret(env, options)
+      default:
+        throw new TypeError('Unsupported credentials type. Expected password, token or signature.')
+    }
 
-  static async delete() {
-    throw new RangeError('not implemented')
   }
-
 
   /**
    * note: use includeEmail when generating tokens when it's safe to include the cortex/eml claim.
@@ -247,68 +333,143 @@ class CredentialsManager {
    * @param environment
    * @param input
    *  type: 'auto'. auto-detected based on input properties
-   *    basic: username, password
+   *    password: username, password
    *    token: token
-   *    sign: key, secret
+   *    signature: key, secret
    *
    *
    * @returns {Promise<void>}
    */
   static async add(environment, input) {
 
-    const env = (environment instanceof Environment) ? environment : new Environment(environment),
-          options = isSet(input) ? input : {}
-
-    let secret,
-        type = rString(options.type, 'auto')
-
-    if (type === 'auto') {
-      if (options.token) {
-        type = 'token'
-      } else if (options.secret) {
-        type = 'sign'
-      } else if (options.username) {
-        type = 'basic'
-      } else {
-        type = null
-      }
-    }
-
-    switch (type) {
-      case 'basic':
-        secret = new BasicSecret(env, options)
-        break
-      case 'token':
-        secret = new TokenSecret(env, options)
-        break
-      case 'sign':
-        secret = new SignSecret(env, options)
-        break
-      default:
-        throw new TypeError('Unsupported credentials type. Expected basic, token or sign.')
-    }
-
-    await keytar.setPassword(secret.service, secret.username, secret.password)
-
+    const secret = this.create(environment, input)
+    await keytar.setPassword(secret.service, secret.encoded, secret.password)
     return true
+  }
+
+  /**
+   * @param input
+   *  type - optional
+   *  endpoint - optional
+   *  env - optional
+   *  username - optional
+   *  key - optional
+   *
+   * @returns {Promise<void>}
+   */
+  static async list(input) {
+
+    const options = isSet(input) ? input : {},
+          type = rString(options.type) && detectAuthType({ type: options.type }),
+          endpoint = fixEndpoint(options.endpoint),
+          env = rString(options.env),
+          username = rString(options.username),
+          key = rString(options.key),
+
+          list = await Promise.all(
+            (type ? [type] : typeNames).map(async(typeName) => {
+
+              const service = `${serviceName}.${typeName}`
+              return (await keytar.findCredentials(service))
+                .map((item) => {
+                  try {
+                    return this.decode(service, item && item.account, item && item.password)
+                  } catch (err) {
+                    return null
+                  }
+                })
+                .filter(item => (item
+                  && (!endpoint || item.environment.endpoint === endpoint)
+                  && (!env || item.environment.env === env)
+                  && (!username || equalsStringOrRegex(item.username, username))
+                  && (!key || item.key === key)
+                ))
+
+            })
+          )
+
+    return list.reduce((memo, part) => [...memo, ...part], [])
 
   }
 
-  static async set(environment, input) {
+  static async get(input) {
 
-    try {
-      CredentialsManager.delete(input)
-    } catch (err) {
-      // eslint-disable-line no-empty
-    }
+    return (await this.list(input))[0]
+  }
 
-    return CredentialsManager.add(input)
+  static async clear(input) {
+
+    const list = await this.list(input)
+
+    return (await Promise.all(
+      list.map(async(item) => {
+        const deleted = await keytar.deletePassword(`${serviceName}.${item.type}`, item.encoded)
+        return deleted ? 1 : 0
+      })
+    )).reduce((memo, count) => memo + count, 0)
 
   }
 
 }
 
+function detectAuthType(input) {
+
+  const options = isSet(input) ? input : {},
+
+        type = rString(options.type, 'auto')
+
+  if (type === 'auto') {
+    if (options.token) {
+      return 'token'
+    } if (options.secret) {
+      return 'signature'
+    } if (options.password) {
+      return 'password'
+    }
+  }
+  return rString(options.type, null)
+
+}
+
+function validateApiKey(key) {
+  if (/^([0-9a-z-A-Z]){22}$/i.test(rString(key))) {
+    return true
+  }
+  throw new TypeError('Invalid api key')
+}
+
+function validateApiSecret(secret) {
+  if (/^([0-9a-z-A-Z]){64}$/i.test(rString(secret))) {
+    return true
+  }
+  throw new TypeError('Invalid api secret')
+}
+
+function fixEndpoint(endpoint) {
+
+  let str = rString(endpoint, '')
+  if (str && !str.includes('://')) {
+    str = `https://${str}`
+  }
+  return str
+
+}
+
+function equalsStringOrRegex(test, input) {
+
+  const str = rString(input, ''),
+        match = str.match(/^\/(.*)\/(.*)/)
+
+  if (match && match[0].length) {
+    return new RegExp(match[1], match[2]).test(test)
+  }
+  return test === input
+
+}
+
+
 module.exports = {
   Credentials,
-  CredentialsManager
+  CredentialsManager,
+  detectAuthType
 }

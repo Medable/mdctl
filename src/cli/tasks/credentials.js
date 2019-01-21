@@ -2,9 +2,12 @@
 
 const _ = require('lodash'),
       { URL } = require('url'),
+      Table = require('cli-table'),
+      jsyaml = require('js-yaml'),
       { prompt } = require('inquirer'),
+      { loadJsonOrYaml } = require('../../lib/utils'),
       { rString, isSet } = require('../../lib/utils/values'),
-      { CredentialsManager } = require('../../lib/api/credentials'),
+      { CredentialsManager, detectAuthType } = require('../../lib/api/credentials'),
       Environment = require('../../lib/api/environment'),
       Task = require('../lib/task')
 
@@ -26,36 +29,34 @@ class Credentials extends Task {
 
   }
 
-  async 'credentials@list'() {
-    console.log('credentials@list')
-  }
-
-  async 'credentials@find'() {
-    console.log('credentials@find')
-  }
-
-  async 'credentials@clear'() {
-    console.log('credentials@clear')
-  }
-
-  async 'credentials@get'() {
-    console.log('credentials@get')
-  }
-
   async 'credentials@add'(cli) {
 
-    const options = {
-      type: rString(cli.args('type')),
-      endpoint: rString(cli.args('endpoint')),
-      env: rString(cli.args('env'))
+    const options = {}
+
+    // load from input file?
+    if (rString(cli.args('file'))) {
+
+      // support adding a bunch at once.
+      const file = await loadJsonOrYaml(cli.args('file'))
+      if (Array.isArray(file)) {
+        return Promise.all(file.map(input => CredentialsManager.add(input, input)))
+      }
+
+      Object.assign(
+        options,
+        _.pick(
+          file,
+          'type', 'endpoint', 'env', 'username', 'key', 'password', 'secret', 'token'
+        )
+      )
     }
 
-    // validate what's there.
+    Credentials.assignArgIf(cli, options, 'type')
+    Credentials.assignArgIf(cli, options, 'endpoint')
+    Credentials.assignArgIf(cli, options, 'env')
 
-    // only ask questions for what we need when quiet.
-
-    //
-
+    // auto-detect type
+    options.type = detectAuthType(options)
 
     Object.assign(
       options,
@@ -64,13 +65,13 @@ class Credentials extends Task {
           name: 'type',
           message: 'Which type of credentials are you storing?',
           type: 'list',
-          default: 'basic',
+          default: 'password',
           choices: [
-            { name: 'Basic - Email/Username and Password', value: 'basic' },
-            { name: 'Signing - API Key and Secret Pair', value: 'sign' },
+            { name: 'Password - Email/Username and Password', value: 'password' },
+            { name: 'Signature - API Key and Secret Pair', value: 'signature' },
             { name: 'Token - JWT Authentication Token', value: 'token' }
           ],
-          when: () => !['basic', 'sign', 'token'].includes(options.type)
+          when: () => !['password', 'signature', 'token'].includes(options.type)
         },
         {
           name: 'endpoint',
@@ -108,31 +109,31 @@ class Credentials extends Task {
           name: 'username',
           message: 'The account email/username',
           type: 'input',
-          when: hash => hash.type === 'basic'
+          when: hash => hash.type === 'password' && !rString(options.username)
         },
         {
           name: 'password',
           message: 'The account password',
           type: 'password',
-          when: hash => hash.type === 'basic'
+          when: hash => hash.type === 'password' && !rString(options.password)
         },
         {
           name: 'token',
           message: 'The JSON Web Token',
           type: 'password',
-          when: hash => hash.type === 'token'
+          when: hash => hash.type === 'token' && !rString(options.token)
         },
         {
           name: 'key',
           message: 'The api signing key',
           type: 'input',
-          when: hash => hash.type === 'sign'
+          when: hash => hash.type === 'signature' && !rString(options.key)
         },
         {
           name: 'secret',
           message: 'The api signing secret',
           type: 'password',
-          when: hash => hash.type === 'sign'
+          when: hash => hash.type === 'signature' && !rString(options.secret)
         }
       ])
     )
@@ -142,14 +143,94 @@ class Credentials extends Task {
       options
     )
 
+    return true
+
   }
 
-  async 'credentials@set'() {
-    console.log('credentials@set')
+  async 'credentials@list'(cli) {
+
+    const options = await Credentials.getCliOptions(cli),
+          format = rString(cli.args('format'), 'text')
+
+    let list = await CredentialsManager.list(options)
+
+    list = list.map(({
+      environment, type, username, key
+    }) => {
+      const { endpoint, env, version } = environment
+      return {
+        endpoint, env, version, type, username, key
+      }
+    })
+
+    list = _.sortBy(list, ['endpoint', 'env', 'version', 'type', 'username', 'key'])
+
+    switch (format) {
+      case 'json':
+        console.log(JSON.stringify(list))
+        break
+      case 'pretty':
+        console.log(JSON.stringify(list, null, 2))
+        break
+      case 'yaml':
+        console.log(jsyaml.safeDump(list))
+        break
+      case 'text':
+        {
+          const table = new Table({
+            head: ['Endpoint', 'Env', 'Version', 'Type', 'Account', 'ApiKey'],
+            colWidths: [32, 40, 9, 11, 32, 32]
+          })
+
+          table.push(...list.map(({
+            endpoint, env, version, type, username, key
+          }) => [endpoint, env, version, type, username, key]))
+
+          console.log(table.toString())
+        }
+        break
+
+      default:
+        throw new RangeError('Invalid output format. Expected json, pretty, yaml or text')
+    }
+
   }
 
-  async 'credentials@delete'() {
-    console.log('credentials@delete')
+  async 'credentials@get'(cli) {
+
+    const options = await Credentials.getCliOptions(cli),
+          format = rString(cli.args('format'), 'json')
+
+    {
+      const item = await CredentialsManager.get(options)
+
+      if (item) {
+        switch (format) {
+          case 'json':
+            console.log(JSON.stringify(item))
+            break
+          case 'pretty':
+            console.log(JSON.stringify(item, null, 2))
+            break
+          case 'yaml':
+            console.log(jsyaml.safeDump(item))
+            break
+          default:
+            throw new RangeError('Invalid output format. Expected json, pretty or yaml')
+        }
+      }
+    }
+
+  }
+
+  async 'credentials@clear'(cli) {
+
+    console.log(
+      await CredentialsManager.clear(
+        await Credentials.getCliOptions(cli)
+      )
+    )
+
   }
 
   // ----------------------------------------------------------------------------------------------
@@ -158,68 +239,50 @@ class Credentials extends Task {
     return 'manage stored accounts, jwt and signing secrets.'
   }
 
-  static help(cli) {
-
-    const command = cli.args('2') || cli.args('1')
-
-    switch (command) {
-      case 'list': return this.listHelp()
-      default:
-    }
+  static help() {
 
     return `    
     Credentials management.
     
     Usage: 
-            
-      mdctl credentials list [type] --env --endpoint [--account]
-      mdctl credentials find [--type] [--env] [--endpoint] [--key] [--account]
-      mdctl credentials clear [--type] [--env] [--endpoint] [--key] [--account]
-      mdctl credentials get --type --endpoint --env
-      mdctl credentials add --type --endpoint --env
-      mdctl credentials set --type --endpoint --env
-      mdctl credentials delete --type --endpoint --env [--key] [--account]               
+      
+      mdctl credentials [command] --type --endpoint --env --username --key --file --format                   
           
     Arguments:               
       
-      command                                
-        list - list stored credentials by type, environment and endpoint. uses defaults
-        find - find stored credentials. leaving out options list all stored credentials
-        get - retrieve credentials. if type not specified, then first found credentials are supplied 
-        set - set/update credentials
-        delete - clear all credentials.         
+      Command 
+                                     
+        list - list stored credentials by type, environment, endpoint, username and/or key       
+        add - add or update credentials.
+        get - retrieve first matching credentials.               
+        clear - clear all matching credentials.
                 
-      options                       
-        --input - read options from a json/yaml file                     
-        --quiet - suppress confirmations
-        --type - sets the credential type
-        --endpoint sets the endpoint. eg. api.dev.medable.com     
-        --env sets the environment. eg. my-org-code                            
-    `
-  }
-
-  static listHelp() {
-
-    return `    
-    List credentials
-    
-    Usage: 
+      Options 
+                            
+        --file - read options from a json/yaml file.                     
+        --type - sets the type (password, token, signature). auto-detected when adding/updating.
+        --endpoint - sets the endpoint. eg. https://api.dev.medable.com     
+        --env sets the environment. eg. my-org-code
+        --username for password and token auth, sets the lookup username / email / subject id
+        --key api key for looking up signing credentials (and token credentials)
+        --format - output format. defaults to text (json, yaml, text)       
+        
+      Input file options (secrets cannot be read from the command-line):        
+            
+        password - account password for login.
+        secret - api secret key for signing.
+        token - jwt token, which must include the 'cortex/eml' claim for lookup. 
+        
+        other options readable from file: type, endpoint, env, username, key
+        
+    Notes: 
       
-      mdctl credentials list
-          
-    Arguments:                          
-                
-      options     
-        --endpoint sets the endpoint. eg. api.dev.medable.com     
-        --env sets the environment. eg. example                              
-        --quiet - suppress confirmations
-        --manifest - defaults to $cwd/manifest.json
-        --sparse - sparse manifest?
-        --format - export format (json, yaml, text) defaults to text                        
+      Stored JWT tokens must include the 'cortex/eml' claim (created with the includeEmail option).
+      Tokens with the claim store the email address as the username, which the credentials manager
+      uses to look up accounts.       
+                                     
     `
-
   }
-
 
   static validateEndpoint(endpoint) {
 
@@ -231,7 +294,34 @@ class Credentials extends Task {
 
   }
 
+  static assignArgIf(cli, options, arg) {
+
+    const value = cli.args(arg)
+    if (rString(value)) {
+      Object.assign(options, { [arg]: value })
+    }
+  }
+
+  static async getCliOptions(cli) {
+
+    const options = {}
+
+    if (rString(cli.args('file'))) {
+      const file = await loadJsonOrYaml(cli.args('file'))
+      Object.assign(options, _.pick(file, 'type', 'endpoint', 'env', 'username', 'key'))
+    }
+
+    Credentials.assignArgIf(cli, options, 'type')
+    Credentials.assignArgIf(cli, options, 'endpoint')
+    Credentials.assignArgIf(cli, options, 'env')
+    Credentials.assignArgIf(cli, options, 'username')
+    Credentials.assignArgIf(cli, options, 'key')
+
+    return options
+
+  }
 
 }
+
 
 module.exports = Credentials

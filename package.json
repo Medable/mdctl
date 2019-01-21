@@ -46,6 +46,8 @@
     "mocha": "^5.0.0"
   },
   "dependencies": {
+    "async": "^2.6.1",
+    "cli-table": "^0.3.1",
     "clone": "^2.1.2",
     "extend": "^3.0.2",
     "inquirer": "^6.2.1",
