@@ -10,6 +10,8 @@ const jsonwebtoken = require('jsonwebtoken'),
       serviceName = 'com.medable.mdctl',
       typeNames = ['password', 'signature', 'token']
 
+let Undefined
+
 class Credentials {
 
   /**
@@ -281,6 +283,39 @@ class SignatureSecret extends Secret {
 
 // ------------------------------------------------------------------------------------------------
 
+class CredentialsProvider {
+
+  static get() {
+    return privatesAccessor(this).provider
+  }
+
+  static set(provider) {
+
+    if (!(provider instanceof CredentialsProvider)) {
+      throw new TypeError('storage provider must extend CredentialsProvider')
+    }
+    privatesAccessor(this).provider = provider
+  }
+
+  // eslint-disable-next-line no-unused-vars
+  async getCredentials(service) {
+    return []
+  }
+
+  // eslint-disable-next-line no-unused-vars
+  async setCredentials(service, account, password) {
+    return Undefined
+  }
+
+  // eslint-disable-next-line no-unused-vars
+  async deleteCredentials(service, account) {
+    return false
+  }
+
+}
+
+// ------------------------------------------------------------------------------------------------
+
 class CredentialsManager {
 
 
@@ -343,7 +378,7 @@ class CredentialsManager {
   static async add(environment, input) {
 
     const secret = this.create(environment, input)
-    await keytar.setPassword(secret.service, secret.encoded, secret.password)
+    await CredentialsProvider.get().setCredentials(secret.service, secret.encoded, secret.password)
     return true
   }
 
@@ -370,7 +405,7 @@ class CredentialsManager {
             (type ? [type] : typeNames).map(async(typeName) => {
 
               const service = `${serviceName}.${typeName}`
-              return (await keytar.findCredentials(service))
+              return (await CredentialsProvider.get().getCredentials(service))
                 .map((item) => {
                   try {
                     return this.decode(service, item && item.account, item && item.password)
@@ -403,7 +438,7 @@ class CredentialsManager {
 
     return (await Promise.all(
       list.map(async(item) => {
-        const deleted = await keytar.deletePassword(`${serviceName}.${item.type}`, item.encoded)
+        const deleted = await CredentialsProvider.get().deleteCredentials(`${serviceName}.${item.type}`, item.encoded)
         return deleted ? 1 : 0
       })
     )).reduce((memo, count) => memo + count, 0)
@@ -467,9 +502,29 @@ function equalsStringOrRegex(test, input) {
 
 }
 
+class KeytarStorageProvider extends CredentialsProvider {
+
+  async getCredentials(service) {
+    return keytar.findCredentials(service)
+  }
+
+  async setCredentials(service, account, password) {
+    return keytar.setPassword(service, account, password)
+  }
+
+  async deleteCredentials(service, account) {
+    return keytar.deletePassword(service, account)
+  }
+
+}
+
+CredentialsProvider.set(new KeytarStorageProvider())
+
+// ------------------------------------------------------------------------------------------------
 
 module.exports = {
   Credentials,
   CredentialsManager,
-  detectAuthType
+  detectAuthType,
+  CredentialsProvider
 }
