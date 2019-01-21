@@ -179,7 +179,7 @@ class Credentials extends Task {
         {
           const table = new Table({
             head: ['Endpoint', 'Env', 'Version', 'Type', 'Account', 'ApiKey'],
-            colWidths: [32, 40, 9, 11, 32, 32]
+            colWidths: [32, 30, 9, 11, 32, 24]
           })
 
           table.push(...list.map(({
@@ -265,7 +265,7 @@ class Credentials extends Task {
         --env sets the environment. eg. my-org-code
         --username for password and token auth, sets the lookup username / email / subject id
         --key api key for looking up signing credentials (and token credentials)
-        --format - output format. defaults to text (json, yaml, text)       
+        --format - output format. defaults to text (json, yaml, text)                
         
       Input file options (secrets cannot be read from the command-line):        
             
