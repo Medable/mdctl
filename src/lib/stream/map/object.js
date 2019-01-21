@@ -9,6 +9,10 @@ class ObjectSection extends SectionBase {
     }
   }
 
+  validate() {
+    return true
+  }
+
 }
 
 module.exports = ObjectSection
