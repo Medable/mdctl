@@ -4,7 +4,7 @@ class EnvSection extends SectionBase {
 
   constructor(content) {
     super(content, 'env', '/js', [''])
-    this.childrenProps = ['apps', 'policies', 'roles', 'notifications']
+    this.childrenProps = ['apps', 'policies', 'roles', 'notifications', 'smsNumbers', 'serviceAccounts', 'storage', 'configuration']
     if (new.target === EnvSection) {
       Object.seal(this)
     }
