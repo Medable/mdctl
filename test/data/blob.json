@@ -1,0 +1,2092 @@
+{
+    "env": {
+        "apps": [{
+                "label": "jjjjj",
+                "suspended": false,
+                "enabled": true,
+                "GCM": {
+                    "apiKey": ""
+                },
+                "APNs": {
+                    "debug": false,
+                    "cert": "",
+                    "key": ""
+                },
+                "clients": [{
+                    "enabled": true,
+                    "key": "ngM8ThFJciuNoUnoifJbPH",
+                    "label": "jjjjj",
+                    "readOnly": false,
+                    "expires": null,
+                    "sessions": false,
+                    "authDuration": 900,
+                    "csrf": true,
+                    "CORS": {
+                        "origins": []
+                    },
+                    "allowUnsigned": false,
+                    "maxTokensPerPrincipal": 10,
+                    "expose": false,
+                    "whitelist": [],
+                    "blacklist": [],
+                    "patterns": [],
+                    "principalOverride": false
+                }]
+            },
+            {
+                "label": "test app",
+                "suspended": false,
+                "enabled": true,
+                "GCM": {
+                    "apiKey": ""
+                },
+                "APNs": {
+                    "debug": false,
+                    "cert": "",
+                    "key": ""
+                },
+                "clients": [{
+                    "enabled": true,
+                    "key": "ZELy1fMUG3uDlmqwwOfabT",
+                    "label": "test app",
+                    "readOnly": false,
+                    "expires": null,
+                    "sessions": true,
+                    "authDuration": 900,
+                    "csrf": true,
+                    "CORS": {
+                        "origins": []
+                    },
+                    "allowUnsigned": false,
+                    "maxTokensPerPrincipal": 10,
+                    "expose": false,
+                    "whitelist": [],
+                    "blacklist": [],
+                    "patterns": [],
+                    "principalOverride": false
+                }]
+            }
+        ],
+        "policies": [{
+            "label": "Nico Policy Test",
+            "type": "api",
+            "active": false,
+            "trace": true,
+            "halt": false,
+            "priority": 1,
+            "condition": "or",
+            "methods": [
+                "get",
+                "patch",
+                "post",
+                "put"
+            ],
+            "paths": [
+                "c_study"
+            ],
+            "ipWhitelist": [
+                "4.4.4.4"
+            ],
+            "ipBlacklist": [
+                "4.4.4.4"
+            ],
+            "action": "Script",
+            "faultCode": "kAccessDenied",
+            "faultStatusCode": 403,
+            "faultReason": "Access denied by policy",
+            "redirectStatusCode": 307,
+            "rateLimit": false,
+            "rateLimitElements": [
+                "ip"
+            ],
+            "rateLimitReason": "Too many requests.",
+            "rateLimitCount": 300,
+            "rateLimitWindow": 300,
+            "appBlacklist": [
+                "5bd85a39e5cffff69cf96371"
+            ],
+            "aclWhitelist": [{
+                    "target": "000000000000000000000004",
+                    "type": 3,
+                    "_id": "5c3ccb8419a7e6ea569e7cad",
+                    "allow": 1
+                },
+                {
+                    "target": "000000000000000000000007",
+                    "type": 3,
+                    "_id": "5c3ccb8419a7e6ea569e7cae",
+                    "allow": 1
+                }
+            ],
+            "aclBlacklist": [{
+                "target": "000000000000000000000007",
+                "type": 3,
+                "_id": "5c3ccb8419a7e6ea569e7caf",
+                "allow": 1
+            }],
+            "script": {
+                "script": "const logger = require('logger')\n\nconst f = () => 'wolololo'\nreturn f()"
+            }
+        }],
+        "roles": [{
+                "code": "c_administrator",
+                "name": "Administrator",
+                "include": [
+                    "c_developer",
+                    "c_support"
+                ]
+            },
+            {
+                "code": "c_provider",
+                "name": "Provider"
+            },
+            {
+                "code": "c_support",
+                "name": "Support"
+            },
+            {
+                "code": "c_developer",
+                "name": "Developer"
+            },
+            {
+                "code": "c_role_a",
+                "name": "Role A",
+                "scope": [
+                    "object.read.account.*.name"
+                ]
+            },
+            {
+                "code": "c_role_b",
+                "name": "Role B",
+                "include": [
+                    "c_role_a"
+                ],
+                "scope": [
+                    "object.update.account.*.name"
+                ]
+            }
+        ],
+        "notifications": [{
+            "name": "c_weekly",
+            "duplicates": false,
+            "persists": true,
+            "endpoints": [{
+                "template": "c_nico-test",
+                "state": 0
+            }]
+        }]
+    },
+    "objects": [{
+        "favorite": false,
+        "label": "Bar",
+        "name": "c_bar",
+        "isDeletable": true,
+        "isUnmanaged": false,
+        "auditing": {
+            "enabled": false,
+            "all": false,
+            "category": "user"
+        },
+        "hasETag": true,
+        "isVersioned": false,
+        "shareChain": [
+            5,
+            4,
+            2
+        ],
+        "allowConnections": true,
+        "connectionOptions": {
+            "requireAccept": true,
+            "requiredAccess": 5,
+            "sendNotifications": true
+        },
+        "defaultAcl": [{
+                "type": 3,
+                "target": "c_administrator",
+                "allow": 7
+            },
+            {
+                "type": 3,
+                "target": "c_administrator",
+                "allow": "000000000000000000000007"
+            }
+        ],
+        "createAcl": [{
+                "type": 1,
+                "target": "000000000000000000000003",
+                "allow": 1
+            },
+            {
+                "type": 3,
+                "target": "c_developer",
+                "allow": 1
+            }
+        ],
+        "properties": [{
+                "label": "Bar prop",
+                "name": "c_bar_prop",
+                "type": "String",
+                "readAccess": 4,
+                "writeAccess": 6,
+                "readable": true,
+                "writable": true,
+                "creatable": false,
+                "optional": false,
+                "indexed": false,
+                "unique": false,
+                "auditable": false,
+                "history": false,
+                "removable": false,
+                "validators": [{
+                    "name": "string",
+                    "definition": {
+                        "min": 0,
+                        "max": 512
+                    }
+                }],
+                "uppercase": true,
+                "lowercase": false,
+                "trim": false
+            },
+            {
+                "label": "Bar Doc",
+                "name": "c_bar_doc",
+                "type": "Document",
+                "readAccess": 4,
+                "writeAccess": 6,
+                "readable": true,
+                "writable": true,
+                "creatable": false,
+                "optional": false,
+                "indexed": false,
+                "unique": false,
+                "auditable": false,
+                "history": false,
+                "removable": false,
+                "array": true,
+                "canPush": true,
+                "canPull": true,
+                "uniqueValues": false,
+                "minItems": 0,
+                "maxItems": 100,
+                "maxShift": false,
+                "writeOnCreate": true,
+                "properties": [{
+                    "label": "Bar subprop",
+                    "name": "c_subdocprop",
+                    "type": "String",
+                    "readAccess": 4,
+                    "writeAccess": 6,
+                    "readable": true,
+                    "writable": true,
+                    "creatable": false,
+                    "optional": false,
+                    "indexed": false,
+                    "unique": false,
+                    "auditable": false,
+                    "history": false,
+                    "removable": false,
+                    "uppercase": false,
+                    "lowercase": false,
+                    "trim": false
+                }]
+            },
+            {
+                "label": "Num",
+                "name": "c_num",
+                "type": "Number",
+                "readAccess": 4,
+                "writeAccess": 6,
+                "readable": true,
+                "writable": true,
+                "creatable": false,
+                "optional": false,
+                "indexed": false,
+                "unique": false,
+                "auditable": false,
+                "history": false,
+                "removable": true,
+                "validators": [{
+                    "name": "number",
+                    "definition": {
+                        "allowDecimal": true
+                    }
+                }]
+            },
+            {
+                "label": "Bool",
+                "name": "c_bool",
+                "type": "Boolean",
+                "readAccess": 4,
+                "writeAccess": 6,
+                "readable": true,
+                "writable": true,
+                "creatable": false,
+                "optional": false,
+                "indexed": false,
+                "unique": false,
+                "auditable": false,
+                "history": false,
+                "removable": true
+            },
+            {
+                "label": "Date",
+                "name": "c_date",
+                "type": "Date",
+                "readAccess": 4,
+                "writeAccess": 6,
+                "readable": true,
+                "writable": true,
+                "creatable": false,
+                "optional": false,
+                "indexed": false,
+                "unique": false,
+                "auditable": false,
+                "history": false,
+                "removable": false
+            },
+            {
+                "label": "Geo",
+                "name": "c_geo",
+                "type": "Geometry",
+                "readAccess": 4,
+                "writeAccess": 6,
+                "readable": true,
+                "writable": true,
+                "creatable": false,
+                "optional": false,
+                "indexed": true,
+                "unique": false,
+                "auditable": false,
+                "history": false,
+                "removable": false,
+                "geoType": "Point"
+            },
+            {
+                "label": "file",
+                "name": "c_file",
+                "type": "File",
+                "readAccess": 4,
+                "writeAccess": 6,
+                "readable": true,
+                "writable": true,
+                "creatable": false,
+                "optional": false,
+                "auditable": false,
+                "removable": false,
+                "urlExpirySeconds": null,
+                "processors": [{
+                    "type": "passthru",
+                    "label": "Content",
+                    "name": "content",
+                    "allowUpload": true,
+                    "mimes": [
+                        "*"
+                    ],
+                    "maxFileSize": 10000000,
+                    "private": false,
+                    "source": "content",
+                    "location": 4,
+                    "storageId": "medable",
+                    "required": true,
+                    "passMimes": false
+                }]
+            },
+            {
+                "label": "list",
+                "name": "c_list",
+                "type": "List",
+                "readAccess": 4,
+                "writeAccess": 6,
+                "readable": true,
+                "creatable": false,
+                "optional": true,
+                "removable": false,
+                "uniqueValues": false,
+                "grant": 0,
+                "roles": [],
+                "skipAcl": false,
+                "sourceObject": "c_bar",
+                "linkedProperty": "",
+                "linkedReferences": [],
+                "readThrough": false,
+                "writeThrough": false,
+                "updateOnWriteThrough": false,
+                "inheritInstanceRoles": false,
+                "inheritPropertyAccess": false,
+                "defaultAclOverride": false,
+                "createAclOverride": false,
+                "where": ""
+            },
+            {
+                "label": "objid",
+                "name": "c_objid",
+                "type": "ObjectId",
+                "readAccess": 4,
+                "writeAccess": 6,
+                "readable": true,
+                "writable": true,
+                "creatable": false,
+                "optional": false,
+                "indexed": false,
+                "unique": false,
+                "auditable": false,
+                "history": false,
+                "removable": false,
+                "cascadeDelete": false
+            },
+            {
+                "label": "ref",
+                "name": "c_ref",
+                "type": "Reference",
+                "readAccess": 4,
+                "writeAccess": 6,
+                "readable": true,
+                "writable": true,
+                "creatable": false,
+                "optional": false,
+                "indexed": false,
+                "unique": false,
+                "auditable": false,
+                "history": false,
+                "removable": false,
+                "referenceAccess": 5,
+                "grant": 0,
+                "roles": [],
+                "cascadeDelete": false,
+                "autoCreate": false,
+                "sourceObject": "c_bar",
+                "paths": [],
+                "writeThrough": false,
+                "updateOnWriteThrough": false,
+                "inheritInstanceRoles": false,
+                "inheritPropertyAccess": false,
+                "defaultAclOverride": false
+            },
+            {
+                "label": "set",
+                "name": "c_set",
+                "type": "Set",
+                "readAccess": 4,
+                "writeAccess": 6,
+                "readable": true,
+                "writable": true,
+                "creatable": false,
+                "optional": false,
+                "indexed": false,
+                "removable": false,
+                "canPush": true,
+                "canPull": true,
+                "uniqueValues": false,
+                "minItems": 0,
+                "maxItems": 100,
+                "maxShift": false,
+                "writeOnCreate": true,
+                "documents": [{
+                        "label": "Food",
+                        "name": "c_food",
+                        "minRequired": 0,
+                        "maxAllowed": -1,
+                        "properties": [{
+                            "label": "isFruit",
+                            "name": "c_isfruit",
+                            "type": "Boolean",
+                            "readAccess": 4,
+                            "writeAccess": 6,
+                            "readable": true,
+                            "writable": true,
+                            "creatable": false,
+                            "optional": false,
+                            "indexed": false,
+                            "unique": false,
+                            "auditable": false,
+                            "history": false,
+                            "removable": false
+                        }]
+                    },
+                    {
+                        "label": "Person",
+                        "name": "c_person",
+                        "minRequired": 0,
+                        "maxAllowed": -1,
+                        "properties": [{
+                            "label": "Nationality",
+                            "name": "c_nationality",
+                            "type": "String",
+                            "readAccess": 4,
+                            "writeAccess": 6,
+                            "readable": true,
+                            "writable": true,
+                            "creatable": false,
+                            "optional": false,
+                            "indexed": false,
+                            "unique": false,
+                            "auditable": false,
+                            "history": false,
+                            "removable": false,
+                            "validators": [{
+                                "name": "string",
+                                "definition": {
+                                    "min": 0,
+                                    "max": 512
+                                }
+                            }],
+                            "uppercase": false,
+                            "lowercase": false,
+                            "trim": false
+                        }]
+                    }
+                ]
+            },
+            {
+                "label": "any",
+                "name": "c_any",
+                "type": "Any",
+                "readAccess": 4,
+                "writeAccess": 6,
+                "readable": true,
+                "writable": true,
+                "creatable": false,
+                "optional": false,
+                "auditable": false,
+                "history": false,
+                "removable": false
+            },
+            {
+                "label": "bin",
+                "name": "c_bin",
+                "type": "Binary",
+                "readAccess": 4,
+                "writeAccess": 6,
+                "readable": true,
+                "writable": true,
+                "creatable": false,
+                "optional": false,
+                "auditable": false,
+                "history": false,
+                "removable": false
+            },
+            {
+                "label": "uuid",
+                "name": "c_uuid",
+                "type": "UUID",
+                "readAccess": 4,
+                "writeAccess": 6,
+                "readable": true,
+                "writable": true,
+                "creatable": false,
+                "optional": false,
+                "indexed": false,
+                "unique": false,
+                "auditable": false,
+                "history": false,
+                "removable": false,
+                "uuidVersion": -1,
+                "autoGenerate": false
+            }
+        ],
+        "objectTypes": [{
+                "label": "Foo",
+                "name": "c_foo",
+                "properties": [{
+                    "label": "Foos prop",
+                    "name": "c_foosprop",
+                    "type": "String",
+                    "readAccess": 4,
+                    "writeAccess": 6,
+                    "readable": true,
+                    "writable": true,
+                    "creatable": false,
+                    "optional": false,
+                    "indexed": false,
+                    "unique": false,
+                    "auditable": false,
+                    "history": false,
+                    "removable": false,
+                    "uppercase": false,
+                    "lowercase": false,
+                    "trim": false
+                }]
+            },
+            {
+                "label": "Bar",
+                "name": "c_bar",
+                "properties": [{
+                    "label": "Bars prop",
+                    "name": "c_barsprop",
+                    "type": "String",
+                    "readAccess": 4,
+                    "writeAccess": 6,
+                    "readable": true,
+                    "writable": true,
+                    "creatable": false,
+                    "optional": false,
+                    "indexed": false,
+                    "unique": false,
+                    "auditable": false,
+                    "history": false,
+                    "removable": false,
+                    "uppercase": false,
+                    "lowercase": false,
+                    "trim": false
+                }]
+            }
+        ]
+    }],
+    "scripts": [{
+            "code": "c_fibonacci",
+            "active": true,
+            "label": "Fibonacci",
+            "language": "javascript/es6",
+            "script": "const fib = n < 2 \n            ? 1 \n            : n => fib(n-1) + fib(n-2),\n      n = require('request').params.n\n      \nreturn fib(n)",
+            "type": "route",
+            "principal": "000000000000000000000003",
+            "configuration": {
+                "urlEncoded": false,
+                "plainText": false,
+                "apiKey": null,
+                "path": "fib/:n",
+                "method": "get",
+                "priority": 0,
+                "acl": [{
+                    "type": 1,
+                    "target": "000000000000000000000003",
+                    "allow": 1
+                }]
+            }
+        },
+        {
+            "code": "c_test_lib",
+            "active": true,
+            "label": "Test",
+            "language": "javascript/es6",
+            "script": "module.exports = { pi: 3.14}",
+            "type": "library",
+            "principal": null,
+            "configuration": {
+                "export": "c_test_lib"
+            }
+        },
+        {
+            "code": "c_test_trigger",
+            "active": true,
+            "label": "Trig test",
+            "language": "javascript/es6",
+            "script": "return 2",
+            "type": "trigger",
+            "principal": "000000000000000000000003",
+            "configuration": {
+                "inline": false,
+                "event": "comment.create.after",
+                "object": "c_bar",
+                "paths": []
+            }
+        },
+        {
+            "code": "c_test_job",
+            "active": true,
+            "label": "Test job",
+            "language": "javascript/es6",
+            "script": "return 1",
+            "type": "job",
+            "principal": null,
+            "configuration": {
+                "cron": "0 9 * * *"
+            }
+        },
+        {
+            "code": "c_hello_world_route",
+            "active": true,
+            "label": "Hello World",
+            "language": "javascript/es6",
+            "script": "return 'hello'",
+            "type": "route",
+            "principal": null,
+            "configuration": {
+                "urlEncoded": false,
+                "plainText": false,
+                "apiKey": null,
+                "path": "hello",
+                "method": "get",
+                "priority": 0,
+                "acl": [{
+                        "type": 1,
+                        "target": "000000000000000000000003",
+                        "allow": 1
+                    },
+                    {
+                        "type": 1,
+                        "target": "000000000000000000000001",
+                        "allow": 1
+                    },
+                    {
+                        "type": 3,
+                        "target": "c_administrator",
+                        "allow": 1
+                    }
+                ]
+            }
+        }
+    ],
+    "views": [{
+        "label": "Test View",
+        "name": "c_some_view",
+        "description": "lkjansdclkjansdc",
+        "active": true,
+        "sourceObject": "c_bar",
+        "postType": null,
+        "principal": "000000000000000000000004",
+        "limit": {
+            "settable": true,
+            "defaultValue": 100,
+            "min": 1,
+            "max": 1000
+        },
+        "skip": {
+            "settable": true,
+            "defaultValue": 0,
+            "min": 0,
+            "max": 500000
+        },
+        "paths": {
+            "settable": true,
+            "defaultValue": [
+                "c_bool"
+            ],
+            "limitTo": [
+                "c_bool"
+            ]
+        },
+        "query": [{
+            "name": "where",
+            "value": "{ \"c_bool\": true }"
+        }],
+        "objectAcl": [{
+                "type": 1,
+                "target": "000000000000000000000003",
+                "allow": 2
+            },
+            {
+                "type": 3,
+                "target": "c_developer",
+                "allow": "000000000000000000000004"
+            }
+        ],
+        "acl": [{
+                "type": 1,
+                "target": "000000000000000000000003",
+                "allow": 1
+            },
+            {
+                "type": 3,
+                "target": "c_developer",
+                "allow": 1
+            }
+        ]
+    }],
+    "templates": [{
+            "type": "email",
+            "name": "account-activation",
+            "builtin": true,
+            "spec": {
+                "summary": "This is sent to activate and verify accounts in orgs where there is manual activation",
+                "nickname": "Account activation with verification link",
+                "content": [{
+                        "summary": "Email subject",
+                        "mime": "text/plain",
+                        "name": "subject"
+                    },
+                    {
+                        "summary": "Plain text body",
+                        "mime": "text/plain",
+                        "name": "plain"
+                    },
+                    {
+                        "summary": "HTML body",
+                        "mime": "text/html",
+                        "name": "html"
+                    }
+                ],
+                "variables": [{
+                        "paths": [
+                            "name"
+                        ],
+                        "object": "org",
+                        "summary": "Organization",
+                        "type": "object",
+                        "name": "org"
+                    },
+                    {
+                        "paths": [
+                            "name"
+                        ],
+                        "object": "account",
+                        "summary": "Account",
+                        "type": "object",
+                        "name": "account"
+                    },
+                    {
+                        "summary": "Account verification token",
+                        "type": "activation",
+                        "name": "activation"
+                    }
+                ]
+            }
+        },
+        {
+            "type": "email",
+            "name": "account-activation-provider",
+            "builtin": true,
+            "spec": {
+                "summary": "This is sent to activate and verify accounts in orgs where there is manual activation",
+                "nickname": "Provider activation with verification link",
+                "content": [{
+                        "summary": "Email subject",
+                        "mime": "text/plain",
+                        "name": "subject"
+                    },
+                    {
+                        "summary": "Plain text body",
+                        "mime": "text/plain",
+                        "name": "plain"
+                    },
+                    {
+                        "summary": "HTML body",
+                        "mime": "text/html",
+                        "name": "html"
+                    }
+                ],
+                "variables": [{
+                        "paths": [
+                            "name"
+                        ],
+                        "object": "org",
+                        "summary": "Organization",
+                        "type": "object",
+                        "name": "org"
+                    },
+                    {
+                        "paths": [
+                            "name"
+                        ],
+                        "object": "account",
+                        "summary": "Account",
+                        "type": "object",
+                        "name": "account"
+                    },
+                    {
+                        "summary": "Account verification token",
+                        "type": "activation",
+                        "name": "activation"
+                    }
+                ]
+            }
+        },
+        {
+            "type": "email",
+            "name": "account-auth-locked",
+            "builtin": true,
+            "spec": {
+                "summary": "This is sent to the account holder when the account has been locked due to too many authentication failures.",
+                "nickname": "Account Unauthorized Access Lock",
+                "content": [{
+                        "summary": "Email subject",
+                        "mime": "text/plain",
+                        "name": "subject"
+                    },
+                    {
+                        "summary": "Plain text body",
+                        "mime": "text/plain",
+                        "name": "plain"
+                    },
+                    {
+                        "summary": "HTML body",
+                        "mime": "text/html",
+                        "name": "html"
+                    }
+                ],
+                "variables": [{
+                        "paths": [
+                            "name"
+                        ],
+                        "object": "org",
+                        "summary": "Organization",
+                        "type": "object",
+                        "name": "org"
+                    },
+                    {
+                        "paths": [
+                            "name"
+                        ],
+                        "object": "account",
+                        "summary": "Account",
+                        "type": "object",
+                        "name": "account"
+                    },
+                    {
+                        "summary": "Number of attempts",
+                        "type": "input",
+                        "name": "attempts"
+                    },
+                    {
+                        "summary": "Lock duration, in humanized time.",
+                        "type": "input",
+                        "name": "duration"
+                    }
+                ]
+            }
+        },
+        {
+            "type": "email",
+            "name": "account-provider-verification-processing",
+            "builtin": true,
+            "spec": {
+                "summary": "This is sent to providers that have just updated their provider verification information.",
+                "nickname": "Provider Verification Processing",
+                "content": [{
+                        "summary": "Email subject",
+                        "mime": "text/plain",
+                        "name": "subject"
+                    },
+                    {
+                        "summary": "Plain text body",
+                        "mime": "text/plain",
+                        "name": "plain"
+                    },
+                    {
+                        "summary": "HTML body",
+                        "mime": "text/html",
+                        "name": "html"
+                    }
+                ],
+                "variables": [{
+                        "paths": [
+                            "name"
+                        ],
+                        "object": "org",
+                        "summary": "Organization",
+                        "type": "object",
+                        "name": "org"
+                    },
+                    {
+                        "paths": [
+                            "name"
+                        ],
+                        "object": "account",
+                        "summary": "Account",
+                        "type": "object",
+                        "name": "account"
+                    }
+                ]
+            }
+        },
+        {
+            "type": "email",
+            "name": "account-provider-verification-verified",
+            "builtin": true,
+            "spec": {
+                "summary": "This is sent to providers once they are verified",
+                "nickname": "Provider Verification Complete",
+                "content": [{
+                        "summary": "Email subject",
+                        "mime": "text/plain",
+                        "name": "subject"
+                    },
+                    {
+                        "summary": "Plain text body",
+                        "mime": "text/plain",
+                        "name": "plain"
+                    },
+                    {
+                        "summary": "HTML body",
+                        "mime": "text/html",
+                        "name": "html"
+                    }
+                ],
+                "variables": [{
+                        "paths": [
+                            "name"
+                        ],
+                        "object": "org",
+                        "summary": "Organization",
+                        "type": "object",
+                        "name": "org"
+                    },
+                    {
+                        "paths": [
+                            "name"
+                        ],
+                        "object": "account",
+                        "summary": "Account",
+                        "type": "object",
+                        "name": "account"
+                    }
+                ]
+            }
+        },
+        {
+            "type": "email",
+            "name": "account-provisioned",
+            "builtin": true,
+            "spec": {
+                "summary": "Account Provisioned email",
+                "nickname": "Account Provisioned",
+                "content": [{
+                        "summary": "Email subject",
+                        "mime": "text/plain",
+                        "name": "subject"
+                    },
+                    {
+                        "summary": "Plain text body",
+                        "mime": "text/plain",
+                        "name": "plain"
+                    },
+                    {
+                        "summary": "HTML body",
+                        "mime": "text/html",
+                        "name": "html"
+                    }
+                ],
+                "variables": [{
+                        "paths": [
+                            "name"
+                        ],
+                        "object": "org",
+                        "summary": "Organization",
+                        "type": "object",
+                        "name": "org"
+                    },
+                    {
+                        "paths": [
+                            "name"
+                        ],
+                        "object": "account",
+                        "summary": "Account",
+                        "type": "object",
+                        "name": "account"
+                    },
+                    {
+                        "summary": "Password create token.",
+                        "type": "createPassword",
+                        "name": "createPassword"
+                    }
+                ]
+            }
+        },
+        {
+            "type": "email",
+            "name": "account-welcome",
+            "builtin": true,
+            "spec": {
+                "summary": "Account welcome email",
+                "nickname": "Account Welcome",
+                "content": [{
+                        "summary": "Email subject",
+                        "mime": "text/plain",
+                        "name": "subject"
+                    },
+                    {
+                        "summary": "Plain text body",
+                        "mime": "text/plain",
+                        "name": "plain"
+                    },
+                    {
+                        "summary": "HTML body",
+                        "mime": "text/html",
+                        "name": "html"
+                    }
+                ],
+                "variables": [{
+                        "paths": [
+                            "name"
+                        ],
+                        "object": "org",
+                        "summary": "Organization",
+                        "type": "object",
+                        "name": "org"
+                    },
+                    {
+                        "paths": [
+                            "name"
+                        ],
+                        "object": "account",
+                        "summary": "Account",
+                        "type": "object",
+                        "name": "account"
+                    }
+                ]
+            }
+        },
+        {
+            "type": "email",
+            "name": "account-welcome-activation",
+            "builtin": true,
+            "spec": {
+                "summary": "Account welcome email with activation required",
+                "nickname": "Account Welcome with Activation",
+                "content": [{
+                        "summary": "Email subject",
+                        "mime": "text/plain",
+                        "name": "subject"
+                    },
+                    {
+                        "summary": "Plain text body",
+                        "mime": "text/plain",
+                        "name": "plain"
+                    },
+                    {
+                        "summary": "HTML body",
+                        "mime": "text/html",
+                        "name": "html"
+                    }
+                ],
+                "variables": [{
+                        "paths": [
+                            "name"
+                        ],
+                        "object": "org",
+                        "summary": "Organization",
+                        "type": "object",
+                        "name": "org"
+                    },
+                    {
+                        "paths": [
+                            "name"
+                        ],
+                        "object": "account",
+                        "summary": "Account",
+                        "type": "object",
+                        "name": "account"
+                    }
+                ]
+            }
+        },
+        {
+            "type": "email",
+            "name": "account-welcome-activation-provider",
+            "builtin": true,
+            "spec": {
+                "summary": "Account welcome email with activation required",
+                "nickname": "Account Welcome for Provider with Activation",
+                "content": [{
+                        "summary": "Email subject",
+                        "mime": "text/plain",
+                        "name": "subject"
+                    },
+                    {
+                        "summary": "Plain text body",
+                        "mime": "text/plain",
+                        "name": "plain"
+                    },
+                    {
+                        "summary": "HTML body",
+                        "mime": "text/html",
+                        "name": "html"
+                    }
+                ],
+                "variables": [{
+                        "paths": [
+                            "name"
+                        ],
+                        "object": "org",
+                        "summary": "Organization",
+                        "type": "object",
+                        "name": "org"
+                    },
+                    {
+                        "paths": [
+                            "name"
+                        ],
+                        "object": "account",
+                        "summary": "Account",
+                        "type": "object",
+                        "name": "account"
+                    }
+                ]
+            }
+        },
+        {
+            "type": "email",
+            "name": "account-welcome-provider",
+            "builtin": true,
+            "spec": {
+                "summary": "Account welcome email to provider tole",
+                "nickname": "Account Welcome Provider",
+                "content": [{
+                        "summary": "Email subject",
+                        "mime": "text/plain",
+                        "name": "subject"
+                    },
+                    {
+                        "summary": "Plain text body",
+                        "mime": "text/plain",
+                        "name": "plain"
+                    },
+                    {
+                        "summary": "HTML body",
+                        "mime": "text/html",
+                        "name": "html"
+                    }
+                ],
+                "variables": [{
+                        "paths": [
+                            "name"
+                        ],
+                        "object": "org",
+                        "summary": "Organization",
+                        "type": "object",
+                        "name": "org"
+                    },
+                    {
+                        "paths": [
+                            "name"
+                        ],
+                        "object": "account",
+                        "summary": "Account",
+                        "type": "object",
+                        "name": "account"
+                    }
+                ]
+            }
+        },
+        {
+            "type": "email",
+            "name": "account-welcome-verification",
+            "builtin": true,
+            "spec": {
+                "summary": "Account verification email",
+                "nickname": "Account Verification",
+                "content": [{
+                        "summary": "Email subject",
+                        "mime": "text/plain",
+                        "name": "subject"
+                    },
+                    {
+                        "summary": "Plain text body",
+                        "mime": "text/plain",
+                        "name": "plain"
+                    },
+                    {
+                        "summary": "HTML body",
+                        "mime": "text/html",
+                        "name": "html"
+                    }
+                ],
+                "variables": [{
+                        "paths": [
+                            "name"
+                        ],
+                        "object": "org",
+                        "summary": "Organization",
+                        "type": "object",
+                        "name": "org"
+                    },
+                    {
+                        "paths": [
+                            "name"
+                        ],
+                        "object": "account",
+                        "summary": "Account",
+                        "type": "object",
+                        "name": "account"
+                    },
+                    {
+                        "summary": "Verification",
+                        "type": "verification",
+                        "name": "verification"
+                    }
+                ]
+            }
+        },
+        {
+            "type": "email",
+            "name": "account-welcome-verification-provider",
+            "builtin": true,
+            "spec": {
+                "summary": "Account verification email for providers",
+                "nickname": "Account Verification - Provider",
+                "content": [{
+                        "summary": "Email subject",
+                        "mime": "text/plain",
+                        "name": "subject"
+                    },
+                    {
+                        "summary": "Plain text body",
+                        "mime": "text/plain",
+                        "name": "plain"
+                    },
+                    {
+                        "summary": "HTML body",
+                        "mime": "text/html",
+                        "name": "html"
+                    }
+                ],
+                "variables": [{
+                        "paths": [
+                            "name"
+                        ],
+                        "object": "org",
+                        "summary": "Organization",
+                        "type": "object",
+                        "name": "org"
+                    },
+                    {
+                        "paths": [
+                            "name"
+                        ],
+                        "object": "account",
+                        "summary": "Account",
+                        "type": "object",
+                        "name": "account"
+                    },
+                    {
+                        "summary": "Verification",
+                        "type": "verification",
+                        "name": "verification"
+                    }
+                ]
+            }
+        },
+        {
+            "type": "email",
+            "name": "c_nico-test",
+            "builtin": false,
+            "spec": {
+                "summary": "lkjnlkjnljnlkjn",
+                "nickname": "Testing Templates",
+                "content": [{
+                        "summary": "Email subject",
+                        "mime": "text/plain",
+                        "name": "subject"
+                    },
+                    {
+                        "summary": "Plain text body",
+                        "mime": "text/plain",
+                        "name": "plain"
+                    },
+                    {
+                        "summary": "HTML body",
+                        "mime": "text/html",
+                        "name": "html"
+                    }
+                ]
+            }
+        },
+        {
+            "type": "email",
+            "name": "connection-created",
+            "builtin": true,
+            "spec": {
+                "summary": "Connection created for context.",
+                "nickname": "Connection Created",
+                "content": [{
+                        "summary": "Email subject",
+                        "mime": "text/plain",
+                        "name": "subject"
+                    },
+                    {
+                        "summary": "Plain text body",
+                        "mime": "text/plain",
+                        "name": "plain"
+                    },
+                    {
+                        "summary": "HTML body",
+                        "mime": "text/html",
+                        "name": "html"
+                    }
+                ],
+                "variables": [{
+                        "paths": [
+                            "name"
+                        ],
+                        "object": "org",
+                        "summary": "Organization",
+                        "type": "object",
+                        "name": "org"
+                    },
+                    {
+                        "paths": [
+                            "name"
+                        ],
+                        "object": "account",
+                        "summary": "Account",
+                        "type": "object",
+                        "name": "account"
+                    },
+                    {
+                        "summary": "Connection",
+                        "type": "connection",
+                        "name": "connection"
+                    }
+                ]
+            }
+        },
+        {
+            "type": "email",
+            "name": "gcm-regid-reassigned",
+            "builtin": true,
+            "spec": {
+                "summary": "Email notification for device change",
+                "nickname": "GCM Registration Id Reassigned",
+                "content": [{
+                        "summary": "Email subject",
+                        "mime": "text/plain",
+                        "name": "subject"
+                    },
+                    {
+                        "summary": "Plain text body",
+                        "mime": "text/plain",
+                        "name": "plain"
+                    },
+                    {
+                        "summary": "HTML body",
+                        "mime": "text/html",
+                        "name": "html"
+                    }
+                ],
+                "variables": [{
+                        "paths": [
+                            "name"
+                        ],
+                        "object": "org",
+                        "summary": "Organization",
+                        "type": "object",
+                        "name": "org"
+                    },
+                    {
+                        "paths": [
+                            "name"
+                        ],
+                        "object": "account",
+                        "summary": "Account",
+                        "type": "object",
+                        "name": "account"
+                    }
+                ]
+            }
+        },
+        {
+            "type": "email",
+            "name": "invite-existing-user",
+            "builtin": true,
+            "spec": {
+                "summary": "Invite to existing user with link to accept",
+                "nickname": "Invite existing user",
+                "content": [{
+                        "summary": "Email subject",
+                        "mime": "text/plain",
+                        "name": "subject"
+                    },
+                    {
+                        "summary": "Plain text body",
+                        "mime": "text/plain",
+                        "name": "plain"
+                    },
+                    {
+                        "summary": "HTML body",
+                        "mime": "text/html",
+                        "name": "html"
+                    }
+                ],
+                "variables": [{
+                        "paths": [
+                            "name"
+                        ],
+                        "object": "org",
+                        "summary": "Organization",
+                        "type": "object",
+                        "name": "org"
+                    },
+                    {
+                        "paths": [
+                            "name"
+                        ],
+                        "object": "account",
+                        "summary": "Account",
+                        "type": "object",
+                        "name": "account"
+                    },
+                    {
+                        "summary": "Connection Context",
+                        "type": "connection",
+                        "name": "connection"
+                    }
+                ]
+            }
+        },
+        {
+            "type": "email",
+            "name": "invite-new-user",
+            "builtin": true,
+            "spec": {
+                "summary": "Email to newly invited user with registration link",
+                "nickname": "Invite new user",
+                "content": [{
+                        "summary": "Email subject",
+                        "mime": "text/plain",
+                        "name": "subject"
+                    },
+                    {
+                        "summary": "Plain text body",
+                        "mime": "text/plain",
+                        "name": "plain"
+                    },
+                    {
+                        "summary": "HTML body",
+                        "mime": "text/html",
+                        "name": "html"
+                    }
+                ],
+                "variables": [{
+                        "paths": [
+                            "name"
+                        ],
+                        "object": "org",
+                        "summary": "Organization",
+                        "type": "object",
+                        "name": "org"
+                    },
+                    {
+                        "summary": "Connection Context",
+                        "type": "connection",
+                        "name": "connection"
+                    }
+                ]
+            }
+        },
+        {
+            "type": "email",
+            "name": "ios-token-reassigned",
+            "builtin": true,
+            "spec": {
+                "summary": "Email notification for device change",
+                "nickname": "iOS Token Reassigned",
+                "content": [{
+                        "summary": "Email subject",
+                        "mime": "text/plain",
+                        "name": "subject"
+                    },
+                    {
+                        "summary": "Plain text body",
+                        "mime": "text/plain",
+                        "name": "plain"
+                    },
+                    {
+                        "summary": "HTML body",
+                        "mime": "text/html",
+                        "name": "html"
+                    }
+                ],
+                "variables": [{
+                        "paths": [
+                            "name"
+                        ],
+                        "object": "org",
+                        "summary": "Organization",
+                        "type": "object",
+                        "name": "org"
+                    },
+                    {
+                        "paths": [
+                            "name"
+                        ],
+                        "object": "account",
+                        "summary": "Account",
+                        "type": "object",
+                        "name": "account"
+                    }
+                ]
+            }
+        },
+        {
+            "type": "email",
+            "name": "layout",
+            "builtin": true,
+            "spec": {
+                "summary": "General Email Layout",
+                "nickname": "Email Layout",
+                "content": [{
+                    "summary": "HTML body",
+                    "mime": "text/html",
+                    "name": "html"
+                }],
+                "variables": [{
+                    "paths": [
+                        "name",
+                        "website",
+                        "logo",
+                        "favicon"
+                    ],
+                    "object": "org",
+                    "summary": "Organization",
+                    "type": "object",
+                    "name": "org"
+                }]
+            }
+        },
+        {
+            "type": "email",
+            "name": "lost-password",
+            "builtin": true,
+            "spec": {
+                "summary": "Reset password email",
+                "nickname": "Lost Password",
+                "content": [{
+                        "summary": "Email subject",
+                        "mime": "text/plain",
+                        "name": "subject"
+                    },
+                    {
+                        "summary": "Plain text body",
+                        "mime": "text/plain",
+                        "name": "plain"
+                    },
+                    {
+                        "summary": "HTML body",
+                        "mime": "text/html",
+                        "name": "html"
+                    }
+                ],
+                "variables": [{
+                        "paths": [
+                            "name"
+                        ],
+                        "object": "org",
+                        "summary": "Organization",
+                        "type": "object",
+                        "name": "org"
+                    },
+                    {
+                        "paths": [
+                            "name"
+                        ],
+                        "object": "account",
+                        "summary": "Account",
+                        "type": "object",
+                        "name": "account"
+                    },
+                    {
+                        "summary": "Password reset token",
+                        "type": "passwordReset",
+                        "name": "reset"
+                    }
+                ]
+            }
+        },
+        {
+            "type": "email",
+            "name": "mobile-change-notification",
+            "builtin": true,
+            "spec": {
+                "summary": "Changed mobile number",
+                "nickname": "Mobile change",
+                "content": [{
+                        "summary": "Email subject",
+                        "mime": "text/plain",
+                        "name": "subject"
+                    },
+                    {
+                        "summary": "Plain text body",
+                        "mime": "text/plain",
+                        "name": "plain"
+                    },
+                    {
+                        "summary": "HTML body",
+                        "mime": "text/html",
+                        "name": "html"
+                    }
+                ],
+                "variables": [{
+                        "paths": [
+                            "name"
+                        ],
+                        "object": "org",
+                        "summary": "Organization",
+                        "type": "object",
+                        "name": "org"
+                    },
+                    {
+                        "paths": [
+                            "name"
+                        ],
+                        "object": "account",
+                        "summary": "Account",
+                        "type": "object",
+                        "name": "account"
+                    }
+                ]
+            }
+        },
+        {
+            "type": "email",
+            "name": "org-invitation",
+            "builtin": true,
+            "spec": {
+                "summary": "Email to new user in private org with registration link",
+                "nickname": "Private Org Invitation",
+                "content": [{
+                        "summary": "Email subject",
+                        "mime": "text/plain",
+                        "name": "subject"
+                    },
+                    {
+                        "summary": "Plain text body",
+                        "mime": "text/plain",
+                        "name": "plain"
+                    },
+                    {
+                        "summary": "HTML body",
+                        "mime": "text/html",
+                        "name": "html"
+                    }
+                ],
+                "variables": [{
+                        "paths": [
+                            "name"
+                        ],
+                        "object": "org",
+                        "summary": "Organization",
+                        "type": "object",
+                        "name": "org"
+                    },
+                    {
+                        "summary": "Connection Context",
+                        "type": "connection",
+                        "name": "connection"
+                    }
+                ]
+            }
+        },
+        {
+            "type": "email",
+            "name": "password-change-notification",
+            "builtin": true,
+            "spec": {
+                "summary": "Changed password email",
+                "nickname": "Password change",
+                "content": [{
+                        "summary": "Email subject",
+                        "mime": "text/plain",
+                        "name": "subject"
+                    },
+                    {
+                        "summary": "Plain text body",
+                        "mime": "text/plain",
+                        "name": "plain"
+                    },
+                    {
+                        "summary": "HTML body",
+                        "mime": "text/html",
+                        "name": "html"
+                    }
+                ],
+                "variables": [{
+                        "paths": [
+                            "name"
+                        ],
+                        "object": "org",
+                        "summary": "Organization",
+                        "type": "object",
+                        "name": "org"
+                    },
+                    {
+                        "paths": [
+                            "name"
+                        ],
+                        "object": "account",
+                        "summary": "Account",
+                        "type": "object",
+                        "name": "account"
+                    }
+                ]
+            }
+        },
+        {
+            "type": "email",
+            "name": "transfer-existing-user",
+            "builtin": true,
+            "spec": {
+                "summary": "Ownership transferred to user",
+                "nickname": "Transfer existing user",
+                "content": [{
+                        "summary": "Email subject",
+                        "mime": "text/plain",
+                        "name": "subject"
+                    },
+                    {
+                        "summary": "Plain text body",
+                        "mime": "text/plain",
+                        "name": "plain"
+                    },
+                    {
+                        "summary": "HTML body",
+                        "mime": "text/html",
+                        "name": "html"
+                    }
+                ],
+                "variables": [{
+                        "paths": [
+                            "name"
+                        ],
+                        "object": "org",
+                        "summary": "Organization",
+                        "type": "object",
+                        "name": "org"
+                    },
+                    {
+                        "paths": [
+                            "name"
+                        ],
+                        "object": "account",
+                        "summary": "Account",
+                        "type": "object",
+                        "name": "account"
+                    },
+                    {
+                        "summary": "Ownership transfer token",
+                        "type": "connection",
+                        "name": "transfer"
+                    }
+                ]
+            }
+        },
+        {
+            "type": "email",
+            "name": "transfer-new-user",
+            "builtin": true,
+            "spec": {
+                "summary": "Ownership transferred to new user",
+                "nickname": "Transfer new user",
+                "content": [{
+                        "summary": "Email subject",
+                        "mime": "text/plain",
+                        "name": "subject"
+                    },
+                    {
+                        "summary": "Plain text body",
+                        "mime": "text/plain",
+                        "name": "plain"
+                    },
+                    {
+                        "summary": "HTML body",
+                        "mime": "text/html",
+                        "name": "html"
+                    }
+                ],
+                "variables": [{
+                        "paths": [
+                            "name"
+                        ],
+                        "object": "org",
+                        "summary": "Organization",
+                        "type": "object",
+                        "name": "org"
+                    },
+                    {
+                        "summary": "Ownership transfer token",
+                        "type": "connection",
+                        "name": "transfer"
+                    }
+                ]
+            }
+        },
+        {
+            "type": "push",
+            "name": "comment-update",
+            "builtin": true,
+            "spec": {
+                "summary": "Comment Update",
+                "nickname": "Comment Update",
+                "content": [{
+                    "summary": "Notification Text",
+                    "mime": "text/plain",
+                    "name": "message"
+                }],
+                "variables": [{
+                        "paths": [
+                            "name"
+                        ],
+                        "object": "org",
+                        "summary": "Organization",
+                        "type": "object",
+                        "name": "org"
+                    },
+                    {
+                        "summary": "The Post",
+                        "type": "post",
+                        "name": "post"
+                    },
+                    {
+                        "summary": "The Comment",
+                        "type": "comment",
+                        "name": "comment"
+                    },
+                    {
+                        "summary": "The comment context object schema",
+                        "type": "schema",
+                        "name": "schema"
+                    }
+                ]
+            }
+        },
+        {
+            "type": "push",
+            "name": "connection",
+            "builtin": true,
+            "spec": {
+                "summary": "Connection Created",
+                "nickname": "Connection Created",
+                "content": [{
+                    "summary": "Notification Text",
+                    "mime": "text/plain",
+                    "name": "message"
+                }],
+                "variables": [{
+                        "paths": [
+                            "name"
+                        ],
+                        "object": "org",
+                        "summary": "Organization",
+                        "type": "object",
+                        "name": "org"
+                    },
+                    {
+                        "paths": [
+                            "creator.name"
+                        ],
+                        "summary": "Connection",
+                        "type": "connection",
+                        "name": "connection"
+                    }
+                ]
+            }
+        },
+        {
+            "type": "push",
+            "name": "invitation",
+            "builtin": true,
+            "spec": {
+                "summary": "Connection Request",
+                "nickname": "Connection Request",
+                "content": [{
+                    "summary": "Notification Text",
+                    "mime": "text/plain",
+                    "name": "message"
+                }],
+                "variables": [{
+                        "paths": [
+                            "name"
+                        ],
+                        "object": "org",
+                        "summary": "Organization",
+                        "type": "object",
+                        "name": "org"
+                    },
+                    {
+                        "paths": [
+                            "creator.name"
+                        ],
+                        "summary": "Connection",
+                        "type": "connection",
+                        "name": "connection"
+                    }
+                ]
+            }
+        },
+        {
+            "type": "push",
+            "name": "post-update",
+            "builtin": true,
+            "spec": {
+                "summary": "Post Update",
+                "nickname": "Post Update",
+                "content": [{
+                    "summary": "Notification Text",
+                    "mime": "text/plain",
+                    "name": "message"
+                }],
+                "variables": [{
+                        "paths": [
+                            "name"
+                        ],
+                        "object": "org",
+                        "summary": "Organization",
+                        "type": "object",
+                        "name": "org"
+                    },
+                    {
+                        "summary": "The Post",
+                        "type": "post",
+                        "name": "post"
+                    },
+                    {
+                        "summary": "The post context object schema",
+                        "type": "schema",
+                        "name": "schema"
+                    }
+                ]
+            }
+        },
+        {
+            "type": "push",
+            "name": "transfer",
+            "builtin": true,
+            "spec": {
+                "summary": "Ownership Transfer",
+                "nickname": "Ownership Transfer",
+                "content": [{
+                    "summary": "Notification Text",
+                    "mime": "text/plain",
+                    "name": "message"
+                }],
+                "variables": [{
+                        "paths": [
+                            "name"
+                        ],
+                        "object": "org",
+                        "summary": "Organization",
+                        "type": "object",
+                        "name": "org"
+                    },
+                    {
+                        "paths": [
+                            "creator.name"
+                        ],
+                        "summary": "Transfer Invitation",
+                        "type": "connection",
+                        "name": "transfer"
+                    }
+                ]
+            }
+        },
+        {
+            "type": "sms",
+            "name": "location-verification",
+            "builtin": true,
+            "spec": {
+                "summary": "Location verification Text Message",
+                "nickname": "Location Verification",
+                "content": [{
+                    "summary": "Text Message",
+                    "mime": "text/plain",
+                    "name": "message"
+                }],
+                "variables": [{
+                        "paths": [
+                            "name"
+                        ],
+                        "object": "org",
+                        "summary": "Organization",
+                        "type": "object",
+                        "name": "org"
+                    },
+                    {
+                        "summary": "Verification Code",
+                        "type": "input",
+                        "name": "code"
+                    }
+                ]
+            }
+        }
+    ]
+}
