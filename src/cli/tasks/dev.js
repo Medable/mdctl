@@ -1,8 +1,7 @@
 /* eslint-disable class-methods-use-this */
 
-const fs = require('fs'),
-      path = require('path'),
-      _ = require('lodash'),
+const _ = require('lodash'),
+      { isSet } = require('../../lib/utils/values'),
       Task = require('../lib/task')
 
 class Dev extends Task {
@@ -12,7 +11,7 @@ class Dev extends Task {
     const arg2 = cli.args('2'),
           handler = `${cli.args('1')}@${arg2}`
 
-    if (arg2 === null) {
+    if (!isSet(arg2)) {
       return console.log(Dev.help(cli))
     }
 
@@ -20,21 +19,6 @@ class Dev extends Task {
       throw new Error('Invalid command')
     }
     return this[handler](cli)
-  }
-
-  async 'auth@clear'() {
-
-    console.log('mdctl dev auth clear')
-  }
-
-  async 'auth@login'() {
-
-    console.log('mdctl dev auth login')
-  }
-
-  async 'auth@status'() {
-
-    console.log('mdctl dev auth status')
   }
 
   async 'env@export'() {
@@ -58,7 +42,6 @@ class Dev extends Task {
     const command = cli.args('2') || cli.args('1')
 
     switch (command) {
-      case 'auth': return this.authHelp()
       case 'env': return this.envHelp()
       default:
     }
@@ -72,36 +55,12 @@ class Dev extends Task {
           
     Arguments:               
       
-      command        
-        auth - authenticate into environment
+      command                
         env - environment tools         
                 
       options                           
         --quiet - suppress confirmations                        
     `
-  }
-
-  static authHelp() {
-
-    return `    
-    Developer tools authentication.
-    
-    Usage: 
-      
-      mdctl dev auth [command] [options]
-          
-    Arguments:               
-      
-      command                
-        clear - clear authentication tokens and saved passwords.
-        status - check the current login or token status.
-        login - login to the current environment.
-                
-      options     
-        --env - sets the environment [${fs.readdirSync(path.join(__dirname, '../../environments/')).filter(f => path.extname(f) === '.yaml').map(f => path.basename(f, '.yaml'))}].              
-        --quiet - suppress confirmations                        
-    `
-
   }
 
   static envHelp() {
@@ -120,7 +79,8 @@ class Dev extends Task {
         import - import to an endpoint environment        
                 
       options     
-        --env - sets the environment [${fs.readdirSync(path.join(__dirname, '../../environments/')).filter(f => path.extname(f) === '.yaml').map(f => path.basename(f, '.yaml'))}].              
+        --endpoint sets the endpoint. eg. api.dev.medable.com     
+        --env sets the environment. eg. example                              
         --quiet - suppress confirmations
         --manifest - defaults to $cwd/manifest.json
         --sparse - sparse manifest?
