@@ -5,10 +5,12 @@ const { assert, expect } = require('chai'),
       glob = require('glob'),
       rimraf = require('rimraf'),
       _ = require('lodash'),
+      { Readable } = require('stream'),
+      Fault = require('../src/lib/fault'),
       Stream = require('../src/lib/stream'),
       FileAdapter = require('../src/lib/stream/adapters/file_adapter'),
-      ConsoleAdapter = require('../src/lib/stream/adapters/console_adapter')
-      // MemoryAdapter = require('../src/lib/stream/adapters/memory_adapter')
+      ConsoleAdapter = require('../src/lib/stream/adapters/console_adapter'),
+      MemoryAdapter = require('../src/lib/stream/adapters/memory_adapter')
 
 describe('Adapters', () => {
 
@@ -22,6 +24,21 @@ describe('Adapters', () => {
     blob = null
   })
 
+  it('load with a invalid blob structure', (done) => {
+    const fakeBlob = {
+            env: [],
+            test: ''
+          },
+          readableStream = new Readable({ objectMode: true })
+    readableStream.pipe(new Stream()).on('error', (e) => {
+      if (e instanceof Fault) {
+        assert(e.code === 'fkInvalidBlob', 'InvalidBlob fault was expected')
+      }
+      done()
+    })
+    readableStream.push(new Buffer.from(JSON.stringify(fakeBlob)))
+    readableStream.push(null)
+  })
 
   it('export using file adapter with default layout', (done) => {
     const tempDir = path.join(process.cwd(), `output-${new Date().getTime()}`),
@@ -82,8 +99,25 @@ describe('Adapters', () => {
   })
 
   it('export using memory adapter', (done) => {
-    // TODO: implement this test
-    done()
+    const s = new Stream(),
+          c = new MemoryAdapter(),
+
+          buffer = []
+    blob.pipe(s).pipe(c).on('data', (data) => {
+      buffer.push(data)
+    }).on('finish', () => {
+      try {
+        expect(buffer.length).to.equal(5)
+        expect(buffer[0]).to.have.property('env')
+        expect(buffer[1]).to.have.property('objects')
+        expect(buffer[2]).to.have.property('scripts')
+        expect(buffer[3]).to.have.property('views')
+        expect(buffer[4]).to.have.property('templates')
+        done()
+      } catch (e) {
+        done(e)
+      }
+    })
   })
 
 })

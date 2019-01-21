@@ -9,6 +9,10 @@ class ViewSection extends SectionBase {
     }
   }
 
+  validate() {
+    return true
+  }
+
 }
 
 module.exports = ViewSection

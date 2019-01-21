@@ -19,6 +19,10 @@ class ScriptSection extends SectionBase {
     })
   }
 
+  validate() {
+    return true
+  }
+
 }
 
 module.exports = ScriptSection

@@ -19,6 +19,10 @@ class TemplateSection extends SectionBase {
     })
   }
 
+  validate() {
+    return true
+  }
+
 }
 
 module.exports = TemplateSection
