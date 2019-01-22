@@ -149,6 +149,14 @@ function resolveCallbackArguments(options, callback, ensure = true, once = true)
   return [optionsArgument, callbackArgument]
 }
 
+function validateRegex(pattern, allowStar) {
+  try {
+    return (allowStar && pattern.localeCompare('*') === 0) || new RegExp(pattern)
+  } catch (e) {
+    return false
+  }
+}
+
 module.exports = {
   isPrimitive,
   isInt,
@@ -165,5 +173,6 @@ module.exports = {
   getValidDate,
   pad,
   clamp,
-  resolveCallbackArguments
+  resolveCallbackArguments,
+  validateRegex
 }
