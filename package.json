@@ -30,7 +30,7 @@
     "test:only": "mocha --recursive",
     "test:watch": "npm test -- --watch",
     "test:examples": "node examples/",
-    "cover": "istanbul cover _mocha -- --recursive",
+    "cover": "istanbul cover node_modules/mocha/bin/_mocha -- --recursive",
     "lint": "eslint src test",
     "prepublish": "npm run test"
   },
