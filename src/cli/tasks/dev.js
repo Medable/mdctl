@@ -1,10 +1,22 @@
 /* eslint-disable class-methods-use-this */
 
 const _ = require('lodash'),
+      fs = require('fs'),
       { isSet } = require('../../lib/utils/values'),
-      Task = require('../lib/task')
+      Task = require('../lib/task'),
+      { CredentialsManager } = require('../../lib/api/credentials'),
+      Client = require('../../lib/api/client'),
+      Stream = require('../../../src/lib/stream'),
+      FileAdapter = require('../../../src/lib/stream/adapters/file_adapter')
 
 class Dev extends Task {
+
+  constructor(credentialsManager = CredentialsManager, ApiClient = Client) {
+    super()
+    this.credentialsManager = credentialsManager
+    this.ApiClient = ApiClient
+    this.optionKeys = ['endpoint', 'env', 'quite', 'manifest', 'sparse', 'format']
+  }
 
   async run(cli) {
 
@@ -21,9 +33,20 @@ class Dev extends Task {
     return this[handler](cli)
   }
 
-  async 'env@export'() {
+  async 'env@export'(cli) {
+    const passedOptions = _.reduce(this.optionKeys,
+            (sum, key) => _.extend(sum, { [key]: cli.config(key) }), {}),
+          defaultCredentials = cli.config('defaultCredentials'),
+          // get credentials based on arguments or load defaults
+          credentials = await this.getCredentials(passedOptions)
+            || await this.getCredentials(defaultCredentials),
+          environment = _.isUndefined(passedOptions.endpoint) ? defaultCredentials : passedOptions,
+          apiClient = new this.ApiClient({ environment, credentials }),
+          manifest = JSON.parse(fs.readFileSync(passedOptions.manifest || `${__dirname}/manifest.json`))
 
-    console.log('mdctl dev env export')
+    return apiClient.post('/accounts/login')
+      .then(() => apiClient.post('/developer/export', manifest))
+      .then(exportResponse => this.writeExport(passedOptions, JSON.stringify(exportResponse.body)))
   }
 
   async 'env@import'() {
@@ -87,6 +110,22 @@ class Dev extends Task {
         --format - export format (json, yaml) defaults to json                        
     `
 
+  }
+
+  getCredentials(passedOptions) {
+    const search = _.pick(passedOptions, 'endpoint', 'env')
+    return this.credentialsManager.get(search)
+  }
+
+  writeExport(passedOptions, stringifiedContent) {
+    return new Promise((resolve, reject) => {
+      fs.createReadStream(stringifiedContent)
+        .pipe(new Stream())
+        .pipe(new FileAdapter(null, { format: passedOptions.format }))
+        .on('finish', () => {
+          resolve() // need to check error handling in this bit
+        })
+    })
   }
 
 }
