@@ -7,7 +7,9 @@ const _ = require('lodash'),
       { prompt } = require('inquirer'),
       { loadJsonOrYaml } = require('../../lib/utils'),
       { rString, isSet } = require('../../lib/utils/values'),
-      { CredentialsManager, detectAuthType } = require('../../lib/api/credentials'),
+      {
+        CredentialsManager, detectAuthType, validateApiKey, validateApiSecret
+      } = require('../../lib/api/credentials'),
       Environment = require('../../lib/api/environment'),
       Task = require('../lib/task')
 
@@ -125,15 +127,29 @@ class Credentials extends Task {
         },
         {
           name: 'key',
-          message: 'The api signing key',
+          message: 'The api key',
           type: 'input',
-          when: hash => hash.type === 'signature' && !rString(options.key)
+          when: hash => ['password', 'signature'].includes(hash.type) && !rString(options.key),
+          validate: (input) => {
+            try {
+              return validateApiKey(input)
+            } catch (err) {
+              return err.getMessage()
+            }
+          }
         },
         {
           name: 'secret',
           message: 'The api signing secret',
           type: 'password',
-          when: hash => hash.type === 'signature' && !rString(options.secret)
+          when: hash => hash.type === 'signature' && !rString(options.secret),
+          validate: (input) => {
+            try {
+              return validateApiSecret(input)
+            } catch (err) {
+              return err.getMessage()
+            }
+          }
         }
       ])
     )
