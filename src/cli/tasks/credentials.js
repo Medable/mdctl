@@ -5,6 +5,7 @@ const _ = require('lodash'),
       Table = require('cli-table'),
       jsyaml = require('js-yaml'),
       { prompt } = require('inquirer'),
+      { loadDefaults, writeDefaults } = require('../lib/config'),
       { loadJsonOrYaml } = require('../../lib/utils'),
       { rString, isSet } = require('../../lib/utils/values'),
       {
@@ -215,29 +216,74 @@ class Credentials extends Task {
   async 'credentials@get'(cli) {
 
     const options = await Credentials.getCliOptions(cli),
-          format = rString(cli.args('format'), 'json')
+          format = rString(cli.args('format'), 'json'),
+          item = await CredentialsManager.get(options)
 
-    {
-      const item = await CredentialsManager.get(options)
-
-      if (item) {
-        switch (format) {
-          case 'json':
-            console.log(JSON.stringify(item))
-            break
-          case 'pretty':
-            console.log(JSON.stringify(item, null, 2))
-            break
-          case 'yaml':
-            console.log(jsyaml.safeDump(item))
-            break
-          default:
-            throw new RangeError('Invalid output format. Expected json, pretty or yaml')
-        }
+    if (item) {
+      switch (format) {
+        case 'json':
+          console.log(JSON.stringify(item))
+          break
+        case 'pretty':
+          console.log(JSON.stringify(item, null, 2))
+          break
+        case 'yaml':
+          console.log(jsyaml.safeDump(item))
+          break
+        default:
+          throw new RangeError('Invalid output format. Expected json, pretty or yaml')
       }
     }
 
   }
+
+  async 'credentials@load'(cli) {
+
+    const options = await Credentials.getCliOptions(cli),
+          secret = await CredentialsManager.get(options)
+
+    if (!secret) {
+      throw new RangeError('Credentials not found.')
+    } else {
+
+      const {
+              environment, type, username, key
+            } = secret,
+            { endpoint, env, version } = environment,
+            defaultCredentials = {
+              type, endpoint, env, version, username, key
+            }
+
+      await writeDefaults({ defaultCredentials })
+
+    }
+
+  }
+
+
+  async 'credentials@show'(cli) {
+
+    const { defaultCredentials } = await loadDefaults(),
+          format = rString(cli.args('format'), 'json')
+
+    if (defaultCredentials) {
+      switch (format) {
+        case 'json':
+          console.log(JSON.stringify(defaultCredentials))
+          break
+        case 'pretty':
+          console.log(JSON.stringify(defaultCredentials, null, 2))
+          break
+        case 'yaml':
+          console.log(jsyaml.safeDump(defaultCredentials))
+          break
+        default:
+          throw new RangeError('Invalid output format. Expected json, pretty or yaml')
+      }
+    }
+
+  }
+
 
   async 'credentials@clear'(cli) {
 
@@ -268,9 +314,11 @@ class Credentials extends Task {
       
       Command 
                                      
-        list - list stored credentials by type, environment, endpoint, username and/or key       
-        add - add or update credentials.
-        get - retrieve first matching credentials.               
+        list - list stored credentials by type, environment, endpoint, username and/or key.       
+        add - add or update credentials.       
+        get - output the first matching stored credentials.
+        load - store the first matching credentials as the default for subsequent calls.                 
+        default - show the default credentials, if any.        
         clear - clear all matching credentials.
                 
       Options 
@@ -281,7 +329,7 @@ class Credentials extends Task {
         --env sets the environment. eg. my-org-code
         --username for password and token auth, sets the lookup username / email / subject id
         --key api key for looking up signing credentials (and token credentials)
-        --format - output format. defaults to text (json, yaml, text)                
+        --format - output format. defaults to text (json, yaml, text)              
         
       Input file options (secrets cannot be read from the command-line):        
             
