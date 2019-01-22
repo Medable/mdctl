@@ -211,10 +211,11 @@ class Secret {
   }
 
   toJSON() {
-    const { typeName, environment } = privatesAccessor(this)
+    const { typeName, environment, key } = privatesAccessor(this)
     return {
       type: typeName,
-      url: environment.url
+      url: environment.url,
+      apiKey: key
     }
   }
 
@@ -302,7 +303,6 @@ class SignatureSecret extends Secret {
 
   toJSON() {
     return Object.assign(super.toJSON(), {
-      apiKey: this.key,
       apiSecret: this.password
     })
   }
