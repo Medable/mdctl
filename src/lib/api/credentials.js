@@ -21,7 +21,8 @@ class Credentials {
    *  apiSecret, // for signed requests
    *  apiPrincipal, // for signed requests, sets the default principal
    *  username,  // for password auth only
-   *  password   // for password auth only
+   *  password   // for password auth only,
+   *  authType   // force a default authType for getting authorization headers. defaults to auto.
    */
   constructor(input) {
 
@@ -35,8 +36,10 @@ class Credentials {
       apiSecret: rString(options.apiSecret),
       apiPrincipal: rString(options.apiPrincipal),
       username: rString(options.username, ''),
-      password: rString(options.password, '')
+      password: rString(options.password, ''),
     })
+
+    this.authType = rString(options.authType, 'auto')
 
   }
 
@@ -45,7 +48,13 @@ class Credentials {
   }
 
   get authType() {
+
     const privates = privatesAccessor(this)
+
+    if (privates.authType !== 'auto') {
+      return privates.authType
+    }
+
     if (privates.jwt) {
       return 'token'
     }
@@ -55,12 +64,26 @@ class Credentials {
     if (privates.username) {
       return 'password'
     }
+
     return 'none'
+
+  }
+
+  // set the default auth type for generating auth headers.
+  set authType(type) {
+
+    if (!['auto', 'token', 'signature', 'password', 'basic', 'none'].includes(type)) {
+      throw new TypeError('Unsupported auth type. Expected auto, token, signature, password, basic, none')
+    }
+
+    privatesAccessor(this).authType = type
+
   }
 
   /**
    * @param input
-   *  type    detected based on options force to: ['auto', token', 'signature', 'password', 'none']
+   *  type    defaults to this.authType. the kind of headers to
+   *    produce: auto, token, signature, password, basic, none
    *  path    required for signed requests (default '/')
    *  method  required for signed requests (default 'GET')
    *  principal optional. for signed requests. defaults to apiPrincipal
@@ -73,7 +96,7 @@ class Credentials {
             'medable-client-key': privates.apiKey
           }
 
-    let type = rString(options.type, 'auto')
+    let type = rString(options.type, privates.authType)
     if (type === 'auto') {
       if (privates.jwt) {
         type = 'token'
@@ -116,11 +139,12 @@ class Credentials {
         }
         break
 
-      case 'password':
+      case 'basic':
 
         headers.authorization = `Basic ${Buffer.from(`${privates.username}:${privates.password}`).toString('base64')}`
         break
 
+      case 'password':
       default:
 
     }
@@ -141,6 +165,14 @@ class Credentials {
 
 class Secret {
 
+  /**
+   *
+   * @param typeName
+   * @param environment
+   * @param username
+   * @param key the app api key.
+   * @param password
+   */
   constructor(typeName, environment, username, key, password) {
 
     Object.assign(privatesAccessor(this), {
@@ -179,10 +211,11 @@ class Secret {
   }
 
   toJSON() {
-    const { typeName, environment } = privatesAccessor(this)
+    const { typeName, environment, key } = privatesAccessor(this)
     return {
       type: typeName,
-      url: environment.url
+      url: environment.url,
+      apiKey: key
     }
   }
 
@@ -197,13 +230,13 @@ class PasswordSecret extends Secret {
     if (!rString(options.username)) {
       throw new TypeError('Invalid password credentials. expected a username.')
     }
-    super('password', environment, options.username, '', rString(options.password, ''))
+    super('password', environment, options.username, options.key, rString(options.password, ''))
   }
 
   get credentials() {
 
-    const { username, password } = privatesAccessor(this)
-    return new Credentials({ username, password })
+    const { username, password, key } = privatesAccessor(this)
+    return new Credentials({ username, password, apiKey: key })
   }
 
   toJSON() {
@@ -270,7 +303,6 @@ class SignatureSecret extends Secret {
 
   toJSON() {
     return Object.assign(super.toJSON(), {
-      apiKey: this.key,
       apiSecret: this.password
     })
   }
@@ -327,7 +359,7 @@ class CredentialsManager {
 
     switch (type) {
       case 'password':
-        return new PasswordSecret(environment, { username, password: secret })
+        return new PasswordSecret(environment, { username, key, password: secret })
       case 'token':
         return new TokenSecret(environment, { token: secret })
       case 'signature':
@@ -522,5 +554,7 @@ module.exports = {
   Credentials,
   CredentialsManager,
   detectAuthType,
-  CredentialsProvider
+  CredentialsProvider,
+  validateApiKey,
+  validateApiSecret
 }
