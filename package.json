@@ -28,7 +28,7 @@
     "test": "npm run lint && npm run cover",
     "test:prod": "npm run test",
     "test:only": "mocha --recursive",
-    "test:watch": "npm test -- --watch",
+    "test:watch": "npm run test:only -- --watch",
     "test:examples": "node examples/",
     "cover": "istanbul cover node_modules/mocha/bin/_mocha -- --recursive",
     "lint": "eslint src test",
