@@ -501,8 +501,11 @@ class Credentials extends Task {
       const client = await cli.getApiClient(),
             { environment, credentials } = client,
             { authType: type, apiKey, username: email } = credentials,
-            { url } = environment.url,
-            result = { type, url, apiKey }
+            result = {
+              type,
+              url: environment.url,
+              apiKey
+            }
 
       if (email) {
         result.account = {
