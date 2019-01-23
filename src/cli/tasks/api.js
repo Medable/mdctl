@@ -1,11 +1,11 @@
 /* eslint-disable class-methods-use-this */
 
 const _ = require('lodash'),
-      { rString, isSet } = require('../../lib/utils/values'),
-      { loadJsonOrYaml } = require('../../lib/utils'),
-      Task = require('../lib/task'),
       { URL } = require('url'),
       jsyaml = require('js-yaml'),
+      { rString } = require('../../lib/utils/values'),
+      { loadJsonOrYaml } = require('../../lib/utils'),
+      Task = require('../lib/task'),
       methods = ['get', 'post', 'put', 'patch', 'delete']
 
 class Api extends Task {
@@ -65,7 +65,7 @@ class Api extends Task {
     const value = cli.args(arg)
     if (rString(value)) {
       const parsed = JSON.parse(value)
-      options[arg] = _.merge(options[arg], parsed)
+      options[arg] = _.merge(options[arg], parsed) // eslint-disable-line no-param-reassign
     }
   }
 
