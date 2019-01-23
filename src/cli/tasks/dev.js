@@ -38,17 +38,13 @@ class Dev extends Task {
   async 'env@export'(cli) {
     const passedOptions = _.reduce(this.optionKeys,
             (sum, key) => _.extend(sum, { [key]: cli.config(key) }), {}),
-          manifest = JSON.parse(fs.readFileSync(passedOptions.manifest || `${__dirname}/../../../manifest.json`))
+          credentials = await this.getCredentials(passedOptions),
+          defaultCredentials = _.isUndefined(credentials) && _.isUndefined(passedOptions.endpoint) && _.isUndefined(passedOptions.env) ? cli.config('defaultCredentials') : undefined,
+          manifest = JSON.parse(fs.readFileSync(passedOptions.manifest || `${cli.cwd}/manifest.json`))
 
-    let apiClient
-    try {
-      apiClient = await cli.getApiClient()
-    } catch (err) {
-      await new Credentials()['credentials@login'](cli)
-      apiClient = await cli.getApiClient()
-    }
+    if (_.isUndefined(credentials) && _.isUndefined(defaultCredentials)) await new Credentials()['credentials@login'](cli)
 
-    return apiClient.post('/routes/stubbed_export', manifest)
+    return (await cli.getApiClient()).post('/routes/stubbed_export', manifest)
       .then(exportResponse => this.writeExport(passedOptions, JSON.stringify(exportResponse)))
   }
 
@@ -124,20 +120,16 @@ class Dev extends Task {
     const format = passedOptions.format && { format: passedOptions.format }
     return new Promise((resolve, reject) => {
       const readBlob = new Readable()
+      // eslint-disable-next-line no-underscore-dangle
       readBlob._read = () => {}
 
       readBlob
         .pipe(new Stream())
         .pipe(new FileAdapter(`output-${new Date().getTime()}`, format))
         .on('finish', () => {
-          console.log('done')
-          resolve() // need to check error handling in this bit
-        })
-        .on('pipe', () => {
-          console.log('something is piping')
+          resolve()
         })
         .on('error', (err) => {
-          console.log('=====================================')
           reject(err)
         })
 
