@@ -2,6 +2,7 @@
 
 const _ = require('lodash'),
       fs = require('fs'),
+      { Readable } = require('stream'),
       { isSet } = require('../../lib/utils/values'),
       Task = require('../lib/task'),
       { CredentialsManager } = require('../../lib/api/credentials'),
@@ -122,7 +123,10 @@ class Dev extends Task {
   writeExport(passedOptions, stringifiedContent) {
     const format = passedOptions.format && { format: passedOptions.format }
     return new Promise((resolve, reject) => {
-      fs.createReadStream(Buffer.from(stringifiedContent))
+      const readBlob = new Readable()
+      readBlob._read = () => {}
+
+      readBlob
         .pipe(new Stream())
         .pipe(new FileAdapter(`output-${new Date().getTime()}`, format))
         .on('finish', () => {
@@ -136,6 +140,9 @@ class Dev extends Task {
           console.log('=====================================')
           reject(err)
         })
+
+      readBlob.push(Buffer.from(stringifiedContent))
+
     })
   }
 
