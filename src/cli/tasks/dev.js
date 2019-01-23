@@ -39,10 +39,11 @@ class Dev extends Task {
     const passedOptions = _.reduce(this.optionKeys,
             (sum, key) => _.extend(sum, { [key]: cli.config(key) }), {}),
           credentials = await this.getCredentials(passedOptions),
-          defaultCredentials = _.isUndefined(credentials) && _.isUndefined(passedOptions.endpoint) && _.isUndefined(passedOptions.env) ? cli.config('defaultCredentials') : undefined,
+          defaultCredentials = _.isUndefined(passedOptions.endpoint) && _.isUndefined(passedOptions.env) ? cli.config('defaultCredentials') : undefined,
           manifest = JSON.parse(fs.readFileSync(passedOptions.manifest || `${cli.cwd}/manifest.json`))
 
-    if (_.isUndefined(defaultCredentials)) await new Credentials()['credentials@login'](cli)
+    // TODO be able to authenticate
+    // if (_.isUndefined(defaultCredentials)) await new Credentials()['credentials@login'](cli)
 
     return (await cli.getApiClient()).post('/routes/stubbed_export', manifest)
       .then(exportResponse => this.writeExport(passedOptions, JSON.stringify(exportResponse)))
