@@ -1,15 +1,11 @@
 
 const request = require('request'),
-      { EventEmitter } = require('events'),
       { privatesAccessor } = require('../privates'),
       pathTo = require('../utils/path.to'),
       { isSet, rBool } = require('../utils/values'),
       Fault = require('../fault')
 
-/**
- * @emits response, error, result
- */
-class Request extends EventEmitter {
+class Request {
 
   get request() {
     return privatesAccessor(this).request
@@ -66,14 +62,9 @@ class Request extends EventEmitter {
         privates.error = err
         privates.result = result
 
-        if (response) {
-          this.emit('response', response)
-        }
         if (err) {
-          this.emit('error', err)
           reject(err)
         } else {
-          this.emit('result', result)
           resolve(result)
         }
 

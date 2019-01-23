@@ -1,11 +1,11 @@
-const requestModule = require('request'),
-      inquirer = require('inquirer'),
+const inquirer = require('inquirer'),
       _ = require('lodash'),
+      util = require('util'),
       fs = require('fs'),
       jsyaml = require('js-yaml'),
       path = require('path'),
-      Fault = require('../fault'),
-      pathTo = require('./path.to')
+      pathTo = require('./path.to'),
+      { rString, rFunction } = require('./values')
 
 let Undefined
 
@@ -49,43 +49,15 @@ function tryCatch(fn = () => {}, callback = () => {}, waitLoop = false) {
 
 }
 
-async function request(options) {
+async function promised(scope, fn, ...args) {
 
-  const requestPromise = async requestOptions => new Promise((resolve, reject) => {
+  const p = util.promisify(rFunction(fn, pathTo(scope, fn)))
 
-    const req = requestModule(
-      Object.assign({
-        json: true
-      }, requestOptions),
-      (error, response, data) => {
-        if (error) reject(error, req, response, data)
-        else resolve([req, response, data])
-      }
-    )
+  return p.call(scope, ...args)
+}
 
-  })
-
-  let err,
-      req,
-      result
-
-  try {
-
-    [req, , result] = await requestPromise(options)
-
-    if (pathTo(result, 'object') === 'fault') {
-      err = Fault.from(result)
-    } else if (pathTo(result, 'object') === 'result') {
-      result = result.data
-    }
-
-  } catch (e) {
-
-    err = Fault.from(err)
-  }
-
-  return [err, result, req]
-
+async function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms))
 }
 
 async function yn(message, yes = true) {
@@ -98,12 +70,12 @@ async function yn(message, yes = true) {
   return Boolean(result && result.question)
 }
 
-async function question(message, def = '', options = {}) {
+async function question(message, def, options = {}) {
   const result = await inquirer.prompt(Object.assign({
     type: 'input',
     name: 'question',
     message,
-    default: def
+    default: rString(def, Undefined)
   }, options))
   return result && result.question
 }
@@ -111,9 +83,10 @@ async function question(message, def = '', options = {}) {
 module.exports = {
   throwIf,
   throwIfNot,
+  sleep,
+  promised,
   loadJsonOrYaml,
   tryCatch,
-  request,
   yn,
   question
 }
