@@ -7,7 +7,8 @@ const _ = require('lodash'),
       { CredentialsManager } = require('../../lib/api/credentials'),
       Client = require('../../lib/api/client'),
       Stream = require('../../../src/lib/stream'),
-      FileAdapter = require('../../../src/lib/stream/adapters/file_adapter')
+      FileAdapter = require('../../../src/lib/stream/adapters/file_adapter'),
+      Credentials = require('./credentials')
 
 class Dev extends Task {
 
@@ -36,17 +37,18 @@ class Dev extends Task {
   async 'env@export'(cli) {
     const passedOptions = _.reduce(this.optionKeys,
             (sum, key) => _.extend(sum, { [key]: cli.config(key) }), {}),
-          defaultCredentials = cli.config('defaultCredentials'),
-          // get credentials based on arguments or load defaults
-          credentials = await this.getCredentials(passedOptions)
-            || await this.getCredentials(defaultCredentials),
-          environment = _.isUndefined(passedOptions.endpoint) ? defaultCredentials : passedOptions,
-          apiClient = new this.ApiClient({ environment, credentials }),
-          manifest = JSON.parse(fs.readFileSync(passedOptions.manifest || `${__dirname}/manifest.json`))
+          manifest = JSON.parse(fs.readFileSync(passedOptions.manifest || `${__dirname}/../../../manifest.json`))
 
-    return apiClient.post('/accounts/login')
-      .then(() => apiClient.post('/developer/export', manifest))
-      .then(exportResponse => this.writeExport(passedOptions, JSON.stringify(exportResponse.body)))
+    let apiClient
+    try {
+      apiClient = await cli.getApiClient()
+    } catch (err) {
+      await new Credentials()['credentials@login'](cli)
+      apiClient = await cli.getApiClient()
+    }
+
+    return apiClient.post('/routes/stubbed_export', manifest)
+      .then(exportResponse => this.writeExport(passedOptions, JSON.stringify(exportResponse)))
   }
 
   async 'env@import'() {
@@ -118,12 +120,21 @@ class Dev extends Task {
   }
 
   writeExport(passedOptions, stringifiedContent) {
+    const format = passedOptions.format && { format: passedOptions.format }
     return new Promise((resolve, reject) => {
-      fs.createReadStream(stringifiedContent)
+      fs.createReadStream(Buffer.from(stringifiedContent))
         .pipe(new Stream())
-        .pipe(new FileAdapter(null, { format: passedOptions.format }))
+        .pipe(new FileAdapter(`output-${new Date().getTime()}`, format))
         .on('finish', () => {
+          console.log('done')
           resolve() // need to check error handling in this bit
+        })
+        .on('pipe', () => {
+          console.log('something is piping')
+        })
+        .on('error', (err) => {
+          console.log('=====================================')
+          reject(err)
         })
     })
   }

@@ -37,6 +37,10 @@ class Credentials extends Task {
 
   }
 
+  someOtherFunction() {
+    return true
+  }
+
   async 'credentials@add'(cli) {
 
     const options = {}
@@ -459,7 +463,7 @@ class Credentials extends Task {
       }
 
       // save the last login credentials. re-use these for all calls until logout.
-      CredentialsManager.setCustom('login', '*', {
+      await CredentialsManager.setCustom('login', '*', {
         client: {
           environment: url,
           credentials: { apiKey, username },
