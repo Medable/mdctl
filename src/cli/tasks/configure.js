@@ -6,19 +6,27 @@ const Task = require('../lib/task'),
         clearDefaults, createConfig, loadDefaults, writeDefaults
       } = require('../lib/config'),
       { question } = require('../../lib/utils'),
-      { rVal } = require('../../lib/utils/values'),
+      { stringToBoolean, rVal, rString } = require('../../lib/utils/values'),
       configureOptions = {
         defaultEndpoint: {
           message: 'The default cortex endpoint',
-          default: 'api.dev.medable.com'
+          default: 'api.dev.medable.com',
+          transform: v => rString(v, '')
         },
         defaultEnv: {
           message: 'The default endpoint env (org code)',
-          default: ''
+          default: '',
+          transform: v => rString(v, '')
         },
         defaultAccount: {
           message: 'The default account email',
-          default: ''
+          default: '',
+          transform: v => rString(v, '')
+        },
+        strictSSL: {
+          message: 'Verify endpoint ssl certificates by default. Use only for debugging.',
+          default: true,
+          transform: v => stringToBoolean(v, true)
         }
       }
 
@@ -46,10 +54,10 @@ class Configure extends Task {
       const key = keys[i],
             entry = configureOptions[key]
 
-      local[key] = await question(
+      local[key] = entry.transform(await question(
         entry.message,
         rVal(localCfg(key) || cli.config(key) || entry.default, '')
-      )
+      ))
 
     }
 

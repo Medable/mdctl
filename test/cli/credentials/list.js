@@ -6,6 +6,7 @@ const { assert } = require('chai'),
         password: {
           environment: 'api.test.medable.com/test',
           input: {
+            apiKey: 'abcdefghijklmnopqrstuv',
             username: 'test@medable.com',
             password: 'password'
           }
@@ -13,8 +14,8 @@ const { assert } = require('chai'),
         signature: {
           environment: 'api.test.medable.com/test',
           input: {
-            key: 'abcdefghijklmnopqrstuv',
-            secret: 'abcdefghijklmnopqrstuvwxyz0123456789abcdefghijklmnopqrstuvwxyz01'
+            apiKey: 'abcdefghijklmnopqrstuv',
+            apiSecret: 'abcdefghijklmnopqrstuvwxyz0123456789abcdefghijklmnopqrstuvwxyz01'
           }
         },
         token: {
