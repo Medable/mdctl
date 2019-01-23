@@ -42,7 +42,7 @@ class Dev extends Task {
           defaultCredentials = _.isUndefined(credentials) && _.isUndefined(passedOptions.endpoint) && _.isUndefined(passedOptions.env) ? cli.config('defaultCredentials') : undefined,
           manifest = JSON.parse(fs.readFileSync(passedOptions.manifest || `${cli.cwd}/manifest.json`))
 
-    if (_.isUndefined(credentials) && _.isUndefined(defaultCredentials)) await new Credentials()['credentials@login'](cli)
+    if (_.isUndefined(defaultCredentials)) await new Credentials()['credentials@login'](cli)
 
     return (await cli.getApiClient()).post('/routes/stubbed_export', manifest)
       .then(exportResponse => this.writeExport(passedOptions, JSON.stringify(exportResponse)))
