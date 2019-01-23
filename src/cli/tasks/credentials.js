@@ -561,7 +561,6 @@ class Credentials extends Task {
         list - list stored credentials by type, environment, endpoint, username and/or apiKey.       
         add - add or update credentials.       
         get - output the first matching stored credentials.
-        load - store the first matching credentials as the default for subsequent calls.                 
         default [get|set|clear] - set or show the default credentials, if any.        
         clear - clear all matching credentials.
         login - start a password session.    
