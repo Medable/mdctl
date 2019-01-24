@@ -1,10 +1,10 @@
 const path = require('path'),
       fs = require('fs'),
+      _ = require('lodash'),
       yargs = require('yargs'),
       { privatesAccessor } = require('../lib/privates'),
       { createTask } = require('./tasks'),
       Client = require('../lib/api/client'),
-      Environment = require('../lib/api/environment'),
       { CredentialsManager } = require('../lib/api/credentials'),
       { loadJsonOrYaml } = require('../lib/utils'),
       { stringToBoolean, rBool, isSet } = require('../lib/utils/values'),
@@ -130,78 +130,61 @@ module.exports = class MdCtlCli {
 
   }
 
-  async getApiClient(input) {
+  async getApiClient(options = {}) {
 
-    const options = isSet(input) ? input : {},
-          ensureSession = rBool(options.testStatus, true),
-          activeLogin = await CredentialsManager.getCustom('login', '*'),
-          defaultCredentials = this.config('defaultCredentials')
+    const ensureSession = rBool(options.testStatus, true),
+          passwordSecret = _.has(options, 'passwordSecret') ? options.passwordSecret
+            : await CredentialsManager.get(this.config('defaultCredentials')),
+          activeLogin = await CredentialsManager.getCustom('login', '*'), // a Login object is a combination of a client & password
+          activeClientConfig = _.get(activeLogin, 'client'),
+          // a Client environment is in fact an Environment url
+          isActiveClientReusable = this.doesClientMatchSecret(activeClientConfig, passwordSecret)
 
-    let client
+    if (_.isUndefined(passwordSecret) && !isActiveClientReusable) throw new Error("API client didn't start, try logging-in first or storing secrets to the keystore")
+
+    const client = isActiveClientReusable ? new Client(activeClientConfig)
+      : this.createNewClientBy(passwordSecret)
 
     // is there an active login, attempt to resurrect it.
-    if (activeLogin) {
+    if (ensureSession) await this.resurrectClient(client, passwordSecret)
 
-      client = new Client(activeLogin.client)
+    return client
+  }
 
-      if (!ensureSession) {
-        return client
+  async resurrectClient(client, passwordSecret) {
+    try {
+      await client.get('/accounts/me', { query: { paths: ['_id'] } })
+    } catch (err) {
+      // attempt to recover by logging in again.
+      switch (err.code) {
+        case 'kNotLoggedIn':
+        case 'kLoggedInElsewhere':
+        case 'kCSRFTokenMismatch':
+        case 'kSessionExpired':
+          await client.post('/accounts/login', { email: passwordSecret.username, password: passwordSecret.password })
+          break
+        default:
+          throw err
       }
-
-      try {
-
-        await client.get('/accounts/me', { query: { paths: ['_id'] } })
-        return client
-
-      } catch (err) {
-
-        // attempt to recover by logging in again.
-        switch (err.code) {
-          case 'kNotLoggedIn':
-          case 'kLoggedInElsewhere':
-          case 'kCSRFTokenMismatch':
-          case 'kSessionExpired':
-            await client.post('/accounts/login', { email: activeLogin.client.credentials.username, password: activeLogin.password })
-            return client
-          default:
-            throw err
-        }
-
-      }
-
     }
+  }
 
-    if (defaultCredentials) {
-
-      const environment = new Environment(defaultCredentials),
-            secret = await CredentialsManager.get(defaultCredentials)
-
-      if (secret) {
-
-        const { credentials, username: email, password } = secret
-
-        client = new Client({
-          environment,
-          credentials,
-          sessions: credentials.authType === 'password',
-          requestOptions: {
-            strictSSL: stringToBoolean(this.config('strictSSL'), true)
-          }
-        })
-
-        if (credentials.authType !== 'password' || !ensureSession) {
-          return client
-        }
-
-        await client.post('/accounts/login', { email, password })
-        return client
-
+  createNewClientBy(passwordSecret) {
+    return new Client({
+      environment: passwordSecret.environment.url,
+      credentials: passwordSecret.credentials,
+      sessions: passwordSecret.credentials.authType === 'password',
+      requestOptions: {
+        strictSSL: stringToBoolean(this.config('strictSSL'), true)
       }
+    })
+  }
 
-    }
-
-    throw new Error('No credentials were found that could automatically authorize.')
-
+  doesClientMatchSecret(activeClientConfig, passwordSecret) {
+    return passwordSecret && activeClientConfig
+      && activeClientConfig.environment === passwordSecret.environment.url
+      && activeClientConfig.credentials.apiKey === passwordSecret.apiKey
+      && activeClientConfig.credentials.username === passwordSecret.username
   }
 
 

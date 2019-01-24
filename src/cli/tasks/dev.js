@@ -39,14 +39,12 @@ class Dev extends Task {
     const passedOptions = _.reduce(this.optionKeys,
             (sum, key) => _.extend(sum, { [key]: cli.args(key) }), {}),
           defaultCredentials = cli.config('defaultCredentials'),
-          credentialsQuery = _.isUndefined(passedOptions.endpoint)
+          passwordSecretQuery = _.isUndefined(passedOptions.endpoint)
             && _.isUndefined(passedOptions.env) ? defaultCredentials : passedOptions,
-          credentials = await this.getCredentials(credentialsQuery),
+          passwordSecret = await this.getPasswordSecret(passwordSecretQuery),
           manifest = JSON.parse(fs.readFileSync(passedOptions.manifest || `${cli.cwd}/manifest.json`))
 
-    if (_.isUndefined(credentials)) throw new Error('No matching credentials stored')
-
-    return (await cli.getApiClient(credentials)).post('/routes/stubbed_export', manifest)
+    return (await cli.getApiClient({ passwordSecret })).post('/routes/stubbed_export', manifest)
       .then(exportResponse => this.writeExport(passedOptions, JSON.stringify(exportResponse)))
   }
 
@@ -113,7 +111,7 @@ class Dev extends Task {
 
   }
 
-  getCredentials(passedOptions) {
+  getPasswordSecret(passedOptions) {
     const search = _.pick(passedOptions, 'endpoint', 'env')
     return this.credentialsManager.get(search)
   }
