@@ -37,15 +37,16 @@ class Dev extends Task {
 
   async 'env@export'(cli) {
     const passedOptions = _.reduce(this.optionKeys,
-            (sum, key) => _.extend(sum, { [key]: cli.config(key) }), {}),
-          credentials = await this.getCredentials(passedOptions),
-          defaultCredentials = _.isUndefined(passedOptions.endpoint) && _.isUndefined(passedOptions.env) ? cli.config('defaultCredentials') : undefined,
+            (sum, key) => _.extend(sum, { [key]: cli.args(key) }), {}),
+          defaultCredentials = cli.config('defaultCredentials'),
+          credentialsQuery = _.isUndefined(passedOptions.endpoint)
+            && _.isUndefined(passedOptions.env) ? defaultCredentials : passedOptions,
+          credentials = await this.getCredentials(credentialsQuery),
           manifest = JSON.parse(fs.readFileSync(passedOptions.manifest || `${cli.cwd}/manifest.json`))
 
-    // TODO be able to authenticate
-    // if (_.isUndefined(defaultCredentials)) await new Credentials()['credentials@login'](cli)
+    if (_.isUndefined(credentials)) throw new Error('No matching credentials stored')
 
-    return (await cli.getApiClient()).post('/routes/stubbed_export', manifest)
+    return (await cli.getApiClient(credentials)).post('/routes/stubbed_export', manifest)
       .then(exportResponse => this.writeExport(passedOptions, JSON.stringify(exportResponse)))
   }
 
