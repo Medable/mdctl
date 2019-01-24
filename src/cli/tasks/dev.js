@@ -78,10 +78,7 @@ class Dev extends Task {
     Arguments:               
       
       command                
-        env - environment tools         
-                
-      options                           
-        --quiet - suppress confirmations                        
+        env - environment tools                              
     `
   }
 
@@ -103,9 +100,7 @@ class Dev extends Task {
       options     
         --endpoint sets the endpoint. eg. api.dev.medable.com     
         --env sets the environment. eg. example                              
-        --quiet - suppress confirmations
         --manifest - defaults to $cwd/manifest.json
-        --sparse - sparse manifest?
         --format - export format (json, yaml) defaults to json                        
     `
 
