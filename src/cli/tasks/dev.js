@@ -8,7 +8,7 @@ const _ = require('lodash'),
       { CredentialsManager } = require('../../lib/api/credentials'),
       Client = require('../../lib/api/client'),
       Stream = require('../../../src/lib/stream'),
-      FileAdapter = require('../../../src/lib/stream/adapters/file_adapter'),
+      FileAdapter = require('../../../src/lib/stream/adapters/file_adapter')
 
 class Dev extends Task {
 
