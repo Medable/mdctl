@@ -7,7 +7,7 @@ const path = require('path'),
       Client = require('../lib/api/client'),
       { CredentialsManager } = require('../lib/api/credentials'),
       { loadJsonOrYaml } = require('../lib/utils'),
-      { stringToBoolean, rBool, isSet } = require('../lib/utils/values'),
+      { stringToBoolean, rBool } = require('../lib/utils/values'),
       { createConfig } = require('./lib/config')
 
 async function readConfig(config, from) {
@@ -138,12 +138,11 @@ module.exports = class MdCtlCli {
           activeLogin = await CredentialsManager.getCustom('login', '*'), // a Login object is a combination of a client & password
           activeClientConfig = _.get(activeLogin, 'client'),
           // a Client environment is in fact an Environment url
-          isActiveClientReusable = this.doesClientMatchSecret(activeClientConfig, passwordSecret)
+          isActiveClientReusable = this.doesClientMatchSecret(activeClientConfig, passwordSecret),
+          client = isActiveClientReusable ? new Client(activeClientConfig)
+            : this.createNewClientBy(passwordSecret)
 
     if (_.isUndefined(passwordSecret) && !isActiveClientReusable) throw new Error("API client didn't start, try logging-in first or storing secrets to the keystore")
-
-    const client = isActiveClientReusable ? new Client(activeClientConfig)
-      : this.createNewClientBy(passwordSecret)
 
     // is there an active login, attempt to resurrect it.
     if (ensureSession) await this.resurrectClient(client, passwordSecret)
@@ -171,9 +170,9 @@ module.exports = class MdCtlCli {
 
   createNewClientBy(passwordSecret) {
     return new Client({
-      environment: passwordSecret.environment.url,
-      credentials: passwordSecret.credentials,
-      sessions: passwordSecret.credentials.authType === 'password',
+      environment: _.get(passwordSecret, 'environment.url'),
+      credentials: _.get(passwordSecret, 'credentials'),
+      sessions: _.get(passwordSecret, 'credentials.authType') === 'password',
       requestOptions: {
         strictSSL: stringToBoolean(this.config('strictSSL'), true)
       }
