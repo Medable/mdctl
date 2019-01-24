@@ -17,7 +17,7 @@ class Dev extends Task {
     super()
     this.credentialsManager = credentialsManager
     this.ApiClient = ApiClient
-    this.optionKeys = ['endpoint', 'env', 'quite', 'manifest', 'sparse', 'format']
+    this.optionKeys = ['endpoint', 'env', 'manifest', 'format']
   }
 
   async run(cli) {
