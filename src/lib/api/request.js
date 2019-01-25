@@ -46,7 +46,8 @@ class Request {
       privates.request = request(options, (error, response, data) => {
 
         let err,
-            result
+            result,
+            contentType = pathTo(response, 'headers.content-type')
 
         if (error) {
           err = Fault.from(error)
@@ -54,8 +55,20 @@ class Request {
           err = Fault.from(data)
         } else if (options.json && pathTo(data, 'object') === 'result') {
           result = data.data
-        } else {
-          result = data
+        } else if (contentType.indexOf('application/x-ndjson') === 0) {
+
+          const array = data.split('\n').filter(v => v.trim()).map(v => JSON.parse(v)),
+                last = array[array.length-1]
+
+          if (pathTo(last, 'object') === 'fault') {
+            err = Fault.from(last)
+          } else {
+            result = {
+              object: 'list',
+              data: array,
+              hasMore: false
+            }
+          }
         }
 
         privates.response = response
