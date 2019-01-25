@@ -105,6 +105,7 @@ class Client {
    *  cookies - defaults to true. set to false to prevent sending cookies
    *  query - request uri query parameters
    *  requestOptions - custom request options, passed directly to the request (https://github.com/request)
+   *  stream - if true, pipes the req to the stream and returns (errors and results are not parsed)
    * @returns {Promise<*>}
    */
   async call(path, input) {
@@ -126,6 +127,7 @@ class Client {
           credentials = loadCredentials(privates, options.credentials),
           { environment } = privates,
           uri = environment.buildUrl(path),
+          { stream } = options,
           isSession = privates.sessions && credentials.authType === 'password' && requestOptions.jar
 
     // load the latest fingerprint and session data from the keychain whenever possible.
@@ -162,8 +164,12 @@ class Client {
 
     return new Promise((resolve, reject) => {
 
-      req.run(Object.assign({ uri }, requestOptions))
+      req.run(Object.assign({ uri, stream }, requestOptions))
         .then(async(result) => {
+
+          if (stream) {
+            return resolve(result)
+          }
 
           const { response } = req
 
