@@ -7,10 +7,10 @@ const _ = require('lodash'),
       Task = require('../lib/task'),
       { CredentialsManager } = require('../../lib/api/credentials'),
       Client = require('../../lib/api/client'),
-      Stream = require('../../../src/lib/stream'),
-      FileAdapter = require('../../../src/lib/stream/adapters/file_adapter')
+      Stream = require('../../lib/stream'),
+      FileAdapter = require('../../lib/stream/adapters/file_adapter')
 
-class Dev extends Task {
+class Env extends Task {
 
   constructor(credentialsManager = CredentialsManager, ApiClient = Client) {
     super()
@@ -21,11 +21,11 @@ class Dev extends Task {
 
   async run(cli) {
 
-    const arg2 = cli.args('2'),
-          handler = `${cli.args('1')}@${arg2}`
+    const arg1 = cli.args('1'),
+          handler = `env@${arg1}`
 
-    if (!isSet(arg2)) {
-      return console.log(Dev.help(cli))
+    if (!isSet(arg1)) {
+      return console.log(Env.help(cli))
     }
 
     if (!_.isFunction(this[handler])) {
@@ -49,60 +49,36 @@ class Dev extends Task {
 
   async 'env@import'() {
 
-    console.log('mdctl dev env import')
+    console.log('mdctl env import')
   }
 
   // ----------------------------------------------------------------------------------------------
 
   static get synopsis() {
-    return 'developer tools'
+    return 'environment tools'
   }
 
-  static help(cli) {
-
-    const command = cli.args('2') || cli.args('1')
-
-    switch (command) {
-      case 'env': return this.envHelp()
-      default:
-    }
+  static help() {
 
     return `    
-    Developer tools.
-    
-    Usage: 
+      Environment environment tools.
       
-      mdctl dev [command] [options]
-          
-    Arguments:               
-      
-      command                
-        env - environment tools                              
+      Usage: 
+        
+        mdctl env [command] [options]
+            
+      Arguments:               
+        
+        command                      
+          export - export from an endpoint environment        
+          import - import to an endpoint environment        
+                  
+        options     
+          --endpoint sets the endpoint. eg. api.dev.medable.com     
+          --env sets the environment. eg. example                              
+          --manifest - defaults to $cwd/manifest.json
+          --format - export format (json, yaml) defaults to json                        
     `
-  }
-
-  static envHelp() {
-
-    return `    
-    Developer environment tools.
-    
-    Usage: 
-      
-      mdctl dev env [command] [options]
-          
-    Arguments:               
-      
-      command                      
-        export - export from an endpoint environment        
-        import - import to an endpoint environment        
-                
-      options     
-        --endpoint sets the endpoint. eg. api.dev.medable.com     
-        --env sets the environment. eg. example                              
-        --manifest - defaults to $cwd/manifest.json
-        --format - export format (json, yaml) defaults to json                        
-    `
-
   }
 
   getPasswordSecret(passedOptions) {
@@ -134,4 +110,4 @@ class Dev extends Task {
 
 }
 
-module.exports = Dev
+module.exports = Env
