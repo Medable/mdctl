@@ -8,6 +8,8 @@ const _ = require('lodash'),
       Task = require('../lib/task'),
       methods = ['get', 'post', 'put', 'patch', 'delete']
 
+let Undefined
+
 class Api extends Task {
 
   async run(cli) {
@@ -56,7 +58,9 @@ class Api extends Task {
 
     }
 
-    console.log(Api.formatOutput(output, cli.args('format')))
+    if (output !== Undefined) {
+      console.log(Api.formatOutput(output, cli.args('format')))
+    }
 
   }
 
