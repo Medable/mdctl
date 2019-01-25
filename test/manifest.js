@@ -5,6 +5,33 @@ const _ = require('lodash'),
       { privatesAccessor } = require('../src/utils/privates'),
       { Manifest, ARegex } = require('../src/cli/lib/manifest')
 
+describe('Augmented Regular Expression', () => {
+
+  const testCases = [
+    // unintended parameters
+    { shouldMatch: false, value: 'some value' },
+    { shouldMatch: false, expr: [], value: 'some value' },
+    { shouldMatch: false, expr: {}, value: 'some value' },
+    { shouldMatch: false, expr: 4, value: 'some value' },
+    // intended parameters - strings
+    { shouldMatch: false, expr: '', value: 'some value' },
+    { shouldMatch: false, expr: 'some string', value: 'some value' },
+    { shouldMatch: true, expr: 'some value', value: 'some value' },
+    { shouldMatch: true, expr: '*', value: 'some value' },
+    { shouldMatch: true, expr: '*', value: '' },
+    // intended patterns - regex
+    { shouldMatch: true, expr: /value/, value: 'some value' },
+    { shouldMatch: true, expr: '/value/', value: 'some value' },
+    { shouldMatch: false, expr: '/g/', value: 'some value' }
+  ]
+
+  testCases.forEach(({ shouldMatch, expr, value }) => {
+    it(`Matcher "${expr}" should ${shouldMatch ? '' : 'not '}match "${value}"`, () => {
+      assert(new ARegex(expr).test(value) === shouldMatch)
+    })
+  })
+})
+
 describe('Manifest', () => {
 
   const testCases = [
@@ -61,34 +88,6 @@ describe('Manifest', () => {
           `Test manifest ${index} should have ${shouldAccept ? '' : 'not '}accepted "${path}"`
         )
       })
-    })
-  })
-})
-
-
-describe('Augmented Regular Expression', () => {
-
-  const testCases = [
-    // unintended parameters
-    { shouldMatch: false, value: 'some value' },
-    { shouldMatch: false, expr: [], value: 'some value' },
-    { shouldMatch: false, expr: {}, value: 'some value' },
-    { shouldMatch: false, expr: 4, value: 'some value' },
-    // intended parameters - strings
-    { shouldMatch: false, expr: '', value: 'some value' },
-    { shouldMatch: false, expr: 'some string', value: 'some value' },
-    { shouldMatch: true, expr: 'some value', value: 'some value' },
-    { shouldMatch: true, expr: '*', value: 'some value' },
-    { shouldMatch: true, expr: '*', value: '' },
-    // intended patterns - regex
-    { shouldMatch: true, expr: /value/, value: 'some value' },
-    { shouldMatch: true, expr: '/value/', value: 'some value' },
-    { shouldMatch: false, expr: '/g/', value: 'some value' }
-  ]
-
-  testCases.forEach(({ shouldMatch, expr, value }) => {
-    it(`Matcher "${expr}" should ${shouldMatch ? '' : 'not '}match "${value}"`, () => {
-      assert(new ARegex(expr).test(value) === shouldMatch)
     })
   })
 })

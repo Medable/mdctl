@@ -45,44 +45,33 @@ class ManifestStage {
   }
 
   accept(path) {
-    const [last, ...prefix] = path.split('.').reverse(),
-      [first, ...rest] = path.split('.')
+    const [head, _] = path
 
-    return this.includes.some(r => r.test(last))
-      && !this.excludes.some(r => r.test(last))
+    return this.includes.some(r => r.test(head))
+      && !this.excludes.some(r => r.test(head))
   }
 
 }
 
+class ObjectSection extends ManifestStage {
 
-class ObjectManifest {
+  constructor(def, key) {
+    super(def)
 
-  constructor(def) {
-    def = def || {}
-
-    if (!def.includes) {
-      def.includes = ['.*']
-    }
-
-    if (!def.name) {
+    if (!def[key]) {
       throw new Error('Invalid Argument')
     }
-
-    this.name = /^\//.test(def.name) && /\/$/.test(def.name)
-      ? def.name.substring(1,def.name.length-1)
-      : def.name
-    this.includes = rArray(def.includes || [], true)
-    this.excludes = rArray(def.excludes || [], true)
+    this._key = key
+    this[key] = new ARegex(def[key])
   }
 
   accept(path) {
     const [last, ...prefix] = path.split('.').reverse(),
           [first] = path.split('.')
 
-    if (this.name) return new RegExp(this.name).test(first)
+    if (this[this._key]) return this[this._key].test(first)
 
-    return this.includes.some(r => new RegExp(r).test(last))
-      && !this.excludes.some(r => new RegExp(r).test(last))
+    return false
   }
 
 }
@@ -94,30 +83,28 @@ class Manifest extends ManifestStage {
     def = def || {}
 
     super(def)
-    //
-    // if (!def.includes) {
-    //   def.includes = ['.*']
-    // }
-    //
-    // if (def.objects) {
-    //   this.objects = def.objects.map(section => new ObjectManifest(section))
-    // }
-    //
-    // this.includes = rArray(def.includes || [], true)
-    // this.excludes = rArray(def.excludes || [], true)
+
+    if (def.objects) {
+      this.objects = def.objects.map(section => new ObjectSection(section, 'name'))
+    }
+
+    // @todo: add all other sections, scripts, views, templates, env...
+
   }
 
-  // accept(path) {
-  //   const [last, ...prefix] = path.split('.').reverse(),
-  //         [first, ...rest] = path.split('.')
-  //
-  //   if (this[first]) {
-  //     return this[first].some(section => section.accept(...rest))
-  //   }
-  //
-  //   return this.includes.some(r => new RegExp(r).test(last))
-  //     && !this.excludes.some(r => new RegExp(r).test(last))
-  // }
+  accept(path) {
+    // Global include/exclude works on the last item of the path
+    const [last, _] = path.split('.').reverse(),
+          [first, ...rest] = path.split('.')
+
+    // dispatsh acceptance to appropriate section
+    if (this[first]) {
+      return this[first].some(section => section.accept(rest.join('.')))
+    }
+
+    return this.includes.some(r => r.test(last))
+      && !this.excludes.some(r => r.test(last))
+  }
 
 
 }
