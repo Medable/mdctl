@@ -26,6 +26,7 @@ class Request {
   /**
    * @param input
    *  json: boolean defaults to true.
+   *  stream: pipes here and resolves immediately without parsing.
    * @returns {Promise<*>}
    */
   async run(input) {
@@ -33,17 +34,22 @@ class Request {
     const privates = privatesAccessor(this),
 
           // don't fully clone in case of large payload
-          options = Object.assign({}, isSet(input) ? input : {})
+          options = Object.assign({}, isSet(input) ? input : {}),
+
+          { stream } = options
 
     if (privates.request) {
       throw new RangeError('request already running.')
     }
 
     options.json = rBool(input.json, true) // explicit default to json.
+    delete options.stream
 
     return new Promise((resolve, reject) => {
 
-      privates.request = request(options, (error, response, data) => {
+      const callback = stream ? () => {} : (error, response, data) => {
+
+        const contentType = pathTo(response, 'headers.content-type')
 
         let err,
             result
@@ -54,6 +60,20 @@ class Request {
           err = Fault.from(data)
         } else if (options.json && pathTo(data, 'object') === 'result') {
           result = data.data
+        } else if (contentType.indexOf('application/x-ndjson') === 0) {
+
+          const array = data.split('\n').filter(v => v.trim()).map(v => JSON.parse(v)),
+                last = array[array.length - 1]
+
+          if (pathTo(last, 'object') === 'fault') {
+            err = Fault.from(last)
+          } else {
+            result = {
+              object: 'list',
+              data: array,
+              hasMore: false
+            }
+          }
         } else {
           result = data
         }
@@ -68,7 +88,13 @@ class Request {
           resolve(result)
         }
 
-      })
+      }
+
+      privates.request = request(options, callback)
+
+      if (stream) {
+        resolve(privates.request.pipe(stream))
+      }
 
     })
 

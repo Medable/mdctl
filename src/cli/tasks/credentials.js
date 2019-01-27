@@ -62,6 +62,7 @@ class Credentials extends Task {
     Credentials.assignArgIf(cli, options, 'type')
     Credentials.assignArgIf(cli, options, 'endpoint')
     Credentials.assignArgIf(cli, options, 'env')
+    Credentials.assignArgIf(cli, options, 'apiKey')
 
     // auto-detect type
     options.type = detectAuthType(options)
