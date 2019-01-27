@@ -18,12 +18,12 @@ class Api extends Task {
   async run(cli) {
 
     const method = rString(cli.args('1'), 'get').toLowerCase(),
-      client = await cli.getApiClient(),
-      url = new URL(rString(cli.args('2'), '/'), client.environment.url),
-      options = {
-        query: url.searchParams
-      },
-      format = cli.args('format')
+          client = await cli.getApiClient(),
+          url = new URL(rString(cli.args('2'), '/'), client.environment.url),
+          options = {
+            query: url.searchParams
+          },
+          format = cli.args('format')
 
     if (!methods.includes(method)) {
       throw new TypeError(`Invalid request method. Expected: ${methods}`)
@@ -39,7 +39,11 @@ class Api extends Task {
     Api.mergeJsonArgIf(cli, options, 'requestOptions')
     Api.applyArgIf(cli, options, 'grep')
 
-    let grep = options.grep
+    let err,
+      result,
+      output,
+      { grep } = options
+
     delete options.grep
     if (_.isString(grep) && grep.length) {
       const match = grep.match(/^\/(.*)\/(.*)/)
@@ -47,7 +51,7 @@ class Api extends Task {
         try {
           grep = new RegExp(match[1], match[2])
         } catch (e) {
-          throw Fault.create('kInvalidArgument', {reason: 'Invalid validator regex pattern'})
+          throw Fault.create('kInvalidArgument', { reason: 'Invalid validator regex pattern' })
         }
       } else {
         grep = new RegExp(String(grep).replace(/[\\^$*+?.()|[\]{}]/g, '\\$&'))
@@ -99,10 +103,6 @@ class Api extends Task {
       })
 
     }
-
-    let err,
-        result,
-        output
 
     try {
       result = await client.call(url.pathname, options)
