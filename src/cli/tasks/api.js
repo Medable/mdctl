@@ -4,7 +4,7 @@ const _ = require('lodash'),
       { URL } = require('url'),
       jsyaml = require('js-yaml'),
       ndjson = require('ndjson'),
-      { rString } = require('../../lib/utils/values'),
+      { rString, isSet } = require('../../lib/utils/values'),
       { loadJsonOrYaml } = require('../../lib/utils'),
       Fault = require('../../lib/fault'),
       pathTo = require('../../lib/utils/path.to'),
@@ -18,11 +18,12 @@ class Api extends Task {
   async run(cli) {
 
     const method = rString(cli.args('1'), 'get').toLowerCase(),
-          client = await cli.getApiClient(),
-          url = new URL(rString(cli.args('2'), '/'), client.environment.url),
-          options = {
-            query: url.searchParams
-          }
+      client = await cli.getApiClient(),
+      url = new URL(rString(cli.args('2'), '/'), client.environment.url),
+      options = {
+        query: url.searchParams
+      },
+      format = cli.args('format')
 
     if (!methods.includes(method)) {
       throw new TypeError(`Invalid request method. Expected: ${methods}`)
@@ -30,37 +31,64 @@ class Api extends Task {
 
     if (rString(cli.args('file'))) {
       const file = await loadJsonOrYaml(cli.args('file'))
-      Object.assign(options, _.pick(file, 'body', 'query', 'requestOptions'))
+      Object.assign(options, _.pick(file, 'body', 'query', 'requestOptions', 'grep'))
     }
 
     Api.mergeJsonArgIf(cli, options, 'body')
     Api.mergeJsonArgIf(cli, options, 'query')
     Api.mergeJsonArgIf(cli, options, 'requestOptions')
+    Api.applyArgIf(cli, options, 'grep')
+
+    let grep = options.grep
+    delete options.grep
+    if (_.isString(grep) && grep.length) {
+      const match = grep.match(/^\/(.*)\/(.*)/)
+      if (match && match[0].length) {
+        try {
+          grep = new RegExp(match[1], match[2])
+        } catch (e) {
+          throw Fault.create('kInvalidArgument', {reason: 'Invalid validator regex pattern'})
+        }
+      } else {
+        grep = new RegExp(String(grep).replace(/[\\^$*+?.()|[\]{}]/g, '\\$&'))
+      }
+    }
 
     options.method = method
+
+    function outputResult(data) {
+      const formatted = Api.formatOutput(data, format),
+            isError = data && data.object === 'fault'
+
+      if (isError) {
+        console.error(formatted)
+      } else if (!grep || grep.test(formatted)) {
+        console.log(formatted)
+      }
+
+    }
 
     if (cli.args('ndjson')) {
 
       pathTo(options, 'requestOptions.headers.accept', 'application/x-ndjson')
       options.stream = ndjson.parse()
 
-      const stream = await client.call(url.pathname, options),
-            format = cli.args('format')
+      const stream = await client.call(url.pathname, options)
 
       return new Promise((resolve) => {
 
         stream.on('data', (data) => {
           if (pathTo(data, 'object') === 'fault') {
-            console.error(Api.formatOutput(Fault.from(data).toJSON(), format))
+            outputResult(Fault.from(data).toJSON())
           } else if (pathTo(data, 'object') === 'result') {
-            console.log(Api.formatOutput(data.data, format))
+            outputResult(data.data)
           } else {
-            console.log(Api.formatOutput(data, format))
+            outputResult(data)
           }
         })
 
         stream.on('error', (error) => {
-          console.error(Api.formatOutput(Fault.from(error).toJSON(), format))
+          outputResult(Fault.from(error).toJSON())
           resolve(true)
         })
 
@@ -96,7 +124,7 @@ class Api extends Task {
     }
 
     if (output !== Undefined) {
-      console.log(Api.formatOutput(output, cli.args('format')))
+      outputResult(output)
     }
 
     return true
@@ -109,6 +137,14 @@ class Api extends Task {
     if (rString(value)) {
       const parsed = JSON.parse(value)
       options[arg] = _.merge(options[arg], parsed) // eslint-disable-line no-param-reassign
+    }
+  }
+
+  static applyArgIf(cli, options, arg) {
+
+    const value = cli.args(arg)
+    if (isSet(value)) {
+      options[arg] = value // eslint-disable-line no-param-reassign
     }
   }
 
@@ -157,8 +193,9 @@ class Api extends Task {
         --ndjson -- sends the "accept: application/x-ndjson" header and outputs as the stream is received
         --query - query arguments json. merges with path query arguments                                   
         --requestOptions - custom request options json                    
-        --file - reads body, query and requestOptions from a json/yaml file.                                                   
+        --file - reads body, query, grep and requestOptions from a json/yaml file.                                                   
         --format - output format. defaults to pretty (json, pretty, yaml, raw)
+        --grep - grep text in an ndjson stream and output matching objects
         --verbose - outputs an object with request and response information                
                                                                                 
     `
