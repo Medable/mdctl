@@ -105,7 +105,7 @@ class Client {
    *  cookies - defaults to true. set to false to prevent sending cookies
    *  query - request uri query parameters
    *  requestOptions - custom request options, passed directly to the request (https://github.com/request)
-   *  stream - if true, pipes the req to the stream and returns (errors and results are not parsed)
+   *  stream - pipes the req to the stream and returns (errors and results are not parsed)
    * @returns {Promise<*>}
    */
   async call(path, input) {
