@@ -138,7 +138,7 @@ module.exports = class MdCtlCli {
           activeLogin = await CredentialsManager.getCustom('login', '*'), // a Login object is a combination of a client & password
           activeClientConfig = _.get(activeLogin, 'client'),
           // a Client environment is in fact an Environment url
-          isActiveClientReusable = this.doesClientMatchSecret(activeClientConfig, passwordSecret)
+          isActiveClientReusable = _.isUndefined(options.passwordSecret) || this.doesClientMatchSecret(activeClientConfig, passwordSecret)
 
     if (_.isUndefined(passwordSecret) && !isActiveClientReusable) throw new Error("API client didn't start, try logging-in first or storing secrets to the keystore")
 
@@ -188,7 +188,7 @@ module.exports = class MdCtlCli {
       && activeClientConfig.credentials.username === passwordSecret.username
   }
 
-  async getArguments(arrayOfKeys) {
+  getArguments(arrayOfKeys) {
     return _.reduce(arrayOfKeys,
       (sum, key) => _.extend(sum, { [key]: this.args(key) }), {})
   }
