@@ -7,7 +7,7 @@ const _ = require('lodash'),
       jsyaml = require('js-yaml'),
       { prompt } = require('inquirer'),
       { loadDefaults, writeDefaults } = require('../lib/config'),
-      { loadJsonOrYaml, question } = require('../../lib/utils'),
+      { loadJsonOrYaml, question, normalizeEndpoint } = require('../../lib/utils'),
       {
         rVal, rString, isSet, stringToBoolean
       } = require('../../lib/utils/values'),
@@ -331,6 +331,8 @@ class Credentials extends Task {
       options.username = cli.config('defaultAccount')
     }
 
+    options.endpoint = normalizeEndpoint(options.endpoint)
+
     // attempt to find a password in default credentials.
     if (options.endpoint && options.env && options.username) {
 
@@ -362,6 +364,7 @@ class Credentials extends Task {
           message: 'The api endpoint',
           type: 'input',
           default: rString(options.endpoint, ''),
+          transform: normalizeEndpoint,
           when: () => {
             try {
               Credentials.validateEndpoint(options.endpoint)

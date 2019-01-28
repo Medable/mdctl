@@ -80,6 +80,16 @@ async function question(message, def, options = {}) {
   return result && result.question
 }
 
+function normalizeEndpoint(endpoint) {
+
+  let str = rString(endpoint, '')
+  if (str && !str.includes('://')) {
+    str = `https://${str}`
+  }
+  return str
+
+}
+
 module.exports = {
   throwIf,
   throwIfNot,
@@ -88,5 +98,6 @@ module.exports = {
   loadJsonOrYaml,
   tryCatch,
   yn,
-  question
+  question,
+  normalizeEndpoint
 }
