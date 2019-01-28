@@ -40,9 +40,9 @@ class Api extends Task {
     Api.applyArgIf(cli, options, 'grep')
 
     let err,
-      result,
-      output,
-      { grep } = options
+        result,
+        output,
+        { grep } = options
 
     delete options.grep
     if (_.isString(grep) && grep.length) {

@@ -35,8 +35,7 @@ class Env extends Task {
   }
 
   async 'env@export'(cli) {
-    const passedOptions = _.reduce(this.optionKeys,
-            (sum, key) => _.extend(sum, { [key]: cli.args(key) }), {}),
+    const passedOptions = cli.getArguments(this.optionKeys),
           defaultCredentials = cli.config('defaultCredentials'),
           passwordSecretQuery = _.isUndefined(passedOptions.endpoint)
             && _.isUndefined(passedOptions.env) ? defaultCredentials : passedOptions,
