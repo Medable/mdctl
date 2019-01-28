@@ -1,11 +1,17 @@
-const _ = require('lodash'),
-      { assert } = require('chai'),
-      { throwIf, tryCatch } = require('../src/utils'),
-      { isSet } = require('../src/utils/values'),
-      { privatesAccessor } = require('../src/utils/privates'),
+const { assert } = require('chai'),
+      { tryCatch } = require('../src/lib/utils'),
+      { isSet } = require('../src/lib/utils/values'),
+      { privatesAccessor } = require('../src/lib/privates'),
       { Manifest, ARegex } = require('../src/cli/lib/manifest')
 
 describe('Augmented Regular Expression', () => {
+
+  it('"value" is private', () => {
+    const [constructorError, expr] = tryCatch(() => new ARegex('*'))
+    assert(!isSet(constructorError), 'Constructor shouldn\'t have errored.')
+    assert(isSet(privatesAccessor(expr, 'value')), 'Should have "value" set.')
+    assert(!isSet(expr.value), '"value" should be private.')
+  })
 
   const testCases = [
     // unintended parameters
@@ -80,7 +86,8 @@ describe('Manifest', () => {
   // Run test cases
   testCases.forEach((test, index) => {
     it(`Test manifest ${index}: ${test.description}`, () => {
-      const [_, manifest] = tryCatch(() => new Manifest(test.manifest))
+      const [constructorError, manifest] = tryCatch(() => new Manifest(test.manifest))
+      assert(!isSet(constructorError), 'Constructor shouldn\'t have errored.')
 
       test.pathTests.forEach(({ shouldAccept, path }) => {
         assert(
