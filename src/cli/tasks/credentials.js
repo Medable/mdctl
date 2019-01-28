@@ -334,25 +334,119 @@ class Credentials extends Task {
     options.endpoint = normalizeEndpoint(options.endpoint)
 
     // attempt to find a password in default credentials.
-    if (options.endpoint && options.env && options.username) {
+    // if (options.endpoint && options.env && options.username) {
 
-      const { endpoint, env } = new Environment(options),
-            { username, apiKey } = options,
-            secret = await CredentialsManager.get({
-              type: 'password',
-              endpoint,
-              env,
-              username,
-              apiKey
-            })
 
-      if (secret) {
-        if (!options.apiKey) {
-          options.apiKey = secret.apiKey
+    // }
+
+    // eslint-disable-next-line one-var
+    const { endpoint, env } = new Environment(options),
+          { username, apiKey } = options,
+          secrets = await CredentialsManager.getAllMatchingCredentials({
+            type: 'password',
+            endpoint: options.endpoint,
+            env: options.env,
+            username: options.username,
+            apiKey: options.apiKey
+          })
+    let secret = _.first(secrets)
+
+    if (secrets.length > 1) {
+      const table = new Table({
+        head: ['Index', 'Account', 'ApiKey'],
+        colWidths: [33, 33, 33]
+      })
+
+      table.push(...secrets.map(({
+        // eslint-disable-next-line no-shadow
+        username, apiKey
+      }, idx) => [idx, username, apiKey]))
+
+      console.log(table.toString())
+
+      // eslint-disable-next-line one-var
+      const result = await prompt([
+        {
+          name: 'index',
+          message: 'Select the index of credential or -1 if none',
+          default: -1,
         }
-        options.password = secret.password
-      }
+      ])
 
+      if (result.index === -1) {
+        // ask the caller if anything is left.
+        Object.assign(
+          options,
+          await prompt([
+            {
+              name: 'endpoint',
+              message: 'The api endpoint',
+              type: 'input',
+              default: rString(options.endpoint, ''),
+              transform: normalizeEndpoint,
+              when: () => {
+                try {
+                  Credentials.validateEndpoint(options.endpoint)
+                  return false
+                } catch (err) {
+                  return true
+                }
+              },
+              validate: (input) => {
+                try {
+                  return Credentials.validateEndpoint(input)
+                } catch (err) {
+                  return err.getMessage()
+                }
+              },
+              filter: (input) => {
+                const { protocol, host } = new URL('', input)
+                return `${protocol}//${host}`
+              }
+            },
+            {
+              name: 'env',
+              message: 'The env (org code)',
+              type: 'input',
+              when: () => !rString(options.env)
+            },
+            {
+              name: 'username',
+              message: 'The account email',
+              type: 'input',
+              when: () => !rString(options.username)
+            },
+            {
+              name: 'password',
+              message: 'The account password',
+              type: 'password',
+              when: () => !rString(options.password)
+            },
+            {
+              name: 'apiKey',
+              message: 'The api key',
+              type: 'input',
+              when: () => !rString(options.apiKey),
+              validate: (input) => {
+                try {
+                  return validateApiKey(input)
+                } catch (err) {
+                  return err.getMessage()
+                }
+              }
+            }
+          ])
+        )
+      } else {
+        secret = secrets[result.index]
+      }
+    }
+
+    if (secret) {
+      if (!options.apiKey) {
+        options.apiKey = secret.apiKey
+      }
+      options.password = secret.password
     }
 
     // ask the caller if anything is left.

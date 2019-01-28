@@ -6,16 +6,14 @@ const _ = require('lodash'),
       { isSet } = require('../../lib/utils/values'),
       Task = require('../lib/task'),
       { CredentialsManager } = require('../../lib/api/credentials'),
-      Client = require('../../lib/api/client'),
       Stream = require('../../lib/stream'),
       FileAdapter = require('../../lib/stream/adapters/file_adapter')
 
 class Env extends Task {
 
-  constructor(credentialsManager = CredentialsManager, ApiClient = Client) {
+  constructor(credentialsManager = CredentialsManager) {
     super()
     this.credentialsManager = credentialsManager
-    this.ApiClient = ApiClient
     this.optionKeys = ['endpoint', 'env', 'manifest', 'format']
   }
 
