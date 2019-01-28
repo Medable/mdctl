@@ -428,7 +428,7 @@ class CredentialsManager {
 
     const options = isSet(input) ? input : {},
           type = rString(options.type) && detectAuthType({ type: options.type }),
-          endpoint = fixEndpoint(options.endpoint),
+          endpoint = normalizeEndpoint(options.endpoint),
           env = rString(options.env),
           username = rString(options.username),
           apiKey = rString(options.apiKey),
@@ -558,7 +558,7 @@ function validateApiSecret(secret) {
   throw new TypeError('Invalid api secret')
 }
 
-function fixEndpoint(endpoint) {
+function normalizeEndpoint(endpoint) {
 
   let str = rString(endpoint, '')
   if (str && !str.includes('://')) {
@@ -606,5 +606,6 @@ module.exports = {
   detectAuthType,
   CredentialsProvider,
   validateApiKey,
-  validateApiSecret
+  validateApiSecret,
+  normalizeEndpoint
 }
