@@ -89,18 +89,31 @@ describe('Manifest', () => {
           {
             // Matches only pretty foo
             name: '/^c(?<!_ugly)_foo/',
-            includes: '/blue/',
+            includes: ['/blue/', 'defaultAcl'],
             excludes: '/yellow/'
           }
         ],
         scripts: {
-          includes: ['/yellow/', '/blue/']
-        }
+          includes: ['/yellow/', '/blue/'],
+          exports: ['/magenta/']
+        },
+        templates: {
+          excludes: ['/3/']
+        },
+        // implicit include *
+        views: {},
+        apps: {},
+        roles: {},
+        serviceAccounts: {},
+        policies: {},
+        notifications: {},
+        storage: {}
       },
       pathTests: [
         // accepts these objs and props
         { shouldAccept: true, path: 'objects.c_foo' },
         { shouldAccept: true, path: 'objects.c_foo.properties.c_blue' },
+        { shouldAccept: true, path: 'objects.c_foo.defaultAcl' },
         { shouldAccept: false, path: 'objects.c_foo.properties.c_yellow' },
         { shouldAccept: false, path: 'objects.c_foo.properties.c_blue_and_yellow' },
         // rejects these objs and props
@@ -112,7 +125,13 @@ describe('Manifest', () => {
         { shouldAccept: true, path: 'scripts.c_blue_route' },
         { shouldAccept: true, path: 'scripts.c_blue_lib' },
         { shouldAccept: true, path: 'scripts.c_yellow_trigger' },
-        { shouldAccept: false, path: 'scripts.c_magenta_job' }
+        { shouldAccept: false, path: 'scripts.c_magenta_job' },
+        // templates
+        { shouldAccept: true, path: 'templates.axon__email1' },
+        { shouldAccept: true, path: 'templates.axon__email2' },
+        { shouldAccept: false, path: 'templates.axon__email3' },
+        // views
+        { shouldAccept: true, path: 'views.c_view1' }
       ]
     }
   ]

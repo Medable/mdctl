@@ -1,7 +1,7 @@
 
 const _ = require('lodash'),
       { privatesAccessor } = require('../../lib/privates'),
-      { rArray } = require('../../lib/utils/values')
+      { rArray, isSet } = require('../../lib/utils/values')
 
 // Augmented regular expresions. Accepts strings, star
 class ARegex {
@@ -44,7 +44,7 @@ class ManifestStage {
     }
 
     Object.assign(privatesAccessor(this), {
-      dependencies: definition.dependencies || true,
+      dependencies: definition.dependencies,
       includes: rArray(definition.includes || [], true).map(v => new ARegex(v)),
       excludes: rArray(definition.excludes || [], true).map(v => new ARegex(v))
     })
@@ -58,8 +58,12 @@ class ManifestStage {
     return privatesAccessor(this, 'excludes')
   }
 
-  shouldIncludeDependencies() {
+  get dependencies() {
     return privatesAccessor(this, 'dependencies')
+  }
+
+  shouldIncludeDependencies() {
+    return this.dependencies
   }
 
   accept(path) {
@@ -139,6 +143,14 @@ class Manifest extends ManifestStage {
 
     return this.includes.some(r => r.test(last))
       && !this.excludes.some(r => r.test(last))
+  }
+
+  shouldIncludeDependencies(path) {
+    const [head, ...tail] = path.split('.'),
+          res = this[head] && tail.length && this.head.shouldIncludeDependencies(tail.join('.'))
+
+    if (isSet(res)) return res
+    return this.dependencies
   }
 
   get objects() {
