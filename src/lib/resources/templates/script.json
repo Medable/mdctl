@@ -10,7 +10,7 @@
     "urlEncoded": false,
     "plainText": false,
     "apiKey": null,
-    "path": "#NAME#/:n",
+    "path": "#CODE#/:n",
     "method": "get",
     "priority": 0,
     "acl": [{
