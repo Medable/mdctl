@@ -53,6 +53,11 @@ class Dev extends Task {
     console.log('mdctl dev env import')
   }
 
+  async 'env@add'(cli) {
+
+
+  }
+
   // ----------------------------------------------------------------------------------------------
 
   static get synopsis() {
@@ -65,6 +70,7 @@ class Dev extends Task {
 
     switch (command) {
       case 'env': return this.envHelp()
+      case 'add': return this.addHelp()
       default:
     }
 
@@ -78,7 +84,8 @@ class Dev extends Task {
     Arguments:               
       
       command                
-        env - environment tools         
+        env - environment tools   
+        resource - add resource to local manifest      
                 
       options                           
         --quiet - suppress confirmations                        
@@ -98,7 +105,8 @@ class Dev extends Task {
       
       command                      
         export - export from an endpoint environment        
-        import - import to an endpoint environment        
+        import - import to an endpoint environment
+        add - add a new resource        
                 
       options     
         --endpoint sets the endpoint. eg. api.dev.medable.com     
