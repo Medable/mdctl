@@ -1,51 +1,64 @@
 
-const { privatesAccessor } = require('../../utils/privates'),
-      { validateRegex, rArray } = require('../../utils/values'),
-      { throwIfNot } = require('../../utils'),
-      _ = require('lodash')
-
+const _ = require('lodash'),
+      { privatesAccessor } = require('../../lib/privates'),
+      { rArray } = require('../../lib/utils/values')
 
 // Augmented regular expresions. Accepts strings, star
 class ARegex {
 
   constructor(input) {
+    let value
     if (_.isString(input)) {
-      this.value = /^\//.test(input) && /\/$/.test(input)
-        ? new RegExp(input.substring(1,input.length-1))
+      value = /^\//.test(input) && /\/$/.test(input)
+        ? new RegExp(input.substring(1, input.length - 1))
         : input
     }
     if (_.isRegExp(input)) {
-      this.value = input
+      value = input
     }
+
+    Object.assign(privatesAccessor(this), { value })
   }
 
   test(pattern) {
-    if (_.isString(this.value)) {
-      return this.value === '*' || _.isEqual(pattern, this.value)
-    } else if (_.isRegExp(this.value)) {
-      return this.value.test(pattern)
+    const value = privatesAccessor(this, 'value')
+    if (_.isString(value)) {
+      return value === '*' || _.isEqual(pattern, value)
+    } if (_.isRegExp(value)) {
+      return value.test(pattern)
     }
 
     return false
   }
+
 }
 
 // Basic matching stage
 class ManifestStage {
 
-  constructor(def) {
-    def = def || {}
+  constructor(input) {
+    const definition = input || {}
 
-    if (!def.includes) {
-      def.includes = ['*']
+    if (!definition.includes) {
+      definition.includes = ['*']
     }
 
-    this.includes = rArray(def.includes || [], true).map(v => new ARegex(v))
-    this.excludes = rArray(def.excludes || [], true).map(v => new ARegex(v))
+    Object.assign(privatesAccessor(this), {
+      includes: rArray(definition.includes || [], true).map(v => new ARegex(v)),
+      excludes: rArray(definition.excludes || [], true).map(v => new ARegex(v))
+    })
+  }
+
+  get includes() {
+    return privatesAccessor(this, 'includes')
+  }
+
+  get excludes() {
+    return privatesAccessor(this, 'excludes')
   }
 
   accept(path) {
-    const [head, _] = path
+    const [head] = path
 
     return this.includes.some(r => r.test(head))
       && !this.excludes.some(r => r.test(head))
@@ -61,26 +74,28 @@ class ObjectSection extends ManifestStage {
     if (!def[key]) {
       throw new Error('Invalid Argument')
     }
-    this._key = key
-    this[key] = new ARegex(def[key])
+
+    Object.assign(privatesAccessor(this), {
+      key,
+      keyTester: new ARegex(def[key])
+    })
   }
 
   accept(path) {
-    const [last, ...prefix] = path.split('.').reverse(),
+    const keyTester = privatesAccessor(this, 'keyTester'),
+          // [last, ...prefix] = path.split('.').reverse(),
           [first] = path.split('.')
 
-    if (this[this._key]) return this[this._key].test(first)
-
+    if (keyTester) return keyTester.test(first)
     return false
   }
 
 }
 
-
 class Manifest extends ManifestStage {
 
-  constructor(def) {
-    def = def || {}
+  constructor(input) {
+    const def = input || {}
 
     super(def)
 
@@ -94,7 +109,7 @@ class Manifest extends ManifestStage {
 
   accept(path) {
     // Global include/exclude works on the last item of the path
-    const [last, _] = path.split('.').reverse(),
+    const [last] = path.split('.').reverse(),
           [first, ...rest] = path.split('.')
 
     // dispatsh acceptance to appropriate section
