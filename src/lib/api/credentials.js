@@ -5,6 +5,7 @@ const jsonwebtoken = require('jsonwebtoken'),
       keytar = require('keytar'),
       { privatesAccessor } = require('../privates'),
       { rString, isSet } = require('../utils/values'),
+      { normalizeEndpoint } = require('../utils'),
       { signPath } = require('./signer'),
       Environment = require('./environment'),
       serviceName = 'com.medable.mdctl',
@@ -556,16 +557,6 @@ function validateApiSecret(secret) {
     return true
   }
   throw new TypeError('Invalid api secret')
-}
-
-function normalizeEndpoint(endpoint) {
-
-  let str = rString(endpoint, '')
-  if (str && !str.includes('://')) {
-    str = `https://${str}`
-  }
-  return str
-
 }
 
 function equalsStringOrRegex(test, input) {
