@@ -135,7 +135,7 @@ async function writeDefaults(contents) {
 
   merge(local, contents)
 
-  sh.exec(`mkdir -p ${configureDir}`)
+  sh.mkdir('-p', `${configureDir}`)
   fs.writeFileSync(
     configureFile,
     `# ------------------------------------------------\n${
