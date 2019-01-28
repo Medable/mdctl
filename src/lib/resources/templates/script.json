@@ -1,0 +1,22 @@
+{
+  "code": "#NAME#",
+  "active": true,
+  "label": "#LABEL#",
+  "language": "javascript/es6",
+  "script": "#PATH_FILE#",
+  "type": "#TYPE#",
+  "principal": "",
+  "configuration": {
+    "urlEncoded": false,
+    "plainText": false,
+    "apiKey": null,
+    "path": "#NAME#/:n",
+    "method": "get",
+    "priority": 0,
+    "acl": [{
+      "type": 1,
+      "target": "000000000000000000000003",
+      "allow": 1
+    }]
+  }
+}
