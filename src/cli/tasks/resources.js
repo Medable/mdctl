@@ -8,7 +8,7 @@ class Resources extends Task {
 
   constructor() {
     super()
-    this.optionKeys = ['folder', 'name', 'type', 'format']
+    this.optionKeys = ['folder', 'code', 'type', 'format']
     this.localResources = new LocalResources()
   }
 
@@ -62,8 +62,8 @@ class Resources extends Task {
           template - will create a new template into the environment
           view - will create a new view into the environment 
           object - will create a new object into the environment
-          --folder - set the folder where the environment data is
-          --name - set the name of the resource
+          --folder - set the folder where the environment data is, default ./output
+          --code - set the code for the resource
           --type - set the type for a script route, job, library, trigger, default route
           --format - set the format output json/yaml default json
     `

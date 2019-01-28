@@ -42,7 +42,7 @@ class LocalResources {
 
   createTemplate(data, args) {
     const {
-      name, type, format = 'json', output = this.output
+      code, type, format = 'json', output = this.output
     } = args
 
   }
@@ -50,16 +50,16 @@ class LocalResources {
 
   createScript(data, args) {
     const {
-      name, type, format = 'json', output = this.output
+      code, type, format = 'json', output = this.output
     } = args
-    let content = data.replace(/#NAME#/ig, name)
-    content = content.replace(/#LABEL#/ig, name.toUpperCase())
+    let content = data.replace(/#CODE#/ig, code)
+    content = content.replace(/#LABEL#/ig, code.toUpperCase())
     content = content.replace(/#TYPE#/ig, type)
-    content = content.replace(/#PATH_FILE#/ig, `scripts/js/${name}.js`)
+    content = content.replace(/#PATH_FILE#/ig, `scripts/js/${code}.js`)
 
     const outputData = format === 'json' ? content : jsYaml.safeDump(JSON.parse(content))
-    fs.writeFileSync(`${output}/scripts/${type}/${name}.${format}`, outputData)
-    fs.writeFileSync(`${output}/scripts/js/${name}_${type}.js`, "return 'template';")
+    fs.writeFileSync(`${output}/scripts/${type}/${code}.${format}`, outputData)
+    fs.writeFileSync(`${output}/scripts/js/${code}_${type}.js`, "return 'template';")
   }
 
 }

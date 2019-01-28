@@ -1,5 +1,5 @@
 {
-  "code": "#NAME#",
+  "code": "#CODE#",
   "active": true,
   "label": "#LABEL#",
   "language": "javascript/es6",
