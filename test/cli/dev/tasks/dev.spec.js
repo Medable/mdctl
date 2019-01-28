@@ -1,6 +1,6 @@
 const { expect } = require('chai'),
       _ = require('lodash'),
-      Dev = require('./../../../../src/cli/tasks/dev')
+      Dev = require('./../../../../src/cli/tasks/env')
 
 describe('dev', () => {
 

@@ -142,6 +142,7 @@ module.exports = class MdCtlCli {
 
     if (_.isUndefined(passwordSecret) && !isActiveClientReusable) throw new Error("API client didn't start, try logging-in first or storing secrets to the keystore")
 
+    // eslint-disable-next-line one-var
     const client = isActiveClientReusable ? new Client(activeClientConfig)
       : this.createNewClientBy(passwordSecret)
 
@@ -187,5 +188,9 @@ module.exports = class MdCtlCli {
       && activeClientConfig.credentials.username === passwordSecret.username
   }
 
+  async getArguments(arrayOfKeys) {
+    return _.reduce(arrayOfKeys,
+      (sum, key) => _.extend(sum, { [key]: this.args(key) }), {})
+  }
 
 }
