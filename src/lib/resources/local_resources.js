@@ -4,13 +4,6 @@ const fs = require('fs'),
 
 class LocalResources {
 
-  constructor(output = `${process.cwd()}/output`) {
-    if (!fs.existsSync(output)) {
-      throw new Fault('kFolderNotFound', 'Environment folder not found', 404)
-    }
-    this.output = output
-  }
-
   loadResource(type) {
     const jsonData = fs.readFileSync(`${__dirname}/templates/${type}.json`)
     return JSON.stringify(JSON.parse(jsonData))
@@ -18,39 +11,44 @@ class LocalResources {
 
   create(typeResource, args) {
     const data = this.loadResource(typeResource)
+    const output = args.output || `${process.cwd()}/output`
+    if (!fs.existsSync(output)) {
+      throw new Fault('kFolderNotFound', 'Environment folder not found', 404)
+    }
+
     switch (typeResource) {
       case 'script':
-        return this.createScript(data, args)
+        return this.createScript(data, args, output)
       case 'template':
-        return this.createTemplate(data, args)
+        return this.createTemplate(data, args, output)
       case 'view':
-        return this.createView(data, args)
+        return this.createView(data, args, output)
       case 'object':
-        return this.createObject(data, args)
+        return this.createObject(data, args, output)
       default:
         throw new Fault('kTypeNotFound', 'Type of resource not found', 404)
     }
   }
 
-  createObject(data, args) {
+  createObject(data, args, output) {
     console.log('object')
   }
 
-  createView(data, args) {
+  createView(data, args, output) {
     console.log('view')
   }
 
-  createTemplate(data, args) {
+  createTemplate(data, args, outoput) {
     const {
-      code, type, format = 'json', output = this.output
+      code, type, format = 'json'
     } = args
 
   }
 
 
-  createScript(data, args) {
+  createScript(data, args, output) {
     const {
-      code, type, format = 'json', output = this.output
+      code, type, format = 'json'
     } = args
     let content = data.replace(/#CODE#/ig, code)
     content = content.replace(/#LABEL#/ig, code.toUpperCase())
@@ -59,7 +57,7 @@ class LocalResources {
 
     const outputData = format === 'json' ? content : jsYaml.safeDump(JSON.parse(content))
     fs.writeFileSync(`${output}/scripts/${type}/${code}.${format}`, outputData)
-    fs.writeFileSync(`${output}/scripts/js/${code}_${type}.js`, "return 'template';")
+    fs.writeFileSync(`${output}/scripts/js/${code}_${type}.js`, "return 'foo';")
   }
 
 }
