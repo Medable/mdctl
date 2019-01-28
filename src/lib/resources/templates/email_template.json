@@ -1,0 +1,26 @@
+{
+  "type": "email",
+  "name": "#NAME#",
+  "builtin": false,
+  "spec": {
+    "summary": "this is the summary",
+    "nickname": " Testing Templates",
+    "content": [
+      {
+        "summary": "Email Template",
+        "mime": "text/plain",
+        "name": "subject"
+      },
+      {
+        "summary": "Plain text body",
+        "mime": "text/plain",
+        "name": "plain"
+      },
+      {
+        "summary": "HTML body",
+        "mime": "text/html",
+        "name": "html"
+      }
+    ]
+  }
+}

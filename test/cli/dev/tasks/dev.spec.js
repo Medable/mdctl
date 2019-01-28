@@ -1,10 +1,10 @@
 const { expect } = require('chai'),
       _ = require('lodash'),
-      Dev = require('./../../../../src/cli/tasks/dev')
+      Dev = require('./../../../../src/cli/tasks/env')
 
 describe('dev', () => {
 
-  describe('#getCredentials', () => {
+  describe('#getPasswordSecret', () => {
     const credentialsManagerMock = {
             get: (query) => {
               let mockedResult
@@ -18,9 +18,9 @@ describe('dev', () => {
           },
           dev = new Dev(credentialsManagerMock)
 
-    it('#getCredentials receives only env', (done) => {
+    it('#getPasswordSecret receives only env', (done) => {
 
-      dev.getCredentials({ env: 'test-env' })
+      dev.getPasswordSecret({ env: 'test-env' })
         .then((secret) => {
           expect(secret.username).to.be.eqls('random@username.com')
           done()
@@ -28,9 +28,9 @@ describe('dev', () => {
         .catch(err => done(err))
     })
 
-    it('#getCredentials receives env and endpoint', (done) => {
+    it('#getPasswordSecret receives env and endpoint', (done) => {
 
-      dev.getCredentials({ env: 'test-env', endpoint: 'https://cool-endpoint.com' })
+      dev.getPasswordSecret({ env: 'test-env', endpoint: 'https://cool-endpoint.com' })
         .then((secret) => {
           expect(secret.username).to.be.eqls('random2@username.com')
           done()
@@ -38,9 +38,9 @@ describe('dev', () => {
         .catch(err => done(err))
     })
 
-    it('#getCredentials receives invalid parameter', (done) => {
+    it('#getPasswordSecret receives invalid parameter', (done) => {
 
-      dev.getCredentials({ quite: true })
+      dev.getPasswordSecret({ quite: true })
         .then((secret) => {
           expect(secret).to.be.eqls(undefined)
           done()
