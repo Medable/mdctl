@@ -54,7 +54,7 @@ class Dev extends Task {
   }
 
   async 'env@add'(cli) {
-
+    console.log('mdctl env add')
 
   }
 

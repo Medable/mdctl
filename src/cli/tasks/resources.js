@@ -1,8 +1,15 @@
-const Client = require('../../lib/api/client'),
+const _ = require('lodash'),
+      Client = require('../../lib/api/client'),
       Environment = require('../../lib/api/environment'),
-      Task = require('../lib/task')
+      Task = require('../lib/task'),
+      { isSet } = require('../../lib/utils/values'),
+      Credentials = require('./credentials')
 
 class Resources extends Task {
+
+  constructor(){
+    super()
+  }
 
   async run(cli) {
 
