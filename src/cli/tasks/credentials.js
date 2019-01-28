@@ -7,14 +7,13 @@ const _ = require('lodash'),
       jsyaml = require('js-yaml'),
       { prompt } = require('inquirer'),
       { loadDefaults, writeDefaults } = require('../lib/config'),
-      { loadJsonOrYaml, question } = require('../../lib/utils'),
+      { loadJsonOrYaml, question, normalizeEndpoint } = require('../../lib/utils'),
       {
         rVal, rString, isSet, stringToBoolean
       } = require('../../lib/utils/values'),
       {
         Credentials: ApiCredentials, CredentialsManager,
-        detectAuthType, validateApiKey, validateApiSecret,
-        normalizeEndpoint
+        detectAuthType, validateApiKey, validateApiSecret
       } = require('../../lib/api/credentials'),
       Client = require('../../lib/api/client'),
       Environment = require('../../lib/api/environment'),
