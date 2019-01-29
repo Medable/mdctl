@@ -169,7 +169,40 @@ describe('Manifest', () => {
         { shouldAccept: false, path: 'env.some_other_thing' },
         { shouldAccept: false, path: 'objects.c_ugly' }
       ]
+    },
+    {
+      description: 'Development: use case 2',
+      manifest: {
+        apps: {
+          includes: []
+        },
+        dependencies: false,
+        env: {
+          includes: [
+            '/^configuration/'
+          ]
+        }
+      },
+      pathTests: [
+        { shouldAccept: false, path: 'apps.c_app1' },
+        { shouldAccept: false, path: 'apps.c_app2' },
+        { shouldAccept: true, path: 'env.configuration' },
+        { shouldAccept: false, path: 'env.some_other_thing' },
+        { shouldAccept: false, path: 'objects.c_ugly' }
+      ]
+    },
+    {
+      description: 'Development: use case 3',
+      manifest: {
+        apps: {
+          includes: []
+        }
+      },
+      pathTests: [
+        { shouldAccept: false, path: 'apps' }
+      ]
     }
+
   ]
 
   // Run test cases
