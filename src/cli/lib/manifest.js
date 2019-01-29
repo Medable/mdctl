@@ -35,10 +35,10 @@ class ARegex {
 // Basic matching stage
 class ManifestStage {
 
-  constructor(input) {
+  constructor(input, implicitStar = true) {
     const definition = input || {}
 
-    if (!definition.includes) {
+    if (!definition.includes && implicitStar) {
       definition.includes = ['*']
     }
 
@@ -107,7 +107,7 @@ class Manifest extends ManifestStage {
     const def = input || {},
           thisInternals = {}
 
-    super(def)
+    super(def, !Object.keys(def).length)
 
     if (def.objects) {
       thisInternals.objects = def.objects.map(section => new ObjectSection(section, 'name'))
