@@ -2,7 +2,7 @@ const { assert } = require('chai'),
       { tryCatch } = require('../src/lib/utils'),
       { isSet } = require('../src/lib/utils/values'),
       { privatesAccessor } = require('../src/lib/privates'),
-      { Manifest, ARegex } = require('../src/cli/lib/manifest')
+      { Manifest, ARegex } = require('../src/lib/manifest')
 
 describe('Augmented Regular Expression', () => {
 
