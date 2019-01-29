@@ -9,9 +9,8 @@ class ARegex {
   constructor(input) {
     let value
     if (_.isString(input)) {
-      value = /^\//.test(input) && /\/$/.test(input)
-        ? new RegExp(input.substring(1, input.length - 1))
-        : input
+      const match = input.match(/^\/(.*)\/(.*)/)
+      value = match ? new RegExp(match[1], match[2]) : input
     }
     if (_.isRegExp(input)) {
       value = input

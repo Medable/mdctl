@@ -28,7 +28,10 @@ describe('Augmented Regular Expression', () => {
     // intended patterns - regex
     { shouldMatch: true, expr: /value/, value: 'some value' },
     { shouldMatch: true, expr: '/value/', value: 'some value' },
-    { shouldMatch: false, expr: '/g/', value: 'some value' }
+    { shouldMatch: false, expr: '/g/', value: 'some value' },
+    // regexes support modifiers
+    { shouldMatch: true, expr: '/value/i', value: 'some VaLuE' },
+    { shouldMatch: false, expr: '/value/', value: 'some VaLuE' }
   ]
 
   testCases.forEach(({ shouldMatch, expr, value }) => {
