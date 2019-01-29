@@ -149,6 +149,10 @@ function resolveCallbackArguments(options, callback, ensure = true, once = true)
   return [optionsArgument, callbackArgument]
 }
 
+function isCustom(name) {
+  return name.indexOf('c_') === 0 || name.includes('__')
+}
+
 module.exports = {
   isPrimitive,
   isInt,
@@ -165,5 +169,6 @@ module.exports = {
   rDate,
   pad,
   clamp,
-  resolveCallbackArguments
+  resolveCallbackArguments,
+  isCustom
 }
