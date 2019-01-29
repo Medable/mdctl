@@ -37,10 +37,6 @@ class Credentials extends Task {
 
   }
 
-  someOtherFunction() {
-    return true
-  }
-
   async 'credentials@add'(cli) {
 
     const options = {}
