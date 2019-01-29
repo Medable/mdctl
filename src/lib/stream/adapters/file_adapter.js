@@ -1,7 +1,10 @@
 const { Writable } = require('stream'),
+      EventEmitter = require('events'),
       jsYaml = require('js-yaml'),
       fs = require('fs'),
-      jp = require('jsonpath')
+      jp = require('jsonpath'),
+      _ = require('lodash'),
+      slugify = require('slugify')
 
 class Layout extends Writable {
 
@@ -9,6 +12,7 @@ class Layout extends Writable {
     super({ objectMode: true })
     this.output = output
     this.format = format
+    this.chunks = []
     this.ensure(this.output)
   }
 
@@ -23,39 +27,70 @@ class Layout extends Writable {
   }
 
   parseContent(content) {
+    let contentStr = ''
     if (this.format === 'yaml') {
-      // Adding workaround for undefined content
-      return jsYaml.safeDump(JSON.parse(JSON.stringify(content)))
+      const objStr = JSON.stringify(content).trim()
+      contentStr = jsYaml.safeDump(JSON.parse(objStr))
+    } else {
+      contentStr = JSON.stringify(content)
     }
-    return JSON.stringify(content)
+    return contentStr
   }
 
 }
 
 class FilesLayout extends Layout {
 
-  async writeToFile(file, content, plain = false) {
-    return new Promise((resolve, reject) => {
+  writeToFile(file, content, plain = false) {
+    return new Promise((success, failure) => {
       const data = plain ? content : this.parseContent(content)
-      const result = fs.writeFileSync(file, data)
-      return result
+      fs.writeFile(file, data, (err) => {
+        if (err) {
+          return failure(err)
+        }
+        return success()
+      })
     })
   }
 
-  async processChunks(chunk) {
-    const folder = `${this.output}/${chunk.getPath()}`
-    this.ensure(folder)
+  async writeAsset(path, chunk) {
+    return new Promise((resolve, reject) => {
+      const dest = `${path}/${slugify(chunk.extraFile.name)}.${chunk.extraFile.ext}`,
+            fileWriter = fs.createWriteStream(dest)
+      fileWriter.on('finish', () => {
+        resolve()
+      })
+      fileWriter.on('error', () => {
+        reject()
+      })
+      if (chunk.extraFile.hasToDownload) {
+        chunk.downloadResources().pipe(fileWriter)
+      } else {
+        fileWriter.write(chunk.extraFile.data)
+        fileWriter.end()
+      }
+    })
+  }
+
+  async processChunk(chunk) {
     try {
-      await this.writeToFile(`${folder}/${chunk.name}.${this.format}`, this.parseContent(chunk.content), false)
+      const folder = `${this.output}/${chunk.getPath()}`
+      this.ensure(folder)
+      chunk.getScripts()
+      await chunk.replaceFacets()
+      if (chunk.extraFile !== null) {
+        this.ensure(`${folder}/assets`)
+        await this.writeAsset(`${folder}/assets`, chunk)
+      }
+      await this.writeToFile(`${folder}/${slugify(chunk.name, '_')}.${this.format}`, chunk.content, false)
+      return true
     } catch (e) {
-      console.log(e)
       throw e
     }
-
   }
 
   _write(chunk, enc, cb) {
-    this.processChunks(chunk)
+    this.processChunk(chunk)
     cb()
   }
 
@@ -88,17 +123,23 @@ class SingleFileLayout extends Layout {
   _final(cb) {
     return new Promise((resolve, reject) => {
       fs.writeFile(`${this.output}/exported.${this.format}`, this.parseContent(this.data), (err) => {
-        if (err) return reject(err)
+        if (err) {
+          return reject(err)
+        }
         return resolve()
       })
-    }).then(cb).catch(e => cb(e))
+    }).then(() => {
+      this.emit('process_finished')
+      cb()
+    }).catch(e => cb(e))
   }
 
 }
 
-class FileAdapter {
+class FileAdapter extends EventEmitter {
 
   constructor(outputPath, options = { format: 'json', layout: 'files' }) {
+    super()
     const { layout, format } = options,
           output = outputPath || `${process.cwd()}/output`
     this.stream = new FilesLayout(output, format)

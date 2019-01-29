@@ -1,4 +1,5 @@
 const { PassThrough, Transform } = require('stream'),
+      EventEmitter = require('events'),
       Section = require('./section'),
       Fault = require('../fault'),
       KEYS = ['manifest', 'manifest-dependencies', 'manifest-exports', 'env', 'app', 'notification', 'policy', 'role', 'smsNumber', 'serviceAccount', 'storage', 'configuration', 'facet', 'object', 'script', 'template', 'view']
@@ -59,5 +60,30 @@ class StreamBlob extends PassThrough {
 
 }
 
+class StreamWriter extends EventEmitter {
+  constructor(stream, options) {
+    super()
+    // stream.pipe(new StreamBlob(options))
+    stream.on('data', this.streamData.bind(this))
+    stream.on('error', this.streamError.bind(this))
+    stream.on('end', this.streamEnd.bind(this))
+    this.transform = new StreamTransform(options)
+    this.transform.on('error', this.streamError.bind(this))
+    return this.transform
+  }
 
-module.exports = StreamBlob
+  streamData(chunk) {
+    this.transform.write(chunk)
+  }
+
+  streamError(e) {
+    console.log(e)
+    this.emit('error', e)
+  }
+
+  streamEnd() {
+    this.transform.end()
+  }
+}
+
+module.exports = StreamWriter
