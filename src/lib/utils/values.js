@@ -1,5 +1,7 @@
 
 const _ = require('lodash'),
+      TRUE = ['y', 'yes', 'true', '1'],
+      FALSE = ['n', 'no', 'false', '0'],
       isPrimitiveRegex = /^[sbn]/
 
 let Undefined
@@ -62,6 +64,11 @@ function rInt(val, defaultVal) {
 function rString(val, defaultVal) {
   if (val === Undefined) return defaultVal
   if (_.isString(val)) return val
+  return defaultVal
+}
+
+function rFunction(val, defaultVal = () => {}) {
+  if (_.isFunction(val)) return val
   return defaultVal
 }
 
@@ -149,8 +156,23 @@ function resolveCallbackArguments(options, callback, ensure = true, once = true)
   return [optionsArgument, callbackArgument]
 }
 
+
 function isCustom(name) {
   return name.indexOf('c_') === 0 || name.includes('__')
+}
+
+/**
+ * accepts 'y', 'yes', 'true' or 1 as true, 'n', 'no', 'false' or '0'. provide a default
+ */
+function stringToBoolean(val, defaultVal) {
+  if (val !== null && val !== Undefined) {
+    if (FALSE.includes(String(val).toLowerCase())) {
+      return false
+    } if (TRUE.includes(String(val).toLowerCase())) {
+      return true
+    }
+  }
+  return defaultVal
 }
 
 module.exports = {
@@ -159,8 +181,10 @@ module.exports = {
   isNumeric,
   isInteger,
   isValidDate,
+  rFunction,
   isSet,
   rArray,
+  stringToBoolean,
   rVal,
   rNum,
   rInt,

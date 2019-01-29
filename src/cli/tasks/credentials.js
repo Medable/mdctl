@@ -1,14 +1,21 @@
 /* eslint-disable class-methods-use-this */
 
 const _ = require('lodash'),
+      os = require('os'),
       { URL } = require('url'),
       Table = require('cli-table'),
       jsyaml = require('js-yaml'),
       { prompt } = require('inquirer'),
       { loadDefaults, writeDefaults } = require('../lib/config'),
-      { loadJsonOrYaml } = require('../../lib/utils'),
-      { rString, isSet } = require('../../lib/utils/values'),
-      { CredentialsManager, detectAuthType } = require('../../lib/api/credentials'),
+      { loadJsonOrYaml, question, normalizeEndpoint } = require('../../lib/utils'),
+      {
+        rVal, rString, isSet, stringToBoolean
+      } = require('../../lib/utils/values'),
+      {
+        Credentials: ApiCredentials, CredentialsManager,
+        detectAuthType, validateApiKey, validateApiSecret
+      } = require('../../lib/api/credentials'),
+      Client = require('../../lib/api/client'),
       Environment = require('../../lib/api/environment'),
       Task = require('../lib/task')
 
@@ -30,6 +37,10 @@ class Credentials extends Task {
 
   }
 
+  someOtherFunction() {
+    return true
+  }
+
   async 'credentials@add'(cli) {
 
     const options = {}
@@ -47,7 +58,7 @@ class Credentials extends Task {
         options,
         _.pick(
           file,
-          'type', 'endpoint', 'env', 'username', 'key', 'password', 'secret', 'token'
+          'type', 'endpoint', 'env', 'username', 'apiKey', 'password', 'apiSecret', 'token'
         )
       )
     }
@@ -55,6 +66,7 @@ class Credentials extends Task {
     Credentials.assignArgIf(cli, options, 'type')
     Credentials.assignArgIf(cli, options, 'endpoint')
     Credentials.assignArgIf(cli, options, 'env')
+    Credentials.assignArgIf(cli, options, 'apiKey')
 
     // auto-detect type
     options.type = detectAuthType(options)
@@ -125,16 +137,30 @@ class Credentials extends Task {
           when: hash => hash.type === 'token' && !rString(options.token)
         },
         {
-          name: 'key',
-          message: 'The api signing key',
+          name: 'apiKey',
+          message: 'The api key',
           type: 'input',
-          when: hash => hash.type === 'signature' && !rString(options.key)
+          when: hash => ['password', 'signature'].includes(hash.type) && !rString(options.apiKey),
+          validate: (input) => {
+            try {
+              return validateApiKey(input)
+            } catch (err) {
+              return err.getMessage()
+            }
+          }
         },
         {
-          name: 'secret',
+          name: 'apiSecret',
           message: 'The api signing secret',
           type: 'password',
-          when: hash => hash.type === 'signature' && !rString(options.secret)
+          when: hash => hash.type === 'signature' && !rString(options.apiSecret),
+          validate: (input) => {
+            try {
+              return validateApiSecret(input)
+            } catch (err) {
+              return err.getMessage()
+            }
+          }
         }
       ])
     )
@@ -156,15 +182,15 @@ class Credentials extends Task {
     let list = await CredentialsManager.list(options)
 
     list = list.map(({
-      environment, type, username, key
+      environment, type, username, apiKey
     }) => {
       const { endpoint, env, version } = environment
       return {
-        endpoint, env, version, type, username, key
+        endpoint, env, version, type, username, apiKey
       }
     })
 
-    list = _.sortBy(list, ['endpoint', 'env', 'version', 'type', 'username', 'key'])
+    list = _.sortBy(list, ['endpoint', 'env', 'version', 'type', 'username', 'apiKey'])
 
     switch (format) {
       case 'json':
@@ -184,8 +210,8 @@ class Credentials extends Task {
           })
 
           table.push(...list.map(({
-            endpoint, env, version, type, username, key
-          }) => [endpoint, env, version, type, username, key]))
+            endpoint, env, version, type, username, apiKey
+          }) => [endpoint, env, version, type, username, apiKey]))
 
           console.log(table.toString())
         }
@@ -200,74 +226,56 @@ class Credentials extends Task {
   async 'credentials@get'(cli) {
 
     const options = await Credentials.getCliOptions(cli),
-          format = rString(cli.args('format'), 'json'),
           item = await CredentialsManager.get(options)
 
     if (item) {
-      switch (format) {
-        case 'json':
-          console.log(JSON.stringify(item))
-          break
-        case 'pretty':
-          console.log(JSON.stringify(item, null, 2))
-          break
-        case 'yaml':
-          console.log(jsyaml.safeDump(item))
-          break
-        default:
-          throw new RangeError('Invalid output format. Expected json, pretty or yaml')
-      }
+      console.log(formatOutput(item, cli.args('format')))
     }
 
   }
 
-  async 'credentials@load'(cli) {
+  async 'credentials@default'(cli) {
 
-    const options = await Credentials.getCliOptions(cli),
-          secret = await CredentialsManager.get(options)
+    const verb = cli.args('2')
 
-    if (!secret) {
-      throw new RangeError('Credentials not found.')
+    let defaultCredentials
+
+    if (verb === 'set') {
+
+      const options = await Credentials.getCliOptions(cli),
+            secret = await CredentialsManager.get(options)
+
+      if (!secret) {
+        throw new RangeError('Credentials not found.')
+      } else {
+
+        const {
+                environment, type, username, apiKey
+              } = secret,
+              { endpoint, env, version } = environment
+
+        defaultCredentials = {
+          type, endpoint, env, version, username, apiKey
+        }
+
+        await writeDefaults({ defaultCredentials })
+      }
+
+    } else if (verb === 'clear') {
+
+      await writeDefaults({ defaultCredentials: null })
+
     } else {
 
-      const {
-              environment, type, username, key
-            } = secret,
-            { endpoint, env, version } = environment,
-            defaultCredentials = {
-              type, endpoint, env, version, username, key
-            }
-
-      await writeDefaults({ defaultCredentials })
-
+      const { defaultCredentials: defaults } = await loadDefaults()
+      defaultCredentials = defaults
     }
-
-  }
-
-
-  async 'credentials@show'(cli) {
-
-    const { defaultCredentials } = await loadDefaults(),
-          format = rString(cli.args('format'), 'json')
 
     if (defaultCredentials) {
-      switch (format) {
-        case 'json':
-          console.log(JSON.stringify(defaultCredentials))
-          break
-        case 'pretty':
-          console.log(JSON.stringify(defaultCredentials, null, 2))
-          break
-        case 'yaml':
-          console.log(jsyaml.safeDump(defaultCredentials))
-          break
-        default:
-          throw new RangeError('Invalid output format. Expected json, pretty or yaml')
-      }
+      console.log(formatOutput(defaultCredentials, cli.args('format')))
     }
 
   }
-
 
   async 'credentials@clear'(cli) {
 
@@ -278,6 +286,265 @@ class Credentials extends Task {
     )
 
   }
+
+  async 'credentials@login'(cli) {
+
+    const options = {}
+
+    // load from input file
+    if (rString(cli.args('file'))) {
+      const file = await loadJsonOrYaml(cli.args('file'))
+      Object.assign(
+        options,
+        _.pick(
+          file,
+          'endpoint', 'env', 'username', 'apiKey', 'password'
+        )
+      )
+    }
+
+    // add anything from args
+    Credentials.assignArgIf(cli, options, 'endpoint')
+    Credentials.assignArgIf(cli, options, 'env')
+    Credentials.assignArgIf(cli, options, 'username')
+    Credentials.assignArgIf(cli, options, 'apiKey')
+
+    // if no args were specified, attempt to use default credentials.
+    if (Object.keys(options).length === 0) {
+      Object.assign(
+        options,
+        _.pick(
+          cli.config('defaultCredentials'),
+          'endpoint', 'env', 'username', 'apiKey', 'password'
+        )
+      )
+    }
+
+    // set missing items using configured defaults.
+    if (!isSet(options.endpoint)) {
+      options.endpoint = cli.config('defaultEndpoint')
+    }
+    if (!isSet(options.env)) {
+      options.env = cli.config('defaultEnv')
+    }
+    if (!isSet(options.username)) {
+      options.username = cli.config('defaultAccount')
+    }
+
+    options.endpoint = normalizeEndpoint(options.endpoint)
+
+    // attempt to find a password in default credentials.
+    if (options.endpoint && options.env && options.username) {
+
+      const { endpoint, env } = new Environment(options),
+            { username, apiKey } = options,
+            secret = await CredentialsManager.get({
+              type: 'password',
+              endpoint,
+              env,
+              username,
+              apiKey
+            })
+
+      if (secret) {
+        if (!options.apiKey) {
+          options.apiKey = secret.apiKey
+        }
+        options.password = secret.password
+      }
+
+    }
+
+    // ask the caller if anything is left.
+    Object.assign(
+      options,
+      await prompt([
+        {
+          name: 'endpoint',
+          message: 'The api endpoint',
+          type: 'input',
+          default: rString(options.endpoint, ''),
+          transform: normalizeEndpoint,
+          when: () => {
+            try {
+              Credentials.validateEndpoint(options.endpoint)
+              return false
+            } catch (err) {
+              return true
+            }
+          },
+          validate: (input) => {
+            try {
+              return Credentials.validateEndpoint(input)
+            } catch (err) {
+              return err.getMessage()
+            }
+          },
+          filter: (input) => {
+            const { protocol, host } = new URL('', input)
+            return `${protocol}//${host}`
+          }
+        },
+        {
+          name: 'env',
+          message: 'The env (org code)',
+          type: 'input',
+          when: () => !rString(options.env)
+        },
+        {
+          name: 'username',
+          message: 'The account email',
+          type: 'input',
+          when: () => !rString(options.username)
+        },
+        {
+          name: 'password',
+          message: 'The account password',
+          type: 'password',
+          when: () => !rString(options.password)
+        },
+        {
+          name: 'apiKey',
+          message: 'The api key',
+          type: 'input',
+          when: () => !rString(options.apiKey),
+          validate: (input) => {
+            try {
+              return validateApiKey(input)
+            } catch (err) {
+              return err.getMessage()
+            }
+          }
+        }
+      ])
+    )
+
+    {
+
+      const client = new Client({
+              environment: new Environment(options),
+              credentials: new ApiCredentials(options),
+              sessions: true,
+              requestOptions: {
+                strictSSL: stringToBoolean(rVal(cli.args('strictSSL'), cli.config('strictSSL')), true)
+              }
+            }),
+            { environment, requestOptions } = client,
+            { url, endpoint, env } = environment,
+            { apiKey, username, password } = options,
+            appURL = `${endpoint}/${env}`.replace('api.', 'app.'),
+
+
+            loginBody = { email: options.username, password: options.password }
+
+      try {
+
+        await client.post('/accounts/login', loginBody)
+
+      } catch (err) {
+
+        switch (err.code) {
+          case 'kUnverifiedLocation':
+          case 'kNewLocation':
+          case 'kCallbackFormat':
+          case 'kCallbackNotFound':
+            loginBody.location = {
+              verificationToken: await question('This location requires verification. Enter the token you received via SMS.'),
+              locationName: `mdctl.medable.com@${os.hostname()}`,
+              singleUse: false
+            }
+            await client.post('/accounts/login', loginBody)
+            break
+
+          case 'kPasswordExpired':
+            console.log(`Your password expired. Please update it now at ${appURL}`)
+            return
+          default:
+            console.log(err.toJSON())
+            return
+        }
+
+      }
+
+      // save the last login credentials. re-use these for all calls until logout.
+      await CredentialsManager.setCustom('login', '*', {
+        client: {
+          environment: url,
+          credentials: { apiKey, username },
+          sessions: true,
+          requestOptions
+        },
+        password
+      })
+
+    }
+
+  }
+
+  async 'credentials@logout'(cli) {
+
+    // attempt to logout of the api.
+    try {
+
+      const client = cli.getApiClient({ ensureSession: false })
+      await client.post('/accounts/logout')
+
+    } catch (err) {
+      // eslint-disable-line no-empty
+    }
+
+    // erase any previously stored active login
+    await CredentialsManager.setCustom('login', '*')
+
+  }
+
+  async 'credentials@whoami'(cli) {
+
+    try {
+
+      const client = await cli.getApiClient(),
+            { environment, credentials } = client,
+            { authType: type, apiKey, username: email } = credentials,
+            result = {
+              type,
+              url: environment.url,
+              apiKey
+            }
+
+      if (email) {
+        result.account = {
+          email
+        }
+      }
+
+      try {
+
+        result.account = await client.get('/accounts/me', { query: { paths: ['_id', 'email', 'name.first', 'name.last', 'roles'] } })
+
+      } catch (err) {
+        // eslint-disable-line no-empty
+      }
+
+      console.log(formatOutput(result, cli.args('format')))
+
+    } catch (err) {
+
+      console.log(formatOutput(err.toJSON(), cli.args('format')))
+    }
+
+  }
+
+  async 'credentials@flush'() {
+
+    const deleted = (await CredentialsManager.clear())
+      + (await CredentialsManager.flush('fingerprint'))
+      + (await CredentialsManager.flush('session'))
+      + (await CredentialsManager.flush('login'))
+
+    console.log(deleted)
+
+  }
+
 
   // ----------------------------------------------------------------------------------------------
 
@@ -292,18 +559,21 @@ class Credentials extends Task {
     
     Usage: 
       
-      mdctl credentials [command] --type --endpoint --env --username --key --file --format                   
+      mdctl credentials [command] --type --endpoint --env --username --apiKey --file --format                   
           
     Arguments:               
       
       Command 
                                      
-        list - list stored credentials by type, environment, endpoint, username and/or key.       
+        list - list stored credentials by type, environment, endpoint, username and/or apiKey.       
         add - add or update credentials.       
         get - output the first matching stored credentials.
-        load - store the first matching credentials as the default for subsequent calls.                 
-        default - show the default credentials, if any.        
+        default [get|set|clear] - set or show the default credentials, if any.        
         clear - clear all matching credentials.
+        login - start a password session.    
+        logout - end a login session        
+        whoami - get the current authorization state
+        flush - clear everything (credentials, fingerprints, logins, session data, etc) from the keychain
                 
       Options 
                             
@@ -312,22 +582,25 @@ class Credentials extends Task {
         --endpoint - sets the endpoint. eg. https://api.dev.medable.com     
         --env sets the environment. eg. my-org-code
         --username for password and token auth, sets the lookup username / email / subject id
-        --key api key for looking up signing credentials (and token credentials)
-        --format - output format. defaults to text (json, yaml, text)              
+        --apiKey api key for looking up signing credentials (and token credentials)
+        --format - output format. defaults to text (json, yaml, text)             
+        --strictSSL - for login. default true. set to false to allow invalid certs for local testing.                       
         
       Input file options (secrets cannot be read from the command-line):        
             
         password - account password for login.
-        secret - api secret key for signing.
+        apiSecret - api secret key for signing.
         token - jwt token, which must include the 'cortex/eml' claim for lookup. 
         
-        other options readable from file: type, endpoint, env, username, key
+        other options readable from file: type, endpoint, env, username, apiKey
         
     Notes: 
       
       Stored JWT tokens must include the 'cortex/eml' claim (created with the includeEmail option).
       Tokens with the claim store the email address as the username, which the credentials manager
       uses to look up accounts.       
+      
+      There can only be a single active session for the user at any one time on the client.                                   
                                      
     `
   }
@@ -356,17 +629,32 @@ class Credentials extends Task {
 
     if (rString(cli.args('file'))) {
       const file = await loadJsonOrYaml(cli.args('file'))
-      Object.assign(options, _.pick(file, 'type', 'endpoint', 'env', 'username', 'key'))
+      Object.assign(options, _.pick(file, 'type', 'endpoint', 'env', 'username', 'apiKey'))
     }
 
     Credentials.assignArgIf(cli, options, 'type')
     Credentials.assignArgIf(cli, options, 'endpoint')
     Credentials.assignArgIf(cli, options, 'env')
     Credentials.assignArgIf(cli, options, 'username')
-    Credentials.assignArgIf(cli, options, 'key')
+    Credentials.assignArgIf(cli, options, 'apiKey')
 
     return options
 
+  }
+
+}
+
+function formatOutput(data, format = 'json') {
+
+  switch (format) {
+    case 'json':
+      return JSON.stringify(data)
+    case 'pretty':
+      return JSON.stringify(data, null, 2)
+    case 'yaml':
+      return jsyaml.safeDump(data)
+    default:
+      throw new RangeError('Invalid output format. Expected json, pretty or yaml')
   }
 
 }
