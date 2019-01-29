@@ -124,7 +124,7 @@ class Manifest extends ManifestStage {
     if (def.serviceAccounts) thisInternals.serviceAccounts = new ManifestStage(def.serviceAccounts)
     if (def.policies) thisInternals.policies = new ManifestStage(def.policies)
     if (def.notifications) thisInternals.notifications = new ManifestStage(def.notifications)
-    if (def.storage) thisInternals.storage = new ManifestStage(def.storage)
+    if (def.storageLocations) thisInternals.storageLocations = new ManifestStage(def.storageLocations)
 
     Object.assign(privatesAccessor(this), thisInternals)
   }
