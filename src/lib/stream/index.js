@@ -1,8 +1,7 @@
 const { PassThrough, Transform } = require('stream'),
-      JSONStream = require('JSONStream'),
-      Section = require('./section_factory'),
+      Section = require('./section'),
       Fault = require('../fault'),
-      KEYS = ['env', 'objects', 'scripts', 'templates', 'views']
+      KEYS = ['manifest', 'manifest-dependencies', 'manifest-exports', 'env', 'app', 'notification', 'policy', 'role', 'smsNumber', 'serviceAccount', 'storage', 'configuration', 'facet', 'object', 'script', 'template', 'view']
 
 class StreamTransform extends Transform {
 
@@ -10,39 +9,27 @@ class StreamTransform extends Transform {
     super(Object.assign({
       objectMode: true
     }, options))
-    this.sections = {}
-  }
-
-  validateSections() {
-    const sectionKeys = Object.keys(this.sections)
-    if (sectionKeys.length < 5) {
-      throw new Fault('fkInvalidBlob', `There are missing keys, it should have ${KEYS.toString()} and found only, ${Object.keys(this.sections).toString()}`, 400)
-    }
-    sectionKeys.forEach((k) => {
-      if (!this.sections[k].validate()) {
-        throw new Fault('fkInvalidBlob', `The section ${k} is no properly formed`, 400)
-      }
-    })
   }
 
   _transform(chunk, enc, done) {
     // Lets push only the allowed keys
-    if (KEYS.indexOf(chunk.key) > -1) {
-      const section = new Section(chunk.key, chunk.value)
+    if (!chunk.object) {
+      throw new Fault('kMissingObjectKey', 'There is no object property', 404)
+    }
+    if (chunk.object === 'fault') {
+      throw Fault.from(chunk)
+    } else if (KEYS.indexOf(chunk.object) > -1) {
+      const section = new Section(chunk, chunk.object)
       this.push(section)
-      this.sections[chunk.key] = section
+    } else {
+      console.log('NOT', chunk)
     }
     done()
 
   }
 
   _flush(done) {
-    try {
-      this.validateSections()
-      done()
-    } catch (e) {
-      done(e)
-    }
+    done()
   }
 
 }
@@ -54,15 +41,15 @@ class StreamBlob extends PassThrough {
       objectMode: true
     }, options))
 
-    this.jsonStream = JSONStream.parse('$*')
+    // this.jsonStream = JSONStream.parse('$*')
     this.streamTransform = new StreamTransform(options)
 
-    this.jsonStream.on('error', e => this.emit('error', e))
+    // this.jsonStream.on('error', e => this.emit('error', e))
     this.streamTransform.on('error', e => this.emit('error', e))
 
     this.on('pipe', (source) => {
       source.unpipe(this)
-      this.transformStream = source.pipe(this.jsonStream).pipe(this.streamTransform)
+      this.transformStream = source.pipe(this.streamTransform)
     })
   }
 

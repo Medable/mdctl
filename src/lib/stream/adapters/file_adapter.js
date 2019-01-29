@@ -12,9 +12,13 @@ class Layout extends Writable {
     this.ensure(this.output)
   }
 
-  ensure(path) {
-    if (!fs.existsSync(path)) {
-      fs.mkdirSync(path, { recursive: true })
+  ensure(directory) {
+    const path = directory.replace(/\/$/, '').split('/')
+    for (let i = 1; i <= path.length; i++) {
+      const segment = path.slice(0, i).join('/')
+      if (segment && !fs.existsSync(segment)) {
+        fs.mkdirSync(segment)
+      }
     }
   }
 
@@ -30,33 +34,29 @@ class Layout extends Writable {
 
 class FilesLayout extends Layout {
 
-  _write(chunk, enc, cb) {
-    chunk.namespaces.forEach(n => this.ensure(`${this.output}/${n}`))
-    const dataChunk = chunk.data,
-          promises = []
-    if (dataChunk instanceof Array) {
-      dataChunk.forEach((item) => {
-        const name = item.name || item.content.name || item.content.code || item.content.label
-        promises.push(new Promise((resolve, reject) => {
-          fs.writeFile(`${this.output}${chunk.getPath(item)}/${name}.${item.format || this.format}`,
-            item.plain ? item.content : this.parseContent(item.content), (err) => {
-              if (err) return reject(err)
-              return resolve()
-            })
-        }))
-      })
-    } else {
-      promises.push(new Promise((resolve, reject) => {
-        fs.writeFile(`${this.output}${chunk.getPath()}/${chunk.key}.${this.format}`,
-          this.parseContent(dataChunk.content), (err) => {
-            if (err) return reject(err)
-            return resolve()
-          })
-      }))
+  async writeToFile(file, content, plain = false) {
+    return new Promise((resolve, reject) => {
+      const data = plain ? content : this.parseContent(content)
+      const result = fs.writeFileSync(file, data)
+      return result
+    })
+  }
+
+  async processChunks(chunk) {
+    const folder = `${this.output}/${chunk.getPath()}`
+    this.ensure(folder)
+    try {
+      await this.writeToFile(`${folder}/${chunk.name}.${this.format}`, this.parseContent(chunk.content), false)
+    } catch (e) {
+      console.log(e)
+      throw e
     }
-    return Promise.all(promises).then(() => {
-      cb()
-    }).catch(e => cb(e))
+
+  }
+
+  _write(chunk, enc, cb) {
+    this.processChunks(chunk)
+    cb()
   }
 
 }
