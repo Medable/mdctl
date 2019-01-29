@@ -85,6 +85,9 @@ describe('Manifest', () => {
       description: 'All-in',
       manifest: {
         includes: ['*'],
+        env: {
+          includes: ['*']
+        },
         objects: [
           {
             // Matches only pretty foo
@@ -107,9 +110,16 @@ describe('Manifest', () => {
         serviceAccounts: {},
         policies: {},
         notifications: {},
-        storageLocations: {}
+        storageLocations: {},
+        // custom objects and instance data
+        c_awesome: {
+          includes: ['/cool/'],
+          excludes: ['/nerd/']
+        }
       },
       pathTests: [
+        // env
+        { shouldAccept: true, path: 'env.configuration.minPasswordScore' },
         // accepts these objs and props
         { shouldAccept: true, path: 'objects.c_foo' },
         { shouldAccept: true, path: 'objects.c_foo.properties.c_blue' },
@@ -131,7 +141,11 @@ describe('Manifest', () => {
         { shouldAccept: true, path: 'templates.axon__email2' },
         { shouldAccept: false, path: 'templates.axon__email3' },
         // views
-        { shouldAccept: true, path: 'views.c_view1' }
+        { shouldAccept: true, path: 'views.c_view1' },
+        // custom objects and instance data
+        { shouldAccept: true, path: 'c_awesome.c_cool_dude' },
+        { shouldAccept: false, path: 'c_awesome.c_nerd_dude' },
+        { shouldAccept: false, path: 'c_awesome.c_random_dude' }
       ]
     }
   ]

@@ -1,7 +1,7 @@
 
 const _ = require('lodash'),
       { privatesAccessor } = require('../../lib/privates'),
-      { rArray, isSet } = require('../../lib/utils/values')
+      { rArray, isSet, isCustom } = require('../../lib/utils/values')
 
 // Augmented regular expresions. Accepts strings, star
 class ARegex {
@@ -90,7 +90,6 @@ class ObjectSection extends ManifestStage {
 
   accept(path) {
     const keyTester = privatesAccessor(this, 'keyTester'),
-          // [last, ...prefix] = path.split('.').reverse(),
           [first, ...rest] = path.split('.')
 
     if (keyTester) {
@@ -115,18 +114,31 @@ class Manifest extends ManifestStage {
       thisInternals.objects = def.objects.map(section => new ObjectSection(section, 'name'))
     }
 
+    // We defien a section for each built-in name
+    Manifest.builtInSections.forEach((name) => {
+      if (def[name]) {
+        thisInternals[name] = new ManifestStage(def[name])
+      }
+    })
 
-    if (def.scripts) thisInternals.scripts = new ManifestStage(def.scripts)
-    if (def.views) thisInternals.views = new ManifestStage(def.views)
-    if (def.templates) thisInternals.templates = new ManifestStage(def.templates)
-    if (def.apps) thisInternals.apps = new ManifestStage(def.apps)
-    if (def.roles) thisInternals.roles = new ManifestStage(def.roles)
-    if (def.serviceAccounts) thisInternals.serviceAccounts = new ManifestStage(def.serviceAccounts)
-    if (def.policies) thisInternals.policies = new ManifestStage(def.policies)
-    if (def.notifications) thisInternals.notifications = new ManifestStage(def.notifications)
-    if (def.storageLocations) thisInternals.storageLocations = new ManifestStage(def.storageLocations)
+    // We also define a section for each custom name to capture user data
+    Object.keys(def)
+      .filter(isCustom)
+      .forEach((name) => {
+        if (def[name]) {
+          thisInternals[name] = new ManifestStage(def[name])
+          Object.defineProperty(this, name, {
+            get: () => privatesAccessor(this, name)
+          })
+        }
+      })
 
     Object.assign(privatesAccessor(this), thisInternals)
+  }
+
+  static get builtInSections() {
+    return ['env', 'scripts', 'views', 'templates', 'apps', 'roles', 'serviceAccounts',
+      'policies', 'notifications', 'storageLocations']
   }
 
   accept(path) {
@@ -151,6 +163,10 @@ class Manifest extends ManifestStage {
 
     if (isSet(res)) return res
     return this.dependencies
+  }
+
+  get env() {
+    return privatesAccessor(this, 'env')
   }
 
   get objects() {
