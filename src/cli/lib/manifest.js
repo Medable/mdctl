@@ -190,7 +190,7 @@ class Manifest extends ManifestStage {
   }
 
   get storageLocations() {
-    return privatesAccessor(this, 'storage')
+    return privatesAccessor(this, 'storageLocations')
   }
 
 }
