@@ -107,7 +107,7 @@ describe('Manifest', () => {
         serviceAccounts: {},
         policies: {},
         notifications: {},
-        storage: {}
+        storageLocations: {}
       },
       pathTests: [
         // accepts these objs and props
