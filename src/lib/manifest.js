@@ -1,7 +1,7 @@
 
 const _ = require('lodash'),
-      { privatesAccessor } = require('../../lib/privates'),
-      { rArray, isSet, isCustom } = require('../../lib/utils/values')
+      { privatesAccessor } = require('./privates'),
+      { rArray, isSet, isCustom } = require('./utils/values')
 
 // Augmented regular expresions. Accepts strings, star
 class ARegex {
