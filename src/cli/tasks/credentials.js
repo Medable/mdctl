@@ -342,7 +342,6 @@ class Credentials extends Task {
             apiKey: options.apiKey
           }, _.identity),
           secrets = await CredentialsManager.getAllMatchingCredentials(secretsQuery)
-    console.log('SecretsQuery', secretsQuery)
     let secret = _.first(secrets),
         credentialsIndex
 
@@ -565,8 +564,6 @@ class Credentials extends Task {
             loginBody = { email: options.username, password: options.password }
 
       try {
-
-        console.log('LoginBody', JSON.stringify(loginBody))
 
         await client.post('/accounts/login', loginBody)
 
