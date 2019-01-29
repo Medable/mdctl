@@ -603,7 +603,7 @@ class Credentials extends Task {
         password
       })
 
-      if (credentialsIndex.credentialsIndex === -1) {
+      if (_.get(credentialsIndex, 'credentialsIndex') === -1) {
         const saveCredentials = await prompt([
           {
             name: 'saveCredentials',
