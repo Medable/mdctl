@@ -50,14 +50,11 @@ class Env extends Task {
     streamWriter.pipe(new FileAdapter(`${process.cwd()}/output-${new Date().getTime()}`, format))
     pathTo(options, 'requestOptions.headers.accept', 'application/x-ndjson')
     await client.call(url.pathname, Object.assign(options, { stream }))
-    return new Promise((resolve) => {
-      streamWriter.on('data', (r) => {
-        console.log(r)
-      })
+    return new Promise((resolve, reject) => {
       streamWriter.on('error', (r) => {
-        console.log(r)
+        reject()
       })
-      streamWriter.on('process_finished', (r) => {
+      streamWriter.on('finish', (r) => {
         resolve()
       })
     })
