@@ -13,7 +13,7 @@ class SectionBase {
     this.content = content
     this.key = key
     this.scriptFiles = {}
-    this.extraFile = null
+    this.extraFiles = []
     SectionsCreated.push(this)
     if (new.target === SectionBase) {
       Object.seal(this)
@@ -51,30 +51,31 @@ class SectionBase {
     return this.getParentFromPath(path)
   }
 
-  downloadResources() {
-    return request(this.extraFile.data)
+  downloadResources(url) {
+    return request(url)
   }
 
   replaceFacets() {
     return new Promise(async(success) => {
       const nodes = jp.nodes(this.content, '$..path')
       if (nodes.length) {
-        const parent = this.getParentFromPath(nodes[0].path),
-              facets = _.filter(SectionsCreated, sc => sc.key === 'facet'),
-              facet = _.find(facets, f => parent.path === f.content.name)
-        if (facet) {
-          const { content } = facet
-          this.extraFile = {
-            name: content.name,
-            facet,
-            ext: mime.getExtension(content.mime),
-            data: content.url || content.data,
-            hasToDownload: content.url ? true : false
+        _.forEach(nodes, (n) => {
+          const parent = this.getParentFromPath(n.path),
+                facets = _.filter(SectionsCreated, sc => sc.key === 'facet'),
+                facet = _.find(facets, f => parent.path === f.content.name)
+          if (facet) {
+            const { content } = facet
+            this.extraFiles.push({
+              name: content.name,
+              facet,
+              ext: mime.getExtension(content.mime),
+              data: content.url || content.data,
+              hasToDownload: !!content.url,
+              pathTo: jp.stringify(n.path)
+            })
           }
-          success()
-        } else {
-          return success()
-        }
+        })
+        return success()
       }
       return success()
     })

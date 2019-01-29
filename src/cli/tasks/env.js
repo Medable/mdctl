@@ -54,7 +54,7 @@ class Env extends Task {
       streamWriter.on('error', (r) => {
         reject()
       })
-      streamWriter.on('finish', (r) => {
+      streamWriter.on('end_writing', (r) => {
         resolve()
       })
     })

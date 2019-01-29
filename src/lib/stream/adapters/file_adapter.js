@@ -52,23 +52,31 @@ class FilesLayout extends Layout {
     })
   }
 
-  async writeAsset(path, chunk) {
-    return new Promise((resolve, reject) => {
-      const dest = `${path}/${slugify(chunk.extraFile.name)}.${chunk.extraFile.ext}`,
-            fileWriter = fs.createWriteStream(dest)
-      fileWriter.on('finish', () => {
-        resolve()
-      })
-      fileWriter.on('error', () => {
-        reject()
-      })
-      if (chunk.extraFile.hasToDownload) {
-        chunk.downloadResources().pipe(fileWriter)
-      } else {
-        fileWriter.write(chunk.extraFile.data)
-        fileWriter.end()
-      }
+  async writeAssets(path, chunk) {
+    const promises = []
+    _.forEach(chunk.extraFiles, (f) => {
+      promises.push(new Promise((resolve, reject) => {
+        const dest = `${path}/${slugify(f.name)}.${f.ext}`,
+              fileWriter = fs.createWriteStream(dest)
+        fileWriter.on('finish', () => {
+          resolve({
+            name: f.name,
+            path: f.pathTo,
+            dest
+          })
+        })
+        fileWriter.on('error', () => {
+          reject()
+        })
+        if (f.hasToDownload) {
+          chunk.downloadResources(f.data).pipe(fileWriter)
+        } else {
+          fileWriter.write(f.data)
+          fileWriter.end()
+        }
+      }))
     })
+    return Promise.all(promises)
   }
 
   async processChunk(chunk) {
@@ -77,9 +85,12 @@ class FilesLayout extends Layout {
       this.ensure(folder)
       chunk.getScripts()
       await chunk.replaceFacets()
-      if (chunk.extraFile !== null) {
+      if (chunk.extraFiles.length > 0) {
         this.ensure(`${folder}/assets`)
-        await this.writeAsset(`${folder}/assets`, chunk)
+        const dests = await this.writeAssets(`${folder}/assets`, chunk)
+        _.forEach(dests, (d) => {
+          jp.value(chunk.content, d.path, d.dest.replace(this.output, ''))
+        })
       }
       await this.writeToFile(`${folder}/${slugify(chunk.name, '_')}.${this.format}`, chunk.content, false)
       return true
@@ -89,7 +100,13 @@ class FilesLayout extends Layout {
   }
 
   _write(chunk, enc, cb) {
-    this.processChunk(chunk)
+    this.processChunk(chunk).then(() => {
+      cb()
+    }).catch(e => cb(e))
+  }
+
+  _final(cb) {
+    this.emit('end_writing')
     cb()
   }
 
