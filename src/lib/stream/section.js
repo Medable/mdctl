@@ -1,14 +1,15 @@
 const slugify = require('slugify'),
       _ = require('lodash'),
-      jp = require('jsonpath')
+      jp = require('jsonpath'),
+      CONFIG_KEYS = ['app', 'notification', 'policy', 'role', 'smsNumber', 'serviceAccount', 'storage', 'configuration'],
+      MANIFEST_KEYS = ['manifest', 'manifest-dependencies', 'manifest-exports']
 
 class SectionBase {
 
-  constructor(content, key = '', jsNs = '', namespaces = ['']) {
+  constructor(content, key = '', jsNs = 'js') {
     this.content = content
     this.key = key
     this.jsNs = jsNs
-    this.namespaces = jsNs ? [...namespaces, this.jsNs] : namespaces
     this.jsInScript = {}
     this.extractScriptCode()
     if (new.target === SectionBase) {
@@ -17,30 +18,25 @@ class SectionBase {
   }
 
   get name() {
-    return this.key
+    return this.content.name || this.content.code || this.content.object
   }
 
   get data() {
-    if (this.content instanceof Array) {
-      return [
-        ..._.map(this.content, c => ({ content: c, type: c.type })),
-        ..._.map(this.jsInScript, js => ({
-          type: 'js', name: js.name, format: 'js', content: js.value, plain: true
-        }))]
-    }
-    return [
-      { content: this.content, type: null, name: this.key },
-      ..._.map(this.jsInScript, js => ({
-        type: 'js', name: js.name, format: 'js', content: js.value, plain: true
-      }))]
+    return this.content
   }
 
   clearScripts() {
     this.jsInScript = {}
   }
 
-  getPath(item) {
-    return `${this.namespaces[0]}/${item && item.type ? item.type : ''}`
+  getPath() {
+    let path = this.content.object
+    if (CONFIG_KEYS.indexOf(this.key) > -1) {
+      path = `env/${this.content.object}`
+    } else if (MANIFEST_KEYS.indexOf(this.key) > -1) {
+      path = 'manifest/'
+    }
+    return path
   }
 
   getParentFromPath(path) {

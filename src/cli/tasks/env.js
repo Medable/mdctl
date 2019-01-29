@@ -2,8 +2,10 @@
 
 const _ = require('lodash'),
       fs = require('fs'),
+      ndjson = require('ndjson'),
       { Readable } = require('stream'),
       { isSet } = require('../../lib/utils/values'),
+      pathTo = require('../../lib/utils/path.to'),
       Task = require('../lib/task'),
       { CredentialsManager } = require('../../lib/api/credentials'),
       Client = require('../../lib/api/client'),
@@ -36,14 +38,26 @@ class Env extends Task {
 
   async 'env@export'(cli) {
     const passedOptions = cli.getArguments(this.optionKeys),
-          defaultCredentials = cli.config('defaultCredentials'),
-          passwordSecretQuery = _.isUndefined(passedOptions.endpoint)
-            && _.isUndefined(passedOptions.env) ? defaultCredentials : passedOptions,
-          passwordSecret = await this.getPasswordSecret(passwordSecretQuery),
-          manifest = JSON.parse(fs.readFileSync(passedOptions.manifest || `${cli.cwd}/manifest.json`))
+          manifest = JSON.parse(fs.readFileSync(passedOptions.manifest || `${cli.cwd}/manifest.json`)),
+          stream = ndjson.parse(),
+          client = await cli.getApiClient(),
+          url = new URL('/developer/environment/export', client.environment.url),
+          options = {
+            query: url.searchParams,
+            method: 'post'
+          }
 
-    return (await cli.getApiClient({ passwordSecret })).post('/routes/stubbed_export', manifest)
-      .then(exportResponse => this.writeExport(passedOptions, JSON.stringify(exportResponse)))
+    this.writeExport(stream, passedOptions)
+    pathTo(options, 'requestOptions.headers.accept', 'application/x-ndjson')
+    const resultStream = await client.call(url.pathname, Object.assign(options, { stream }))
+    return new Promise((resolve) => {
+      resultStream.on('data', (r) => {
+        console.log(r)
+      })
+      resultStream.on('end', (r) => {
+        resolve()
+      })
+    })
   }
 
   async 'env@import'() {
@@ -85,26 +99,19 @@ class Env extends Task {
     return this.credentialsManager.get(search)
   }
 
-  writeExport(passedOptions, stringifiedContent) {
+  writeExport(stream, passedOptions) {
     const format = passedOptions.format && { format: passedOptions.format }
-    return new Promise((resolve, reject) => {
-      const readBlob = new Readable()
-      // eslint-disable-next-line no-underscore-dangle
-      readBlob._read = () => {}
-
-      readBlob
-        .pipe(new Stream())
-        .pipe(new FileAdapter(`output-${new Date().getTime()}`, format))
-        .on('finish', () => {
-          resolve()
-        })
-        .on('error', (err) => {
-          reject(err)
-        })
-
-      readBlob.push(Buffer.from(stringifiedContent))
-
-    })
+    stream.pipe(new Stream())
+      .pipe(new FileAdapter(`${process.cwd()}/output-${new Date().getTime()}`, format))
+      .on('data', (d) => {
+        console.log(d)
+      })
+      .on('finish', () => {
+        console.log('All Good!')
+      })
+      .on('error', (err) => {
+        console.log(err)
+      })
   }
 
 }
