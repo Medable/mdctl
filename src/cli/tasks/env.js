@@ -3,7 +3,6 @@
 const _ = require('lodash'),
       fs = require('fs'),
       ndjson = require('ndjson'),
-      { Readable } = require('stream'),
       { isSet } = require('../../lib/utils/values'),
       pathTo = require('../../lib/utils/path.to'),
       Task = require('../lib/task'),
@@ -37,7 +36,7 @@ class Env extends Task {
   }
 
   async 'env@export'(cli) {
-    const passedOptions = cli.getArguments(this.optionKeys),
+    const passedOptions = await cli.getArguments(this.optionKeys),
           manifest = JSON.parse(fs.readFileSync(passedOptions.manifest || `${cli.cwd}/manifest.json`)),
           stream = ndjson.parse(),
           client = await cli.getApiClient(),
@@ -45,16 +44,20 @@ class Env extends Task {
           options = {
             query: url.searchParams,
             method: 'post'
-          }
-
-    this.writeExport(stream, passedOptions)
+          },
+          format = passedOptions.format && { format: passedOptions.format },
+          streamWriter = new Stream(stream, { format })
+    streamWriter.pipe(new FileAdapter(`${process.cwd()}/output-${new Date().getTime()}`, format))
     pathTo(options, 'requestOptions.headers.accept', 'application/x-ndjson')
-    const resultStream = await client.call(url.pathname, Object.assign(options, { stream }))
+    await client.call(url.pathname, Object.assign(options, { stream }))
     return new Promise((resolve) => {
-      resultStream.on('data', (r) => {
+      streamWriter.on('data', (r) => {
         console.log(r)
       })
-      resultStream.on('end', (r) => {
+      streamWriter.on('error', (r) => {
+        console.log(r)
+      })
+      streamWriter.on('process_finished', (r) => {
         resolve()
       })
     })
@@ -97,21 +100,6 @@ class Env extends Task {
   getPasswordSecret(passedOptions) {
     const search = _.pick(passedOptions, 'endpoint', 'env')
     return this.credentialsManager.get(search)
-  }
-
-  writeExport(stream, passedOptions) {
-    const format = passedOptions.format && { format: passedOptions.format }
-    stream.pipe(new Stream())
-      .pipe(new FileAdapter(`${process.cwd()}/output-${new Date().getTime()}`, format))
-      .on('data', (d) => {
-        console.log(d)
-      })
-      .on('finish', () => {
-        console.log('All Good!')
-      })
-      .on('error', (err) => {
-        console.log(err)
-      })
   }
 
 }
