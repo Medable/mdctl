@@ -12,7 +12,6 @@ class Layout extends Writable {
     super({ objectMode: true })
     this.output = output
     this.format = format
-    this.chunks = []
     this.ensure(this.output)
   }
 
