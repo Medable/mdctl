@@ -5,6 +5,7 @@ const jsonwebtoken = require('jsonwebtoken'),
       keytar = require('keytar'),
       { privatesAccessor } = require('../privates'),
       { rString, isSet } = require('../utils/values'),
+      { normalizeEndpoint } = require('../utils'),
       { signPath } = require('./signer'),
       Environment = require('./environment'),
       serviceName = 'com.medable.mdctl',
@@ -21,7 +22,8 @@ class Credentials {
    *  apiSecret, // for signed requests
    *  apiPrincipal, // for signed requests, sets the default principal
    *  username,  // for password auth only
-   *  password   // for password auth only
+   *  password   // for password auth only,
+   *  authType   // force a default authType for getting authorization headers. defaults to auto.
    */
   constructor(input) {
 
@@ -34,9 +36,11 @@ class Credentials {
       apiKey: jwt ? jwt.iss : rString(options.apiKey),
       apiSecret: rString(options.apiSecret),
       apiPrincipal: rString(options.apiPrincipal),
-      username: rString(options.username, ''),
-      password: rString(options.password, '')
+      username: rString((jwt && jwt['cortex/eml']) || options.username, ''),
+      password: rString(options.password, ''),
     })
+
+    this.authType = rString(options.authType, 'auto')
 
   }
 
@@ -44,23 +48,47 @@ class Credentials {
     return privatesAccessor(this).apiKey
   }
 
+  get username() {
+    return privatesAccessor(this).username
+  }
+
   get authType() {
+
     const privates = privatesAccessor(this)
+
+    if (privates.authType !== 'auto') {
+      return privates.authType
+    }
+
     if (privates.jwt) {
       return 'token'
     }
-    if (privates.secret) {
+    if (privates.apiSecret) {
       return 'signature'
     }
     if (privates.username) {
       return 'password'
     }
+
     return 'none'
+
+  }
+
+  // set the default auth type for generating auth headers.
+  set authType(type) {
+
+    if (!['auto', 'token', 'signature', 'password', 'basic', 'none'].includes(type)) {
+      throw new TypeError('Unsupported auth type. Expected auto, token, signature, password, basic, none')
+    }
+
+    privatesAccessor(this).authType = type
+
   }
 
   /**
    * @param input
-   *  type    detected based on options force to: ['auto', token', 'signature', 'password', 'none']
+   *  type    defaults to this.authType. the kind of headers to
+   *    produce: auto, token, signature, password, basic, none
    *  path    required for signed requests (default '/')
    *  method  required for signed requests (default 'GET')
    *  principal optional. for signed requests. defaults to apiPrincipal
@@ -73,7 +101,7 @@ class Credentials {
             'medable-client-key': privates.apiKey
           }
 
-    let type = rString(options.type, 'auto')
+    let type = rString(options.type, privates.authType)
     if (type === 'auto') {
       if (privates.jwt) {
         type = 'token'
@@ -116,11 +144,12 @@ class Credentials {
         }
         break
 
-      case 'password':
+      case 'basic':
 
         headers.authorization = `Basic ${Buffer.from(`${privates.username}:${privates.password}`).toString('base64')}`
         break
 
+      case 'password':
       default:
 
     }
@@ -141,10 +170,18 @@ class Credentials {
 
 class Secret {
 
-  constructor(typeName, environment, username, key, password) {
+  /**
+   *
+   * @param typeName
+   * @param environment
+   * @param username
+   * @param apiKey the app api key.
+   * @param password
+   */
+  constructor(typeName, environment, username, apiKey, password) {
 
     Object.assign(privatesAccessor(this), {
-      typeName, environment, username, key, password
+      typeName, environment, username, apiKey, password
     })
   }
 
@@ -160,8 +197,8 @@ class Secret {
     return privatesAccessor(this).username
   }
 
-  get key() {
-    return privatesAccessor(this).key
+  get apiKey() {
+    return privatesAccessor(this).apiKey
   }
 
   get password() {
@@ -174,15 +211,16 @@ class Secret {
   }
 
   get encoded() {
-    const { environment, username, key } = privatesAccessor(this)
-    return `${environment.url}/${key}/${username}`
+    const { environment, username, apiKey } = privatesAccessor(this)
+    return `${environment.url}/${apiKey}/${username}`
   }
 
   toJSON() {
-    const { typeName, environment } = privatesAccessor(this)
+    const { typeName, environment, apiKey } = privatesAccessor(this)
     return {
       type: typeName,
-      url: environment.url
+      url: environment.url,
+      apiKey
     }
   }
 
@@ -197,13 +235,13 @@ class PasswordSecret extends Secret {
     if (!rString(options.username)) {
       throw new TypeError('Invalid password credentials. expected a username.')
     }
-    super('password', environment, options.username, '', rString(options.password, ''))
+    super('password', environment, options.username, options.apiKey, rString(options.password, ''))
   }
 
   get credentials() {
 
-    const { username, password } = privatesAccessor(this)
-    return new Credentials({ username, password })
+    const { username, password, apiKey } = privatesAccessor(this)
+    return new Credentials({ username, password, apiKey })
   }
 
   toJSON() {
@@ -253,24 +291,23 @@ class SignatureSecret extends Secret {
 
     const options = isSet(input) ? input : {}
 
-    if (!rString(options.key) || !rString(options.secret)) {
+    if (!rString(options.apiKey) || !rString(options.apiSecret)) {
       throw new TypeError('Invalid signing credentials. expected a key and secret.')
     }
-    validateApiKey(options.key)
-    validateApiSecret(options.secret)
+    validateApiKey(options.apiKey)
+    validateApiSecret(options.apiSecret)
 
-    super('signature', environment, '', options.key, options.secret)
+    super('signature', environment, '', options.apiKey, options.apiSecret)
   }
 
   get credentials() {
 
-    const { key, password } = privatesAccessor(this)
-    return new Credentials({ apiKey: key, apiSecret: password })
+    const { apiKey, password } = privatesAccessor(this)
+    return new Credentials({ apiKey, apiSecret: password })
   }
 
   toJSON() {
     return Object.assign(super.toJSON(), {
-      apiKey: this.key,
       apiSecret: this.password
     })
   }
@@ -322,16 +359,16 @@ class CredentialsManager {
           secret = rString(inputSecret, ''),
           type = service.startsWith(serviceName) && service.substr(serviceName.length + 1),
           url = new URL('', account),
-          [, env, version, key, username] = url.pathname.split('/'),
+          [, env, version, apiKey, username] = url.pathname.split('/'),
           environment = new Environment(`${url.protocol}//${url.host}/${env}/${version}`)
 
     switch (type) {
       case 'password':
-        return new PasswordSecret(environment, { username, password: secret })
+        return new PasswordSecret(environment, { username, apiKey, password: secret })
       case 'token':
         return new TokenSecret(environment, { token: secret })
       case 'signature':
-        return new SignatureSecret(environment, { key, secret })
+        return new SignatureSecret(environment, { apiKey, apiSecret: secret })
       default:
         throw new TypeError('Unsupported credentials type. Expected password, token or signature.')
     }
@@ -366,7 +403,7 @@ class CredentialsManager {
    *  type: 'auto'. auto-detected based on input properties
    *    password: username, password
    *    token: token
-   *    signature: key, secret
+   *    signature: apiKey, apiSecret
    *
    *
    * @returns {Promise<void>}
@@ -384,7 +421,7 @@ class CredentialsManager {
    *  endpoint - optional
    *  env - optional
    *  username - optional
-   *  key - optional
+   *  apiKey - optional
    *
    * @returns {Promise<void>}
    */
@@ -392,10 +429,10 @@ class CredentialsManager {
 
     const options = isSet(input) ? input : {},
           type = rString(options.type) && detectAuthType({ type: options.type }),
-          endpoint = fixEndpoint(options.endpoint),
+          endpoint = normalizeEndpoint(options.endpoint),
           env = rString(options.env),
           username = rString(options.username),
-          key = rString(options.key),
+          apiKey = rString(options.apiKey),
 
           list = await Promise.all(
             (type ? [type] : typeNames).map(async(typeName) => {
@@ -413,7 +450,7 @@ class CredentialsManager {
                   && (!endpoint || item.environment.endpoint === endpoint)
                   && (!env || item.environment.env === env)
                   && (!username || equalsStringOrRegex(item.username, username))
-                  && (!key || item.key === key)
+                  && (!apiKey || item.apiKey === apiKey)
                 ))
 
             })
@@ -441,6 +478,52 @@ class CredentialsManager {
 
   }
 
+  static async flush(typeName) {
+
+    const service = `${serviceName}.${typeName}`,
+          list = await CredentialsProvider.get().getCredentials(service)
+
+    return (await Promise.all(
+      list.map(async(item) => {
+        const deleted = await CredentialsProvider.get().deleteCredentials(`${serviceName}.${typeName}`, item.account)
+        return deleted ? 1 : 0
+      })
+    )).reduce((memo, count) => memo + count, 0)
+
+  }
+
+
+  static async getCustom(name, context) {
+
+    const list = await CredentialsProvider.get().getCredentials(`${serviceName}.${name}`),
+          item = list
+            .filter(({ account }) => account === context)
+            .map(({ password }) => password)[0]
+
+    try {
+      return item && JSON.parse(Buffer.from(item, 'base64').toString('utf8'))
+    } catch (err) {
+      return null
+    }
+
+  }
+
+  static async setCustom(name, context, data = null) {
+
+    const service = `${serviceName}.${name}`
+
+    if (data === null) {
+      return CredentialsProvider.get().deleteCredentials(service, context)
+    }
+
+    return CredentialsProvider.get().setCredentials(
+      service,
+      context,
+      Buffer.from(JSON.stringify(data), 'utf8').toString('base64')
+    )
+
+  }
+
 }
 
 function detectAuthType(input) {
@@ -452,7 +535,7 @@ function detectAuthType(input) {
   if (type === 'auto') {
     if (options.token) {
       return 'token'
-    } if (options.secret) {
+    } if (options.apiSecret) {
       return 'signature'
     } if (options.password) {
       return 'password'
@@ -462,8 +545,8 @@ function detectAuthType(input) {
 
 }
 
-function validateApiKey(key) {
-  if (/^([0-9a-z-A-Z]){22}$/i.test(rString(key))) {
+function validateApiKey(apiKey) {
+  if (/^([0-9a-z-A-Z]){22}$/i.test(rString(apiKey))) {
     return true
   }
   throw new TypeError('Invalid api key')
@@ -474,16 +557,6 @@ function validateApiSecret(secret) {
     return true
   }
   throw new TypeError('Invalid api secret')
-}
-
-function fixEndpoint(endpoint) {
-
-  let str = rString(endpoint, '')
-  if (str && !str.includes('://')) {
-    str = `https://${str}`
-  }
-  return str
-
 }
 
 function equalsStringOrRegex(test, input) {
@@ -522,5 +595,8 @@ module.exports = {
   Credentials,
   CredentialsManager,
   detectAuthType,
-  CredentialsProvider
+  CredentialsProvider,
+  validateApiKey,
+  validateApiSecret,
+  normalizeEndpoint
 }

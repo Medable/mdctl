@@ -28,7 +28,7 @@ function sign(command, method, secret, timestamp) {
   }
 }
 
-function signPath(path, key, secret, method = 'GET') {
+function signPath(path, apiKey, apiSecret, method = 'GET') {
 
   const url = new URL(path, 'https://host'),
         command = `/${url.pathname.replace(/\/{2,}/g, '/').replace(/^\/|\/$/g, '')}`
@@ -36,7 +36,7 @@ function signPath(path, key, secret, method = 'GET') {
   return sign(
     command,
     method,
-    `${key}${secret}`,
+    `${apiKey}${apiSecret}`,
     new Date()
   )
 
@@ -46,8 +46,8 @@ function signRequest(app, path, method = 'GET') {
 
   return signPath(
     path,
-    app.key,
-    app.secret,
+    app.apiKey,
+    app.apiSecret,
     method
   )
 

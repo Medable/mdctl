@@ -1,9 +1,13 @@
 const path = require('path'),
       fs = require('fs'),
+      _ = require('lodash'),
       yargs = require('yargs'),
       { privatesAccessor } = require('../lib/privates'),
       { createTask } = require('./tasks'),
-
+      Client = require('../lib/api/client'),
+      { CredentialsManager } = require('../lib/api/credentials'),
+      { loadJsonOrYaml } = require('../lib/utils'),
+      { stringToBoolean, rBool } = require('../lib/utils/values'),
       { createConfig } = require('./lib/config')
 
 async function readConfig(config, from) {
@@ -111,6 +115,105 @@ module.exports = class MdCtlCli {
     // reset configuration
     privates.config = config
 
+  }
+
+  async getDefaultCredentials() {
+
+    const configureDir = path.join(process.env.HOME, '.medable'),
+          configureFile = path.join(configureDir, 'mdctl.yaml')
+
+    try {
+      return (await loadJsonOrYaml(configureFile))
+    } catch (err) {
+      return {}
+    }
+
+  }
+
+  async getApiClient(options = {}) {
+
+    const ensureSession = rBool(options.testStatus, true),
+          getClientAndCredsFrom = async(passwordSecret) => {
+            const activeLogin = await CredentialsManager.getCustom('login', '*'),
+                  activeClientConfig = _.get(activeLogin, 'client'),
+                  isActiveClientReusable = !_.isUndefined(activeLogin)
+                    && this.doesClientMatchSecret(activeClientConfig, passwordSecret),
+                  client = isActiveClientReusable
+                    ? new Client(activeClientConfig)
+                    : this.createNewClientBy(passwordSecret),
+                  activeCredentials = _.pick(passwordSecret, ['username', 'password'])
+
+            return { client, activeCredentials }
+          },
+          getDefaultClientAndCreds = async() => {
+            const defaultPasswordSecret = await CredentialsManager.get(this.config('defaultCredentials')),
+                  activeLogin = await CredentialsManager.getCustom('login', '*'),
+                  activeClientConfig = _.get(activeLogin, 'client'),
+                  client = activeLogin
+                    ? new Client(activeClientConfig)
+                    : this.createNewClientBy(defaultPasswordSecret),
+                  activeCredentials = activeLogin
+                    ? {
+                      username: activeLogin.client.credentials.username,
+                      password: activeLogin.password
+                    }
+                    : _.pick(defaultPasswordSecret, ['username', 'password'])
+
+            return { client, activeCredentials }
+          },
+          { client, activeCredentials } = options.passwordSecret
+            ? getClientAndCredsFrom(options.passwordSecret)
+            : getDefaultClientAndCreds()
+
+    if (_.isUndefined(client)) {
+      throw new Error("API client didn't start, try logging-in first or storing secrets to the keystore")
+    }
+
+    // is there an active login, attempt to resurrect it.
+    if (ensureSession) await this.resurrectClient(client, activeCredentials)
+
+    return client
+  }
+
+  async resurrectClient(client, passwordSecret) {
+    try {
+      await client.get('/accounts/me', { query: { paths: ['_id'] } })
+    } catch (err) {
+      // attempt to recover by logging in again.
+      switch (err.code) {
+        case 'kNotLoggedIn':
+        case 'kLoggedInElsewhere':
+        case 'kCSRFTokenMismatch':
+        case 'kSessionExpired':
+          await client.post('/accounts/login', { email: passwordSecret.username, password: passwordSecret.password })
+          break
+        default:
+          throw err
+      }
+    }
+  }
+
+  createNewClientBy(passwordSecret) {
+    return passwordSecret ? new Client({
+      environment: _.get(passwordSecret, 'environment.url'),
+      credentials: _.get(passwordSecret, 'credentials'),
+      sessions: _.get(passwordSecret, 'credentials.authType') === 'password',
+      requestOptions: {
+        strictSSL: stringToBoolean(this.config('strictSSL'), true)
+      }
+    }) : undefined
+  }
+
+  doesClientMatchSecret(activeClientConfig, passwordSecret) {
+    return !_.isUndefined(passwordSecret) && !_.isUndefined(activeClientConfig)
+      && activeClientConfig.environment === passwordSecret.environment.url
+      && activeClientConfig.credentials.apiKey === passwordSecret.apiKey
+      && activeClientConfig.credentials.username === passwordSecret.username
+  }
+
+  async getArguments(arrayOfKeys) {
+    return _.reduce(arrayOfKeys,
+      (sum, key) => _.extend(sum, { [key]: this.args(key) }), {})
   }
 
 }
