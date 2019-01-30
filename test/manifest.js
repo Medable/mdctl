@@ -202,13 +202,28 @@ describe('Manifest', () => {
         { shouldAccept: false, path: 'apps' }
       ]
     },
+    // Candidate
+    // {
+    //   description: 'Development: use case 4',
+    //   manifest: {
+    //     includes: ['/^dev__/'],
+    //     dependencies: false
+    //   },
+    //   pathTests: [
+    //     { shouldAccept: true, path: 'scripts' }
+    //   ]
+    // },
     {
-      description: 'Development: use case 4',
+      description: 'Development: use case 5',
       manifest: {
-        scripts: {}
+        roles: {
+          includes: ['*']
+        },
+        dependencies: false
       },
       pathTests: [
-        { shouldAccept: true, path: 'scripts' }
+        { shouldAccept: true, path: 'roles' },
+        { shouldAccept: false, path: 'env.roles' },
       ]
     }
   ]
