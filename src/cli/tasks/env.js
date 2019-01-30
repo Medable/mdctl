@@ -47,14 +47,20 @@ class Env extends Task {
           },
           format = passedOptions.format && { format: passedOptions.format },
           streamWriter = new Stream(stream, { format })
-    streamWriter.pipe(new FileAdapter(`${process.cwd()}/output-${new Date().getTime()}`, format))
+
     pathTo(options, 'requestOptions.headers.accept', 'application/x-ndjson')
-    await client.call(url.pathname, Object.assign(options, { stream }))
+    streamWriter.pipe(new FileAdapter(`${process.cwd()}/output`, format))
+    await client.call(url.pathname, Object.assign(options, {
+      stream, body: { manifest }
+    }))
+
     return new Promise((resolve, reject) => {
-      streamWriter.on('error', (r) => {
+      streamWriter.on('error', (e) => {
+        console.log(e)
         reject()
       })
-      streamWriter.on('end_writing', (r) => {
+      streamWriter.on('end_writing', () => {
+        console.log('Export finished...')
         resolve()
       })
     })
