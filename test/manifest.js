@@ -201,8 +201,16 @@ describe('Manifest', () => {
       pathTests: [
         { shouldAccept: false, path: 'apps' }
       ]
+    },
+    {
+      description: 'Development: use case 4',
+      manifest: {
+        scripts: {}
+      },
+      pathTests: [
+        { shouldAccept: true, path: 'scripts' }
+      ]
     }
-
   ]
 
   // Run test cases
