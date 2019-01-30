@@ -2,6 +2,7 @@
 
 const _ = require('lodash'),
       fs = require('fs'),
+      pump = require('pump'),
       ndjson = require('ndjson'),
       { isSet } = require('../../lib/utils/values'),
       pathTo = require('../../lib/utils/path.to'),
@@ -46,22 +47,22 @@ class Env extends Task {
             method: 'post'
           },
           format = passedOptions.format && { format: passedOptions.format },
-          streamWriter = new Stream(stream, { format })
+          streamTransform = new Stream({ format }),
+          fileWriter = new FileAdapter(`${process.cwd()}/output`, format)
 
     pathTo(options, 'requestOptions.headers.accept', 'application/x-ndjson')
-    streamWriter.pipe(new FileAdapter(`${process.cwd()}/output`, format))
     await client.call(url.pathname, Object.assign(options, {
       stream, body: { manifest }
     }))
 
     return new Promise((resolve, reject) => {
-      streamWriter.on('error', (e) => {
-        console.log(e)
-        reject()
-      })
-      streamWriter.on('end_writing', () => {
+      pump(stream, streamTransform, fileWriter, (error) => {
+        if (error) {
+          console.log(error)
+          return reject(error)
+        }
         console.log('Export finished...')
-        resolve()
+        return resolve()
       })
     })
   }

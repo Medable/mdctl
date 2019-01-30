@@ -2,6 +2,7 @@ const { assert } = require('chai'),
       fs = require('fs'),
       path = require('path'),
       glob = require('glob'),
+      pump = require('pump'),
       rimraf = require('rimraf'),
       ndjson = require('ndjson'),
       Stream = require('../../src/lib/stream'),
@@ -43,12 +44,10 @@ describe('Adapters', () => {
     const tempDir = path.join(process.cwd(), `output-${new Date().getTime()}`),
           stream = ndjson.parse(),
           format = 'yaml',
-          streamWriter = new Stream(stream, { format })
+          streamWriter = new Stream({ format })
 
-    streamWriter.pipe(new FileAdapter(tempDir, { format, layout: 'blob' }))
-    blob.pipe(stream)
-
-    streamWriter.on('end_writing', () => {
+    const onEnd = (error) => {
+      if(error) return done(error)
       glob('**/*.{yaml,js,png,jpeg,ico,gif}', { cwd: tempDir }, (err, files) => {
         if (err) {
           return done(err)
@@ -57,7 +56,8 @@ describe('Adapters', () => {
         assert(files.length === 6, 'there are more/less files than created')
         return done()
       })
-    })
+    }
+    pump(blob, stream, streamWriter, new FileAdapter(tempDir, { format, layout: 'blob' }), onEnd)
   })
 
 })

@@ -14,6 +14,9 @@ class StreamTransform extends Transform {
 
   pipe(dest, options) {
     dest.on('end_writing', () => this.emit('end_writing'))
+    dest.on('error', (e) => {
+      this.emit('error', e)
+    })
     super.pipe(dest, options)
   }
 
@@ -40,38 +43,4 @@ class StreamTransform extends Transform {
 
 }
 
-class StreamWriter extends EventEmitter {
-
-  constructor(stream, options) {
-    super()
-    // stream.pipe(new StreamBlob(options))
-    stream.on('data', this.originData.bind(this))
-    stream.on('error', this.originError.bind(this))
-    stream.on('end', this.originEnd.bind(this))
-    this.transform = new StreamTransform(options)
-    this.transform.on('end_writing', (e) => {
-      this.propagate('end_writing', e)
-    })
-    return this.transform
-  }
-
-  originData(chunk) {
-    this.transform.write(chunk)
-  }
-
-  originError(e) {
-    console.log(e)
-    this.emit('error', e)
-  }
-
-  originEnd() {
-    this.transform.end()
-  }
-
-  propagate(name, e) {
-    this.emit(name, e)
-  }
-
-}
-
-module.exports = StreamWriter
+module.exports = StreamTransform
