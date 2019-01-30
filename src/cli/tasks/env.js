@@ -2,8 +2,9 @@
 
 const _ = require('lodash'),
       fs = require('fs'),
-      { Readable } = require('stream'),
+      ndjson = require('ndjson'),
       { isSet } = require('../../lib/utils/values'),
+      pathTo = require('../../lib/utils/path.to'),
       Task = require('../lib/task'),
       { CredentialsManager } = require('../../lib/api/credentials'),
       Stream = require('../../lib/stream'),
@@ -33,15 +34,34 @@ class Env extends Task {
   }
 
   async 'env@export'(cli) {
-    const passedOptions = cli.getArguments(this.optionKeys),
-          defaultCredentials = cli.config('defaultCredentials'),
-          passwordSecretQuery = _.isUndefined(passedOptions.endpoint)
-            && _.isUndefined(passedOptions.env) ? defaultCredentials : passedOptions,
-          passwordSecret = await this.getPasswordSecret(passwordSecretQuery),
-          manifest = JSON.parse(fs.readFileSync(passedOptions.manifest || `${cli.cwd}/manifest.json`))
+    const passedOptions = await cli.getArguments(this.optionKeys),
+          manifest = JSON.parse(fs.readFileSync(passedOptions.manifest || `${cli.cwd}/manifest.json`)),
+          stream = ndjson.parse(),
+          client = await cli.getApiClient(),
+          url = new URL('/developer/environment/export', client.environment.url),
+          options = {
+            query: url.searchParams,
+            method: 'post'
+          },
+          format = passedOptions.format && { format: passedOptions.format },
+          streamWriter = new Stream(stream, { format })
 
-    return (await cli.getApiClient({ passwordSecret })).post('/routes/stubbed_export', manifest)
-      .then(exportResponse => this.writeExport(passedOptions, JSON.stringify(exportResponse)))
+    pathTo(options, 'requestOptions.headers.accept', 'application/x-ndjson')
+    streamWriter.pipe(new FileAdapter(`${process.cwd()}/output`, format))
+    await client.call(url.pathname, Object.assign(options, {
+      stream, body: { manifest }
+    }))
+
+    return new Promise((resolve, reject) => {
+      streamWriter.on('error', (e) => {
+        console.log(e)
+        reject()
+      })
+      streamWriter.on('end_writing', () => {
+        console.log('Export finished...')
+        resolve()
+      })
+    })
   }
 
   async 'env@import'() {
@@ -81,28 +101,6 @@ class Env extends Task {
   getPasswordSecret(passedOptions) {
     const search = _.pick(passedOptions, 'endpoint', 'env')
     return this.credentialsManager.get(search)
-  }
-
-  writeExport(passedOptions, stringifiedContent) {
-    const format = passedOptions.format && { format: passedOptions.format }
-    return new Promise((resolve, reject) => {
-      const readBlob = new Readable()
-      // eslint-disable-next-line no-underscore-dangle
-      readBlob._read = () => {}
-
-      readBlob
-        .pipe(new Stream())
-        .pipe(new FileAdapter(`output-${new Date().getTime()}`, format))
-        .on('finish', () => {
-          resolve()
-        })
-        .on('error', (err) => {
-          reject(err)
-        })
-
-      readBlob.push(Buffer.from(stringifiedContent))
-
-    })
   }
 
 }
