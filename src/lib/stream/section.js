@@ -4,6 +4,7 @@ const slugify = require('slugify'),
       mime = require('mime'),
       CONFIG_KEYS = ['app', 'notification', 'policy', 'role', 'smsNumber', 'serviceAccount', 'storage', 'configuration'],
       MANIFEST_KEYS = ['manifest', 'manifest-dependencies', 'manifest-exports'],
+      NON_WRITABLE_KEYS = ['facet'],
       SectionsCreated = []
 
 class SectionBase {
@@ -16,6 +17,7 @@ class SectionBase {
     if (CONFIG_KEYS.indexOf(this.key) > -1) {
       this.sectionKey = `env.extras.${this.key}`
     }
+    this.writable = NON_WRITABLE_KEYS.indexOf(this.key) < 0
     SectionsCreated.push(this)
     if (new.target === SectionBase) {
       Object.seal(this)
@@ -60,8 +62,7 @@ class SectionBase {
           if (facet) {
             const { content } = facet,
                   objectPath = jp.stringify(n.path),
-                  path = jp.stringify(_.initial(n.path)),
-                  name = path.replace('$', this.key).replace('[', '.').replace(']', '').replace('path', '')
+                  name = `${content.name}.${slugify(this.content.name, '_')}.${this.content.locale}`
             this.extraFiles.push({
               name,
               facet,
@@ -84,7 +85,7 @@ class SectionBase {
     nodes.forEach((n) => {
       if (!_.isObject(n.value)) {
         const parent = this.getParentFromPath(n.path),
-              name = slugify(parent.code || parent.name || parent.label, '_')
+              name = `${parent.type}.${slugify(parent.code || parent.name || parent.label, '_')}`
         this.scriptFiles.push({
           name,
           ext: 'js',
