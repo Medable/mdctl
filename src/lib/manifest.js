@@ -1,7 +1,10 @@
 
 const _ = require('lodash'),
       { privatesAccessor } = require('./privates'),
-      { rArray, isSet, isCustom } = require('./utils/values')
+      {
+ rArray, rBool, isSet, isCustom 
+} = require('./utils/values'),
+      Fault = require('./fault')
 
 // Augmented regular expresions. Accepts strings, star
 class ARegex {
@@ -43,7 +46,7 @@ class ManifestStage {
     }
 
     Object.assign(privatesAccessor(this), {
-      dependencies: definition.dependencies,
+      dependencies: rBool(definition.dependencies, true),
       includes: rArray(definition.includes || [], true).map(v => new ARegex(v)),
       excludes: rArray(definition.excludes || [], true).map(v => new ARegex(v))
     })
@@ -78,7 +81,7 @@ class ObjectSection extends ManifestStage {
     super(def)
 
     if (!def[key]) {
-      throw new Error('Invalid Argument')
+      throw Fault.create('kInvalidArgument', { reason: `The ${key} is missing from the manifest descriptor.` })
     }
 
     Object.assign(privatesAccessor(this), {
@@ -88,15 +91,22 @@ class ObjectSection extends ManifestStage {
   }
 
   accept(path) {
-    const keyTester = privatesAccessor(this, 'keyTester'),
-          [first, ...rest] = path.split('.')
 
-    if (keyTester) {
+    if (path) {
 
-      return keyTester.test(first)
-        && (!rest.length || super.accept(rest.join('.')))
+      const keyTester = privatesAccessor(this, 'keyTester'),
+            [first, ...rest] = path.split('.')
+
+      if (keyTester) {
+
+        return keyTester.test(first)
+          && (!rest.length || super.accept(rest.join('.')))
+      }
+      return false
+
     }
-    return false
+
+    return this.includes.length > 0 && !this.excludes.some(r => r.test(''))
   }
 
 }
@@ -105,18 +115,18 @@ class Manifest extends ManifestStage {
 
   constructor(input) {
     const def = input || {},
-          thisInternals = {}
+          thisStages = {}
 
     super(def, !Object.keys(def).length)
 
     if (def.objects) {
-      thisInternals.objects = def.objects.map(section => new ObjectSection(section, 'name'))
+      thisStages.objects = def.objects.map(section => new ObjectSection(section, 'name'))
     }
 
     // We defien a section for each built-in name
     Manifest.builtInSections.forEach((name) => {
       if (def[name]) {
-        thisInternals[name] = new ManifestStage(def[name])
+        thisStages[name] = new ManifestStage(def[name])
       }
     })
 
@@ -125,14 +135,14 @@ class Manifest extends ManifestStage {
       .filter(isCustom)
       .forEach((name) => {
         if (def[name]) {
-          thisInternals[name] = new ManifestStage(def[name])
+          thisStages[name] = new ManifestStage(def[name])
           Object.defineProperty(this, name, {
             get: () => privatesAccessor(this, name)
           })
         }
       })
 
-    Object.assign(privatesAccessor(this), thisInternals)
+    Object.assign(privatesAccessor(this), { thisStages })
   }
 
   static get builtInSections() {
@@ -142,14 +152,15 @@ class Manifest extends ManifestStage {
 
   accept(path) {
     // Global include/exclude works on the last item of the path
-    const [last] = path.split('.').reverse(),
+    const { thisStages } = privatesAccessor(this),
+          [last] = path.split('.').reverse(),
           [first, ...rest] = path.split('.')
 
     // dispatch acceptance to appropriate section
-    if (this[first]) {
-      return _.isArray(this[first])
-        ? this[first].some(section => section.accept(rest.join('.')))
-        : this[first].accept(rest.join('.'))
+    if (thisStages[first]) {
+      return _.isArray(thisStages[first])
+        ? thisStages[first].some(section => section.accept(rest.join('.')))
+        : thisStages[first].accept(rest.join('.'))
     }
 
     return this.includes.some(r => r.test(last))
@@ -157,11 +168,29 @@ class Manifest extends ManifestStage {
   }
 
   shouldIncludeDependencies(path) {
-    const [head, ...tail] = path.split('.'),
-          res = this[head] && tail.length && this.head.shouldIncludeDependencies(tail.join('.'))
+    const { thisStages } = privatesAccessor(this),
+          [head, ...tail] = path.split('.'),
+          res = thisStages[head] && tail.length && thisStages[head].shouldIncludeDependencies(tail.join('.'))
 
     if (isSet(res)) return res
     return this.dependencies
+  }
+
+  [Symbol.iterator]() {
+
+    const { thisStages } = privatesAccessor(this),
+          keys = Object.keys(thisStages).sort().reverse()
+
+    return {
+      next: () => {
+        if (keys.length === 0) {
+          return { done: true }
+        }
+        const key = keys.pop()
+        return { value: { name: key, stage: thisStages[key] }, done: false }
+      }
+    }
+
   }
 
   get env() {

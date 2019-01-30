@@ -136,8 +136,9 @@ module.exports = class MdCtlCli {
           getClientAndCredsFrom = async(passwordSecret) => {
             const activeLogin = await CredentialsManager.getCustom('login', '*'),
                   activeClientConfig = _.get(activeLogin, 'client'),
-                  isActiveClientReusable = !_.isUndefined(activeLogin)
-                    && this.doesClientMatchSecret(activeClientConfig, passwordSecret),
+                  isActiveClientReusable = !!activeLogin,
+                  // !_.isUndefined(activeLogin) &&
+                  // this.doesClientMatchSecret(activeClientConfig, passwordSecret),
                   client = isActiveClientReusable
                     ? new Client(activeClientConfig)
                     : this.createNewClientBy(passwordSecret),
