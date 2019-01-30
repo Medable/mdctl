@@ -505,7 +505,7 @@ class Credentials extends Task {
               {
                 name: 'credentialsIndex',
                 message: 'Select the index of credential or -1 if none',
-                validate: value => _.inRange(rInt(value, -1), -1, (listOfSecrets.length - 1)) || `Must select between -1...${(listOfSecrets.length - 1)}`,
+                validate: value => _.inRange(_.parseInt(value), -1, listOfSecrets.length) || `Must select between -1...${(listOfSecrets.length - 1)}`,
                 transform: value => rInt(value, -1),
                 default: -1,
               }
@@ -521,14 +521,24 @@ class Credentials extends Task {
         const result = await logInWithDefaultCreds(cli)(defaultCredentials)
         if (isFault(result)) throw new Error(result)
       } else {
-        const userCredentials = await askUserCredentials(options),
-              result = await logInWithUserCredentials(cli)(userCredentials)
-        if (isFault(result)) throw new Error(result)
-        // eslint-disable-next-line one-var
-        const existingCredentials = await CredentialsManager.list(userCredentials)
-        if (_.isEmpty(existingCredentials)) {
-          const saveCredentials = await askUserToSaveCredentials()
-          if (saveCredentials) storeCredentials(userCredentials)
+        // more than 1
+        const existingPasswordSecrets = await CredentialsManager.list(options),
+              existingPasswordIdx = await askUserToChooseCredentials(existingPasswordSecrets)
+        if (existingPasswordIdx > -1) {
+          const loginFunc = logInWithPasswordSecret(cli),
+                result = await loginFunc(existingPasswordSecrets[existingPasswordIdx])
+          if (isFault(result)) throw new Error(result)
+        } else {
+          const userCredentials = await askUserCredentials(options),
+                result = await logInWithUserCredentials(cli)(userCredentials)
+          if (isFault(result)) throw new Error(result)
+          // eslint-disable-next-line no-shadow
+          // eslint-disable-next-line one-var
+          const existingCredentials = await CredentialsManager.list(userCredentials)
+          if (_.isEmpty(existingCredentials)) {
+            const saveCredentials = await askUserToSaveCredentials()
+            if (saveCredentials) storeCredentials(userCredentials)
+          }
         }
       }
     } else {
