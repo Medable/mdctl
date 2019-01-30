@@ -90,6 +90,10 @@ function normalizeEndpoint(endpoint) {
 
 }
 
+function isFault(httpResponse) {
+  return _.get(httpResponse, 'object') === 'fault'
+}
+
 module.exports = {
   throwIf,
   throwIfNot,
@@ -99,5 +103,6 @@ module.exports = {
   tryCatch,
   yn,
   question,
-  normalizeEndpoint
+  normalizeEndpoint,
+  isFault
 }

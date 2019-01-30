@@ -599,6 +599,7 @@ CredentialsProvider.set(new KeytarStorageProvider())
 module.exports = {
   Credentials,
   CredentialsManager,
+  PasswordSecret,
   detectAuthType,
   CredentialsProvider,
   validateApiKey,
