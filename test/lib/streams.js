@@ -54,7 +54,7 @@ describe('Adapters', () => {
           return done(err)
         }
         rimraf.sync(tempDir)
-        assert(files.length === 5, 'there are more/less files than created')
+        assert(files.length === 6, 'there are more/less files than created')
         return done()
       })
     })
