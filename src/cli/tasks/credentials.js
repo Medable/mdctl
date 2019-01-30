@@ -7,12 +7,14 @@ const _ = require('lodash'),
       jsyaml = require('js-yaml'),
       { prompt } = require('inquirer'),
       { loadDefaults, writeDefaults } = require('../lib/config'),
-      { loadJsonOrYaml, question, normalizeEndpoint } = require('../../lib/utils'),
+      {
+        loadJsonOrYaml, question, normalizeEndpoint, isFault
+      } = require('../../lib/utils'),
       {
         rVal, rString, isSet, stringToBoolean
       } = require('../../lib/utils/values'),
       {
-        Credentials: ApiCredentials, CredentialsManager,
+        Credentials: ApiCredentials, CredentialsManager, PasswordSecret,
         detectAuthType, validateApiKey, validateApiSecret
       } = require('../../lib/api/credentials'),
       Client = require('../../lib/api/client'),
@@ -285,25 +287,207 @@ class Credentials extends Task {
 
   async 'credentials@login'(cli) {
 
-    const options = {}
+    const options = cli.getArguments(['file', 'endpoint', 'env', 'username', 'apiKey', 'strictSSL']),
 
-    // load from input file
-    if (rString(cli.args('file'))) {
-      const file = await loadJsonOrYaml(cli.args('file'))
-      Object.assign(
-        options,
-        _.pick(
-          file,
-          'endpoint', 'env', 'username', 'apiKey', 'password'
-        )
-      )
+          readFile = async(filePath) => {
+            const file = await loadJsonOrYaml(filePath)
+            return _.pick(file, 'endpoint', 'env', 'username', 'apiKey', 'password')
+          },
+
+          // eslint-disable-next-line no-shadow
+          storeCurrentLogin = CredentialsManager => async({ client, password }) => {
+            let result
+            try {
+              result = await CredentialsManager.setCustom('login', '*', {
+                client,
+                password
+              })
+            } catch (err) {
+              result = _.extend(result, { object: 'fault' })
+            }
+            return result
+          },
+
+          logInAndStoreLogIn = client => async(loginBody) => {
+            let result
+            try {
+              result = await client.post('/accounts/login', loginBody)
+              storeCurrentLogin(client, loginBody.password)
+            } catch (err) {
+              result = err
+            }
+            return result
+          },
+
+          // eslint-disable-next-line no-shadow
+          logInWithDefaultCreds = cli => async(defaultCredentials) => {
+            const passwordSecret = await CredentialsManager.get(defaultCredentials),
+                  client = await cli.getApiClient({ passwordSecret, testStatus: false }),
+                  result = await logInAndStoreLogIn(client)(passwordSecret)
+
+            return result
+          },
+
+          // eslint-disable-next-line no-shadow
+          logInWithUserCredentials = cli => async(userCredentials) => {
+            const passwordSecret = new PasswordSecret(
+                    new Environment(userCredentials),
+                    userCredentials
+                  ),
+                  client = await cli.getApiClient({ passwordSecret, testStatus: false }),
+                  result = await logInAndStoreLogIn(client)(passwordSecret)
+
+            return result
+          },
+
+          // eslint-disable-next-line no-shadow
+          storeCredentials = CredentialsManager => async(credentials) => {
+            let result
+            try {
+              result = await CredentialsManager.add(
+                new Environment(credentials),
+                credentials
+              )
+            } catch (err) {
+              result = _.extend(result, { object: 'fault' })
+            }
+            return result
+          },
+
+          askUserCredentials = async(currentArgs) => {
+            const result = await prompt([
+              {
+                name: 'type',
+                message: 'Which type of credentials are you using?',
+                type: 'list',
+                default: 'password',
+                choices: [
+                  { name: 'Password - Email/Username and Password', value: 'password' },
+                  { name: 'Signature - API Key and Secret Pair', value: 'signature' },
+                  { name: 'Token - JWT Authentication Token', value: 'token' }
+                ],
+                when: () => !['password', 'signature', 'token'].includes(_.get(currentArgs, 'type'))
+              },
+              {
+                name: 'endpoint',
+                message: 'The api endpoint (example: https://api.dev.medable.com)',
+                type: 'input',
+                when: () => {
+                  try {
+                    Credentials.validateEndpoint(_.get(currentArgs, 'endpoint'))
+                    return false
+                  } catch (err) {
+                    return true
+                  }
+                },
+                validate: (input) => {
+                  try {
+                    return Credentials.validateEndpoint(input)
+                  } catch (err) {
+                    return err.getMessage()
+                  }
+                },
+                filter: (input) => {
+                  const { protocol, host } = new URL('', input)
+                  return `${protocol}//${host}`
+                }
+              },
+              {
+                name: 'env',
+                message: 'The env (org code)',
+                type: 'input',
+                default: rString(_.get(currentArgs, 'env')),
+                when: !_.get(currentArgs, 'env')
+              },
+              {
+                name: 'username',
+                message: 'The account username',
+                type: 'input',
+                when: hash => !_.get(currentArgs, 'username') && hash.type === 'password'
+              },
+              {
+                name: 'password',
+                message: 'The account password',
+                type: 'password',
+                when: hash => !_.get(currentArgs, 'password') && hash.type === 'password'
+              },
+              {
+                name: 'token',
+                message: 'The JSON Web Token',
+                type: 'password',
+                when: hash => !_.get(currentArgs, 'token') && hash.type === 'token'
+              },
+              {
+                name: 'apiKey',
+                message: 'The api key',
+                type: 'input',
+                when: hash => ['password', 'signature'].includes(hash.type) && !_.get(currentArgs, 'apiKey'),
+                validate: (input) => {
+                  try {
+                    return validateApiKey(input)
+                  } catch (err) {
+                    return err.getMessage()
+                  }
+                }
+              },
+              {
+                name: 'apiSecret',
+                message: 'The api signing secret',
+                type: 'password',
+                when: hash => hash.type === 'signature' && !_.get(currentArgs, 'apiSecret'),
+                validate: (input) => {
+                  try {
+                    return validateApiSecret(input)
+                  } catch (err) {
+                    return err.getMessage()
+                  }
+                }
+              }
+            ])
+
+            return result
+          },
+
+          askUserToSaveCredentials = async() => {
+            const result = await prompt([
+              {
+                name: 'saveCredentials',
+                message: 'Do you want to save these credentials?',
+                validate: value => (value.toLowerCase() === 'y' || value.toLowerCase() === 'n') || 'Only valid values are: y-Y/n-N',
+                transform: value => _.startsWith(value.toLowerCase(), 'y'),
+                default: 'n',
+              }
+            ])
+
+            return result.saveCredentials
+          }
+
+    if (_.isEmpty(options)) {
+      const defaultCredentials = cli.config('defaultCredentials')
+      if (defaultCredentials) {
+        const result = await logInWithDefaultCreds(cli)(defaultCredentials)
+        if (isFault(result)) throw new Error(result)
+      } else {
+        const userCredentials = await askUserCredentials(),
+              result = await logInWithUserCredentials(cli)(userCredentials)
+        if (isFault(result)) throw new Error(result)
+        // eslint-disable-next-line one-var
+        const saveCredentials = await askUserToSaveCredentials()
+        if (saveCredentials) storeCredentials(userCredentials)
+      }
+
+
+    } else {
+      console.log("I'm not", options)
     }
 
-    // add anything from args
-    Credentials.assignArgIf(cli, options, 'endpoint')
-    Credentials.assignArgIf(cli, options, 'env')
-    Credentials.assignArgIf(cli, options, 'username')
-    Credentials.assignArgIf(cli, options, 'apiKey')
+    return
+
+    // load from input file
+    if (options.file) {
+      const optionsFromFile = await readFile(passedOptions.file)
+      _.assign(options, optionsFromFile)
+    }
 
     // if no args were specified, attempt to use default credentials.
     if (Object.keys(options).length === 0) {
@@ -580,10 +764,10 @@ class Credentials extends Task {
 
           case 'kPasswordExpired':
             console.log(`Your password expired. Please update it now at ${appURL}`)
-            return
+
           default:
             console.log(err.toJSON())
-            return
+
         }
 
       }

@@ -162,8 +162,8 @@ module.exports = class MdCtlCli {
             return { client, activeCredentials }
           },
           { client, activeCredentials } = options.passwordSecret
-            ? getClientAndCredsFrom(options.passwordSecret)
-            : getDefaultClientAndCreds()
+            ? await getClientAndCredsFrom(options.passwordSecret)
+            : await getDefaultClientAndCreds()
 
     if (_.isUndefined(client)) {
       throw new Error("API client didn't start, try logging-in first or storing secrets to the keystore")
@@ -212,8 +212,9 @@ module.exports = class MdCtlCli {
   }
 
   getArguments(arrayOfKeys) {
-    return _.reduce(arrayOfKeys,
+    const args = _.reduce(arrayOfKeys,
       (sum, key) => _.extend(sum, { [key]: this.args(key) }), {})
+    return _.pick(args, _.identity)
   }
 
 }
