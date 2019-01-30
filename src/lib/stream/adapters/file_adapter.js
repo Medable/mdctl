@@ -4,7 +4,9 @@ const { Writable } = require('stream'),
       fs = require('fs'),
       jp = require('jsonpath'),
       _ = require('lodash'),
-      slugify = require('slugify')
+      request = require('request'),
+      slugify = require('slugify'),
+      pathTo = require('../../utils/path.to')
 
 class Layout extends Writable {
 
@@ -13,16 +15,32 @@ class Layout extends Writable {
     this.output = output
     this.format = format
     this.ensure(this.output)
+    this.metadata = {
+      assets: []
+    }
+    this.loadMetadata()
+  }
+
+  static downloadResources(url) {
+    return request(url)
+  }
+
+  loadMetadata() {
+    const file = `${this.output}/_metadata.${this.format}`
+    if (fs.existsSync(file)) {
+      const content = fs.readFileSync(file)
+      this.metadata = this.format === 'json' ? JSON.parse(content) : jsYaml.safeLoad(content)
+    }
   }
 
   ensure(directory) {
     const path = directory.replace(/\/$/, '').split('/')
-    for (let i = 1; i <= path.length; i++) {
-      const segment = path.slice(0, i).join('/')
+    path.forEach((i, k) => {
+      const segment = path.slice(0, k + 1).join('/')
       if (segment && !fs.existsSync(segment)) {
         fs.mkdirSync(segment)
       }
-    }
+    })
   }
 
   parseContent(content) {
@@ -36,63 +54,103 @@ class Layout extends Writable {
     return contentStr
   }
 
-}
-
-class FilesLayout extends Layout {
-
-  writeToFile(file, content, plain = false) {
-    return new Promise((success, failure) => {
-      const data = plain ? content : this.parseContent(content)
-      fs.writeFile(file, data, (err) => {
-        if (err) {
-          return failure(err)
-        }
-        return success()
-      })
-    })
+  checkFileETagExists(ETag) {
+    const cnf = ETag && _.find(this.metadata.assets, c => c.ETag === ETag)
+    return !!cnf
   }
 
-  async writeAssets(path, chunk) {
+  updateMetadata(f, dest) {
+    const cnf = _.find(this.metadata.assets, c => c.name === f.name),
+          relativeDest = dest.replace(this.output, '')
+    if (cnf) {
+      cnf.ETag = f.ETag
+      if (cnf.path !== relativeDest) {
+        fs.unlinkSync(`${this.output}${cnf.path}`)
+        cnf.path = relativeDest
+      }
+    } else {
+      this.metadata.assets.push({
+        name: f.name,
+        path: relativeDest,
+        ETag: f.ETag
+      })
+    }
+  }
+
+  async writeAssets(path, files) {
     const promises = []
-    _.forEach(chunk.extraFiles, (f) => {
+    _.forEach(files, (f) => {
       promises.push(new Promise((resolve, reject) => {
-        const dest = `${path}/${slugify(f.name)}.${f.ext}`,
-              fileWriter = fs.createWriteStream(dest)
-        fileWriter.on('finish', () => {
+        const dest = `${path}/${slugify(f.name)}.${f.ext}`
+        if (!this.checkFileETagExists(f.ETag)) {
+          const fileWriter = fs.createWriteStream(dest)
+          fileWriter.on('finish', () => {
+            if (f.ETag) {
+              this.updateMetadata(f, dest)
+            }
+            resolve({
+              name: f.name,
+              path: f.pathTo,
+              dest
+            })
+          })
+          fileWriter.on('error', () => {
+            reject()
+          })
+          if (f.remoteLocation) {
+            Layout.downloadResources(f.data).pipe(fileWriter)
+
+          } else {
+            fileWriter.write(f.data)
+            fileWriter.end()
+          }
+        } else {
           resolve({
             name: f.name,
             path: f.pathTo,
             dest
           })
-        })
-        fileWriter.on('error', () => {
-          reject()
-        })
-        if (f.hasToDownload) {
-          chunk.downloadResources(f.data).pipe(fileWriter)
-        } else {
-          fileWriter.write(f.data)
-          fileWriter.end()
         }
       }))
     })
     return Promise.all(promises)
   }
 
+  async writeExtraFiles(folder, chunk) {
+    let paths = []
+    if (chunk.extraFiles.length > 0) {
+      this.ensure(`${folder}/assets`)
+      paths = await this.writeAssets(`${folder}/assets`, chunk.extraFiles)
+    }
+    if (chunk.scriptFiles.length > 0) {
+      this.ensure(`${folder}/js`)
+      paths = await this.writeAssets(`${folder}/js`, chunk.scriptFiles)
+    }
+    _.forEach(paths, (d) => {
+      jp.value(chunk.content, d.path, d.dest.replace(this.output, ''))
+    })
+  }
+
+}
+
+class FilesLayout extends Layout {
+
+  writeToFile(file, content) {
+    return fs.writeFileSync(file, this.parseContent(content))
+  }
+
+  createCheckpointFile() {
+    this.writeToFile(`${this.output}/_metadata.${this.format}`, this.metadata)
+  }
+
   async processChunk(chunk) {
     try {
       const folder = `${this.output}/${chunk.getPath()}`
       this.ensure(folder)
-      chunk.getScripts()
-      await chunk.replaceFacets()
-      if (chunk.extraFiles.length > 0) {
-        this.ensure(`${folder}/assets`)
-        const dests = await this.writeAssets(`${folder}/assets`, chunk)
-        _.forEach(dests, (d) => {
-          jp.value(chunk.content, d.path, d.dest.replace(this.output, ''))
-        })
-      }
-      await this.writeToFile(`${folder}/${slugify(chunk.name, '_')}.${this.format}`, chunk.content, false)
+      await chunk.extractScripts()
+      await chunk.extractAssets()
+      await this.writeExtraFiles(folder, chunk)
+      this.writeToFile(`${folder}/${slugify(chunk.name, '_')}.${this.format}`, chunk.content)
       return true
     } catch (e) {
       throw e
@@ -106,8 +164,11 @@ class FilesLayout extends Layout {
   }
 
   _final(cb) {
-    this.emit('end_writing')
+    this.createCheckpointFile()
     cb()
+    setTimeout(() => {
+      this.emit('end_writing')
+    }, 300)
   }
 
 }
@@ -119,33 +180,42 @@ class SingleFileLayout extends Layout {
     this.data = {}
   }
 
-  rollbackScripts(chunk) {
-    if (chunk.jsInScript) {
-      const scripts = Object.keys(chunk.jsInScript)
-      scripts.forEach((js) => {
-        jp.value(chunk.content, js, chunk.jsInScript[js].value)
-      })
-      chunk.clearScripts()
+  async processChunk(chunk) {
+    await chunk.extractScripts()
+    await chunk.extractAssets()
+    await this.writeExtraFiles(this.output, chunk)
+    const key = chunk.sectionKey || chunk.key
+    let exists = pathTo(this.data, key)
+    if (!exists) {
+      pathTo(this.data, key, [])
+      exists = []
+    }
+    if (_.isArray(exists)) {
+      exists.push(chunk.content)
+    } else if (_.isObject(exists)) {
+      exists = _.extend(exists, chunk.content)
+    }
+    if (exists) {
+      pathTo(this.data, key, exists)
     }
   }
 
   _write(chunk, enc, cb) {
-    this.rollbackScripts(chunk)
-    const { data } = chunk
-    this.data[chunk.key] = data instanceof Array ? data : data.content
-    cb()
+    this.processChunk(chunk).then(() => {
+      cb()
+    }).catch(e => cb(e))
   }
 
   _final(cb) {
     return new Promise((resolve, reject) => {
-      fs.writeFile(`${this.output}/exported.${this.format}`, this.parseContent(this.data), (err) => {
+      fs.writeFile(`${this.output}/blob.${this.format}`, this.parseContent(this.data), (err) => {
         if (err) {
           return reject(err)
         }
         return resolve()
       })
     }).then(() => {
-      this.emit('process_finished')
+      this.emit('end_writing')
       cb()
     }).catch(e => cb(e))
   }
@@ -162,6 +232,9 @@ class FileAdapter extends EventEmitter {
     if (layout === 'blob') {
       this.stream = new SingleFileLayout(output, format)
     }
+    this.stream.on('end_writing', () => {
+      this.emit('end_writing')
+    })
     return this.stream
   }
 

@@ -1,4 +1,4 @@
-const { PassThrough, Transform } = require('stream'),
+const { Transform } = require('stream'),
       EventEmitter = require('events'),
       Section = require('./section'),
       Fault = require('../fault'),
@@ -10,6 +10,11 @@ class StreamTransform extends Transform {
     super(Object.assign({
       objectMode: true
     }, options))
+  }
+
+  pipe(dest, options) {
+    dest.on('end_writing', () => this.emit('end_writing'))
+    super.pipe(dest, options)
   }
 
   _transform(chunk, enc, done) {
@@ -35,55 +40,38 @@ class StreamTransform extends Transform {
 
 }
 
-class StreamBlob extends PassThrough {
-
-  constructor(options) {
-    super(Object.assign({
-      objectMode: true
-    }, options))
-
-    // this.jsonStream = JSONStream.parse('$*')
-    this.streamTransform = new StreamTransform(options)
-
-    // this.jsonStream.on('error', e => this.emit('error', e))
-    this.streamTransform.on('error', e => this.emit('error', e))
-
-    this.on('pipe', (source) => {
-      source.unpipe(this)
-      this.transformStream = source.pipe(this.streamTransform)
-    })
-  }
-
-  pipe(dest, options) {
-    return this.transformStream.pipe(dest, options)
-  }
-
-}
-
 class StreamWriter extends EventEmitter {
+
   constructor(stream, options) {
     super()
     // stream.pipe(new StreamBlob(options))
-    stream.on('data', this.streamData.bind(this))
-    stream.on('error', this.streamError.bind(this))
-    stream.on('end', this.streamEnd.bind(this))
+    stream.on('data', this.originData.bind(this))
+    stream.on('error', this.originError.bind(this))
+    stream.on('end', this.originEnd.bind(this))
     this.transform = new StreamTransform(options)
-    this.transform.on('error', this.streamError.bind(this))
+    this.transform.on('end_writing', (e) => {
+      this.propagate('end_writing', e)
+    })
     return this.transform
   }
 
-  streamData(chunk) {
+  originData(chunk) {
     this.transform.write(chunk)
   }
 
-  streamError(e) {
+  originError(e) {
     console.log(e)
     this.emit('error', e)
   }
 
-  streamEnd() {
+  originEnd() {
     this.transform.end()
   }
+
+  propagate(name, e) {
+    this.emit(name, e)
+  }
+
 }
 
 module.exports = StreamWriter

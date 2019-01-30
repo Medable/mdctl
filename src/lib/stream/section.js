@@ -2,7 +2,6 @@ const slugify = require('slugify'),
       _ = require('lodash'),
       jp = require('jsonpath'),
       mime = require('mime'),
-      request = require('request'),
       CONFIG_KEYS = ['app', 'notification', 'policy', 'role', 'smsNumber', 'serviceAccount', 'storage', 'configuration'],
       MANIFEST_KEYS = ['manifest', 'manifest-dependencies', 'manifest-exports'],
       SectionsCreated = []
@@ -12,8 +11,11 @@ class SectionBase {
   constructor(content, key = '') {
     this.content = content
     this.key = key
-    this.scriptFiles = {}
+    this.scriptFiles = []
     this.extraFiles = []
+    if (CONFIG_KEYS.indexOf(this.key) > -1) {
+      this.sectionKey = `env.extras.${this.key}`
+    }
     SectionsCreated.push(this)
     if (new.target === SectionBase) {
       Object.seal(this)
@@ -22,10 +24,6 @@ class SectionBase {
 
   get name() {
     return this.content.name || this.content.code || this.content.object
-  }
-
-  get data() {
-    return this.content
   }
 
   clearScripts() {
@@ -51,11 +49,7 @@ class SectionBase {
     return this.getParentFromPath(path)
   }
 
-  downloadResources(url) {
-    return request(url)
-  }
-
-  replaceFacets() {
+  extractAssets() {
     return new Promise(async(success) => {
       const nodes = jp.nodes(this.content, '$..path')
       if (nodes.length) {
@@ -64,14 +58,18 @@ class SectionBase {
                 facets = _.filter(SectionsCreated, sc => sc.key === 'facet'),
                 facet = _.find(facets, f => parent.path === f.content.name)
           if (facet) {
-            const { content } = facet
+            const { content } = facet,
+                  objectPath = jp.stringify(n.path),
+                  path = jp.stringify(_.initial(n.path)),
+                  name = path.replace('$', this.key).replace('[', '.').replace(']', '').replace('path', '')
             this.extraFiles.push({
-              name: content.name,
+              name,
               facet,
               ext: mime.getExtension(content.mime),
               data: content.url || content.data,
-              hasToDownload: !!content.url,
-              pathTo: jp.stringify(n.path)
+              remoteLocation: !!content.url,
+              pathTo: objectPath,
+              ETag: parent.ETag
             })
           }
         })
@@ -81,17 +79,22 @@ class SectionBase {
     })
   }
 
-  async getScripts() {
+  async extractScripts() {
     const nodes = jp.nodes(this.content, '$..script')
     nodes.forEach((n) => {
       if (!_.isObject(n.value)) {
-        const path = jp.stringify(n.path),
-              parent = this.getParentFromPath(n.path),
+        const parent = this.getParentFromPath(n.path),
               name = slugify(parent.code || parent.name || parent.label, '_')
-        this.scriptFiles[path] = { value: n.value, name }
-        jp.value(this.content, path, `js/${name}.js`)
+        this.scriptFiles.push({
+          name,
+          ext: 'js',
+          data: n.value,
+          remoteLocation: false,
+          pathTo: jp.stringify(n.path)
+        })
       }
     })
+    return true
   }
 
 }
