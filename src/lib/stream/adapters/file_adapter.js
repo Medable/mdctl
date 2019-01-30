@@ -180,6 +180,14 @@ class SingleFileLayout extends Layout {
     this.data = {}
   }
 
+  writeToFile(file, content) {
+    return fs.writeFileSync(file, this.parseContent(content))
+  }
+
+  createCheckpointFile() {
+    this.writeToFile(`${this.output}/_metadata.${this.format}`, this.metadata)
+  }
+
   async processChunk(chunk) {
     await chunk.extractScripts()
     await chunk.extractAssets()
@@ -207,17 +215,10 @@ class SingleFileLayout extends Layout {
   }
 
   _final(cb) {
-    return new Promise((resolve, reject) => {
-      fs.writeFile(`${this.output}/blob.${this.format}`, this.parseContent(this.data), (err) => {
-        if (err) {
-          return reject(err)
-        }
-        return resolve()
-      })
-    }).then(() => {
-      this.emit('end_writing')
-      cb()
-    }).catch(e => cb(e))
+    this.createCheckpointFile()
+    this.writeToFile(`${this.output}/blob.${this.format}`, this.data)
+    this.emit('end_writing')
+    cb()
   }
 
 }
