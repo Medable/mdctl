@@ -461,13 +461,7 @@ class CredentialsManager {
   }
 
   static async get(input) {
-
     return (await this.list(input))[0]
-  }
-
-  static async getAllMatchingCredentials(input) {
-    const matchingCredentials = await this.list(input)
-    return matchingCredentials
   }
 
   static async clear(input) {

@@ -11,7 +11,7 @@ const _ = require('lodash'),
         loadJsonOrYaml, question, normalizeEndpoint, isFault
       } = require('../../lib/utils'),
       {
-        rVal, rString, isSet, stringToBoolean
+        rVal, rString, isSet, stringToBoolean, rInt
       } = require('../../lib/utils/values'),
       {
         Credentials: ApiCredentials, CredentialsManager, PasswordSecret,
@@ -287,7 +287,9 @@ class Credentials extends Task {
 
   async 'credentials@login'(cli) {
 
-    const options = cli.getArguments(['file', 'endpoint', 'env', 'username', 'apiKey', 'strictSSL']),
+    const allowedArguments = ['file', 'endpoint', 'env', 'username', 'apiKey', 'strictSSL'],
+          parsedArguments = cli.getArguments(allowedArguments),
+          options = _.extend(_.clone(parsedArguments), { type: 'password' }),
 
           readFile = async(filePath) => {
             const file = await loadJsonOrYaml(filePath)
@@ -303,7 +305,7 @@ class Credentials extends Task {
                 password
               })
             } catch (err) {
-              result = _.extend(result, { object: 'fault' })
+              result = _.extend(_.clone(result), { object: 'fault' })
             }
             return result
           },
@@ -341,6 +343,14 @@ class Credentials extends Task {
           },
 
           // eslint-disable-next-line no-shadow
+          logInWithPasswordSecret = cli => async(passwordSecret) => {
+            const client = await cli.getApiClient({ passwordSecret, testStatus: false }),
+                  result = await logInAndStoreLogIn(client)(passwordSecret)
+
+            return result
+          },
+
+          // eslint-disable-next-line no-shadow
           storeCredentials = CredentialsManager => async(credentials) => {
             let result
             try {
@@ -349,7 +359,7 @@ class Credentials extends Task {
                 credentials
               )
             } catch (err) {
-              result = _.extend(result, { object: 'fault' })
+              result = _.extend(_.clone(result), { object: 'fault' })
             }
             return result
           },
@@ -360,13 +370,13 @@ class Credentials extends Task {
                 name: 'type',
                 message: 'Which type of credentials are you using?',
                 type: 'list',
-                default: 'password',
+                default: _.get(currentArgs, 'type'),
                 choices: [
                   { name: 'Password - Email/Username and Password', value: 'password' },
                   { name: 'Signature - API Key and Secret Pair', value: 'signature' },
                   { name: 'Token - JWT Authentication Token', value: 'token' }
                 ],
-                when: () => !['password', 'signature', 'token'].includes(_.get(currentArgs, 'type'))
+                when: () => !['password', 'signature', 'token'].includes(_.get(currentArgs, 'type')) && _.isUndefined(currentArgs.type)
               },
               {
                 name: 'endpoint',
@@ -390,38 +400,43 @@ class Credentials extends Task {
                 filter: (input) => {
                   const { protocol, host } = new URL('', input)
                   return `${protocol}//${host}`
-                }
+                },
+                default: rString(_.get(currentArgs, 'endpoint'))
               },
               {
+                type: 'input',
                 name: 'env',
                 message: 'The env (org code)',
-                type: 'input',
                 default: rString(_.get(currentArgs, 'env')),
-                when: !_.get(currentArgs, 'env')
+                when: _.isUndefined(currentArgs.env)
               },
               {
+                type: 'input',
                 name: 'username',
                 message: 'The account username',
-                type: 'input',
-                when: hash => !_.get(currentArgs, 'username') && hash.type === 'password'
+                default: rString(_.get(currentArgs, 'username')),
+                when: hash => _.isUndefined(currentArgs.username) && (hash.type === 'password' || _.get(currentArgs, 'type') === 'password')
               },
               {
                 name: 'password',
                 message: 'The account password',
                 type: 'password',
-                when: hash => !_.get(currentArgs, 'password') && hash.type === 'password'
+                default: rString(_.get(currentArgs, 'password')),
+                when: hash => _.isUndefined(currentArgs.password) && (hash.type === 'password' || _.get(currentArgs, 'type') === 'password')
               },
               {
                 name: 'token',
                 message: 'The JSON Web Token',
                 type: 'password',
-                when: hash => !_.get(currentArgs, 'token') && hash.type === 'token'
+                default: rString(_.get(currentArgs, 'token')),
+                when: hash => _.isUndefined(currentArgs.token) && (hash.type === 'token' || _.get(currentArgs, 'type') === 'token')
               },
               {
                 name: 'apiKey',
                 message: 'The api key',
                 type: 'input',
-                when: hash => ['password', 'signature'].includes(hash.type) && !_.get(currentArgs, 'apiKey'),
+                default: rString(_.get(currentArgs, 'apiKey')),
+                when: hash => (['password', 'signature'].includes(hash.type) || ['password', 'signature'].includes(_.get(currentArgs, 'type'))) && _.isUndefined(currentArgs.apiKey),
                 validate: (input) => {
                   try {
                     return validateApiKey(input)
@@ -434,7 +449,8 @@ class Credentials extends Task {
                 name: 'apiSecret',
                 message: 'The api signing secret',
                 type: 'password',
-                when: hash => hash.type === 'signature' && !_.get(currentArgs, 'apiSecret'),
+                default: rString(_.get(currentArgs, 'apiSecret')),
+                when: hash => (hash.type === 'signature' || _.get(currentArgs, 'type') === 'signature') && _.isUndefined(currentArgs.apiSecret),
                 validate: (input) => {
                   try {
                     return validateApiSecret(input)
@@ -445,7 +461,7 @@ class Credentials extends Task {
               }
             ])
 
-            return result
+            return _.extend(_.clone(currentArgs), result)
           },
 
           askUserToSaveCredentials = async() => {
@@ -460,440 +476,501 @@ class Credentials extends Task {
             ])
 
             return result.saveCredentials
+          },
+
+          askUserToChooseCredentials = async(listOfSecrets) => {
+            const table = new Table({
+                    head: ['Idx', 'URL', 'Email', 'ApiKey'],
+                    colWidths: [5, 50, 20, 25]
+                  }),
+                  credentialsInRowFormat = _(listOfSecrets)
+                    // This is a hack but the object comes in a way that prop can't be read
+                    .map(s => JSON.parse(JSON.stringify(s)))
+                    .map(({ url, email, apiKey }, idx) => [idx, url, email, apiKey]).value()
+
+            table.push(...credentialsInRowFormat)
+
+            console.log(table.toString())
+
+            // eslint-disable-next-line one-var
+            const result = await prompt([
+              {
+                name: 'credentialsIndex',
+                message: 'Select the index of credential or -1 if none',
+                validate: value => _.inRange(rInt(value, -1), -1, (listOfSecrets.length - 1)) || `Must select between -1...${(listOfSecrets.length - 1)}`,
+                transform: value => rInt(value, -1),
+                default: -1,
+              }
+            ])
+
+            return result.credentialsIndex
           }
 
-    if (_.isEmpty(options)) {
+    if (_.isEmpty(parsedArguments)) {
       const defaultCredentials = cli.config('defaultCredentials')
-      if (defaultCredentials) {
+
+      if (defaultCredentials && defaultCredentials.type === 'password') {
         const result = await logInWithDefaultCreds(cli)(defaultCredentials)
         if (isFault(result)) throw new Error(result)
       } else {
-        const userCredentials = await askUserCredentials(),
+        const userCredentials = await askUserCredentials(options),
+              result = await logInWithUserCredentials(cli)(userCredentials)
+        if (isFault(result)) throw new Error(result)
+        // eslint-disable-next-line one-var
+        const existingCredentials = await CredentialsManager.list(userCredentials)
+        if (_.isEmpty(existingCredentials)) {
+          const saveCredentials = await askUserToSaveCredentials()
+          if (saveCredentials) storeCredentials(userCredentials)
+        }
+      }
+    } else {
+      const existingPasswordSecrets = await CredentialsManager.list(options)
+      if (existingPasswordSecrets.length === 0) {
+        const userCredentials = await askUserCredentials(options),
               result = await logInWithUserCredentials(cli)(userCredentials)
         if (isFault(result)) throw new Error(result)
         // eslint-disable-next-line one-var
         const saveCredentials = await askUserToSaveCredentials()
         if (saveCredentials) storeCredentials(userCredentials)
+      } else if (existingPasswordSecrets.length === 1) {
+        const result = await logInWithPasswordSecret(cli)(_(existingPasswordSecrets).first())
+        if (isFault(result)) throw new Error(result)
+      } else {
+        // more than 1
+        const existingPasswordIdx = await askUserToChooseCredentials(existingPasswordSecrets)
+        if (existingPasswordIdx > -1) {
+          const loginFunc = logInWithPasswordSecret(cli),
+                result = await loginFunc(existingPasswordSecrets[existingPasswordIdx])
+          if (isFault(result)) throw new Error(result)
+        } else {
+          const userCredentials = await askUserCredentials(options),
+                result = await logInWithUserCredentials(cli)(userCredentials)
+          if (isFault(result)) throw new Error(result)
+          // eslint-disable-next-line no-shadow
+          // eslint-disable-next-line one-var
+          const existingCredentials = await CredentialsManager.list(userCredentials)
+          if (_.isEmpty(existingCredentials)) {
+            const saveCredentials = await askUserToSaveCredentials()
+            if (saveCredentials) storeCredentials(userCredentials)
+          }
+        }
       }
-
-
-    } else {
-      console.log("I'm not", options)
     }
-
-    return
 
     // load from input file
-    if (options.file) {
-      const optionsFromFile = await readFile(passedOptions.file)
-      _.assign(options, optionsFromFile)
-    }
+    // if (options.file) {
+    //   const optionsFromFile = await readFile(passedOptions.file)
+    //   _.assign(options, optionsFromFile)
+    // }
 
-    // if no args were specified, attempt to use default credentials.
-    if (Object.keys(options).length === 0) {
-      Object.assign(
-        options,
-        _.pick(
-          cli.config('defaultCredentials'),
-          'endpoint', 'env', 'username', 'apiKey', 'password'
-        )
-      )
-    }
+    // // if no args were specified, attempt to use default credentials.
+    // if (Object.keys(options).length === 0) {
+    //   Object.assign(
+    //     options,
+    //     _.pick(
+    //       cli.config('defaultCredentials'),
+    //       'endpoint', 'env', 'username', 'apiKey', 'password'
+    //     )
+    //   )
+    // }
 
-    // set missing items using configured defaults.
-    if (!isSet(options.endpoint)) {
-      options.endpoint = cli.config('defaultEndpoint')
-    }
-    if (!isSet(options.env)) {
-      options.env = cli.config('defaultEnv')
-    }
-    if (!isSet(options.username)) {
-      options.username = cli.config('defaultAccount')
-    }
+    // // set missing items using configured defaults.
+    // if (!isSet(options.endpoint)) {
+    //   options.endpoint = cli.config('defaultEndpoint')
+    // }
+    // if (!isSet(options.env)) {
+    //   options.env = cli.config('defaultEnv')
+    // }
+    // if (!isSet(options.username)) {
+    //   options.username = cli.config('defaultAccount')
+    // }
 
-    options.endpoint = normalizeEndpoint(options.endpoint)
+    // options.endpoint = normalizeEndpoint(options.endpoint)
 
-    // eslint-disable-next-line one-var
-    const secretsQuery = _.pickBy({
-            type: 'password',
-            endpoint: options.endpoint,
-            env: options.env,
-            username: options.username,
-            apiKey: options.apiKey
-          }, _.identity),
-          secrets = await CredentialsManager.getAllMatchingCredentials(secretsQuery)
-    let secret = _.first(secrets),
-        credentialsIndex
+    // // eslint-disable-next-line one-var
+    // const secretsQuery = _.pickBy({
+    //         type: 'password',
+    //         endpoint: options.endpoint,
+    //         env: options.env,
+    //         username: options.username,
+    //         apiKey: options.apiKey
+    //       }, _.identity),
+    //       secrets = await CredentialsManager.getAllMatchingCredentials(secretsQuery)
+    // let secret = _.first(secrets),
+    //     credentialsIndex
 
-    if (secrets.length > 1) {
-      const table = new Table({
-        head: ['Index', 'Account', 'ApiKey'],
-        colWidths: [33, 33, 33]
-      })
+    // if (secrets.length > 1) {
+    //   const table = new Table({
+    //     head: ['Index', 'Account', 'ApiKey'],
+    //     colWidths: [33, 33, 33]
+    //   })
 
-      table.push(...secrets.map(({
-        // eslint-disable-next-line no-shadow
-        username, apiKey
-      }, idx) => [idx, username, apiKey]))
+    //   table.push(...secrets.map(({
+    //     // eslint-disable-next-line no-shadow
+    //     username, apiKey
+    //   }, idx) => [idx, username, apiKey]))
 
-      console.log(table.toString())
+    //   console.log(table.toString())
 
-      // eslint-disable-next-line one-var
-      credentialsIndex = await prompt([
-        {
-          name: 'credentialsIndex',
-          message: 'Select the index of credential or -1 if none',
-          transform: (value) => {
-            let result = -1
-            try {
-              result = parseInt(value, 10)
-            // eslint-disable-next-line no-empty
-            } catch (err) {
+    //   // eslint-disable-next-line one-var
+    //   credentialsIndex = await prompt([
+    //     {
+    //       name: 'credentialsIndex',
+    //       message: 'Select the index of credential or -1 if none',
+    //       transform: (value) => {
+    //         let result = -1
+    //         try {
+    //           result = parseInt(value, 10)
+    //         // eslint-disable-next-line no-empty
+    //         } catch (err) {
 
-            }
-            return result
-          },
-          default: -1,
-        }
-      ])
+    //         }
+    //         return result
+    //       },
+    //       default: -1,
+    //     }
+    //   ])
 
-      if (credentialsIndex.credentialsIndex === -1) {
-        Object.assign(
-          options,
-          await prompt([
-            {
-              name: 'type',
-              message: 'Which type of credentials are you storing?',
-              type: 'list',
-              default: 'password',
-              choices: [
-                { name: 'Password - Email/Username and Password', value: 'password' },
-                { name: 'Signature - API Key and Secret Pair', value: 'signature' },
-                { name: 'Token - JWT Authentication Token', value: 'token' }
-              ],
-              when: () => !['password', 'signature', 'token'].includes(options.type)
-            },
-            {
-              name: 'endpoint',
-              message: 'The api endpoint (example: https://api.dev.medable.com)',
-              type: 'input',
-              default: rString(cli.config('defaultEndpoint'), ''),
-              when: () => {
-                try {
-                  Credentials.validateEndpoint(options.endpoint)
-                  return false
-                } catch (err) {
-                  return true
-                }
-              },
-              validate: (input) => {
-                try {
-                  return Credentials.validateEndpoint(input)
-                } catch (err) {
-                  return err.getMessage()
-                }
-              },
-              filter: (input) => {
-                const { protocol, host } = new URL('', input)
-                return `${protocol}//${host}`
-              }
-            },
-            {
-              name: 'env',
-              message: 'The env (org code)',
-              type: 'input',
-              default: rString(cli.config('defaultEnv'), '')
-            },
-            {
-              name: 'username',
-              message: 'The account email/username',
-              type: 'input',
-              when: hash => hash.type === 'password'
-            },
-            {
-              name: 'password',
-              message: 'The account password',
-              type: 'password',
-              when: hash => hash.type === 'password'
-            },
-            {
-              name: 'token',
-              message: 'The JSON Web Token',
-              type: 'password',
-              when: hash => hash.type === 'token'
-            },
-            {
-              name: 'apiKey',
-              message: 'The api key',
-              type: 'input',
-              when: hash => ['password', 'signature'].includes(hash.type),
-              validate: (input) => {
-                try {
-                  return validateApiKey(input)
-                } catch (err) {
-                  return err.getMessage()
-                }
-              }
-            },
-            {
-              name: 'apiSecret',
-              message: 'The api signing secret',
-              type: 'password',
-              when: hash => hash.type === 'signature',
-              validate: (input) => {
-                try {
-                  return validateApiSecret(input)
-                } catch (err) {
-                  return err.getMessage()
-                }
-              }
-            }
-          ])
-        )
-      } else {
-        secret = secrets[credentialsIndex.credentialsIndex]
-      }
-    } else if (secret) {
-      if (!options.apiKey) {
-        options.apiKey = secret.apiKey
-      }
-      options.password = secret.password
-    }
-
-
-    // ask the caller if anything is left.
-    Object.assign(
-      options,
-      await prompt([
-        {
-          name: 'endpoint',
-          message: 'The api endpoint',
-          type: 'input',
-          default: rString(options.endpoint, ''),
-          transform: normalizeEndpoint,
-          when: () => {
-            try {
-              Credentials.validateEndpoint(options.endpoint)
-              return false
-            } catch (err) {
-              return true
-            }
-          },
-          validate: (input) => {
-            try {
-              return Credentials.validateEndpoint(input)
-            } catch (err) {
-              return err.getMessage()
-            }
-          },
-          filter: (input) => {
-            const { protocol, host } = new URL('', input)
-            return `${protocol}//${host}`
-          }
-        },
-        {
-          name: 'env',
-          message: 'The env (org code)',
-          type: 'input',
-          when: () => !rString(options.env)
-        },
-        {
-          name: 'username',
-          message: 'The account email',
-          type: 'input',
-          when: () => !rString(options.username)
-        },
-        {
-          name: 'password',
-          message: 'The account password',
-          type: 'password',
-          when: () => !rString(options.password)
-        },
-        {
-          name: 'apiKey',
-          message: 'The api key',
-          type: 'input',
-          when: () => !rString(options.apiKey),
-          validate: (input) => {
-            try {
-              return validateApiKey(input)
-            } catch (err) {
-              return err.getMessage()
-            }
-          }
-        }
-      ])
-    )
-
-    {
-
-      const client = new Client({
-              environment: new Environment(options),
-              credentials: new ApiCredentials(options),
-              sessions: true,
-              requestOptions: {
-                strictSSL: stringToBoolean(rVal(cli.args('strictSSL'), cli.config('strictSSL')), true)
-              }
-            }),
-            { environment, requestOptions } = client,
-            { url, endpoint, env } = environment,
-            { apiKey, username, password } = options,
-            appURL = `${endpoint}/${env}`.replace('api.', 'app.'),
+    //   if (credentialsIndex.credentialsIndex === -1) {
+    //     Object.assign(
+    //       options,
+    //       await prompt([
+    //         {
+    //           name: 'type',
+    //           message: 'Which type of credentials are you storing?',
+    //           type: 'list',
+    //           default: 'password',
+    //           choices: [
+    //             { name: 'Password - Email/Username and Password', value: 'password' },
+    //             { name: 'Signature - API Key and Secret Pair', value: 'signature' },
+    //             { name: 'Token - JWT Authentication Token', value: 'token' }
+    //           ],
+    //           when: () => !['password', 'signature', 'token'].includes(options.type)
+    //         },
+    //         {
+    //           name: 'endpoint',
+    //           message: 'The api endpoint (example: https://api.dev.medable.com)',
+    //           type: 'input',
+    //           default: rString(cli.config('defaultEndpoint'), ''),
+    //           when: () => {
+    //             try {
+    //               Credentials.validateEndpoint(options.endpoint)
+    //               return false
+    //             } catch (err) {
+    //               return true
+    //             }
+    //           },
+    //           validate: (input) => {
+    //             try {
+    //               return Credentials.validateEndpoint(input)
+    //             } catch (err) {
+    //               return err.getMessage()
+    //             }
+    //           },
+    //           filter: (input) => {
+    //             const { protocol, host } = new URL('', input)
+    //             return `${protocol}//${host}`
+    //           }
+    //         },
+    //         {
+    //           name: 'env',
+    //           message: 'The env (org code)',
+    //           type: 'input',
+    //           default: rString(cli.config('defaultEnv'), '')
+    //         },
+    //         {
+    //           name: 'username',
+    //           message: 'The account email/username',
+    //           type: 'input',
+    //           when: hash => hash.type === 'password'
+    //         },
+    //         {
+    //           name: 'password',
+    //           message: 'The account password',
+    //           type: 'password',
+    //           when: hash => hash.type === 'password'
+    //         },
+    //         {
+    //           name: 'token',
+    //           message: 'The JSON Web Token',
+    //           type: 'password',
+    //           when: hash => hash.type === 'token'
+    //         },
+    //         {
+    //           name: 'apiKey',
+    //           message: 'The api key',
+    //           type: 'input',
+    //           when: hash => ['password', 'signature'].includes(hash.type),
+    //           validate: (input) => {
+    //             try {
+    //               return validateApiKey(input)
+    //             } catch (err) {
+    //               return err.getMessage()
+    //             }
+    //           }
+    //         },
+    //         {
+    //           name: 'apiSecret',
+    //           message: 'The api signing secret',
+    //           type: 'password',
+    //           when: hash => hash.type === 'signature',
+    //           validate: (input) => {
+    //             try {
+    //               return validateApiSecret(input)
+    //             } catch (err) {
+    //               return err.getMessage()
+    //             }
+    //           }
+    //         }
+    //       ])
+    //     )
+    //   } else {
+    //     secret = secrets[credentialsIndex.credentialsIndex]
+    //   }
+    // } else if (secret) {
+    //   if (!options.apiKey) {
+    //     options.apiKey = secret.apiKey
+    //   }
+    //   options.password = secret.password
+    // }
 
 
-            loginBody = { email: options.username, password: options.password }
+    // // ask the caller if anything is left.
+    // Object.assign(
+    //   options,
+    //   await prompt([
+    //     {
+    //       name: 'endpoint',
+    //       message: 'The api endpoint',
+    //       type: 'input',
+    //       default: rString(options.endpoint, ''),
+    //       transform: normalizeEndpoint,
+    //       when: () => {
+    //         try {
+    //           Credentials.validateEndpoint(options.endpoint)
+    //           return false
+    //         } catch (err) {
+    //           return true
+    //         }
+    //       },
+    //       validate: (input) => {
+    //         try {
+    //           return Credentials.validateEndpoint(input)
+    //         } catch (err) {
+    //           return err.getMessage()
+    //         }
+    //       },
+    //       filter: (input) => {
+    //         const { protocol, host } = new URL('', input)
+    //         return `${protocol}//${host}`
+    //       }
+    //     },
+    //     {
+    //       name: 'env',
+    //       message: 'The env (org code)',
+    //       type: 'input',
+    //       when: () => !rString(options.env)
+    //     },
+    //     {
+    //       name: 'username',
+    //       message: 'The account email',
+    //       type: 'input',
+    //       when: () => !rString(options.username)
+    //     },
+    //     {
+    //       name: 'password',
+    //       message: 'The account password',
+    //       type: 'password',
+    //       when: () => !rString(options.password)
+    //     },
+    //     {
+    //       name: 'apiKey',
+    //       message: 'The api key',
+    //       type: 'input',
+    //       when: () => !rString(options.apiKey),
+    //       validate: (input) => {
+    //         try {
+    //           return validateApiKey(input)
+    //         } catch (err) {
+    //           return err.getMessage()
+    //         }
+    //       }
+    //     }
+    //   ])
+    // )
 
-      try {
+    // {
 
-        await client.post('/accounts/login', loginBody)
+    //   const client = new Client({
+    //           environment: new Environment(options),
+    //           credentials: new ApiCredentials(options),
+    //           sessions: true,
+    //           requestOptions: {
+    //             strictSSL:
+    //                stringToBoolean(rVal(cli.args('strictSSL'), cli.config('strictSSL')), true)
+    //           }
+    //         }),
+    //         { environment, requestOptions } = client,
+    //         { url, endpoint, env } = environment,
+    //         { apiKey, username, password } = options,
+    //         appURL = `${endpoint}/${env}`.replace('api.', 'app.'),
 
-      } catch (err) {
 
-        switch (err.code) {
-          case 'kUnverifiedLocation':
-          case 'kNewLocation':
-          case 'kCallbackFormat':
-          case 'kCallbackNotFound':
-            loginBody.location = {
-              verificationToken: await question('This location requires verification. Enter the token you received via SMS.'),
-              locationName: `mdctl.medable.com@${os.hostname()}`,
-              singleUse: false
-            }
-            await client.post('/accounts/login', loginBody)
-            break
+    //         loginBody = { email: options.username, password: options.password }
 
-          case 'kPasswordExpired':
-            console.log(`Your password expired. Please update it now at ${appURL}`)
+    //   try {
 
-          default:
-            console.log(err.toJSON())
+    //     await client.post('/accounts/login', loginBody)
 
-        }
+    //   } catch (err) {
 
-      }
+    //     switch (err.code) {
+    //       case 'kUnverifiedLocation':
+    //       case 'kNewLocation':
+    //       case 'kCallbackFormat':
+    //       case 'kCallbackNotFound':
+    //         loginBody.location = {
+    //           verificationToken:
+    // await question('This location requires verification. Enter the token you received via SMS'),
+    //           locationName: `mdctl.medable.com@${os.hostname()}`,
+    //           singleUse: false
+    //         }
+    //         await client.post('/accounts/login', loginBody)
+    //         break
 
-      // save the last login credentials. re-use these for all calls until logout.
-      await CredentialsManager.setCustom('login', '*', {
-        client: {
-          environment: url,
-          credentials: { apiKey, username },
-          sessions: true,
-          requestOptions
-        },
-        password
-      })
+    //       case 'kPasswordExpired':
+    //         console.log(`Your password expired. Please update it now at ${appURL}`)
 
-      if (_.get(credentialsIndex, 'credentialsIndex') === -1) {
-        const saveCredentials = await prompt([
-          {
-            name: 'saveCredentials',
-            message: 'Do you want to save these credentials?',
-            default: true,
-          }
-        ])
+    //       default:
+    //         console.log(err.toJSON())
 
-        if (saveCredentials.saveCredentials) {
-          Object.assign(
-            options,
-            await prompt([
-              {
-                name: 'type',
-                message: 'Which type of credentials are you storing?',
-                type: 'list',
-                default: 'password',
-                choices: [
-                  { name: 'Password - Email/Username and Password', value: 'password' },
-                  { name: 'Signature - API Key and Secret Pair', value: 'signature' },
-                  { name: 'Token - JWT Authentication Token', value: 'token' }
-                ],
-                when: () => !['password', 'signature', 'token'].includes(options.type)
-              },
-              {
-                name: 'endpoint',
-                message: 'The api endpoint (example: https://api.dev.medable.com)',
-                type: 'input',
-                default: rString(cli.config('defaultEndpoint'), ''),
-                when: () => {
-                  try {
-                    Credentials.validateEndpoint(options.endpoint)
-                    return false
-                  } catch (err) {
-                    return true
-                  }
-                },
-                validate: (input) => {
-                  try {
-                    return Credentials.validateEndpoint(input)
-                  } catch (err) {
-                    return err.getMessage()
-                  }
-                },
-                filter: (input) => {
-                  const { protocol, host } = new URL('', input)
-                  return `${protocol}//${host}`
-                }
-              },
-              {
-                name: 'env',
-                message: 'The env (org code)',
-                type: 'input',
-                default: rString(cli.config('defaultEnv'), ''),
-                when: () => !rString(options.env)
-              },
-              {
-                name: 'username',
-                message: 'The account email/username',
-                type: 'input',
-                when: hash => hash.type === 'password' && !rString(options.username)
-              },
-              {
-                name: 'password',
-                message: 'The account password',
-                type: 'password',
-                when: hash => hash.type === 'password' && !rString(options.password)
-              },
-              {
-                name: 'token',
-                message: 'The JSON Web Token',
-                type: 'password',
-                when: hash => hash.type === 'token' && !rString(options.token)
-              },
-              {
-                name: 'apiKey',
-                message: 'The api key',
-                type: 'input',
-                when: hash => ['password', 'signature'].includes(hash.type) && !rString(options.apiKey),
-                validate: (input) => {
-                  try {
-                    return validateApiKey(input)
-                  } catch (err) {
-                    return err.getMessage()
-                  }
-                }
-              },
-              {
-                name: 'apiSecret',
-                message: 'The api signing secret',
-                type: 'password',
-                when: hash => hash.type === 'signature' && !rString(options.apiSecret),
-                validate: (input) => {
-                  try {
-                    return validateApiSecret(input)
-                  } catch (err) {
-                    return err.getMessage()
-                  }
-                }
-              }
-            ])
-          )
+    //     }
 
-          await CredentialsManager.add(
-            new Environment(`${options.endpoint}/${options.env}`),
-            options
-          )
-        }
-      }
-    }
+    //   }
+
+    //   // save the last login credentials. re-use these for all calls until logout.
+    //   await CredentialsManager.setCustom('login', '*', {
+    //     client: {
+    //       environment: url,
+    //       credentials: { apiKey, username },
+    //       sessions: true,
+    //       requestOptions
+    //     },
+    //     password
+    //   })
+
+    //   if (_.get(credentialsIndex, 'credentialsIndex') === -1) {
+    //     const saveCredentials = await prompt([
+    //       {
+    //         name: 'saveCredentials',
+    //         message: 'Do you want to save these credentials?',
+    //         default: true,
+    //       }
+    //     ])
+
+    //     if (saveCredentials.saveCredentials) {
+    //       Object.assign(
+    //         options,
+    //         await prompt([
+    //           {
+    //             name: 'type',
+    //             message: 'Which type of credentials are you storing?',
+    //             type: 'list',
+    //             default: 'password',
+    //             choices: [
+    //               { name: 'Password - Email/Username and Password', value: 'password' },
+    //               { name: 'Signature - API Key and Secret Pair', value: 'signature' },
+    //               { name: 'Token - JWT Authentication Token', value: 'token' }
+    //             ],
+    //             when: () => !['password', 'signature', 'token'].includes(options.type)
+    //           },
+    //           {
+    //             name: 'endpoint',
+    //             message: 'The api endpoint (example: https://api.dev.medable.com)',
+    //             type: 'input',
+    //             default: rString(cli.config('defaultEndpoint'), ''),
+    //             when: () => {
+    //               try {
+    //                 Credentials.validateEndpoint(options.endpoint)
+    //                 return false
+    //               } catch (err) {
+    //                 return true
+    //               }
+    //             },
+    //             validate: (input) => {
+    //               try {
+    //                 return Credentials.validateEndpoint(input)
+    //               } catch (err) {
+    //                 return err.getMessage()
+    //               }
+    //             },
+    //             filter: (input) => {
+    //               const { protocol, host } = new URL('', input)
+    //               return `${protocol}//${host}`
+    //             }
+    //           },
+    //           {
+    //             name: 'env',
+    //             message: 'The env (org code)',
+    //             type: 'input',
+    //             default: rString(cli.config('defaultEnv'), ''),
+    //             when: () => !rString(options.env)
+    //           },
+    //           {
+    //             name: 'username',
+    //             message: 'The account email/username',
+    //             type: 'input',
+    //             when: hash => hash.type === 'password' && !rString(options.username)
+    //           },
+    //           {
+    //             name: 'password',
+    //             message: 'The account password',
+    //             type: 'password',
+    //             when: hash => hash.type === 'password' && !rString(options.password)
+    //           },
+    //           {
+    //             name: 'token',
+    //             message: 'The JSON Web Token',
+    //             type: 'password',
+    //             when: hash => hash.type === 'token' && !rString(options.token)
+    //           },
+    //           {
+    //             name: 'apiKey',
+    //             message: 'The api key',
+    //             type: 'input',
+    //             when: hash => ['password', 'signature'].includes(hash.type)
+    //                && !rString(options.apiKey),
+    //             validate: (input) => {
+    //               try {
+    //                 return validateApiKey(input)
+    //               } catch (err) {
+    //                 return err.getMessage()
+    //               }
+    //             }
+    //           },
+    //           {
+    //             name: 'apiSecret',
+    //             message: 'The api signing secret',
+    //             type: 'password',
+    //             when: hash => hash.type === 'signature' && !rString(options.apiSecret),
+    //             validate: (input) => {
+    //               try {
+    //                 return validateApiSecret(input)
+    //               } catch (err) {
+    //                 return err.getMessage()
+    //               }
+    //             }
+    //           }
+    //         ])
+    //       )
+
+    //       await CredentialsManager.add(
+    //         new Environment(`${options.endpoint}/${options.env}`),
+    //         options
+    //       )
+    //     }
+    //   }
+    // }
 
   }
 
