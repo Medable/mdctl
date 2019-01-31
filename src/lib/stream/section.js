@@ -36,6 +36,9 @@ class SectionBase {
     if (this.key === 'env') {
       return this.key
     }
+    if (MANIFEST_KEYS.keys.slice(1).indexOf(this.key) > -1) {
+      return this.key.replace('manifest-', '')
+    }
     return name || code || object
   }
 
@@ -58,11 +61,11 @@ class SectionBase {
     }
     const { object } = this.content
     if (object === 'env') {
-      path = object
+      path = this.name
     } else if (object.indexOf('c_') === 0 || object.includes('__')) {
-      path = `data/${pluralize(this.content.object)}`
+      path = `data/${pluralize(this.name)}`
     } else if (path) {
-      path = `${path}/${pluralize(this.content.object)}`
+      path = `${path}/${pluralize(this.name)}`
     }
     return path
   }

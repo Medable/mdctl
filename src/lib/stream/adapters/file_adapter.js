@@ -26,7 +26,7 @@ class Layout extends Writable {
   }
 
   loadMetadata() {
-    const file = `${this.output}/_metadata.${this.format}`
+    const file = `${this.output}/.cache.${this.format}`
     if (fs.existsSync(file)) {
       const content = fs.readFileSync(file)
       this.metadata = this.format === 'json' ? JSON.parse(content) : jsYaml.safeLoad(content)
@@ -143,7 +143,7 @@ class FilesLayout extends Layout {
   }
 
   createCheckpointFile() {
-    this.writeToFile(`${this.output}/_metadata.${this.format}`, this.metadata)
+    this.writeToFile(`${this.output}/.cache.${this.format}`, this.metadata)
   }
 
   async processChunk(chunk) {
@@ -190,7 +190,7 @@ class SingleFileLayout extends Layout {
   }
 
   createCheckpointFile() {
-    this.writeToFile(`${this.output}/_metadata.${this.format}`, this.metadata)
+    this.writeToFile(`${this.output}/.cache.${this.format}`, this.metadata)
   }
 
   async processChunk(chunk) {
