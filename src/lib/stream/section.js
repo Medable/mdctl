@@ -65,7 +65,7 @@ class SectionBase {
     } else if (object.indexOf('c_') === 0 || object.includes('__')) {
       path = `data/${pluralize(this.name)}`
     } else if (path) {
-      path = `${path}/${pluralize(this.name)}`
+      path = `${path}/${pluralize(object)}`
     }
     return path
   }
