@@ -26,10 +26,10 @@ class Layout extends Writable {
   }
 
   loadMetadata() {
-    const file = `${this.output}/.cache.${this.format}`
+    const file = `${this.output}/.cache.json`
     if (fs.existsSync(file)) {
       const content = fs.readFileSync(file)
-      this.metadata = this.format === 'json' ? JSON.parse(content) : jsYaml.safeLoad(content)
+      this.metadata = JSON.parse(content)
     }
   }
 
@@ -62,7 +62,7 @@ class Layout extends Writable {
     return !!cnf
   }
 
-  updateMetadata(f, dest) {
+  updateAssetsMetadata(f, dest) {
     const cnf = _.find(this.metadata.assets, c => c.name === f.name),
           relativeDest = dest.replace(this.output, '')
     if (cnf) {
@@ -89,7 +89,7 @@ class Layout extends Writable {
           const fileWriter = fs.createWriteStream(dest)
           fileWriter.on('finish', () => {
             if (f.ETag) {
-              this.updateMetadata(f, dest)
+              this.updateAssetsMetadata(f, dest)
             }
             resolve({
               name: f.name,
@@ -143,7 +143,7 @@ class FilesLayout extends Layout {
   }
 
   createCheckpointFile() {
-    this.writeToFile(`${this.output}/.cache.${this.format}`, this.metadata)
+    this.writeToFile(`${this.output}/.cache.json`, this.metadata)
   }
 
   async processChunk(chunk) {
@@ -190,7 +190,7 @@ class SingleFileLayout extends Layout {
   }
 
   createCheckpointFile() {
-    this.writeToFile(`${this.output}/.cache.${this.format}`, this.metadata)
+    this.writeToFile(`${this.output}/.cache.json`, this.metadata)
   }
 
   async processChunk(chunk) {
