@@ -145,7 +145,7 @@ class FilesLayout extends Layout {
 
   async processChunk(chunk) {
     try {
-      if (chunk.writable) {
+      if (chunk.isWritable) {
         const folder = `${this.output}/${chunk.getPath()}`
         await chunk.extractScripts()
         await chunk.extractAssets()
@@ -195,7 +195,7 @@ class SingleFileLayout extends Layout {
       await chunk.extractScripts()
       await chunk.extractAssets()
       await this.writeExtraFiles(this.output, chunk)
-      const key = chunk.sectionKey || chunk.key
+      const { key } = chunk
       let exists = pathTo(this.data, key)
       if (!exists) {
         pathTo(this.data, key, [])
@@ -215,7 +215,7 @@ class SingleFileLayout extends Layout {
   }
 
   _write(chunk, enc, cb) {
-    if (chunk.writable) {
+    if (chunk.isWritable) {
       this.processChunk(chunk).then(() => {
         cb()
       }).catch(e => cb(e))

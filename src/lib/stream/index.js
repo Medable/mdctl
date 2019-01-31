@@ -1,5 +1,4 @@
 const { Transform } = require('stream'),
-      EventEmitter = require('events'),
       Section = require('./section'),
       Fault = require('../fault'),
       KEYS = ['manifest', 'manifest-dependencies', 'manifest-exports', 'env', 'app', 'notification', 'policy', 'role', 'smsNumber', 'serviceAccount', 'storage', 'configuration', 'facet', 'object', 'script', 'template', 'view']
@@ -10,14 +9,6 @@ class StreamTransform extends Transform {
     super(Object.assign({
       objectMode: true
     }, options))
-  }
-
-  pipe(dest, options) {
-    dest.on('end_writing', () => this.emit('end_writing'))
-    dest.on('error', (e) => {
-      this.emit('error', e)
-    })
-    super.pipe(dest, options)
   }
 
   _transform(chunk, enc, done) {
