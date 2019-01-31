@@ -11,14 +11,18 @@ class StreamTransform extends Transform {
     }, options))
   }
 
+  checkKeys(name) {
+    return KEYS.indexOf(name) > -1 || (typeof name === 'string' && (name.indexOf('c_') === 0 || name.includes('__')))
+  }
+
   _transform(chunk, enc, done) {
     // Lets push only the allowed keys
     if (!chunk.object) {
-      throw new Fault('kMissingObjectKey', 'There is no object property', 404)
+      throw new Fault('kMissingObjectKey', 'There is no object property', 400)
     }
     if (chunk.object === 'fault') {
       throw Fault.from(chunk)
-    } else if (KEYS.indexOf(chunk.object) > -1) {
+    } else if (this.checkKeys(chunk.object)) {
       const section = new Section(chunk, chunk.object)
       this.push(section)
     } else {

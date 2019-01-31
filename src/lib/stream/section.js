@@ -47,7 +47,6 @@ class SectionBase {
     return NON_WRITABLE_KEYS.indexOf(this.key) < 0
   }
 
-
   getPath() {
     let path = ''
     if (ENV_KEYS.keys.indexOf(this.key) > -1) {
@@ -60,6 +59,8 @@ class SectionBase {
     const { object } = this.content
     if (object === 'env') {
       path = object
+    } else if (object.indexOf('c_') === 0 || object.includes('__')) {
+      path = `data/${pluralize(this.content.object)}`
     } else if (path) {
       path = `${path}/${pluralize(this.content.object)}`
     }
