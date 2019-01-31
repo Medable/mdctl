@@ -5,9 +5,9 @@ const { prompt } = require('inquirer'),
         validateApiKey, validateApiSecret
       } = require('../../lib/api/credentials'),
       {
-        rString, rInt
+        rString, rInt, !isSet
       } = require('../../lib/utils/values'),
-      { validateEndpoint, isNullOrUndefined } = require('../../lib/utils/index'),
+      { validateEndpoint } = require('../../lib/utils/index'),
 
       askUserCredentials = async(currentArgs) => {
         const result = await prompt([
@@ -21,13 +21,13 @@ const { prompt } = require('inquirer'),
               { name: 'Signature - API Key and Secret Pair', value: 'signature' },
               { name: 'Token - JWT Authentication Token', value: 'token' }
             ],
-            when: () => !['password', 'signature', 'token'].includes(_.get(currentArgs, 'type')) && isNullOrUndefined(currentArgs.type)
+            when: () => !['password', 'signature', 'token'].includes(_.get(currentArgs, 'type')) && !isSet(currentArgs.type)
           },
           {
             name: 'endpoint',
             message: 'The api endpoint (example: https://api.dev.medable.com)',
             type: 'input',
-            when: () => isNullOrUndefined(currentArgs.endpoint),
+            when: () => !isSet(currentArgs.endpoint),
             validate: value => validateEndpoint(value) || 'Invalid URL',
             default: rString(_.get(currentArgs, 'endpoint'))
           },
@@ -36,35 +36,35 @@ const { prompt } = require('inquirer'),
             name: 'env',
             message: 'The env (org code)',
             default: rString(_.get(currentArgs, 'env')),
-            when: isNullOrUndefined(currentArgs.env)
+            when: !isSet(currentArgs.env)
           },
           {
             type: 'input',
             name: 'username',
             message: 'The account username',
             default: rString(_.get(currentArgs, 'username')),
-            when: hash => isNullOrUndefined(currentArgs.username) && (hash.type === 'password' || _.get(currentArgs, 'type') === 'password')
+            when: hash => !isSet(currentArgs.username) && (hash.type === 'password' || _.get(currentArgs, 'type') === 'password')
           },
           {
             name: 'password',
             message: 'The account password',
             type: 'password',
             default: rString(_.get(currentArgs, 'password')),
-            when: hash => isNullOrUndefined(currentArgs.password) && (hash.type === 'password' || _.get(currentArgs, 'type') === 'password')
+            when: hash => !isSet(currentArgs.password) && (hash.type === 'password' || _.get(currentArgs, 'type') === 'password')
           },
           {
             name: 'token',
             message: 'The JSON Web Token',
             type: 'password',
             default: rString(_.get(currentArgs, 'token')),
-            when: hash => isNullOrUndefined(currentArgs.token) && (hash.type === 'token' || _.get(currentArgs, 'type') === 'token')
+            when: hash => !isSet(currentArgs.token) && (hash.type === 'token' || _.get(currentArgs, 'type') === 'token')
           },
           {
             name: 'apiKey',
             message: 'The api key',
             type: 'input',
             default: rString(_.get(currentArgs, 'apiKey')),
-            when: hash => (['password', 'signature'].includes(hash.type) || ['password', 'signature'].includes(_.get(currentArgs, 'type'))) && isNullOrUndefined(currentArgs.apiKey),
+            when: hash => (['password', 'signature'].includes(hash.type) || ['password', 'signature'].includes(_.get(currentArgs, 'type'))) && !isSet(currentArgs.apiKey),
             validate: (input) => {
               try {
                 return validateApiKey(input)
@@ -78,7 +78,7 @@ const { prompt } = require('inquirer'),
             message: 'The api signing secret',
             type: 'password',
             default: rString(_.get(currentArgs, 'apiSecret')),
-            when: hash => (hash.type === 'signature' || _.get(currentArgs, 'type') === 'signature') && isNullOrUndefined(currentArgs.apiSecret),
+            when: hash => (hash.type === 'signature' || _.get(currentArgs, 'type') === 'signature') && !isSet(currentArgs.apiSecret),
             validate: (input) => {
               try {
                 return validateApiSecret(input)

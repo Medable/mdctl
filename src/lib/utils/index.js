@@ -79,10 +79,6 @@ function validateEndpoint(endpoint) {
   }
 }
 
-function isNullOrUndefined(value) {
-  return _.isNull(value) || _.isUndefined(value)
-}
-
 
 module.exports = {
   throwIf,
@@ -92,6 +88,5 @@ module.exports = {
   loadJsonOrYaml,
   tryCatch,
   normalizeEndpoint,
-  validateEndpoint,
-  isNullOrUndefined
+  validateEndpoint
 }
