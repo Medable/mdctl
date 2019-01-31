@@ -18,7 +18,7 @@ class Env extends Task {
     super()
     this.credentialsManager = credentialsManager
     this.ApiClient = ApiClient
-    this.optionKeys = ['endpoint', 'env', 'manifest', 'format']
+    this.optionKeys = ['endpoint', 'env', 'manifest', 'format', 'layout', 'dir']
   }
 
   async run(cli) {
@@ -38,7 +38,8 @@ class Env extends Task {
 
   async 'env@export'(cli) {
     const passedOptions = await cli.getArguments(this.optionKeys),
-          manifest = JSON.parse(fs.readFileSync(passedOptions.manifest || `${cli.cwd}/manifest.json`)),
+          outputDir = passedOptions.dir || cli.cwd,
+          manifestFile = passedOptions.manifest || `${outputDir}/manifest.${passedOptions.format || 'json'}`,
           stream = ndjson.parse(),
           client = await cli.getApiClient(),
           url = new URL('/developer/environment/export', client.environment.url),
@@ -46,9 +47,17 @@ class Env extends Task {
             query: url.searchParams,
             method: 'post'
           },
-          format = passedOptions.format && { format: passedOptions.format },
-          streamTransform = new Stream({ format }),
-          fileWriter = new FileAdapter(`${process.cwd()}/output`, format)
+          streamOptions = passedOptions.format && {
+            format: passedOptions.format,
+            layout: passedOptions.layout
+          },
+          streamTransform = new Stream(streamOptions),
+          fileWriter = new FileAdapter(outputDir, streamOptions)
+
+    let manifest = {}
+    if (fs.existsSync(manifestFile)) {
+      manifest = JSON.parse(fs.readFileSync(manifestFile))
+    }
 
     pathTo(options, 'requestOptions.headers.accept', 'application/x-ndjson')
     await client.call(url.pathname, Object.assign(options, {

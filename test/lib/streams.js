@@ -24,39 +24,46 @@ describe('Adapters', () => {
     const tempDir = path.join(process.cwd(), `output-${new Date().getTime()}`),
           stream = ndjson.parse(),
           format = 'yaml',
-          streamWriter = new Stream(stream, { format })
+          streamWriter = new Stream(stream, { format }),
+          onEnd = (error) => {
+            if (error) {
+              rimraf.sync(tempDir)
+              done(error)
+            }
+            glob('**/*.{yaml,js,png,jpeg,ico,gif}', { cwd: tempDir }, (err, files) => {
+              rimraf.sync(tempDir)
+              if (err) {
+                done(err)
+              } else {
+                assert(files.length === 50, 'there are some missing files created')
+                done()
+              }
+            })
+          }
 
-    streamWriter.pipe(new FileAdapter(tempDir, { format }))
-    blob.pipe(stream)
-    streamWriter.on('end_writing', () => {
-      glob('**/*.{yaml,js,png,jpeg,ico,gif}', { cwd: tempDir }, (err, files) => {
-        if (err) {
-          return done(err)
-        }
-        rimraf.sync(tempDir)
-        assert(files.length === 51, 'there are some missing files created')
-        return done()
-      })
-    })
+    pump(blob, stream, streamWriter, new FileAdapter(tempDir, { format }), onEnd)
   })
 
   it('export using file adapter with single blob layout', (done) => {
     const tempDir = path.join(process.cwd(), `output-${new Date().getTime()}`),
           stream = ndjson.parse(),
           format = 'yaml',
-          streamWriter = new Stream({ format })
-
-    const onEnd = (error) => {
-      if(error) return done(error)
-      glob('**/*.{yaml,js,png,jpeg,ico,gif}', { cwd: tempDir }, (err, files) => {
-        if (err) {
-          return done(err)
-        }
-        rimraf.sync(tempDir)
-        assert(files.length === 6, 'there are more/less files than created')
-        return done()
-      })
-    }
+          streamWriter = new Stream({ format }),
+          onEnd = (error) => {
+            if (error) {
+              rimraf.sync(tempDir)
+              done(error)
+            }
+            glob('**/*.{yaml,js,png,jpeg,ico,gif}', { cwd: tempDir }, (err, files) => {
+              rimraf.sync(tempDir)
+              if (err) {
+                done(err)
+              } else {
+                assert(files.length === 6, 'there are more/less files than created')
+                done()
+              }
+            })
+          }
     pump(blob, stream, streamWriter, new FileAdapter(tempDir, { format, layout: 'blob' }), onEnd)
   })
 
