@@ -49,13 +49,16 @@ class Layout extends Writable {
       const objStr = JSON.stringify(content).trim()
       contentStr = jsYaml.safeDump(JSON.parse(objStr))
     } else {
-      contentStr = JSON.stringify(content)
+      contentStr = JSON.stringify(content, null, 2)
     }
     return contentStr
   }
 
   checkFileETagExists(ETag) {
     const cnf = ETag && _.find(this.metadata.assets, c => c.ETag === ETag)
+    if (cnf && !fs.existsSync(cnf.path)) {
+      return false
+    }
     return !!cnf
   }
 
@@ -145,12 +148,14 @@ class FilesLayout extends Layout {
 
   async processChunk(chunk) {
     try {
-      const folder = `${this.output}/${chunk.getPath()}`
-      this.ensure(folder)
-      await chunk.extractScripts()
-      await chunk.extractAssets()
-      await this.writeExtraFiles(folder, chunk)
-      this.writeToFile(`${folder}/${slugify(chunk.name, '_')}.${this.format}`, chunk.content)
+      if (chunk.isWritable) {
+        const folder = `${this.output}/${chunk.getPath()}`
+        await chunk.extractScripts()
+        await chunk.extractAssets()
+        this.ensure(folder)
+        await this.writeExtraFiles(folder, chunk)
+        this.writeToFile(`${folder}/${slugify(chunk.name, '_')}.${this.format}`, chunk.content)
+      }
       return true
     } catch (e) {
       throw e
@@ -189,29 +194,37 @@ class SingleFileLayout extends Layout {
   }
 
   async processChunk(chunk) {
-    await chunk.extractScripts()
-    await chunk.extractAssets()
-    await this.writeExtraFiles(this.output, chunk)
-    const key = chunk.sectionKey || chunk.key
-    let exists = pathTo(this.data, key)
-    if (!exists) {
-      pathTo(this.data, key, [])
-      exists = []
-    }
-    if (_.isArray(exists)) {
-      exists.push(chunk.content)
-    } else if (_.isObject(exists)) {
-      exists = _.extend(exists, chunk.content)
-    }
-    if (exists) {
-      pathTo(this.data, key, exists)
+    try {
+      await chunk.extractScripts()
+      await chunk.extractAssets()
+      await this.writeExtraFiles(this.output, chunk)
+      const { key } = chunk
+      let exists = pathTo(this.data, key)
+      if (!exists) {
+        pathTo(this.data, key, [])
+        exists = []
+      }
+      if (_.isArray(exists)) {
+        exists.push(chunk.content)
+      } else if (_.isObject(exists)) {
+        exists = _.extend(exists, chunk.content)
+      }
+      if (exists) {
+        pathTo(this.data, key, exists)
+      }
+    } catch (e) {
+      throw e
     }
   }
 
   _write(chunk, enc, cb) {
-    this.processChunk(chunk).then(() => {
+    if (chunk.isWritable) {
+      this.processChunk(chunk).then(() => {
+        cb()
+      }).catch(e => cb(e))
+    } else {
       cb()
-    }).catch(e => cb(e))
+    }
   }
 
   _final(cb) {
@@ -233,9 +246,6 @@ class FileAdapter extends EventEmitter {
     if (layout === 'blob') {
       this.stream = new SingleFileLayout(output, format)
     }
-    this.stream.on('end_writing', () => {
-      this.emit('end_writing')
-    })
     return this.stream
   }
 
