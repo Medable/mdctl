@@ -13,9 +13,8 @@ const _ = require('lodash'),
 
 class Env extends Task {
 
-  constructor(credentialsManager = CredentialsManager) {
+  constructor() {
     super()
-    this.credentialsManager = credentialsManager
     this.optionKeys = ['endpoint', 'env', 'manifest', 'format']
   }
 
@@ -38,7 +37,8 @@ class Env extends Task {
     const passedOptions = await cli.getArguments(this.optionKeys),
           manifest = JSON.parse(fs.readFileSync(passedOptions.manifest || `${cli.cwd}/manifest.json`)),
           stream = ndjson.parse(),
-          client = await cli.getApiClient(),
+          passwordSecret = await CredentialsManager.get(passedOptions),
+          client = await cli.getApiClient({ passwordSecret }),
           url = new URL('/developer/environment/export', client.environment.url),
           options = {
             query: url.searchParams,
@@ -97,11 +97,6 @@ class Env extends Task {
           --manifest - defaults to $cwd/manifest.json
           --format - export format (json, yaml) defaults to json                        
     `
-  }
-
-  getPasswordSecret(passedOptions) {
-    const search = _.pick(passedOptions, 'endpoint', 'env')
-    return this.credentialsManager.get(search)
   }
 
 }
