@@ -2,6 +2,7 @@
 
 const _ = require('lodash'),
       fs = require('fs'),
+      { URL } = require('url'),
       ndjson = require('ndjson'),
       { isSet } = require('../../lib/utils/values'),
       pathTo = require('../../lib/utils/path.to'),
