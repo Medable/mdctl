@@ -9,7 +9,15 @@ const _ = require('lodash'),
         let result
         try {
           result = await CredentialsManager.setCustom('login', '*', {
-            client,
+            client: {
+              environment: client.environment.url,
+              credentials: {
+                apiKey: client.credentials.apiKey,
+                username: client.credentials.username
+              },
+              sessions: true,
+              requestOptions: client.requestOptions
+            },
             password
           })
         } catch (err) {
@@ -22,7 +30,7 @@ const _ = require('lodash'),
         let result
         try {
           result = await client.post('/accounts/login', loginBody)
-          storeCurrentLogin(client, loginBody.password)
+          await storeCurrentLogin({ client, password: loginBody.password })
         } catch (err) {
           if (err.code === 'kCallbackNotFound') {
             const location = {
