@@ -18,13 +18,8 @@ const _ = require('lodash'),
       Task = require('../lib/task'),
       {
         askUserCredentials,
-        askUserToSaveCredentials,
-        askUserToChooseCredentials,
       } = require('../lib/questionnaires'),
-      {
-        loginWithExistingCredentials,
-        logInWithPasswordSecret
-      } = require('../lib/authentication')
+      { logInFlow } = require('../lib/log-in-flows')
 
 class Credentials extends Task {
 
@@ -203,97 +198,7 @@ class Credentials extends Task {
 
   async 'credentials@login'(cli) {
 
-    const allowedArguments = ['file', 'endpoint', 'env', 'username', 'apiKey', 'strictSSL'],
-          parsedArguments = cli.getArguments(allowedArguments),
-          readFile = async(filePath) => {
-            const result = await loadJsonOrYaml(filePath)
-            return _.pick(result, 'endpoint', 'env', 'username', 'apiKey', 'password')
-          },
-          options = _.has(parsedArguments, 'file') ? await readFile(parsedArguments.file) : _.extend(_.clone(parsedArguments), { type: 'password' }),
-
-          // eslint-disable-next-line no-shadow
-          storeCredentials = async(credentials) => {
-            let result
-            try {
-              result = await CredentialsManager.add(
-                new Environment(credentials),
-                credentials
-              )
-            } catch (err) {
-              // TODO: Remove this kind of { objhect: fault } declarations and use class Fault
-              result = _.extend(_.clone(result), { object: 'fault' })
-            }
-            return result
-          }
-
-    if (_.isEmpty(parsedArguments)) {
-      const defaultCredentials = cli.config('defaultCredentials')
-
-      if (defaultCredentials && defaultCredentials.type === 'password') {
-        await loginWithExistingCredentials(cli)(defaultCredentials)
-      } else {
-        // more than 1
-        const existingPasswordSecrets = await CredentialsManager.list(options),
-              existingPasswordIdx = await askUserToChooseCredentials(existingPasswordSecrets)
-        if (existingPasswordIdx > -1) {
-          const loginFunc = logInWithPasswordSecret(cli)
-          await loginFunc(existingPasswordSecrets[existingPasswordIdx])
-        } else {
-          const userCredentials = await askUserCredentials(options),
-                passwordSecret = new PasswordSecret(
-                  new Environment(userCredentials),
-                  userCredentials
-                )
-
-          await logInWithPasswordSecret(cli)(passwordSecret)
-          // eslint-disable-next-line no-shadow
-          // eslint-disable-next-line one-var
-          const existingCredentials = await CredentialsManager.list(userCredentials)
-          if (_.isEmpty(existingCredentials)) {
-            const saveCredentials = await askUserToSaveCredentials()
-            if (saveCredentials) await storeCredentials(userCredentials)
-          }
-        }
-      }
-    } else {
-      const existingPasswordSecrets = await CredentialsManager.list(options)
-      if (existingPasswordSecrets.length === 0) {
-        const userCredentials = await askUserCredentials(options),
-              passwordSecret = new PasswordSecret(
-                new Environment(userCredentials),
-                userCredentials
-              )
-
-        await logInWithPasswordSecret(cli)(passwordSecret)
-        // eslint-disable-next-line one-var
-        const saveCredentials = await askUserToSaveCredentials()
-        if (saveCredentials) await storeCredentials(userCredentials)
-      } else if (existingPasswordSecrets.length === 1) {
-        await logInWithPasswordSecret(cli)(_(existingPasswordSecrets).first())
-      } else {
-        // more than 1
-        const existingPasswordIdx = await askUserToChooseCredentials(existingPasswordSecrets)
-        if (existingPasswordIdx > -1) {
-          const loginFunc = logInWithPasswordSecret(cli)
-          await loginFunc(existingPasswordSecrets[existingPasswordIdx])
-        } else {
-          const userCredentials = await askUserCredentials(options),
-                passwordSecret = new PasswordSecret(
-                  new Environment(userCredentials),
-                  userCredentials
-                )
-
-          await logInWithPasswordSecret(cli)(passwordSecret)
-          // eslint-disable-next-line no-shadow
-          // eslint-disable-next-line one-var
-          const existingCredentials = await CredentialsManager.list(userCredentials)
-          if (_.isEmpty(existingCredentials)) {
-            const saveCredentials = await askUserToSaveCredentials()
-            if (saveCredentials) await storeCredentials(userCredentials)
-          }
-        }
-      }
-    }
+    console.log(await logInFlow(cli) ? 'Log-in succeeded' : 'Log-in failed')
   }
 
   async 'credentials@logout'(cli) {
