@@ -11,7 +11,7 @@ const _ = require('lodash'),
         rString, isSet
       } = require('../../lib/utils/values'),
       {
-        CredentialsManager, PasswordSecret,
+        CredentialsManager,
         detectAuthType
       } = require('../../lib/api/credentials'),
       Environment = require('../../lib/api/environment'),
