@@ -1,7 +1,6 @@
 /* eslint-disable class-methods-use-this */
 
 const _ = require('lodash'),
-      os = require('os'),
       Table = require('cli-table'),
       jsyaml = require('js-yaml'),
       { loadDefaults, writeDefaults } = require('../lib/config'),
