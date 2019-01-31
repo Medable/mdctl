@@ -7,7 +7,7 @@ const { prompt } = require('inquirer'),
       {
         rString, rInt
       } = require('../../lib/utils/values'),
-      { validateEndpoint } = require('../../lib/utils/index'),
+      { validateEndpoint, isNullOrUndefined } = require('../../lib/utils/index'),
 
       askUserCredentials = async(currentArgs) => {
         const result = await prompt([
@@ -21,13 +21,13 @@ const { prompt } = require('inquirer'),
               { name: 'Signature - API Key and Secret Pair', value: 'signature' },
               { name: 'Token - JWT Authentication Token', value: 'token' }
             ],
-            when: () => !['password', 'signature', 'token'].includes(_.get(currentArgs, 'type')) && _.isUndefined(currentArgs.type)
+            when: () => !['password', 'signature', 'token'].includes(_.get(currentArgs, 'type')) && isNullOrUndefined(currentArgs.type)
           },
           {
             name: 'endpoint',
             message: 'The api endpoint (example: https://api.dev.medable.com)',
             type: 'input',
-            when: () => _.isUndefined(currentArgs.endpoint),
+            when: () => isNullOrUndefined(currentArgs.endpoint),
             validate: value => validateEndpoint(value) || 'Invalid URL',
             default: rString(_.get(currentArgs, 'endpoint'))
           },
@@ -36,35 +36,35 @@ const { prompt } = require('inquirer'),
             name: 'env',
             message: 'The env (org code)',
             default: rString(_.get(currentArgs, 'env')),
-            when: _.isUndefined(currentArgs.env)
+            when: isNullOrUndefined(currentArgs.env)
           },
           {
             type: 'input',
             name: 'username',
             message: 'The account username',
             default: rString(_.get(currentArgs, 'username')),
-            when: hash => _.isUndefined(currentArgs.username) && (hash.type === 'password' || _.get(currentArgs, 'type') === 'password')
+            when: hash => isNullOrUndefined(currentArgs.username) && (hash.type === 'password' || _.get(currentArgs, 'type') === 'password')
           },
           {
             name: 'password',
             message: 'The account password',
             type: 'password',
             default: rString(_.get(currentArgs, 'password')),
-            when: hash => _.isUndefined(currentArgs.password) && (hash.type === 'password' || _.get(currentArgs, 'type') === 'password')
+            when: hash => isNullOrUndefined(currentArgs.password) && (hash.type === 'password' || _.get(currentArgs, 'type') === 'password')
           },
           {
             name: 'token',
             message: 'The JSON Web Token',
             type: 'password',
             default: rString(_.get(currentArgs, 'token')),
-            when: hash => _.isUndefined(currentArgs.token) && (hash.type === 'token' || _.get(currentArgs, 'type') === 'token')
+            when: hash => isNullOrUndefined(currentArgs.token) && (hash.type === 'token' || _.get(currentArgs, 'type') === 'token')
           },
           {
             name: 'apiKey',
             message: 'The api key',
             type: 'input',
             default: rString(_.get(currentArgs, 'apiKey')),
-            when: hash => (['password', 'signature'].includes(hash.type) || ['password', 'signature'].includes(_.get(currentArgs, 'type'))) && _.isUndefined(currentArgs.apiKey),
+            when: hash => (['password', 'signature'].includes(hash.type) || ['password', 'signature'].includes(_.get(currentArgs, 'type'))) && isNullOrUndefined(currentArgs.apiKey),
             validate: (input) => {
               try {
                 return validateApiKey(input)
@@ -78,7 +78,7 @@ const { prompt } = require('inquirer'),
             message: 'The api signing secret',
             type: 'password',
             default: rString(_.get(currentArgs, 'apiSecret')),
-            when: hash => (hash.type === 'signature' || _.get(currentArgs, 'type') === 'signature') && _.isUndefined(currentArgs.apiSecret),
+            when: hash => (hash.type === 'signature' || _.get(currentArgs, 'type') === 'signature') && isNullOrUndefined(currentArgs.apiSecret),
             validate: (input) => {
               try {
                 return validateApiSecret(input)
