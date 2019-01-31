@@ -2,6 +2,7 @@
 
 const _ = require('lodash'),
       fs = require('fs'),
+      pump = require('pump'),
       ndjson = require('ndjson'),
       { isSet } = require('../../lib/utils/values'),
       pathTo = require('../../lib/utils/path.to'),
@@ -17,7 +18,7 @@ class Env extends Task {
     super()
     this.credentialsManager = credentialsManager
     this.ApiClient = ApiClient
-    this.optionKeys = ['endpoint', 'env', 'manifest', 'format']
+    this.optionKeys = ['endpoint', 'env', 'manifest', 'format', 'layout', 'dir']
   }
 
   async run(cli) {
@@ -37,7 +38,8 @@ class Env extends Task {
 
   async 'env@export'(cli) {
     const passedOptions = await cli.getArguments(this.optionKeys),
-          manifest = JSON.parse(fs.readFileSync(passedOptions.manifest || `${cli.cwd}/manifest.json`)),
+          outputDir = passedOptions.dir || cli.cwd,
+          manifestFile = passedOptions.manifest || `${outputDir}/manifest.${passedOptions.format || 'json'}`,
           stream = ndjson.parse(),
           client = await cli.getApiClient(),
           url = new URL('/developer/environment/export', client.environment.url),
@@ -45,23 +47,31 @@ class Env extends Task {
             query: url.searchParams,
             method: 'post'
           },
-          format = passedOptions.format && { format: passedOptions.format },
-          streamWriter = new Stream(stream, { format })
+          streamOptions = passedOptions.format && {
+            format: passedOptions.format,
+            layout: passedOptions.layout
+          },
+          streamTransform = new Stream(streamOptions),
+          fileWriter = new FileAdapter(outputDir, streamOptions)
+
+    let manifest = {}
+    if (fs.existsSync(manifestFile)) {
+      manifest = JSON.parse(fs.readFileSync(manifestFile))
+    }
 
     pathTo(options, 'requestOptions.headers.accept', 'application/x-ndjson')
-    streamWriter.pipe(new FileAdapter(`${process.cwd()}/output`, format))
     await client.call(url.pathname, Object.assign(options, {
       stream, body: { manifest }
     }))
 
     return new Promise((resolve, reject) => {
-      streamWriter.on('error', (e) => {
-        console.log(e)
-        reject()
-      })
-      streamWriter.on('end_writing', () => {
+      pump(stream, streamTransform, fileWriter, (error) => {
+        if (error) {
+          console.log(error)
+          return reject(error)
+        }
         console.log('Export finished...')
-        resolve()
+        return resolve()
       })
     })
   }
