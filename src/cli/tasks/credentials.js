@@ -21,8 +21,11 @@ const _ = require('lodash'),
         askUserCredentials,
         askUserToSaveCredentials,
         askUserToChooseCredentials,
-        question
-      } = require('../lib/questionnaires')
+      } = require('../lib/questionnaires'),
+      {
+        loginWithExistingCredentials,
+        logInWithPasswordSecret
+      } = require('../lib/authentication')
 
 class Credentials extends Task {
 
@@ -210,70 +213,7 @@ class Credentials extends Task {
           options = _.has(parsedArguments, 'file') ? await readFile(parsedArguments.file) : _.extend(_.clone(parsedArguments), { type: 'password' }),
 
           // eslint-disable-next-line no-shadow
-          storeCurrentLogin = CredentialsManager => async({ client, password }) => {
-            let result
-            try {
-              result = await CredentialsManager.setCustom('login', '*', {
-                client,
-                password
-              })
-            } catch (err) {
-              result = _.extend(_.clone(result), { object: 'fault' })
-            }
-            return result
-          },
-
-          logInAndStoreLogIn = client => async(loginBody) => {
-            let result
-            try {
-              result = await client.post('/accounts/login', loginBody)
-              storeCurrentLogin(client, loginBody.password)
-            } catch (err) {
-              if (err.code === 'kCallbackNotFound') {
-                const location = {
-                        verificationToken: await question('This location requires verification. Enter the token you received via SMS'),
-                        locationName: `mdctl.medable.com@${os.hostname()}`,
-                        singleUse: false
-                      },
-                      loginBodyWithLocation = _.extend(_.clone(loginBody), { location })
-                return logInAndStoreLogIn(client)(loginBodyWithLocation)
-              }
-              throw new Error(err)
-            }
-            return result
-          },
-
-          // eslint-disable-next-line no-shadow
-          logInWithDefaultCreds = cli => async(defaultCredentials) => {
-            const passwordSecret = await CredentialsManager.get(defaultCredentials),
-                  client = await cli.getApiClient({ passwordSecret, testStatus: false }),
-                  result = await logInAndStoreLogIn(client)(passwordSecret)
-
-            return result
-          },
-
-          // eslint-disable-next-line no-shadow
-          logInWithUserCredentials = cli => async(userCredentials) => {
-            const passwordSecret = new PasswordSecret(
-                    new Environment(userCredentials),
-                    userCredentials
-                  ),
-                  client = await cli.getApiClient({ passwordSecret, testStatus: false }),
-                  result = await logInAndStoreLogIn(client)(passwordSecret)
-
-            return result
-          },
-
-          // eslint-disable-next-line no-shadow
-          logInWithPasswordSecret = cli => async(passwordSecret) => {
-            const client = await cli.getApiClient({ passwordSecret, testStatus: false }),
-                  result = await logInAndStoreLogIn(client)(passwordSecret)
-
-            return result
-          },
-
-          // eslint-disable-next-line no-shadow
-          storeCredentials = CredentialsManager => async(credentials) => {
+          storeCredentials = async(credentials) => {
             let result
             try {
               result = await CredentialsManager.add(
@@ -281,6 +221,7 @@ class Credentials extends Task {
                 credentials
               )
             } catch (err) {
+              // TODO: Remove this kind of { objhect: fault } declarations and use class Fault
               result = _.extend(_.clone(result), { object: 'fault' })
             }
             return result
@@ -290,7 +231,7 @@ class Credentials extends Task {
       const defaultCredentials = cli.config('defaultCredentials')
 
       if (defaultCredentials && defaultCredentials.type === 'password') {
-        await logInWithDefaultCreds(cli)(defaultCredentials)
+        await loginWithExistingCredentials(cli)(defaultCredentials)
       } else {
         // more than 1
         const existingPasswordSecrets = await CredentialsManager.list(options),
@@ -299,25 +240,35 @@ class Credentials extends Task {
           const loginFunc = logInWithPasswordSecret(cli)
           await loginFunc(existingPasswordSecrets[existingPasswordIdx])
         } else {
-          const userCredentials = await askUserCredentials(options)
-          await logInWithUserCredentials(cli)(userCredentials)
+          const userCredentials = await askUserCredentials(options),
+                passwordSecret = new PasswordSecret(
+                  new Environment(userCredentials),
+                  userCredentials
+                )
+
+          await logInWithPasswordSecret(cli)(passwordSecret)
           // eslint-disable-next-line no-shadow
           // eslint-disable-next-line one-var
           const existingCredentials = await CredentialsManager.list(userCredentials)
           if (_.isEmpty(existingCredentials)) {
             const saveCredentials = await askUserToSaveCredentials()
-            if (saveCredentials) storeCredentials(userCredentials)
+            if (saveCredentials) await storeCredentials(userCredentials)
           }
         }
       }
     } else {
       const existingPasswordSecrets = await CredentialsManager.list(options)
       if (existingPasswordSecrets.length === 0) {
-        const userCredentials = await askUserCredentials(options)
-        await logInWithUserCredentials(cli)(userCredentials)
+        const userCredentials = await askUserCredentials(options),
+              passwordSecret = new PasswordSecret(
+                new Environment(userCredentials),
+                userCredentials
+              )
+
+        await logInWithPasswordSecret(cli)(passwordSecret)
         // eslint-disable-next-line one-var
         const saveCredentials = await askUserToSaveCredentials()
-        if (saveCredentials) storeCredentials(userCredentials)
+        if (saveCredentials) await storeCredentials(userCredentials)
       } else if (existingPasswordSecrets.length === 1) {
         await logInWithPasswordSecret(cli)(_(existingPasswordSecrets).first())
       } else {
@@ -327,14 +278,19 @@ class Credentials extends Task {
           const loginFunc = logInWithPasswordSecret(cli)
           await loginFunc(existingPasswordSecrets[existingPasswordIdx])
         } else {
-          const userCredentials = await askUserCredentials(options)
-          await logInWithUserCredentials(cli)(userCredentials)
+          const userCredentials = await askUserCredentials(options),
+                passwordSecret = new PasswordSecret(
+                  new Environment(userCredentials),
+                  userCredentials
+                )
+
+          await logInWithPasswordSecret(cli)(passwordSecret)
           // eslint-disable-next-line no-shadow
           // eslint-disable-next-line one-var
           const existingCredentials = await CredentialsManager.list(userCredentials)
           if (_.isEmpty(existingCredentials)) {
             const saveCredentials = await askUserToSaveCredentials()
-            if (saveCredentials) storeCredentials(userCredentials)
+            if (saveCredentials) await storeCredentials(userCredentials)
           }
         }
       }
