@@ -43,7 +43,7 @@ class SectionBase {
     if (MANIFEST_KEYS.keys.slice(1).indexOf(this.key) > -1) {
       return this.key.replace('manifest-', '')
     }
-    return this.content.c_name || name || code || object
+    return name || this.content.c_name || code || object
   }
 
   clearScripts() {
