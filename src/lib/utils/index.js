@@ -79,9 +79,6 @@ function validateEndpoint(endpoint) {
   }
 }
 
-function isFault(httpResponse) {
-  return _.get(httpResponse, 'object') === 'fault'
-}
 
 module.exports = {
   throwIf,
@@ -91,6 +88,5 @@ module.exports = {
   loadJsonOrYaml,
   tryCatch,
   normalizeEndpoint,
-  validateEndpoint,
-  isFault
+  validateEndpoint
 }
