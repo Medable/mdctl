@@ -5,7 +5,7 @@ const { prompt } = require('inquirer'),
         validateApiKey, validateApiSecret
       } = require('../../lib/api/credentials'),
       {
-        rString, rInt, !isSet
+        rString, rInt, isSet
       } = require('../../lib/utils/values'),
       { validateEndpoint } = require('../../lib/utils/index'),
 
