@@ -56,6 +56,9 @@ class Layout extends Writable {
 
   checkFileETagExists(ETag) {
     const cnf = ETag && _.find(this.metadata.assets, c => c.ETag === ETag)
+    if (cnf && !fs.existsSync(cnf.path)) {
+      return false
+    }
     return !!cnf
   }
 
