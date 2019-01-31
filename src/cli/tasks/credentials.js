@@ -2,10 +2,8 @@
 
 const _ = require('lodash'),
       os = require('os'),
-      { URL } = require('url'),
       Table = require('cli-table'),
       jsyaml = require('js-yaml'),
-      { prompt } = require('inquirer'),
       { loadDefaults, writeDefaults } = require('../lib/config'),
       {
         loadJsonOrYaml,
@@ -15,7 +13,7 @@ const _ = require('lodash'),
       } = require('../../lib/utils/values'),
       {
         CredentialsManager, PasswordSecret,
-        detectAuthType, validateApiKey, validateApiSecret
+        detectAuthType
       } = require('../../lib/api/credentials'),
       Environment = require('../../lib/api/environment'),
       Task = require('../lib/task'),
@@ -76,96 +74,7 @@ class Credentials extends Task {
 
     Object.assign(
       options,
-      await prompt([
-        {
-          name: 'type',
-          message: 'Which type of credentials are you storing?',
-          type: 'list',
-          default: 'password',
-          choices: [
-            { name: 'Password - Email/Username and Password', value: 'password' },
-            { name: 'Signature - API Key and Secret Pair', value: 'signature' },
-            { name: 'Token - JWT Authentication Token', value: 'token' }
-          ],
-          when: () => !['password', 'signature', 'token'].includes(options.type)
-        },
-        {
-          name: 'endpoint',
-          message: 'The api endpoint (example: https://api.dev.medable.com)',
-          type: 'input',
-          default: rString(cli.config('defaultEndpoint'), ''),
-          when: () => {
-            try {
-              Credentials.validateEndpoint(options.endpoint)
-              return false
-            } catch (err) {
-              return true
-            }
-          },
-          validate: (input) => {
-            try {
-              return Credentials.validateEndpoint(input)
-            } catch (err) {
-              return err.getMessage()
-            }
-          },
-          filter: (input) => {
-            const { protocol, host } = new URL('', input)
-            return `${protocol}//${host}`
-          }
-        },
-        {
-          name: 'env',
-          message: 'The env (org code)',
-          type: 'input',
-          default: rString(cli.config('defaultEnv'), ''),
-          when: () => !rString(options.env)
-        },
-        {
-          name: 'username',
-          message: 'The account email/username',
-          type: 'input',
-          when: hash => hash.type === 'password' && !rString(options.username)
-        },
-        {
-          name: 'password',
-          message: 'The account password',
-          type: 'password',
-          when: hash => hash.type === 'password' && !rString(options.password)
-        },
-        {
-          name: 'token',
-          message: 'The JSON Web Token',
-          type: 'password',
-          when: hash => hash.type === 'token' && !rString(options.token)
-        },
-        {
-          name: 'apiKey',
-          message: 'The api key',
-          type: 'input',
-          when: hash => ['password', 'signature'].includes(hash.type) && !rString(options.apiKey),
-          validate: (input) => {
-            try {
-              return validateApiKey(input)
-            } catch (err) {
-              return err.getMessage()
-            }
-          }
-        },
-        {
-          name: 'apiSecret',
-          message: 'The api signing secret',
-          type: 'password',
-          when: hash => hash.type === 'signature' && !rString(options.apiSecret),
-          validate: (input) => {
-            try {
-              return validateApiSecret(input)
-            } catch (err) {
-              return err.getMessage()
-            }
-          }
-        }
-      ])
+      await askUserCredentials(options)
     )
 
     await CredentialsManager.add(
@@ -554,16 +463,6 @@ class Credentials extends Task {
       There can only be a single active session for the user at any one time on the client.                                   
                                      
     `
-  }
-
-  static validateEndpoint(endpoint) {
-
-    const { protocol, host } = new URL('', endpoint)
-    if (!(protocol && host)) {
-      throw new TypeError('Invalid endpoint URL.')
-    }
-    return true
-
   }
 
   static assignArgIf(cli, options, arg) {

@@ -2,11 +2,12 @@ const { prompt } = require('inquirer'),
       _ = require('lodash'),
       Table = require('cli-table'),
       {
-        Credentials, validateApiKey, validateApiSecret
+        validateApiKey, validateApiSecret
       } = require('../../lib/api/credentials'),
       {
         rString, rInt
       } = require('../../lib/utils/values'),
+      { validateEndpoint } = require('../../lib/utils/index'),
 
       askUserCredentials = async(currentArgs) => {
         const result = await prompt([
@@ -26,25 +27,8 @@ const { prompt } = require('inquirer'),
             name: 'endpoint',
             message: 'The api endpoint (example: https://api.dev.medable.com)',
             type: 'input',
-            when: () => {
-              try {
-                Credentials.validateEndpoint(_.get(currentArgs, 'endpoint'))
-                return false
-              } catch (err) {
-                return true
-              }
-            },
-            validate: (input) => {
-              try {
-                return Credentials.validateEndpoint(input)
-              } catch (err) {
-                return err.getMessage()
-              }
-            },
-            filter: (input) => {
-              const { protocol, host } = new URL('', input)
-              return `${protocol}//${host}`
-            },
+            when: () => _.isUndefined(currentArgs.endpoint),
+            validate: value => validateEndpoint(value) || 'Invalid URL',
             default: rString(_.get(currentArgs, 'endpoint'))
           },
           {

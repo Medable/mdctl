@@ -1,7 +1,7 @@
-const inquirer = require('inquirer'),
-      _ = require('lodash'),
+const _ = require('lodash'),
       util = require('util'),
       fs = require('fs'),
+      { URL } = require('url'),
       jsyaml = require('js-yaml'),
       path = require('path'),
       pathTo = require('./path.to'),
@@ -70,6 +70,15 @@ function normalizeEndpoint(endpoint) {
 
 }
 
+function validateEndpoint(endpoint) {
+  try {
+    const { protocol, host } = new URL('', endpoint)
+    return !_.isEmpty(protocol) && !_.isEmpty(host)
+  } catch (err) {
+    return false
+  }
+}
+
 function isFault(httpResponse) {
   return _.get(httpResponse, 'object') === 'fault'
 }
@@ -82,5 +91,6 @@ module.exports = {
   loadJsonOrYaml,
   tryCatch,
   normalizeEndpoint,
+  validateEndpoint,
   isFault
 }
