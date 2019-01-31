@@ -60,26 +60,6 @@ async function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms))
 }
 
-async function yn(message, yes = true) {
-  const result = await inquirer.prompt({
-    type: 'confirm',
-    name: 'question',
-    message,
-    default: yes
-  })
-  return Boolean(result && result.question)
-}
-
-async function question(message, def, options = {}) {
-  const result = await inquirer.prompt(Object.assign({
-    type: 'input',
-    name: 'question',
-    message,
-    default: rString(def, Undefined)
-  }, options))
-  return result && result.question
-}
-
 function normalizeEndpoint(endpoint) {
 
   let str = rString(endpoint, '')
@@ -101,8 +81,6 @@ module.exports = {
   promised,
   loadJsonOrYaml,
   tryCatch,
-  yn,
-  question,
   normalizeEndpoint,
   isFault
 }
