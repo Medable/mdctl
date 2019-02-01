@@ -5,7 +5,7 @@ const Task = require('../lib/task'),
       {
         clearDefaults, createConfig, loadDefaults, writeDefaults
       } = require('../lib/config'),
-      { question } = require('../../lib/utils'),
+      { question } = require('../lib/questionnaires'),
       { stringToBoolean, rVal, rString } = require('../../lib/utils/values'),
       configureOptions = {
         defaultEndpoint: {

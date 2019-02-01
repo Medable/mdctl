@@ -1,7 +1,7 @@
-const inquirer = require('inquirer'),
-      _ = require('lodash'),
+const _ = require('lodash'),
       util = require('util'),
       fs = require('fs'),
+      { URL } = require('url'),
       jsyaml = require('js-yaml'),
       path = require('path'),
       pathTo = require('./path.to'),
@@ -60,26 +60,6 @@ async function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms))
 }
 
-async function yn(message, yes = true) {
-  const result = await inquirer.prompt({
-    type: 'confirm',
-    name: 'question',
-    message,
-    default: yes
-  })
-  return Boolean(result && result.question)
-}
-
-async function question(message, def, options = {}) {
-  const result = await inquirer.prompt(Object.assign({
-    type: 'input',
-    name: 'question',
-    message,
-    default: rString(def, Undefined)
-  }, options))
-  return result && result.question
-}
-
 function normalizeEndpoint(endpoint) {
 
   let str = rString(endpoint, '')
@@ -90,6 +70,16 @@ function normalizeEndpoint(endpoint) {
 
 }
 
+function validateEndpoint(endpoint) {
+  try {
+    const { protocol, host } = new URL('', endpoint)
+    return !_.isEmpty(protocol) && !_.isEmpty(host)
+  } catch (err) {
+    return false
+  }
+}
+
+
 module.exports = {
   throwIf,
   throwIfNot,
@@ -97,7 +87,6 @@ module.exports = {
   promised,
   loadJsonOrYaml,
   tryCatch,
-  yn,
-  question,
-  normalizeEndpoint
+  normalizeEndpoint,
+  validateEndpoint
 }

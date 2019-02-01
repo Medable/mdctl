@@ -9,16 +9,13 @@ const _ = require('lodash'),
       pathTo = require('../../lib/utils/path.to'),
       Task = require('../lib/task'),
       { CredentialsManager } = require('../../lib/api/credentials'),
-      Client = require('../../lib/api/client'),
       Stream = require('../../lib/stream'),
       FileAdapter = require('../../lib/stream/adapters/file_adapter')
 
 class Env extends Task {
 
-  constructor(credentialsManager = CredentialsManager, ApiClient = Client) {
+  constructor() {
     super()
-    this.credentialsManager = credentialsManager
-    this.ApiClient = ApiClient
     this.optionKeys = ['endpoint', 'env', 'manifest', 'format', 'layout', 'dir']
   }
 
@@ -42,7 +39,8 @@ class Env extends Task {
           outputDir = passedOptions.dir || cli.cwd,
           manifestFile = passedOptions.manifest || `${outputDir}/manifest.${passedOptions.format || 'json'}`,
           stream = ndjson.parse(),
-          client = await cli.getApiClient(),
+          passwordSecret = await CredentialsManager.get(passedOptions),
+          client = await cli.getApiClient({ passwordSecret }),
           url = new URL('/developer/environment/export', client.environment.url),
           options = {
             query: url.searchParams,
@@ -109,11 +107,6 @@ class Env extends Task {
           --manifest - defaults to $cwd/manifest.json
           --format - export format (json, yaml) defaults to json                        
     `
-  }
-
-  getPasswordSecret(passedOptions) {
-    const search = _.pick(passedOptions, 'endpoint', 'env')
-    return this.credentialsManager.get(search)
   }
 
 }

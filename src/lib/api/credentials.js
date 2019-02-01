@@ -461,7 +461,6 @@ class CredentialsManager {
   }
 
   static async get(input) {
-
     return (await this.list(input))[0]
   }
 
@@ -594,6 +593,7 @@ CredentialsProvider.set(new KeytarStorageProvider())
 module.exports = {
   Credentials,
   CredentialsManager,
+  PasswordSecret,
   detectAuthType,
   CredentialsProvider,
   validateApiKey,
