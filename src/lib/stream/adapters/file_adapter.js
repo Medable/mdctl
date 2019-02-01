@@ -1,7 +1,12 @@
 const { Writable } = require('stream'),
+      EventEmitter = require('events'),
       jsYaml = require('js-yaml'),
       fs = require('fs'),
-      jp = require('jsonpath')
+      jp = require('jsonpath'),
+      _ = require('lodash'),
+      request = require('request'),
+      slugify = require('slugify'),
+      pathTo = require('../../utils/path.to')
 
 class Layout extends Writable {
 
@@ -10,53 +15,165 @@ class Layout extends Writable {
     this.output = output
     this.format = format
     this.ensure(this.output)
+    this.metadata = {
+      assets: []
+    }
+    this.loadMetadata()
   }
 
-  ensure(path) {
-    if (!fs.existsSync(path)) {
-      fs.mkdirSync(path, { recursive: true })
+  static downloadResources(url) {
+    return request(url)
+  }
+
+  loadMetadata() {
+    const file = `${this.output}/.cache.${this.format}`
+    if (fs.existsSync(file)) {
+      const content = fs.readFileSync(file)
+      this.metadata = this.format === 'json' ? JSON.parse(content) : jsYaml.safeLoad(content)
     }
+  }
+
+  ensure(directory) {
+    const path = directory.replace(/\/$/, '').split('/')
+    path.forEach((i, k) => {
+      const segment = path.slice(0, k + 1).join('/')
+      if (segment && !fs.existsSync(segment)) {
+        fs.mkdirSync(segment)
+      }
+    })
   }
 
   parseContent(content) {
+    let contentStr = ''
     if (this.format === 'yaml') {
-      // Adding workaround for undefined content
-      return jsYaml.safeDump(JSON.parse(JSON.stringify(content)))
+      const objStr = JSON.stringify(content).trim()
+      contentStr = jsYaml.safeDump(JSON.parse(objStr))
+    } else {
+      contentStr = JSON.stringify(content, null, 2)
     }
-    return JSON.stringify(content)
+    return contentStr
+  }
+
+  checkFileETagExists(ETag) {
+    const cnf = ETag && _.find(this.metadata.assets, c => c.ETag === ETag)
+    if (cnf && !fs.existsSync(cnf.path)) {
+      return false
+    }
+    return !!cnf
+  }
+
+  updateMetadata(f, dest) {
+    const cnf = _.find(this.metadata.assets, c => c.name === f.name),
+          relativeDest = dest.replace(this.output, '')
+    if (cnf) {
+      cnf.ETag = f.ETag
+      if (cnf.path !== relativeDest) {
+        fs.unlinkSync(`${this.output}${cnf.path}`)
+        cnf.path = relativeDest
+      }
+    } else {
+      this.metadata.assets.push({
+        name: f.name,
+        path: relativeDest,
+        ETag: f.ETag
+      })
+    }
+  }
+
+  async writeAssets(path, files) {
+    const promises = []
+    _.forEach(files, (f) => {
+      promises.push(new Promise((resolve, reject) => {
+        const dest = `${path}/${slugify(f.name)}.${f.ext}`
+        if (!this.checkFileETagExists(f.ETag)) {
+          const fileWriter = fs.createWriteStream(dest)
+          fileWriter.on('finish', () => {
+            if (f.ETag) {
+              this.updateMetadata(f, dest)
+            }
+            resolve({
+              name: f.name,
+              path: f.pathTo,
+              dest
+            })
+          })
+          fileWriter.on('error', () => {
+            reject()
+          })
+          if (f.remoteLocation) {
+            Layout.downloadResources(f.data).pipe(fileWriter)
+
+          } else {
+            fileWriter.write(f.data)
+            fileWriter.end()
+          }
+        } else {
+          resolve({
+            name: f.name,
+            path: f.pathTo,
+            dest
+          })
+        }
+      }))
+    })
+    return Promise.all(promises)
+  }
+
+  async writeExtraFiles(folder, chunk) {
+    let paths = []
+    if (chunk.extraFiles.length > 0) {
+      this.ensure(`${folder}/assets`)
+      paths = await this.writeAssets(`${folder}/assets`, chunk.extraFiles)
+    }
+    if (chunk.scriptFiles.length > 0) {
+      this.ensure(`${folder}/js`)
+      paths = await this.writeAssets(`${folder}/js`, chunk.scriptFiles)
+    }
+    _.forEach(paths, (d) => {
+      jp.value(chunk.content, d.path, d.dest.replace(this.output, ''))
+    })
   }
 
 }
 
 class FilesLayout extends Layout {
 
-  _write(chunk, enc, cb) {
-    chunk.namespaces.forEach(n => this.ensure(`${this.output}/${n}`))
-    const dataChunk = chunk.data,
-          promises = []
-    if (dataChunk instanceof Array) {
-      dataChunk.forEach((item) => {
-        const name = item.name || item.content.name || item.content.code || item.content.label
-        promises.push(new Promise((resolve, reject) => {
-          fs.writeFile(`${this.output}${chunk.getPath(item)}/${name}.${item.format || this.format}`,
-            item.plain ? item.content : this.parseContent(item.content), (err) => {
-              if (err) return reject(err)
-              return resolve()
-            })
-        }))
-      })
-    } else {
-      promises.push(new Promise((resolve, reject) => {
-        fs.writeFile(`${this.output}${chunk.getPath()}/${chunk.key}.${this.format}`,
-          this.parseContent(dataChunk.content), (err) => {
-            if (err) return reject(err)
-            return resolve()
-          })
-      }))
+  writeToFile(file, content) {
+    return fs.writeFileSync(file, this.parseContent(content))
+  }
+
+  createCheckpointFile() {
+    this.writeToFile(`${this.output}/.cache.${this.format}`, this.metadata)
+  }
+
+  async processChunk(chunk) {
+    try {
+      if (chunk.isWritable) {
+        const folder = `${this.output}/${chunk.getPath()}`
+        await chunk.extractScripts()
+        await chunk.extractAssets()
+        this.ensure(folder)
+        await this.writeExtraFiles(folder, chunk)
+        this.writeToFile(`${folder}/${slugify(chunk.name, '_')}.${this.format}`, chunk.content)
+      }
+      return true
+    } catch (e) {
+      throw e
     }
-    return Promise.all(promises).then(() => {
+  }
+
+  _write(chunk, enc, cb) {
+    this.processChunk(chunk).then(() => {
       cb()
     }).catch(e => cb(e))
+  }
+
+  _final(cb) {
+    this.createCheckpointFile()
+    cb()
+    setTimeout(() => {
+      this.emit('end_writing')
+    }, 300)
   }
 
 }
@@ -68,37 +185,61 @@ class SingleFileLayout extends Layout {
     this.data = {}
   }
 
-  rollbackScripts(chunk) {
-    if (chunk.jsInScript) {
-      const scripts = Object.keys(chunk.jsInScript)
-      scripts.forEach((js) => {
-        jp.value(chunk.content, js, chunk.jsInScript[js].value)
-      })
-      chunk.clearScripts()
+  writeToFile(file, content) {
+    return fs.writeFileSync(file, this.parseContent(content))
+  }
+
+  createCheckpointFile() {
+    this.writeToFile(`${this.output}/.cache.${this.format}`, this.metadata)
+  }
+
+  async processChunk(chunk) {
+    try {
+      await chunk.extractScripts()
+      await chunk.extractAssets()
+      await this.writeExtraFiles(this.output, chunk)
+      const { key } = chunk
+      let exists = pathTo(this.data, key)
+      if (!exists) {
+        pathTo(this.data, key, [])
+        exists = []
+      }
+      if (_.isArray(exists)) {
+        exists.push(chunk.content)
+      } else if (_.isObject(exists)) {
+        exists = _.extend(exists, chunk.content)
+      }
+      if (exists) {
+        pathTo(this.data, key, exists)
+      }
+    } catch (e) {
+      throw e
     }
   }
 
   _write(chunk, enc, cb) {
-    this.rollbackScripts(chunk)
-    const { data } = chunk
-    this.data[chunk.key] = data instanceof Array ? data : data.content
-    cb()
+    if (chunk.isWritable) {
+      this.processChunk(chunk).then(() => {
+        cb()
+      }).catch(e => cb(e))
+    } else {
+      cb()
+    }
   }
 
   _final(cb) {
-    return new Promise((resolve, reject) => {
-      fs.writeFile(`${this.output}/exported.${this.format}`, this.parseContent(this.data), (err) => {
-        if (err) return reject(err)
-        return resolve()
-      })
-    }).then(cb).catch(e => cb(e))
+    this.createCheckpointFile()
+    this.writeToFile(`${this.output}/blob.${this.format}`, this.data)
+    this.emit('end_writing')
+    cb()
   }
 
 }
 
-class FileAdapter {
+class FileAdapter extends EventEmitter {
 
   constructor(outputPath, options = { format: 'json', layout: 'files' }) {
+    super()
     const { layout, format } = options,
           output = outputPath || `${process.cwd()}/output`
     this.stream = new FilesLayout(output, format)

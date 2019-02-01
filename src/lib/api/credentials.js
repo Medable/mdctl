@@ -5,6 +5,7 @@ const jsonwebtoken = require('jsonwebtoken'),
       keytar = require('keytar'),
       { privatesAccessor } = require('../privates'),
       { rString, isSet } = require('../utils/values'),
+      { normalizeEndpoint } = require('../utils'),
       { signPath } = require('./signer'),
       Environment = require('./environment'),
       serviceName = 'com.medable.mdctl',
@@ -428,7 +429,7 @@ class CredentialsManager {
 
     const options = isSet(input) ? input : {},
           type = rString(options.type) && detectAuthType({ type: options.type }),
-          endpoint = fixEndpoint(options.endpoint),
+          endpoint = normalizeEndpoint(options.endpoint),
           env = rString(options.env),
           username = rString(options.username),
           apiKey = rString(options.apiKey),
@@ -460,7 +461,6 @@ class CredentialsManager {
   }
 
   static async get(input) {
-
     return (await this.list(input))[0]
   }
 
@@ -558,16 +558,6 @@ function validateApiSecret(secret) {
   throw new TypeError('Invalid api secret')
 }
 
-function fixEndpoint(endpoint) {
-
-  let str = rString(endpoint, '')
-  if (str && !str.includes('://')) {
-    str = `https://${str}`
-  }
-  return str
-
-}
-
 function equalsStringOrRegex(test, input) {
 
   const str = rString(input, ''),
@@ -603,8 +593,10 @@ CredentialsProvider.set(new KeytarStorageProvider())
 module.exports = {
   Credentials,
   CredentialsManager,
+  PasswordSecret,
   detectAuthType,
   CredentialsProvider,
   validateApiKey,
-  validateApiSecret
+  validateApiSecret,
+  normalizeEndpoint
 }

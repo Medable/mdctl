@@ -2,22 +2,22 @@
 
 const _ = require('lodash'),
       fs = require('fs'),
-      { Readable } = require('stream'),
+      { URL } = require('url'),
+      pump = require('pump'),
+      ndjson = require('ndjson'),
       { isSet } = require('../../lib/utils/values'),
+      pathTo = require('../../lib/utils/path.to'),
       Task = require('../lib/task'),
       { CredentialsManager } = require('../../lib/api/credentials'),
-      Client = require('../../lib/api/client'),
       Stream = require('../../lib/stream'),
       FileAdapter = require('../../lib/stream/adapters/file_adapter'),
       { createTask } = require('./index')
 
 class Env extends Task {
 
-  constructor(credentialsManager = CredentialsManager, ApiClient = Client) {
+  constructor() {
     super()
-    this.credentialsManager = credentialsManager
-    this.ApiClient = ApiClient
-    this.optionKeys = ['endpoint', 'env', 'manifest', 'format']
+    this.optionKeys = ['endpoint', 'env', 'manifest', 'format', 'layout', 'dir']
   }
 
   async run(cli) {
@@ -36,15 +36,44 @@ class Env extends Task {
   }
 
   async 'env@export'(cli) {
-    const passedOptions = cli.getArguments(this.optionKeys),
-          defaultCredentials = cli.config('defaultCredentials'),
-          passwordSecretQuery = _.isUndefined(passedOptions.endpoint)
-            && _.isUndefined(passedOptions.env) ? defaultCredentials : passedOptions,
-          passwordSecret = await this.getPasswordSecret(passwordSecretQuery),
-          manifest = JSON.parse(fs.readFileSync(passedOptions.manifest || `${cli.cwd}/manifest.json`))
+    const passedOptions = await cli.getArguments(this.optionKeys),
+          outputDir = passedOptions.dir || cli.cwd,
+          manifestFile = passedOptions.manifest || `${outputDir}/manifest.${passedOptions.format || 'json'}`,
+          stream = ndjson.parse(),
+          passwordSecret = await CredentialsManager.get(passedOptions),
+          client = await cli.getApiClient({ passwordSecret }),
+          url = new URL('/developer/environment/export', client.environment.url),
+          options = {
+            query: url.searchParams,
+            method: 'post'
+          },
+          streamOptions = passedOptions.format && {
+            format: passedOptions.format,
+            layout: passedOptions.layout
+          },
+          streamTransform = new Stream(streamOptions),
+          fileWriter = new FileAdapter(outputDir, streamOptions)
 
-    return (await cli.getApiClient({ passwordSecret })).post('/routes/stubbed_export', manifest)
-      .then(exportResponse => this.writeExport(passedOptions, JSON.stringify(exportResponse)))
+    let manifest = {}
+    if (fs.existsSync(manifestFile)) {
+      manifest = JSON.parse(fs.readFileSync(manifestFile))
+    }
+
+    pathTo(options, 'requestOptions.headers.accept', 'application/x-ndjson')
+    await client.call(url.pathname, Object.assign(options, {
+      stream, body: { manifest }
+    }))
+
+    return new Promise((resolve, reject) => {
+      pump(stream, streamTransform, fileWriter, (error) => {
+        if (error) {
+          console.log(error)
+          return reject(error)
+        }
+        console.log('Export finished...')
+        return resolve()
+      })
+    })
   }
 
   async 'env@import'() {
@@ -86,33 +115,6 @@ class Env extends Task {
           --manifest - defaults to $cwd/manifest.json
           --format - export format (json, yaml) defaults to json                        
     `
-  }
-
-  getPasswordSecret(passedOptions) {
-    const search = _.pick(passedOptions, 'endpoint', 'env')
-    return this.credentialsManager.get(search)
-  }
-
-  writeExport(passedOptions, stringifiedContent) {
-    const format = passedOptions.format && { format: passedOptions.format }
-    return new Promise((resolve, reject) => {
-      const readBlob = new Readable()
-      // eslint-disable-next-line no-underscore-dangle
-      readBlob._read = () => {}
-
-      readBlob
-        .pipe(new Stream())
-        .pipe(new FileAdapter(`output-${new Date().getTime()}`, format))
-        .on('finish', () => {
-          resolve()
-        })
-        .on('error', (err) => {
-          reject(err)
-        })
-
-      readBlob.push(Buffer.from(stringifiedContent))
-
-    })
   }
 
 }

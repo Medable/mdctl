@@ -133,21 +133,44 @@ module.exports = class MdCtlCli {
   async getApiClient(options = {}) {
 
     const ensureSession = rBool(options.testStatus, true),
-          passwordSecret = _.has(options, 'passwordSecret') ? options.passwordSecret
-            : await CredentialsManager.get(this.config('defaultCredentials')),
-          activeLogin = await CredentialsManager.getCustom('login', '*'), // a Login object is a combination of a client & password
-          activeClientConfig = _.get(activeLogin, 'client'),
-          // a Client environment is in fact an Environment url
-          isActiveClientReusable = this.doesClientMatchSecret(activeClientConfig, passwordSecret)
+          getClientAndCredsFrom = async(passwordSecret) => {
+            const activeLogin = await CredentialsManager.getCustom('login', '*'),
+                  activeClientConfig = _.get(activeLogin, 'client'),
+                  isActiveClientReusable = !_.isUndefined(activeLogin)
+                    && this.doesClientMatchSecret(activeClientConfig, passwordSecret),
+                  client = isActiveClientReusable
+                    ? new Client(activeClientConfig)
+                    : this.createNewClientBy(passwordSecret),
+                  activeCredentials = _.pick(passwordSecret, ['username', 'password'])
 
-    if (_.isUndefined(passwordSecret) && !isActiveClientReusable) throw new Error("API client didn't start, try logging-in first or storing secrets to the keystore")
+            return { client, activeCredentials }
+          },
+          getDefaultClientAndCreds = async() => {
+            const defaultPasswordSecret = await CredentialsManager.get(this.config('defaultCredentials')),
+                  activeLogin = await CredentialsManager.getCustom('login', '*'),
+                  activeClientConfig = _.get(activeLogin, 'client'),
+                  client = activeLogin
+                    ? new Client(activeClientConfig)
+                    : this.createNewClientBy(defaultPasswordSecret),
+                  activeCredentials = activeLogin
+                    ? {
+                      username: activeLogin.client.credentials.username,
+                      password: activeLogin.password
+                    }
+                    : _.pick(defaultPasswordSecret, ['username', 'password'])
 
-    // eslint-disable-next-line one-var
-    const client = isActiveClientReusable ? new Client(activeClientConfig)
-      : this.createNewClientBy(passwordSecret)
+            return { client, activeCredentials }
+          },
+          { client, activeCredentials } = options.passwordSecret
+            ? await getClientAndCredsFrom(options.passwordSecret)
+            : await getDefaultClientAndCreds()
+
+    if (_.isUndefined(client)) {
+      throw new Error("API client didn't start, try logging-in first or storing secrets to the keystore")
+    }
 
     // is there an active login, attempt to resurrect it.
-    if (ensureSession) await this.resurrectClient(client, passwordSecret)
+    if (ensureSession) await this.resurrectClient(client, activeCredentials)
 
     return client
   }
@@ -171,26 +194,27 @@ module.exports = class MdCtlCli {
   }
 
   createNewClientBy(passwordSecret) {
-    return new Client({
+    return passwordSecret ? new Client({
       environment: _.get(passwordSecret, 'environment.url'),
       credentials: _.get(passwordSecret, 'credentials'),
       sessions: _.get(passwordSecret, 'credentials.authType') === 'password',
       requestOptions: {
         strictSSL: stringToBoolean(this.config('strictSSL'), true)
       }
-    })
+    }) : undefined
   }
 
   doesClientMatchSecret(activeClientConfig, passwordSecret) {
-    return passwordSecret && activeClientConfig
+    return !_.isUndefined(passwordSecret) && !_.isUndefined(activeClientConfig)
       && activeClientConfig.environment === passwordSecret.environment.url
       && activeClientConfig.credentials.apiKey === passwordSecret.apiKey
       && activeClientConfig.credentials.username === passwordSecret.username
   }
 
-  async getArguments(arrayOfKeys) {
-    return _.reduce(arrayOfKeys,
+  getArguments(arrayOfKeys) {
+    const args = _.reduce(arrayOfKeys,
       (sum, key) => _.extend(sum, { [key]: this.args(key) }), {})
+    return _.pickBy(args, _.identity)
   }
 
 }
