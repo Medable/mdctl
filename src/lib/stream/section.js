@@ -37,7 +37,7 @@ class SectionBase {
 
   get name() {
     const { resource, object } = this.content,
-          [ objectName, resourceName ] = (resource || object).split('.')
+          [objectName, resourceName] = (resource || object).split('.')
 
     if (this.key === 'env') {
       return this.key
