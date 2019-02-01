@@ -4,8 +4,11 @@ const _ = require('lodash'),
       { URL } = require('url'),
       jsyaml = require('js-yaml'),
       path = require('path'),
+      isPlainObject = require('lodash.isplainobject'),
       pathTo = require('./path.to'),
-      { rString, rFunction } = require('./values')
+      {
+        isSet, rString, rFunction, naturalCmp
+      } = require('./values')
 
 let Undefined
 
@@ -79,6 +82,41 @@ function validateEndpoint(endpoint) {
   }
 }
 
+function joinPaths(...paths) {
+
+  return paths
+    .map(p => (isSet(p) && p !== false) && String(p).trim())
+    .filter(v => v)
+    .join('.')
+
+}
+
+function sortKeys(input, deep = false) {
+
+  let object = input
+
+  if (Array.isArray(object)) {
+
+    if (deep) {
+      object.forEach((item, idx) => {
+        object[idx] = sortKeys(item, deep)
+      })
+    }
+
+  } else if (isPlainObject(object)) {
+
+    const keys = Object.keys(object).sort(naturalCmp),
+          sorted = {}
+
+    keys.forEach((key) => {
+      sorted[key] = deep ? sortKeys(object[key], deep) : object[key]
+    })
+
+    object = sorted
+  }
+  return object
+}
+
 
 module.exports = {
   throwIf,
@@ -88,5 +126,7 @@ module.exports = {
   loadJsonOrYaml,
   tryCatch,
   normalizeEndpoint,
-  validateEndpoint
+  validateEndpoint,
+  joinPaths,
+  sortKeys
 }

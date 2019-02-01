@@ -10,6 +10,7 @@ const _ = require('lodash'),
       Task = require('../lib/task'),
       { CredentialsManager } = require('../../lib/api/credentials'),
       Stream = require('../../lib/stream'),
+      { templates } = require('../../lib/schemas'),
       FileAdapter = require('../../lib/stream/adapters/file_adapter')
 
 class Env extends Task {
@@ -66,7 +67,6 @@ class Env extends Task {
     return new Promise((resolve, reject) => {
       pump(stream, streamTransform, fileWriter, (error) => {
         if (error) {
-          console.log(error)
           return reject(error)
         }
         console.log('Export finished...')
@@ -78,6 +78,14 @@ class Env extends Task {
   async 'env@import'() {
 
     console.log('mdctl env import')
+  }
+
+  async 'env@add'(cli) {
+
+    const template = await templates.create(cli.args('2'), cli.args('3'), cli.args('4'))
+
+    console.log(template.getBoilerplate())
+
   }
 
   // ----------------------------------------------------------------------------------------------
@@ -99,7 +107,8 @@ class Env extends Task {
         
         command                      
           export - export from an endpoint environment        
-          import - import to an endpoint environment        
+          import - import to an endpoint environment   
+          add object [type] name - add a new resource      
                   
         options     
           --endpoint sets the endpoint. eg. api.dev.medable.com     
