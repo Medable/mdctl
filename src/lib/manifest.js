@@ -2,7 +2,7 @@
 const _ = require('lodash'),
       { privatesAccessor } = require('./privates'),
       {
-        rArray, rBool, isSet, isCustom
+        rArray, rBool, isSet, isCustomName
       } = require('./utils/values'),
       Fault = require('./fault')
 
@@ -132,7 +132,7 @@ class Manifest extends ManifestStage {
 
     // We also define a section for each custom name to capture user data
     Object.keys(def)
-      .filter(isCustom)
+      .filter(isCustomName)
       .forEach((name) => {
         if (def[name]) {
           thisStages[name] = new ManifestStage(def[name])
