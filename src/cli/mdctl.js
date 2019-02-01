@@ -136,9 +136,8 @@ module.exports = class MdCtlCli {
           getClientAndCredsFrom = async(passwordSecret) => {
             const activeLogin = await CredentialsManager.getCustom('login', '*'),
                   activeClientConfig = _.get(activeLogin, 'client'),
-                  isActiveClientReusable = !!activeLogin,
-                  // !_.isUndefined(activeLogin) &&
-                  // this.doesClientMatchSecret(activeClientConfig, passwordSecret),
+                  isActiveClientReusable = !_.isUndefined(activeLogin)
+                    && this.doesClientMatchSecret(activeClientConfig, passwordSecret),
                   client = isActiveClientReusable
                     ? new Client(activeClientConfig)
                     : this.createNewClientBy(passwordSecret),
@@ -212,9 +211,10 @@ module.exports = class MdCtlCli {
       && activeClientConfig.credentials.username === passwordSecret.username
   }
 
-  async getArguments(arrayOfKeys) {
-    return _.reduce(arrayOfKeys,
+  getArguments(arrayOfKeys) {
+    const args = _.reduce(arrayOfKeys,
       (sum, key) => _.extend(sum, { [key]: this.args(key) }), {})
+    return _.pickBy(args, _.identity)
   }
 
 }
