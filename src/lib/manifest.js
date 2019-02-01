@@ -2,8 +2,8 @@
 const _ = require('lodash'),
       { privatesAccessor } = require('./privates'),
       {
- rArray, rBool, isSet, isCustom 
-} = require('./utils/values'),
+        rArray, rBool, isSet, isCustom
+      } = require('./utils/values'),
       Fault = require('./fault')
 
 // Augmented regular expresions. Accepts strings, star
