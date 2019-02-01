@@ -36,14 +36,16 @@ class SectionBase {
   }
 
   get name() {
-    const { name, code, object } = this.content
+    const { resource, object } = this.content,
+          [ objectName, resourceName ] = (resource || object).split('.')
+
     if (this.key === 'env') {
       return this.key
     }
     if (MANIFEST_KEYS.keys.slice(1).indexOf(this.key) > -1) {
       return this.key.replace('manifest-', '')
     }
-    return name || this.content.c_name || code || object
+    return resourceName || objectName
   }
 
   clearScripts() {
