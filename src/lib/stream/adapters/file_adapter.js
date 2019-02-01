@@ -6,7 +6,8 @@ const { Writable } = require('stream'),
       _ = require('lodash'),
       request = require('request'),
       slugify = require('slugify'),
-      pathTo = require('../../utils/path.to')
+      pathTo = require('../../utils/path.to'),
+      { rArray } = require('../../utils/values')
 
 class Layout extends Writable {
 
@@ -29,7 +30,8 @@ class Layout extends Writable {
     const file = `${this.output}/.cache.${this.format}`
     if (fs.existsSync(file)) {
       const content = fs.readFileSync(file)
-      this.metadata = this.format === 'json' ? JSON.parse(content) : jsYaml.safeLoad(content)
+      this.metadata = _.merge(this.metadata, this.format === 'json' ? JSON.parse(content) : jsYaml.safeLoad(content))
+      this.metadata.assets = rArray(this.metadata.assets)
     }
   }
 

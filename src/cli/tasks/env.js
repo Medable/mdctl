@@ -17,7 +17,7 @@ class Env extends Task {
 
   constructor() {
     super()
-    this.optionKeys = ['endpoint', 'env', 'manifest', 'format', 'layout', 'dir']
+    this.optionKeys = ['manifest', 'format', 'layout', 'dir']
   }
 
   async run(cli) {
@@ -36,20 +36,22 @@ class Env extends Task {
   }
 
   async 'env@export'(cli) {
-    const passedOptions = await cli.getArguments(this.optionKeys),
-          outputDir = passedOptions.dir || cli.cwd,
-          manifestFile = passedOptions.manifest || `${outputDir}/manifest.${passedOptions.format || 'json'}`,
+    const envOptions = await cli.getArguments(['endpoint', 'env']),
+          exportOptions = await cli.getArguments(this.optionKeys),
+          outputDir = exportOptions.dir || cli.cwd,
+          manifestFile = exportOptions.manifest || `${outputDir}/manifest.${exportOptions.format || 'json'}`,
           stream = ndjson.parse(),
-          passwordSecret = await CredentialsManager.get(passedOptions),
+          // this is wrong because it will ignore a login.
+          passwordSecret = !_.isEmpty(envOptions) && await CredentialsManager.get(envOptions),
           client = await cli.getApiClient({ passwordSecret }),
           url = new URL('/developer/environment/export', client.environment.url),
           options = {
             query: url.searchParams,
             method: 'post'
           },
-          streamOptions = passedOptions.format && {
-            format: passedOptions.format,
-            layout: passedOptions.layout
+          streamOptions = exportOptions.format && {
+            format: exportOptions.format,
+            layout: exportOptions.layout
           },
           streamTransform = new Stream(streamOptions),
           fileWriter = new FileAdapter(outputDir, streamOptions)
