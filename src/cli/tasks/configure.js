@@ -1,66 +1,67 @@
 /* eslint-disable class-methods-use-this */
 /* eslint-disable no-await-in-loop */
 
-const path = require('path'),
-      fs = require('fs'),
-      jsyaml = require('js-yaml'),
-      Task = require('../lib/task'),
-      { createConfig } = require('../lib/config'),
-      { loadJsonOrYaml, question, yn } = require('../../utils'),
-      { isSet } = require('../../utils/values')
+const Task = require('../lib/task'),
+      {
+        clearDefaults, createConfig, loadDefaults, writeDefaults
+      } = require('../lib/config'),
+      { question } = require('../lib/questionnaires'),
+      { stringToBoolean, rVal, rString } = require('../../lib/utils/values'),
+      configureOptions = {
+        defaultEndpoint: {
+          message: 'The default cortex endpoint',
+          default: 'api.dev.medable.com',
+          transform: v => rString(v, '')
+        },
+        defaultEnv: {
+          message: 'The default endpoint env (org code)',
+          default: '',
+          transform: v => rString(v, '')
+        },
+        defaultAccount: {
+          message: 'The default account email',
+          default: '',
+          transform: v => rString(v, '')
+        },
+        strictSSL: {
+          message: 'Verify endpoint ssl certificates by default. Use only for debugging.',
+          default: true,
+          transform: v => stringToBoolean(v, true)
+        }
+      }
 
 class Configure extends Task {
 
   async run(cli) {
 
     const isClean = cli.args('clean'),
-          configureDir = path.join(process.env.HOME, '.medable'),
-          configureFile = path.join(configureDir, 'mdctl.yaml'),
-          keys = 'defaultEnv defaultEndpoint'.split(' '),
+          keys = Object.keys(configureOptions),
           local = {},
           localCfg = createConfig() // attempt to re-read the config from the configure file.
 
     if (isClean) {
-      try {
-        fs.unlinkSync(configureFile)
-      } catch (err) {
-        // eslint-disable-line no-empty
-      }
-      return true
+      return clearDefaults()
     }
 
     try {
-      localCfg.update(await loadJsonOrYaml(configureFile))
+      localCfg.update(await loadDefaults())
     } catch (err) {
       // eslint-disable-line no-empty
     }
 
     for (let i = 0; i < keys.length; i += 1) {
-      const key = keys[i]
-      let current = localCfg(key) || cli.config(key)
-      current = isSet(current) ? current : ''
-      local[key] = await question(key, current)
+
+      const key = keys[i],
+            entry = configureOptions[key]
+
+      local[key] = entry.transform(await question(
+        entry.message,
+        rVal(localCfg(key) || cli.config(key) || entry.default, '')
+      ))
+
     }
 
-    {
-      const file = `# ------------------------------------------------\n${jsyaml.safeDump(local)}# ------------------------------------------------\n`
-
-      if (!cli.args('quiet') && !await yn(`\n${file}is this correct?`)) {
-        return false
-      }
-
-      this.assert(
-        `Writing new config to ${configureFile}...`,
-        'Writing config failed',
-        `mkdir -p ${configureDir}`,
-        () => {
-          fs.writeFileSync(configureFile, file, 'utf8')
-          return true
-        }
-      )
-    }
-
-    return true
+    return writeDefaults(local)
 
   }
 

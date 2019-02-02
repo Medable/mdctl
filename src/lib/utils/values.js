@@ -1,5 +1,8 @@
 
 const _ = require('lodash'),
+      naturalCmp = require('string-natural-compare'),
+      TRUE = ['y', 'yes', 'true', '1'],
+      FALSE = ['n', 'no', 'false', '0'],
       isPrimitiveRegex = /^[sbn]/
 
 let Undefined
@@ -65,13 +68,18 @@ function rString(val, defaultVal) {
   return defaultVal
 }
 
+function rFunction(val, defaultVal = () => {}) {
+  if (_.isFunction(val)) return val
+  return defaultVal
+}
+
 function rBool(boolValue, defaultValue) {
   return !!(boolValue === Undefined ? defaultValue : boolValue)
 }
 
-function getValidDate(d = null, defaultValue = null) {
+function rDate(d = null, defaultValue = null) {
   if (d === null) {
-    return defaultValue === null ? null : getValidDate(defaultValue)
+    return defaultValue === null ? null : rDate(defaultValue)
   }
   if (_.isDate(d)) {
     if (Number.isNaN(d.getTime())) {
@@ -87,7 +95,7 @@ function getValidDate(d = null, defaultValue = null) {
   } catch (err) {
     // eslint-disable-line no-empty
   }
-  return defaultValue === null ? null : getValidDate(defaultValue)
+  return defaultValue === null ? null : rDate(defaultValue)
 
 }
 
@@ -149,21 +157,54 @@ function resolveCallbackArguments(options, callback, ensure = true, once = true)
   return [optionsArgument, callbackArgument]
 }
 
+
+function isCustomName(name) {
+  return _.isString(name) && (name.indexOf('c_') === 0 || name.includes('__'))
+}
+
+function isUuidKeyFormat(name) {
+  return _.isString(name) && /^[0-9a-f]{8}-[0-9a-f]{4}-[1-4][0-9a-f]{3}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(name)
+}
+
+function isExportKey(name) {
+  return isCustomName(name) || isUuidKeyFormat(name)
+}
+
+/**
+ * accepts 'y', 'yes', 'true' or 1 as true, 'n', 'no', 'false' or '0'. provide a default
+ */
+function stringToBoolean(val, defaultVal) {
+  if (val !== null && val !== Undefined) {
+    if (FALSE.includes(String(val).toLowerCase())) {
+      return false
+    } if (TRUE.includes(String(val).toLowerCase())) {
+      return true
+    }
+  }
+  return defaultVal
+}
+
 module.exports = {
   isPrimitive,
   isInt,
   isNumeric,
   isInteger,
   isValidDate,
+  rFunction,
   isSet,
   rArray,
+  stringToBoolean,
   rVal,
   rNum,
   rInt,
   rString,
   rBool,
-  getValidDate,
+  rDate,
   pad,
   clamp,
-  resolveCallbackArguments
+  resolveCallbackArguments,
+  isCustomName,
+  isExportKey,
+  isUuidKeyFormat,
+  naturalCmp
 }
