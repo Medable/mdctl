@@ -11,6 +11,7 @@ const isPlainObject = require('lodash.isplainobject'),
           session: require('./env/app.session'),
           signed: require('./env/app.signed')
         },
+        config: require('./env/config'),
         notification: require('./env/notification'),
         policy: require('./env/policy'),
         role: require('./env/role'),
