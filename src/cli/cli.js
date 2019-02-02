@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 const MdCtlCli = require('./mdctl'),
-
+      Fault = require('../lib/fault'),
       cli = new MdCtlCli()
 
 cli.run()
@@ -9,5 +9,5 @@ cli.run()
     process.exit(0)
   })
   .catch((err) => {
-    console.log(err)
+    console.log(Fault.from(err, true).toJSON())
   })

@@ -1,8 +1,12 @@
 const cloneObject = require('clone'),
+      path = require('path'),
+      fs = require('fs'),
+      sh = require('shelljs'),
+      jsyaml = require('js-yaml'),
       { merge } = require('lodash'),
-      { loadJsonOrYaml } = require('../../utils'),
-      pathTo = require('../../utils/path.to'),
-      { privatesAccessor } = require('../../utils/privates')
+      { loadJsonOrYaml } = require('../../lib/utils'),
+      pathTo = require('../../lib/utils/path.to'),
+      { privatesAccessor } = require('../../lib/privates')
 
 let Undefined
 
@@ -16,14 +20,14 @@ class Config {
     })
   }
 
-  get(path, defaultValue = Undefined) {
+  get(propertyPath, defaultValue = Undefined) {
 
     const privates = privatesAccessor(this)
 
-    let value = privates.cache.get(path)
+    let value = privates.cache.get(propertyPath)
     if (value === Undefined) {
-      value = pathTo(privates.data, path)
-      privates.cache.set(path, value === Undefined ? privates.Undefined : value)
+      value = pathTo(privates.data, propertyPath)
+      privates.cache.set(propertyPath, value === Undefined ? privates.Undefined : value)
     }
     if (value === privates.Undefined || value === Undefined) {
       value = defaultValue !== Undefined ? defaultValue : Undefined
@@ -59,7 +63,7 @@ class Config {
 
   getAccessor() {
 
-    const accessor = (path, defaultValue) => this.get(path, defaultValue),
+    const accessor = (propertyPath, defaultValue) => this.get(propertyPath, defaultValue),
           {
             get, match, update, clone, flush, load
           } = this
@@ -97,8 +101,59 @@ function createConfig(data) {
 
 }
 
+async function clearDefaults() {
+
+  const configureDir = path.join(process.env.HOME, '.medable'),
+        configureFile = path.join(configureDir, 'mdctl.yaml')
+
+  try {
+    fs.unlinkSync(configureFile)
+  } catch (err) {
+    // eslint-disable-line no-empty
+  }
+  return true
+}
+
+async function loadDefaults() {
+
+  const configureDir = path.join(process.env.HOME, '.medable'),
+        configureFile = path.join(configureDir, 'mdctl.yaml')
+
+  try {
+    return (await loadJsonOrYaml(configureFile))
+  } catch (err) {
+    return {}
+  }
+
+}
+
+async function writeDefaults(contents) {
+
+  const configureDir = path.join(process.env.HOME, '.medable'),
+        configureFile = path.join(configureDir, 'mdctl.yaml'),
+        local = await loadDefaults()
+
+  merge(local, contents)
+
+  sh.mkdir('-p', `${configureDir}`)
+  fs.writeFileSync(
+    configureFile,
+    `# ------------------------------------------------\n${
+      jsyaml.safeDump(local)
+    }# ------------------------------------------------\n`,
+    'utf8'
+  )
+
+  return true
+
+}
+
+
 module.exports = {
   Config,
   createConfig,
-  config: createConfig()
+  config: createConfig(),
+  loadDefaults,
+  clearDefaults,
+  writeDefaults
 }
