@@ -1,7 +1,7 @@
 const { Transform } = require('stream'),
       Section = require('./section'),
       Fault = require('../fault'),
-      { isCustomName } = require('../utils'),
+      { isCustomName } = require('../utils/values'),
       KEYS = ['manifest', 'manifest-dependencies', 'manifest-exports', 'env', 'app', 'notification', 'policy', 'role', 'smsNumber', 'serviceAccount', 'storageLocation', 'configuration', 'facet', 'object', 'script', 'template', 'view']
 
 class StreamTransform extends Transform {
