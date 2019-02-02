@@ -6,33 +6,22 @@ const { Writable } = require('stream'),
       _ = require('lodash'),
       request = require('request'),
       slugify = require('slugify'),
-      pathTo = require('../../utils/path.to'),
-      { rArray } = require('../../utils/values')
+      pathTo = require('../../utils/path.to'),      
+      { md5FileHash } = require('../../utils/crypto'),
+      Fault = require('../../fault')
 
 class Layout extends Writable {
 
-  constructor(output, format = 'json') {
+  constructor(output, { format = 'json', metadata = {} }) {
     super({ objectMode: true })
     this.output = output
     this.format = format
     this.ensure(this.output)
-    this.metadata = {
-      assets: []
-    }
-    this.loadMetadata()
+    this.metadata = metadata
   }
 
   static downloadResources(url) {
     return request(url)
-  }
-
-  loadMetadata() {
-    const file = `${this.output}/.cache.${this.format}`
-    if (fs.existsSync(file)) {
-      const content = fs.readFileSync(file)
-      this.metadata = _.merge(this.metadata, this.format === 'json' ? JSON.parse(content) : jsYaml.safeLoad(content))
-      this.metadata.assets = rArray(this.metadata.assets)
-    }
   }
 
   ensure(directory) {
@@ -56,30 +45,13 @@ class Layout extends Writable {
     return contentStr
   }
 
-  checkFileETagExists(ETag) {
-    const cnf = ETag && _.find(this.metadata.assets, c => c.ETag === ETag)
-    if (cnf && !fs.existsSync(cnf.path)) {
-      return false
-    }
-    return !!cnf
-  }
+  static fileNeedsUpdate(f, path) {
 
-  updateMetadata(f, dest) {
-    const cnf = _.find(this.metadata.assets, c => c.name === f.name),
-          relativeDest = dest.replace(this.output, '')
-    if (cnf) {
-      cnf.ETag = f.ETag
-      if (cnf.path !== relativeDest) {
-        fs.unlinkSync(`${this.output}${cnf.path}`)
-        cnf.path = relativeDest
-      }
-    } else {
-      this.metadata.assets.push({
-        name: f.name,
-        path: relativeDest,
-        ETag: f.ETag
-      })
+    if (f.ETag && fs.existsSync(path)) {
+      const fileEtag = md5FileHash(path)
+      return fileEtag !== f.ETag
     }
+    return true
   }
 
   async writeAssets(path, files) {
@@ -87,12 +59,9 @@ class Layout extends Writable {
     _.forEach(files, (f) => {
       promises.push(new Promise((resolve, reject) => {
         const dest = `${path}/${slugify(f.name)}.${f.ext}`
-        if (!this.checkFileETagExists(f.ETag)) {
+        if (Layout.fileNeedsUpdate(f, dest)) {
           const fileWriter = fs.createWriteStream(dest)
           fileWriter.on('finish', () => {
-            if (f.ETag) {
-              this.updateMetadata(f, dest)
-            }
             resolve({
               name: f.name,
               path: f.pathTo,
@@ -140,12 +109,12 @@ class Layout extends Writable {
 
 class FilesLayout extends Layout {
 
-  writeToFile(file, content) {
-    return fs.writeFileSync(file, this.parseContent(content))
+  writeToFile(file, content, plain = false) {
+    return fs.writeFileSync(file, !plain ? this.parseContent(content) : content)
   }
 
   createCheckpointFile() {
-    this.writeToFile(`${this.output}/.cache.${this.format}`, this.metadata)
+    this.writeToFile(`${this.output}/.cache.json`, JSON.stringify(this.metadata, null, 2), true)
   }
 
   async processChunk(chunk) {
@@ -182,8 +151,8 @@ class FilesLayout extends Layout {
 
 class SingleFileLayout extends Layout {
 
-  constructor(output, format) {
-    super(output, format)
+  constructor(output, options) {
+    super(output, options)
     this.data = {}
   }
 
@@ -192,7 +161,7 @@ class SingleFileLayout extends Layout {
   }
 
   createCheckpointFile() {
-    this.writeToFile(`${this.output}/.cache.${this.format}`, this.metadata)
+    this.writeToFile(`${this.output}/.cache.json`, JSON.stringify(this.metadata, null, 2))
   }
 
   async processChunk(chunk) {
@@ -240,15 +209,61 @@ class SingleFileLayout extends Layout {
 
 class FileAdapter extends EventEmitter {
 
-  constructor(outputPath, options = { format: 'json', layout: 'files' }) {
+  constructor(outputPath, options) {
     super()
-    const { layout, format } = options,
+    const { layout = 'tree', format = 'json', mdctl = null } = options,
           output = outputPath || `${process.cwd()}/output`
-    this.stream = new FilesLayout(output, format)
-    if (layout === 'blob') {
-      this.stream = new SingleFileLayout(output, format)
+    this.layout = layout
+    this.format = format
+    this.mdctl = mdctl
+    this.cacheFile = `${output}/.cache.json`
+    this.loadMetadata()
+    this.validateStructure()
+    this.metadata.format = format
+    this.metadata.layout = layout
+    if (layout === 'tree') {
+      this.stream = new FilesLayout(output, {
+        format,
+        layout,
+        metadata: this.metadata,
+        cache: this.cacheFile
+      })
+    } else if (layout === 'blob') {
+      this.stream = new SingleFileLayout(output, {
+        format,
+        layout,
+        metadata: this.metadata,
+        cache: this.cacheFile
+      })
+    } else {
+      throw new Fault('kLayoutNotSupported', 'the layout export is not supported')
     }
     return this.stream
+  }
+
+  validateStructure() {
+    if (this.metadata) {
+      if (this.metadata.format
+          && (this.format || (this.mdctl && this.mdctl.format)) !== this.metadata.format) {
+        throw new Fault('kMismatchFormatExport',
+          'the location contains exported data in different format, you will have duplicated information in different formats')
+      }
+      if (this.metadata.layout
+        && (this.layout || (this.mdctl && this.mdctl.layout)) !== this.metadata.layout) {
+        throw new Fault('kMismatchLayoutExport',
+          'the location contains exported data in different layout, you will have duplicated information in different layout')
+      }
+    }
+  }
+
+  loadMetadata() {
+    const file = this.cacheFile
+    if (fs.existsSync(file)) {
+      const content = fs.readFileSync(file)
+      this.metadata = JSON.parse(content)
+    } else {
+      this.metadata = {}
+    }
   }
 
 }

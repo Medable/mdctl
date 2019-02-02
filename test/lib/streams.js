@@ -59,7 +59,7 @@ describe('Adapters', () => {
               if (err) {
                 done(err)
               } else {
-                assert(files.length === 6, 'there are more/less files than created')
+                assert(files.length === 5, 'there are more/less files than created')
                 done()
               }
             })

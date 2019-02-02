@@ -31,15 +31,21 @@ class SectionBase {
     }
   }
 
+  get isCustomObject() {
+    return typeof this.content.object === 'string' && (this.content.object.indexOf('c_') === 0 || this.content.object.includes('__'))
+  }
+
   get name() {
-    const { name, code, object } = this.content
+    const { resource, object } = this.content,
+          [objectName, resourceName] = (resource || object).split('.')
+
     if (this.key === 'env') {
       return this.key
     }
     if (MANIFEST_KEYS.keys.slice(1).indexOf(this.key) > -1) {
       return this.key.replace('manifest-', '')
     }
-    return name || code || object
+    return resourceName || objectName
   }
 
   clearScripts() {
@@ -62,8 +68,8 @@ class SectionBase {
     const { object } = this.content
     if (object === 'env') {
       path = this.name
-    } else if (object.indexOf('c_') === 0 || object.includes('__')) {
-      path = `data/${pluralize(this.name)}`
+    } else if (this.isCustomObject) {
+      path = `data/${pluralize(object)}`
     } else if (path) {
       path = `${path}/${pluralize(object)}`
     }
