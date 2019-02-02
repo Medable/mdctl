@@ -46,11 +46,12 @@ class Env extends Task {
             query: url.searchParams,
             method: 'post'
           },
-          streamOptions = passedOptions.format && {
+          streamOptions = {
             format: passedOptions.format,
-            layout: passedOptions.layout
+            layout: passedOptions.layout,
+            config: cli.config
           },
-          streamTransform = new Stream(streamOptions),
+          streamTransform = new Stream(),
           fileWriter = new FileAdapter(outputDir, streamOptions)
 
     let manifest = {}
