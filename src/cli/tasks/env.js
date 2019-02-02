@@ -51,9 +51,10 @@ class Env extends Task {
           },
           streamOptions = exportOptions.format && {
             format: exportOptions.format,
-            layout: exportOptions.layout
+            layout: exportOptions.layout,
+            config: cli.config
           },
-          streamTransform = new Stream(streamOptions),
+          streamTransform = new Stream(),
           fileWriter = new FileAdapter(outputDir, streamOptions)
 
     let manifest = {}
