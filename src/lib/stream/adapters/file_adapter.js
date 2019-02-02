@@ -6,7 +6,7 @@ const { Writable } = require('stream'),
       _ = require('lodash'),
       request = require('request'),
       slugify = require('slugify'),
-      pathTo = require('../../utils/path.to'),
+      pathTo = require('../../utils/path.to'),      
       { md5FileHash } = require('../../utils/crypto'),
       Fault = require('../../fault')
 
