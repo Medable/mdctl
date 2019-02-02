@@ -12,7 +12,10 @@ class Template extends Base {
     return sortKeys(Object.assign(
       super.getBoilerplate(),
       {
-
+        patterns: [],
+        principalId: 'account.anonymous',
+        principalOverride: false,
+        sessions: false
       }
     ))
 

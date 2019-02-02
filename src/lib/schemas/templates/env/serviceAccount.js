@@ -3,8 +3,8 @@ const { Template: Base } = require('../template'),
 
 class Template extends Base {
 
-  constructor(type, name) {
-    super('serviceAccount', type, name)
+  constructor(name) {
+    super('serviceAccount', null, name)
   }
 
   getBoilerplate() {
@@ -12,7 +12,10 @@ class Template extends Base {
     return sortKeys(Object.assign(
       super.getBoilerplate(),
       {
-
+        label: this.exportKey,
+        locked: false,
+        name: this.exportKey,
+        roles: []
       }
     ))
 

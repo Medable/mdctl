@@ -12,7 +12,16 @@ class Template extends Base {
     return sortKeys(Object.assign(
       super.getBoilerplate(),
       {
-
+        accessKeyId: '',
+        active: false,
+        bucket: '',
+        exportTtlDays: 7,
+        label: this.exportKey,
+        managed: true,
+        name: this.exportKey,
+        passive: true,
+        prefix: '',
+        readUrlExpiry: 900
       }
     ))
 

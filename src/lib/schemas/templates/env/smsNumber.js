@@ -3,8 +3,8 @@ const { Template: Base } = require('../template'),
 
 class Template extends Base {
 
-  constructor(type, name) {
-    super('smsNumber', type, name)
+  constructor(name) {
+    super('smsNumber', null, name)
   }
 
   getBoilerplate() {
@@ -12,7 +12,11 @@ class Template extends Base {
     return sortKeys(Object.assign(
       super.getBoilerplate(),
       {
-
+        accountSid: '',
+        isDefault: true,
+        name: this.exportKey,
+        number: '+15055555555',
+        provider: 'twilio',
       }
     ))
 

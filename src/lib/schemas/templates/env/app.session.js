@@ -12,7 +12,8 @@ class Template extends Base {
     return sortKeys(Object.assign(
       super.getBoilerplate(),
       {
-
+        csrf: true,
+        sessions: true
       }
     ))
 

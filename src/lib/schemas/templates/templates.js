@@ -3,7 +3,7 @@
 const isPlainObject = require('lodash.isplainobject'),
       { privatesAccessor } = require('../../privates'),
       Fault = require('../../fault'),
-      { isCustomName } = require('../../utils/values'),
+      { isCustomName, rString } = require('../../utils/values'),
       singleton = privatesAccessor({}),
       Template = require('./template'),
       resourceTypes = {
@@ -16,7 +16,10 @@ const isPlainObject = require('lodash.isplainobject'),
         role: require('./env/role'),
         serviceAccount: require('./env/serviceAccount'),
         smsNumber: require('./env/smsNumber'),
-        storageLocation: require('./env/storageLocation'),
+        storageLocation: {
+          'aws-s3': require('./env/storageLocation.aws-s3'),
+          's3-endpoint': require('./env/storageLocation.s3-endpoint')
+        },
         object: require('./env/object'),
         script: {
           library: require('./env/script.library'),
@@ -25,8 +28,15 @@ const isPlainObject = require('lodash.isplainobject'),
           trigger: require('./env/script.trigger'),
         },
         view: require('./env/view'),
-        template: require('./env/template')
+        template: {
+          email: require('./env/template.email'),
+          push: require('./env/template.push'),
+          sms: require('./env/template.sms')
+        }
       }
+
+
+resourceTypes.storage = resourceTypes.storageLocation
 
 class Templates {
 
@@ -51,7 +61,7 @@ class Templates {
       if (isCustomName(object)) {
         throw Fault.create('kNotImplemented', { reason: 'custom object resource creation is not yet available.' })
       }
-      throw Fault.create('kInvalidArgument', { reason: `${object} is not a valid object` })
+      throw Fault.create('kInvalidArgument', { reason: `"${rString(object, '')}" is not a valid object. expecting one of: ${Object.keys(resourceTypes)}` })
     }
 
     if (isPlainObject(Cls)) {
@@ -59,7 +69,7 @@ class Templates {
       [type, name] = args
 
       if (!Cls[type]) {
-        throw Fault.create('kInvalidArgument', { reason: `"${type}" is not a valid type for "${object}". expecting one of: ${Object.keys(Cls)}` })
+        throw Fault.create('kInvalidArgument', { reason: `"${rString(type, '')}" is not a valid type for "${object}". expecting one of: ${Object.keys(Cls)}` })
       }
 
       Cls = Cls[type]
