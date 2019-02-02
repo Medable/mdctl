@@ -1,10 +1,10 @@
-const { Template: Base } = require('../template'),
+const Base = require('./storageLocation'),
       { sortKeys } = require('../../../utils')
 
 class Template extends Base {
 
-  constructor(type, name) {
-    super('template', type, name)
+  constructor(name) {
+    super('aws-s3', name)
   }
 
   getBoilerplate() {
@@ -12,9 +12,7 @@ class Template extends Base {
     return sortKeys(Object.assign(
       super.getBoilerplate(),
       {
-        description: this.exportKey,
-        label: this.exportKey,
-        name: this.exportKey
+        region: 'us-east-1'
       }
     ))
 

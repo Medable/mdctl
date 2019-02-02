@@ -3,8 +3,8 @@ const { Template: Base } = require('../template'),
 
 class Template extends Base {
 
-  constructor(type, name) {
-    super('notification', type, name)
+  constructor(name) {
+    super('notification', null, name)
   }
 
   getBoilerplate() {
@@ -12,7 +12,30 @@ class Template extends Base {
     return sortKeys(Object.assign(
       super.getBoilerplate(),
       {
-
+        duplicates: false,
+        endpoints: [
+          {
+            configurable: true,
+            name: 'sms',
+            state: 'Enabled',
+            template: `template.${this.exportKey}`
+          },
+          {
+            configurable: true,
+            name: 'email',
+            state: 'Enabled',
+            template: `template.${this.exportKey}`
+          },
+          {
+            configurable: true,
+            name: 'push',
+            state: 'Enabled',
+            template: `template.${this.exportKey}`
+          }
+        ],
+        label: this.exportKey,
+        name: this.exportKey,
+        persists: false
       }
     ))
 

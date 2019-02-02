@@ -15,11 +15,21 @@ class Template extends Base {
         Object.assign(
           super.getBoilerplate(),
           {
-
+            authDuration: 900,
+            blacklist: [],
+            cors: [],
+            enabled: true,
+            expires: null,
+            expose: false,
+            label: this.exportKey,
+            maxTokensPerPrincipal: 10,
+            name: this.exportKey,
+            readOnly: false,
+            whitelist: [],
           }
-        )
-      ),
-      'type'
+        ),
+        'type'
+      )
     )
 
   }

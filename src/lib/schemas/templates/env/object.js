@@ -3,8 +3,8 @@ const { Template: Base } = require('../template'),
 
 class Template extends Base {
 
-  constructor(type, name) {
-    super('object', type, name)
+  constructor(name) {
+    super('object', null, name)
   }
 
   getBoilerplate() {
@@ -12,7 +12,31 @@ class Template extends Base {
     return sortKeys(Object.assign(
       super.getBoilerplate(),
       {
-
+        allowConnections: false,
+        auditing: {
+          enabled: false
+        },
+        connectionOptions: {
+          requireAccept: true,
+          requiredAccess: 5,
+          sendNotifications: true
+        },
+        createAcl: [
+          'account.public'
+        ],
+        defaultAcl: [
+          'owner.delete'
+        ],
+        hasETag: false,
+        isDeletable: true,
+        isUnmanaged: false,
+        isVersioned: false,
+        label: this.exportKey,
+        name: this.exportKey,
+        objectTypes: [],
+        properties: [],
+        shareAcl: [],
+        shareChain: ['share', 'read', 'connected']
       }
     ))
 

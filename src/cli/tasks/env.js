@@ -86,7 +86,7 @@ class Env extends Task {
 
     const template = await templates.create(cli.args('2'), cli.args('3'), cli.args('4'))
 
-    console.log(template.getBoilerplate())
+    console.log(JSON.stringify(template.getBoilerplate(), null, 2))
 
   }
 
