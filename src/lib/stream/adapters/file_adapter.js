@@ -6,7 +6,7 @@ const { Writable } = require('stream'),
       _ = require('lodash'),
       request = require('request'),
       slugify = require('slugify'),
-      pathTo = require('../../utils/path.to'),      
+      pathTo = require('../../utils/path.to'),
       { md5FileHash } = require('../../utils/crypto'),
       Fault = require('../../fault')
 
@@ -209,7 +209,7 @@ class SingleFileLayout extends Layout {
 
 class FileAdapter extends EventEmitter {
 
-  constructor(outputPath, options) {
+  constructor(outputPath, options = {}) {
     super()
     const { layout = 'tree', format = 'json', mdctl = null } = options,
           output = outputPath || `${process.cwd()}/output`
