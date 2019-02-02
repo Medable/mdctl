@@ -10,13 +10,14 @@ const _ = require('lodash'),
       Task = require('../lib/task'),
       { CredentialsManager } = require('../../lib/api/credentials'),
       Stream = require('../../lib/stream'),
+      { templates } = require('../../lib/schemas'),
       FileAdapter = require('../../lib/stream/adapters/file_adapter')
 
 class Env extends Task {
 
   constructor() {
     super()
-    this.optionKeys = ['endpoint', 'env', 'manifest', 'format', 'layout', 'dir']
+    this.optionKeys = ['manifest', 'format', 'layout', 'dir']
   }
 
   async run(cli) {
@@ -35,20 +36,22 @@ class Env extends Task {
   }
 
   async 'env@export'(cli) {
-    const passedOptions = await cli.getArguments(this.optionKeys),
-          outputDir = passedOptions.dir || cli.cwd,
-          manifestFile = passedOptions.manifest || `${outputDir}/manifest.${passedOptions.format || 'json'}`,
+    const envOptions = await cli.getArguments(['endpoint', 'env']),
+          exportOptions = await cli.getArguments(this.optionKeys),
+          outputDir = exportOptions.dir || cli.cwd,
+          manifestFile = exportOptions.manifest || `${outputDir}/manifest.${exportOptions.format || 'json'}`,
           stream = ndjson.parse(),
-          passwordSecret = await CredentialsManager.get(passedOptions),
+          // this is wrong because it will ignore a login.
+          passwordSecret = !_.isEmpty(envOptions) && await CredentialsManager.get(envOptions),
           client = await cli.getApiClient({ passwordSecret }),
           url = new URL('/developer/environment/export', client.environment.url),
           options = {
             query: url.searchParams,
             method: 'post'
           },
-          streamOptions = {
-            format: passedOptions.format,
-            layout: passedOptions.layout,
+          streamOptions = exportOptions.format && {
+            format: exportOptions.format,
+            layout: exportOptions.layout,
             config: cli.config
           },
           streamTransform = new Stream(),
@@ -67,7 +70,6 @@ class Env extends Task {
     return new Promise((resolve, reject) => {
       pump(stream, streamTransform, fileWriter, (error) => {
         if (error) {
-          console.log(error)
           return reject(error)
         }
         console.log('Export finished...')
@@ -79,6 +81,14 @@ class Env extends Task {
   async 'env@import'() {
 
     console.log('mdctl env import')
+  }
+
+  async 'env@add'(cli) {
+
+    const template = await templates.create(cli.args('2'), cli.args('3'), cli.args('4'))
+
+    console.log(JSON.stringify(template.getBoilerplate(), null, 2))
+
   }
 
   // ----------------------------------------------------------------------------------------------
@@ -100,7 +110,8 @@ class Env extends Task {
         
         command                      
           export - export from an endpoint environment        
-          import - import to an endpoint environment        
+          import - import to an endpoint environment   
+          add object [type] name - add a new resource      
                   
         options     
           --endpoint sets the endpoint. eg. api.dev.medable.com     

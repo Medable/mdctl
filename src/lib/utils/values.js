@@ -1,5 +1,6 @@
 
 const _ = require('lodash'),
+      naturalCmp = require('string-natural-compare'),
       TRUE = ['y', 'yes', 'true', '1'],
       FALSE = ['n', 'no', 'false', '0'],
       isPrimitiveRegex = /^[sbn]/
@@ -157,8 +158,16 @@ function resolveCallbackArguments(options, callback, ensure = true, once = true)
 }
 
 
-function isCustom(name) {
-  return name.indexOf('c_') === 0 || name.includes('__')
+function isCustomName(name) {
+  return _.isString(name) && (name.indexOf('c_') === 0 || name.includes('__'))
+}
+
+function isUuidKeyFormat(name) {
+  return _.isString(name) && /^[0-9a-f]{8}-[0-9a-f]{4}-[1-4][0-9a-f]{3}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(name)
+}
+
+function isExportKey(name) {
+  return isCustomName(name) || isUuidKeyFormat(name)
 }
 
 /**
@@ -194,5 +203,8 @@ module.exports = {
   pad,
   clamp,
   resolveCallbackArguments,
-  isCustom
+  isCustomName,
+  isExportKey,
+  isUuidKeyFormat,
+  naturalCmp
 }
