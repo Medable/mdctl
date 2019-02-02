@@ -4,7 +4,7 @@ const slugify = require('slugify'),
       mime = require('mime'),
       pluralize = require('pluralize'),
       ENV_KEYS = {
-        keys: ['app', 'notification', 'policy', 'role', 'smsNumber', 'serviceAccount', 'storageLocation', 'configuration', 'template', 'object', 'script', 'view'],
+        keys: ['app', 'config', 'notification', 'policy', 'role', 'smsNumber', 'serviceAccount', 'storageLocation', 'configuration', 'template', 'object', 'script', 'view'],
         folder: 'env'
       },
       DATA_KEYS = {
