@@ -13,7 +13,6 @@ class Template extends Base {
       super.getBoilerplate(),
       {
         name: this.exportKey,
-        public: true,
         value: {}
       }
     ))
