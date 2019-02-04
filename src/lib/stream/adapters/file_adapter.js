@@ -6,9 +6,11 @@ const { Writable } = require('stream'),
       _ = require('lodash'),
       request = require('request'),
       slugify = require('slugify'),
+      pluralize = require('pluralize'),
       pathTo = require('../../utils/path.to'),
       { md5FileHash } = require('../../utils/crypto'),
-      Fault = require('../../fault')
+      Fault = require('../../fault'),
+      { TemplatesExt } = require('../section')
 
 class Layout extends Writable {
 
@@ -54,12 +56,12 @@ class Layout extends Writable {
     return true
   }
 
-  async writeAssets(path, files) {
+  async writeAssets(path, files, notDownload = false) {
     const promises = []
     _.forEach(files, (f) => {
       promises.push(new Promise((resolve, reject) => {
         const dest = `${path}/${slugify(f.name)}.${f.ext}`
-        if (Layout.fileNeedsUpdate(f, dest)) {
+        if (!notDownload && Layout.fileNeedsUpdate(f, dest)) {
           const fileWriter = fs.createWriteStream(dest)
           fileWriter.on('finish', () => {
             resolve({
@@ -112,6 +114,30 @@ class Layout extends Writable {
 }
 
 class FilesLayout extends Layout {
+
+  async addResource(type, template) {
+    const out = `${this.output || process.cwd()}/env/${pluralize(type)}`,
+          object = template.getBoilerplate()
+    this.ensure(out)
+    if (type === 'script') {
+      const filePath = `${out}/js/${template.exportKey}.js`
+      this.ensure(`${out}/js`)
+      this.writeToFile(filePath, 'return true;', true)
+      object.script = filePath.replace(out, '')
+    }
+    if (type === 'template') {
+      /* eslint no-param-reassign: "error" */
+      this.ensure(`${out}/tpl`)
+      _.forEach(object.localizations, (loc) => {
+        _.forEach(loc.content, (cnt) => {
+          const file = `${out}/tpl/${template.exportKey}.${cnt.name}.${TemplatesExt[cnt.name]}`
+          this.writeToFile(file, cnt.data, true)
+          cnt.data = file.replace(out, '')
+        })
+      })
+    }
+    this.writeToFile(`${out}/${template.exportKey}.${this.format}`, object)
+  }
 
   writeToFile(file, content, plain = false) {
     return fs.writeFileSync(file, !plain ? this.parseContent(content) : content)
@@ -218,7 +244,7 @@ class FileAdapter extends EventEmitter {
   constructor(outputPath, options = {}) {
     super()
     const { layout = 'tree', format = 'json', mdctl = null } = options,
-          output = outputPath || `${process.cwd()}/output`
+          output = outputPath || process.cwd()
     this.layout = layout
     this.format = format
     this.mdctl = mdctl

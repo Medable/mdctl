@@ -84,8 +84,11 @@ class Env extends Task {
   }
 
   async 'env@add'(cli) {
-    const template = await templates.create(cli.args('2'), cli.args('3'), cli.args('4'))
-    console.log(JSON.stringify(template.getBoilerplate(), null, 2))
+    const template = await templates.create(cli.args('2'), cli.args('3'), cli.args('4')),
+          params = await cli.getArguments(this.optionKeys),
+          fileAdapter = new FileAdapter(null, params)
+    await fileAdapter.addResource(cli.args('2'), template)
+    console.log('Resource added.')
   }
 
   // ----------------------------------------------------------------------------------------------
@@ -107,13 +110,8 @@ class Env extends Task {
         
         command                      
           export - export from an endpoint environment        
-<<<<<<< HEAD
-          import - import to an endpoint environment
-          add - add a local resource to environment       
-=======
           import - import to an endpoint environment   
           add object [type] name - add a new resource      
->>>>>>> fa3414358f52386a471d24aa0aa2fce16aa1efa3
                   
         options     
           --endpoint sets the endpoint. eg. api.dev.medable.com     

@@ -18,9 +18,9 @@ const slugify = require('slugify'),
       NON_WRITABLE_KEYS = ['facet'],
       SectionsCreated = [],
       TemplatesExt = {
-        'html': 'html',
-        'plain': 'txt',
-        'subject': 'txt'
+        html: 'html',
+        plain: 'txt',
+        subject: 'txt'
       }
 
 class SectionBase {
@@ -144,7 +144,7 @@ class SectionBase {
     if (this.key === 'template') {
       if (_.isArray(this.content.localizations)) {
         const name = `${this.content.resource}.${this.content.name}`
-        this.content.localizations.forEach((l, j) => {
+        this.content.localizations.forEach((l) => {
           const nodes = jp.nodes(this.content, '$..content'),
                 { path } = nodes[0]
           nodes[0].value.forEach((cnt, i) => {
@@ -169,4 +169,7 @@ class SectionBase {
 
 }
 
-module.exports = SectionBase
+module.exports = {
+  Section: SectionBase,
+  TemplatesExt
+}
