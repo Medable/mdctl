@@ -110,6 +110,7 @@ describe('Manifest', () => {
         views: {},
         apps: {},
         roles: {},
+        configs: {},
         serviceAccounts: {},
         policies: {},
         notifications: {},
