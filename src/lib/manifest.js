@@ -2,7 +2,7 @@
 const _ = require('lodash'),
       { privatesAccessor } = require('./privates'),
       {
-        rArray, rBool, isSet, isCustom
+        rArray, rBool, isSet, isCustomName
       } = require('./utils/values'),
       Fault = require('./fault')
 
@@ -132,7 +132,7 @@ class Manifest extends ManifestStage {
 
     // We also define a section for each custom name to capture user data
     Object.keys(def)
-      .filter(isCustom)
+      .filter(isCustomName)
       .forEach((name) => {
         if (def[name]) {
           thisStages[name] = new ManifestStage(def[name])
@@ -146,7 +146,7 @@ class Manifest extends ManifestStage {
   }
 
   static get builtInSections() {
-    return ['env', 'scripts', 'views', 'templates', 'apps', 'roles', 'serviceAccounts',
+    return ['env', 'configs', 'scripts', 'views', 'templates', 'apps', 'roles', 'serviceAccounts',
       'policies', 'notifications', 'storageLocations']
   }
 
@@ -195,6 +195,10 @@ class Manifest extends ManifestStage {
 
   get env() {
     return privatesAccessor(this, 'env')
+  }
+
+  get configs() {
+    return privatesAccessor(this, 'configs')
   }
 
   get objects() {

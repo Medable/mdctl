@@ -206,7 +206,7 @@ class Credentials extends Task {
     // attempt to logout of the api.
     try {
 
-      const client = cli.getApiClient({ ensureSession: false })
+      const client = await cli.getApiClient({ ensureSession: false })
       await client.post('/accounts/logout')
 
     } catch (err) {
