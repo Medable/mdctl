@@ -85,10 +85,8 @@ class Env extends Task {
 
   async 'env@add'(cli) {
     const template = await templates.create(cli.args('2'), cli.args('3'), cli.args('4')),
-          params = await cli.getArguments(this.optionKeys),
-          fileAdapter = new FileAdapter(null, params)
-    await fileAdapter.addResource(cli.args('2'), template)
-    console.log('Resource added.')
+          params = await cli.getArguments(this.optionKeys)
+    return FileAdapter.addResource(params.dir, params.format, cli.args('2'), template)
   }
 
   // ----------------------------------------------------------------------------------------------
