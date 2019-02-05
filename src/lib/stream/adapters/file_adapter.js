@@ -1,6 +1,5 @@
 const { Writable } = require('stream'),
       EventEmitter = require('events'),
-      jsYaml = require('js-yaml'),
       fs = require('fs'),
       jp = require('jsonpath'),
       _ = require('lodash'),
@@ -10,7 +9,10 @@ const { Writable } = require('stream'),
       pathTo = require('../../utils/path.to'),
       { md5FileHash } = require('../../utils/crypto'),
       Fault = require('../../fault'),
-      { TemplatesExt } = require('../section')
+      { TemplatesExt } = require('../section'),
+      { stringifyContent } = require('../../utils/values'),
+      { ensureDir } = require('../../utils/directory')
+
 
 class Layout extends Writable {
 
@@ -18,7 +20,7 @@ class Layout extends Writable {
     super({ objectMode: true })
     this.output = output
     this.format = format
-    this.ensure(this.output)
+    ensureDir(this.output)
     this.metadata = metadata
   }
 
@@ -26,26 +28,6 @@ class Layout extends Writable {
     return request(url)
   }
 
-  ensure(directory) {
-    const path = directory.replace(/\/$/, '').split('/')
-    path.forEach((i, k) => {
-      const segment = path.slice(0, k + 1).join('/')
-      if (segment && !fs.existsSync(segment)) {
-        fs.mkdirSync(segment)
-      }
-    })
-  }
-
-  parseContent(content) {
-    let contentStr = ''
-    if (this.format === 'yaml') {
-      const objStr = JSON.stringify(content).trim()
-      contentStr = jsYaml.safeDump(JSON.parse(objStr))
-    } else {
-      contentStr = JSON.stringify(content, null, 2)
-    }
-    return contentStr
-  }
 
   static fileNeedsUpdate(f, path) {
 
@@ -95,15 +77,15 @@ class Layout extends Writable {
   async writeExtraFiles(folder, chunk) {
     let paths = []
     if (chunk.extraFiles.length > 0) {
-      this.ensure(`${folder}/assets`)
+      ensureDir(`${folder}/assets`)
       paths = await this.writeAssets(`${folder}/assets`, chunk.extraFiles)
     }
     if (chunk.scriptFiles.length > 0) {
-      this.ensure(`${folder}/js`)
+      ensureDir(`${folder}/js`)
       paths = await this.writeAssets(`${folder}/js`, chunk.scriptFiles)
     }
     if (chunk.templateFiles.length > 0) {
-      this.ensure(`${folder}/tpl`)
+      ensureDir(`${folder}/tpl`)
       paths = await this.writeAssets(`${folder}/tpl`, chunk.templateFiles)
     }
     _.forEach(paths, (d) => {
@@ -115,32 +97,8 @@ class Layout extends Writable {
 
 class FilesLayout extends Layout {
 
-  async addResource(type, template) {
-    const out = `${this.output || process.cwd()}/env/${pluralize(type)}`,
-          object = template.getBoilerplate()
-    this.ensure(out)
-    if (type === 'script') {
-      const filePath = `${out}/js/${template.exportKey}.js`
-      this.ensure(`${out}/js`)
-      this.writeToFile(filePath, 'return true;', true)
-      object.script = filePath.replace(out, '')
-    }
-    if (type === 'template') {
-      /* eslint no-param-reassign: "error" */
-      this.ensure(`${out}/tpl`)
-      _.forEach(object.localizations, (loc) => {
-        _.forEach(loc.content, (cnt) => {
-          const file = `${out}/tpl/${template.exportKey}.${cnt.name}.${TemplatesExt[cnt.name]}`
-          this.writeToFile(file, cnt.data, true)
-          cnt.data = file.replace(out, '')
-        })
-      })
-    }
-    this.writeToFile(`${out}/${template.exportKey}.${this.format}`, object)
-  }
-
   writeToFile(file, content, plain = false) {
-    return fs.writeFileSync(file, !plain ? this.parseContent(content) : content)
+    return fs.writeFileSync(file, !plain ? stringifyContent(content, this.format) : content)
   }
 
   createCheckpointFile() {
@@ -154,7 +112,7 @@ class FilesLayout extends Layout {
         await chunk.extractScripts()
         await chunk.extractTemplates()
         await chunk.extractAssets()
-        this.ensure(folder)
+        ensureDir(folder)
         await this.writeExtraFiles(folder, chunk)
         this.writeToFile(`${folder}/${slugify(chunk.name, '_')}.${this.format}`, chunk.content)
       }
@@ -188,7 +146,7 @@ class SingleFileLayout extends Layout {
   }
 
   writeToFile(file, content) {
-    return fs.writeFileSync(file, this.parseContent(content))
+    return fs.writeFileSync(file, stringifyContent(content, this.format))
   }
 
   createCheckpointFile() {
@@ -296,6 +254,30 @@ class FileAdapter extends EventEmitter {
     } else {
       this.metadata = {}
     }
+  }
+
+  static async addResource(output, format, type, template) {
+    const out = `${output || process.cwd()}/env/${pluralize(type)}`,
+          object = template.getBoilerplate()
+    ensureDir(out)
+    if (type === 'script') {
+      const filePath = `${out}/js/${template.exportKey}.js`
+      ensureDir(`${out}/js`)
+      fs.writeFileSync(filePath, 'return true;')
+      object.script = filePath.replace(out, '')
+    }
+    if (type === 'template') {
+      /* eslint no-param-reassign: "error" */
+      ensureDir(`${out}/tpl`)
+      _.forEach(object.localizations, (loc) => {
+        _.forEach(loc.content, (cnt) => {
+          const file = `${out}/tpl/${template.exportKey}.${cnt.name}.${TemplatesExt[cnt.name]}`
+          fs.writeFileSync(file, cnt.data)
+          cnt.data = file.replace(out, '')
+        })
+      })
+    }
+    fs.writeFileSync(`${out}/${template.exportKey}.${format}`, stringifyContent(object, format))
   }
 
 }

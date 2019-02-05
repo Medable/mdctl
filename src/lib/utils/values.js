@@ -1,5 +1,6 @@
 
 const _ = require('lodash'),
+      jsYaml = require('js-yaml'),
       naturalCmp = require('string-natural-compare'),
       TRUE = ['y', 'yes', 'true', '1'],
       FALSE = ['n', 'no', 'false', '0'],
@@ -184,6 +185,17 @@ function stringToBoolean(val, defaultVal) {
   return defaultVal
 }
 
+function stringifyContent(content, format) {
+  let contentStr = ''
+  if (format === 'yaml') {
+    const objStr = JSON.stringify(content).trim()
+    contentStr = jsYaml.safeDump(JSON.parse(objStr))
+  } else {
+    contentStr = JSON.stringify(content, null, 2)
+  }
+  return contentStr
+}
+
 module.exports = {
   isPrimitive,
   isInt,
@@ -206,5 +218,6 @@ module.exports = {
   isCustomName,
   isExportKey,
   isUuidKeyFormat,
-  naturalCmp
+  naturalCmp,
+  stringifyContent
 }
