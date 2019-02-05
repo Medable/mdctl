@@ -257,7 +257,7 @@ class FileAdapter extends EventEmitter {
   }
 
   static async addResource(output, format, type, template) {
-    const out = `${output || process.cwd()}/env/${pluralize(type)}`,
+    const out = `${output}/env/${pluralize(type)}`,
           object = template.getBoilerplate()
     ensureDir(out)
     if (type === 'script') {
@@ -278,6 +278,12 @@ class FileAdapter extends EventEmitter {
       })
     }
     fs.writeFileSync(`${out}/${template.exportKey}.${format}`, stringifyContent(object, format))
+  }
+
+  static async saveManifest(output, format = 'json', content = {}) {
+    content.object = 'manifest'
+    const out = `${output}/manifest.${format}`
+    fs.writeFileSync(out, stringifyContent(content, format))
   }
 
 }

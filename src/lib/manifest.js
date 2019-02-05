@@ -1,10 +1,11 @@
-
 const _ = require('lodash'),
+      pluralize = require('pluralize'),
       { privatesAccessor } = require('./privates'),
       {
-        rArray, rBool, isSet, isCustomName
+        rArray, rBool, isSet, isCustomName, removeFalsy
       } = require('./utils/values'),
-      Fault = require('./fault')
+      Fault = require('./fault'),
+      FileAdapter = require('./stream/adapters/file_adapter')
 
 // Augmented regular expresions. Accepts strings, star
 class ARegex {
@@ -26,11 +27,16 @@ class ARegex {
     const value = privatesAccessor(this, 'value')
     if (_.isString(value)) {
       return value === '*' || _.isEqual(pattern, value)
-    } if (_.isRegExp(value)) {
+    }
+    if (_.isRegExp(value)) {
       return value.test(pattern)
     }
 
     return false
+  }
+
+  toJSON() {
+    return privatesAccessor(this, 'value')
   }
 
 }
@@ -73,6 +79,10 @@ class ManifestStage {
       && !this.excludes.some(r => r.test(path))
   }
 
+  toJSON() {
+    return removeFalsy(privatesAccessor(this), true)
+  }
+
 }
 
 class ObjectSection extends ManifestStage {
@@ -109,6 +119,16 @@ class ObjectSection extends ManifestStage {
     return this.includes.length > 0 && !this.excludes.some(r => r.test(''))
   }
 
+  toJSON() {
+    const {
+      includes, excludes, dependencies
+    } = privatesAccessor(this)
+    return removeFalsy({
+      includes, excludes, dependencies, name: privatesAccessor(this, 'keyTester').toJSON()
+    }, true)
+
+  }
+
 }
 
 class Manifest extends ManifestStage {
@@ -131,22 +151,21 @@ class Manifest extends ManifestStage {
     })
 
     // We also define a section for each custom name to capture user data
-    Object.keys(def)
-      .filter(isCustomName)
-      .forEach((name) => {
-        if (def[name]) {
-          thisStages[name] = new ManifestStage(def[name])
-          Object.defineProperty(this, name, {
-            get: () => privatesAccessor(this, name)
-          })
-        }
-      })
+    Object.keys(def).filter(isCustomName).forEach((name) => {
+      if (def[name]) {
+        thisStages[name] = new ManifestStage(def[name])
+        Object.defineProperty(this, name, {
+          get: () => privatesAccessor(this, name)
+        })
+      }
+    })
 
     Object.assign(privatesAccessor(this), { thisStages })
   }
 
   static get builtInSections() {
-    return ['env', 'configs', 'scripts', 'views', 'templates', 'apps', 'roles', 'serviceAccounts',
+    return [
+      'env', 'configs', 'scripts', 'views', 'templates', 'apps', 'roles', 'serviceAccounts',
       'policies', 'notifications', 'storageLocations']
   }
 
@@ -172,7 +191,9 @@ class Manifest extends ManifestStage {
           [head, ...tail] = path.split('.'),
           res = thisStages[head] && tail.length && thisStages[head].shouldIncludeDependencies(tail.join('.'))
 
-    if (isSet(res)) return res
+    if (isSet(res)) {
+      return res
+    }
     return this.dependencies
   }
 
@@ -239,6 +260,26 @@ class Manifest extends ManifestStage {
 
   get storageLocations() {
     return privatesAccessor(this, 'storageLocations')
+  }
+
+  async addResource(type, name, template, params) {
+    const resourcePath = `${pluralize(type)}.${name}`,
+          stages = privatesAccessor(this, 'thisStages')
+    if (!this.accept(resourcePath) || Object.keys(stages).length === 0) {
+      stages[pluralize(type)] = stages[pluralize(type)] || type === 'object' ? [] : { includes: [] }
+      if (type === 'object') {
+        stages[pluralize(type)].push({
+          includes: ['*'],
+          name
+        })
+      } else {
+        stages[pluralize(type)].includes.push(name)
+      }
+      await FileAdapter.addResource(params.dir || process.cwd(), params.format || 'json', type, template)
+      await FileAdapter.saveManifest(params.dir || process.cwd(), params.format || 'json', stages)
+    } else {
+      throw Fault.create('kNotAccepted', { reason: 'Resource already exists or not accepted by manifest definition' })
+    }
   }
 
 }

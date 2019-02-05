@@ -1,4 +1,3 @@
-
 const _ = require('lodash'),
       jsYaml = require('js-yaml'),
       naturalCmp = require('string-natural-compare'),
@@ -47,30 +46,46 @@ function rArray(val, wrap) {
 }
 
 function rVal(val, defaultVal) {
-  if (val === Undefined) return defaultVal
+  if (val === Undefined) {
+    return defaultVal
+  }
   return val
 }
 
 function rNum(val, defaultVal) {
-  if (val === Undefined) return defaultVal
-  if (isNumeric(val)) return parseFloat(val)
+  if (val === Undefined) {
+    return defaultVal
+  }
+  if (isNumeric(val)) {
+    return parseFloat(val)
+  }
   return defaultVal
 }
 
 function rInt(val, defaultVal) {
-  if (val === Undefined) return defaultVal
-  if (isInteger(val)) return parseInt(val, 10)
+  if (val === Undefined) {
+    return defaultVal
+  }
+  if (isInteger(val)) {
+    return parseInt(val, 10)
+  }
   return defaultVal
 }
 
 function rString(val, defaultVal) {
-  if (val === Undefined) return defaultVal
-  if (_.isString(val)) return val
+  if (val === Undefined) {
+    return defaultVal
+  }
+  if (_.isString(val)) {
+    return val
+  }
   return defaultVal
 }
 
 function rFunction(val, defaultVal = () => {}) {
-  if (_.isFunction(val)) return val
+  if (_.isFunction(val)) {
+    return val
+  }
   return defaultVal
 }
 
@@ -101,13 +116,13 @@ function rDate(d = null, defaultValue = null) {
 }
 
 /**
-     * pad(text, size, [char]): Left padding
-     * pad(size, text, [char]): Right padding
-     * @param string
-     * @param size
-     * @param character
-     * @returns {string}
-     */
+ * pad(text, size, [char]): Left padding
+ * pad(size, text, [char]): Right padding
+ * @param string
+ * @param size
+ * @param character
+ * @returns {string}
+ */
 function pad(string, size, character = null) {
   let padded,
       str = string,
@@ -158,7 +173,6 @@ function resolveCallbackArguments(options, callback, ensure = true, once = true)
   return [optionsArgument, callbackArgument]
 }
 
-
 function isCustomName(name) {
   return _.isString(name) && (name.indexOf('c_') === 0 || name.includes('__'))
 }
@@ -178,7 +192,8 @@ function stringToBoolean(val, defaultVal) {
   if (val !== null && val !== Undefined) {
     if (FALSE.includes(String(val).toLowerCase())) {
       return false
-    } if (TRUE.includes(String(val).toLowerCase())) {
+    }
+    if (TRUE.includes(String(val).toLowerCase())) {
       return true
     }
   }
@@ -186,14 +201,31 @@ function stringToBoolean(val, defaultVal) {
 }
 
 function stringifyContent(content, format) {
+  const cleanedContent = JSON.parse(JSON.stringify(content))
   let contentStr = ''
   if (format === 'yaml') {
-    const objStr = JSON.stringify(content).trim()
-    contentStr = jsYaml.safeDump(JSON.parse(objStr))
+    contentStr = jsYaml.safeDump(cleanedContent)
   } else {
-    contentStr = JSON.stringify(content, null, 2)
+    contentStr = JSON.stringify(cleanedContent, null, 2)
   }
   return contentStr
+}
+
+function parseString(content, format) {
+  if (format === 'yaml') {
+    return jsYaml.safeLoad(content)
+  }
+  return JSON.parse(content)
+}
+
+function removeFalsy(obj, emptyArrays = false) {
+  const newObj = {}
+  Object.keys(obj).forEach((prop) => {
+    if (obj[prop] && (emptyArrays ? obj[prop].length : true)) {
+      newObj[prop] = obj[prop]
+    }
+  })
+  return newObj
 }
 
 module.exports = {
@@ -219,5 +251,7 @@ module.exports = {
   isExportKey,
   isUuidKeyFormat,
   naturalCmp,
-  stringifyContent
+  stringifyContent,
+  parseString,
+  removeFalsy
 }
