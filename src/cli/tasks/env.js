@@ -5,13 +5,14 @@ const _ = require('lodash'),
       { URL } = require('url'),
       pump = require('pump'),
       ndjson = require('ndjson'),
-      { isSet } = require('../../lib/utils/values'),
+      { isSet, parseString } = require('../../lib/utils/values'),
       pathTo = require('../../lib/utils/path.to'),
       Task = require('../lib/task'),
       { CredentialsManager } = require('../../lib/api/credentials'),
       Stream = require('../../lib/stream'),
       { templates } = require('../../lib/schemas'),
-      FileAdapter = require('../../lib/stream/adapters/file_adapter')
+      FileAdapter = require('../../lib/stream/adapters/file_adapter'),
+      { Manifest } = require('../../lib/manifest')
 
 class Env extends Task {
 
@@ -59,7 +60,7 @@ class Env extends Task {
 
     let manifest = {}
     if (fs.existsSync(manifestFile)) {
-      manifest = JSON.parse(fs.readFileSync(manifestFile))
+      manifest = parseString(fs.readFileSync(manifestFile), exportOptions.format)
     }
 
     pathTo(options, 'requestOptions.headers.accept', 'application/x-ndjson')
@@ -85,8 +86,16 @@ class Env extends Task {
 
   async 'env@add'(cli) {
     const template = await templates.create(cli.args('2'), cli.args('3'), cli.args('4')),
-          params = await cli.getArguments(this.optionKeys)
-    return FileAdapter.addResource(params.dir, params.format, cli.args('2'), template)
+          params = await cli.getArguments(this.optionKeys),
+          outputDir = params.dir || cli.cwd,
+          manifestFile = params.manifest || `${outputDir}/manifest.${params.format || 'json'}`
+
+    let manifest = {}
+    if (fs.existsSync(manifestFile)) {
+      manifest = parseString(fs.readFileSync(manifestFile), params.format || 'json')
+    }
+
+    await new Manifest(manifest).addResource(template.object, template.exportKey, template, params)
   }
 
   // ----------------------------------------------------------------------------------------------
