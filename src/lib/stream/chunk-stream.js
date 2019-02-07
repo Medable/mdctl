@@ -1,8 +1,11 @@
 const { Transform } = require('stream'),
       clone = require('clone'),
       isPlainObject = require('lodash.isplainobject'),
-     { rBool, rInt, rString } = require('../utils/values'),
-     { sortKeys } = require('../utils')
+      { rBool, rInt, rString } = require('../utils/values'),
+      { privatesAccessor } = require('../privates'),
+      Fault = require('../fault'),
+      { sortKeys } = require('../utils')
+
 /**
  * outputs a binary stream from incoming stream of json objects
  */
@@ -19,26 +22,35 @@ class InputStream extends Transform {
 
     super(opts)
 
-    this._filter = opts.filter || (() => true)
-    this._idx = 0
-    this._dataField = rString(opts.dataField, 'data')
-    this._indexField = rString(opts.indexField, 'index')
+    Object.assign(privatesAccessor(this), {
+      filter: opts.filter || (() => true),
+      idx: 0,
+      dataField: rString(opts.dataField, 'data'),
+      indexField: rString(opts.indexField, 'index')
+    })
+
+    // eslint-disable-next-line no-underscore-dangle
     this._writableState.objectMode = true
+
+    // eslint-disable-next-line no-underscore-dangle
     this._readableState.objectMode = false
 
   }
 
   _transform(object, encoding, callback) {
 
-    let err, buf
+    const privates = privatesAccessor(this)
 
-    if (object && this._filter(object, this._idx)) {
+    let err,
+        buf
 
-      const {[this._indexField]: index, [this._dataField]: data } = object
+    if (object && privates.filter(object, privates.idx)) {
 
-      if (this._idx !== index) {
+      const { [privates.indexField]: index, [privates.dataField]: data } = object
 
-        err = Fault.create('kInvalidArgument', {reason: `Stream received chunk out of order. Expecting ${this._idx} but got ${index}`})
+      if (privates.idx !== index) {
+
+        err = Fault.create('kInvalidArgument', { reason: `Stream received chunk out of order. Expecting ${privates.idx} but got ${index}` })
 
       } else if (data === null) {
 
@@ -46,10 +58,10 @@ class InputStream extends Transform {
 
       } else {
 
-        this._idx += 1
+        privates.idx += 1
         try {
           buf = Buffer.from(data, 'base64')
-        } catch(e) {
+        } catch (e) {
           err = e
         }
       }
@@ -70,9 +82,10 @@ class OutputStream extends Transform {
   /**
    *
    * @param opts
-   *   ndjson: boolean default true. if true, turns off object mode and outputs newline delimited json strings.
-   *     if false, turns on object mode and outputs json objects.
-   *   chunkSize: 8192. the number of raw bytes in each output chunk. the encoded chunks will be larger.
+   *   ndjson: boolean default true. if true, turns off object mode and outputs
+   *     newline delimited json strings. if false, turns on object mode and outputs json objects.
+   *   chunkSize: 8192. the number of raw bytes in each output chunk.
+   *     the encoded chunks will be larger.
    *   template. an object template in which the data field is inserted
    *   dataField: defaults to 'data'
    *   indexField: default to 'index'
@@ -83,72 +96,83 @@ class OutputStream extends Transform {
 
     super(opts)
 
-    this._ndjson = rBool(opts.ndjson, true)
-    this._buffer = null
-    this._idx = 0
-    this._chunkSize = Math.max(1, rInt(opts.chunkSize, 8192))
-    this._template = isPlainObject(opts.template) ? clone(opts.template) : {}
-    this._dataField = rString(opts.dataField, 'data')
-    this._indexField = rString(opts.indexField, 'index')
+    const privates = privatesAccessor(this)
 
+    Object.assign(privates, {
+      ndjson: rBool(opts.ndjson, true),
+      buffer: null,
+      chunkSize: Math.max(1, rInt(opts.chunkSize, 8192)),
+      template: isPlainObject(opts.template) ? clone(opts.template) : {},
+      idx: 0,
+      dataField: rString(opts.dataField, 'data'),
+      indexField: rString(opts.indexField, 'index'),
+      pushBuffer: (buf, idx) => {
+
+        const obj = sortKeys(Object.assign(clone(privates.template), {
+          [privates.indexField]: idx,
+          [privates.dataField]: buf ? buf.toString('base64') : null
+        }))
+
+        if (privates.ndjson) {
+          if (idx > 0) {
+            this.push('\n')
+          }
+          this.push(JSON.stringify(obj))
+        } else {
+          this.push(obj)
+        }
+
+      }
+
+    })
+
+    // eslint-disable-next-line no-underscore-dangle
     this._writableState.objectMode = false
-    this._readableState.objectMode = !this._ndjson
+
+    // eslint-disable-next-line no-underscore-dangle
+    this._readableState.objectMode = !privatesAccessor(this).ndjson
 
   }
 
   _transform(chunk, encoding, callback) {
 
+    const privates = privatesAccessor(this)
+
     let data = chunk,
         pos = 0
 
     if (!Buffer.isBuffer(chunk)) {
-      data = new Buffer(chunk)
+      data = Buffer.from(chunk)
     }
-    if (this._buffer) {
-      data = Buffer.concat([this._buffer, chunk])
-    }
-
-    while (pos + this._chunkSize <= chunk.length) {
-
-      const buf = (data.slice(pos, pos + this._chunkSize))
-      this._pushBuffer(buf, this._idx)
-      this._idx += 1
-      pos += this._chunkSize
-
+    if (privates.buffer) {
+      data = Buffer.concat([privates.buffer, chunk])
     }
 
-    this._buffer = data.slice(pos);
+    while (pos + privates.chunkSize <= chunk.length) {
+
+      const buf = (data.slice(pos, pos + privates.chunkSize))
+      privates.pushBuffer(buf, privates.idx)
+      privates.idx += 1
+      pos += privates.chunkSize
+
+    }
+
+    privates.buffer = data.slice(pos)
     setImmediate(callback)
 
   }
 
   _flush(callback) {
 
-    if (this._buffer && this._buffer.length) {
-      this._pushBuffer(this._buffer, this._idx)
-      this._idx += 1
-      this._buffer = null
+    const privates = privatesAccessor(this)
+
+    if (privates.buffer && privates.buffer.length) {
+      privates.pushBuffer(privates.buffer, privates.idx)
+      privates.idx += 1
+      privates.buffer = null
     }
-    this._pushBuffer(null, this._idx)
+    privates.pushBuffer(null, privates.idx)
     setImmediate(callback)
-
-  }
-
-  _pushBuffer(buf, idx) {
-
-    const obj = sortKeys(Object.assign(clone(this._template), {
-        [this._indexField]: idx,
-        [this._dataField]: buf ? buf.toString('base64') : null
-      }))
-
-    if (this._ndjson) {
-      if (idx > 0) {
-        this.push('\n')
-      }
-      this.push(JSON.stringify(obj))
-    } else {
-      this.push(obj)
-    }
 
   }
 
