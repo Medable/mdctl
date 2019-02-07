@@ -16,7 +16,12 @@ const slugify = require('slugify'),
         folder: ''
       },
       NON_WRITABLE_KEYS = ['facet'],
-      SectionsCreated = []
+      SectionsCreated = [],
+      TemplatesExt = {
+        html: 'html',
+        plain: 'txt',
+        subject: 'txt'
+      }
 
 class SectionBase {
 
@@ -25,6 +30,7 @@ class SectionBase {
     this.key = key
     this.scriptFiles = []
     this.extraFiles = []
+    this.templateFiles = []
     SectionsCreated.push(this)
     if (new.target === SectionBase) {
       Object.seal(this)
@@ -118,20 +124,52 @@ class SectionBase {
     const nodes = jp.nodes(this.content, '$..script')
     nodes.forEach((n) => {
       if (!_.isObject(n.value)) {
-        const parent = this.getParentFromPath(n.path),
-              name = `${parent.type}.${slugify(parent.code || parent.name || parent.label, '_')}`
+        const path = _.clone(n.path),
+              parent = this.getParentFromPath(n.path),
+              type = parent.type || `${this.content.resource}.${n.path.slice(1).join('.')}`,
+              name = `${type}.${slugify(parent.code || parent.name || parent.label, '_')}`
         this.scriptFiles.push({
           name,
           ext: 'js',
           data: n.value,
           remoteLocation: false,
-          pathTo: jp.stringify(n.path)
+          pathTo: jp.stringify(path)
         })
       }
     })
     return true
   }
 
+  async extractTemplates() {
+    if (this.key === 'template') {
+      if (_.isArray(this.content.localizations)) {
+        const name = `${this.content.resource}.${this.content.name}`
+        this.content.localizations.forEach((l) => {
+          const nodes = jp.nodes(this.content, '$..content'),
+                { path } = nodes[0]
+          nodes[0].value.forEach((cnt, i) => {
+            const objectPath = _.clone(path)
+            objectPath.push(i)
+            objectPath.push('data')
+            if (cnt.data) {
+              this.templateFiles.push({
+                name: `${name}.${l.locale}.${cnt.name}`,
+                ext: TemplatesExt[cnt.name],
+                data: cnt.data,
+                remoteLocation: false,
+                pathTo: jp.stringify(objectPath)
+              })
+            }
+          })
+        })
+      }
+    }
+    return true
+  }
+
 }
 
-module.exports = SectionBase
+module.exports = {
+  Section: SectionBase,
+  TemplatesExt
+}

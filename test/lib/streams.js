@@ -30,12 +30,12 @@ describe('Adapters', () => {
               rimraf.sync(tempDir)
               done(error)
             }
-            glob('**/*.{yaml,js,png,jpeg,ico,gif}', { cwd: tempDir }, (err, files) => {
+            glob('**/*.{yaml,js,png,jpeg,ico,gif,html,txt}', { cwd: tempDir }, (err, files) => {
               rimraf.sync(tempDir)
               if (err) {
                 done(err)
               } else {
-                assert(files.length === 50, 'there are some missing files created')
+                assert(files.length === 120, 'there are some missing files created')
                 done()
               }
             })
@@ -54,12 +54,12 @@ describe('Adapters', () => {
               rimraf.sync(tempDir)
               done(error)
             }
-            glob('**/*.{yaml,js,png,jpeg,ico,gif}', { cwd: tempDir }, (err, files) => {
+            glob('**/*.{yaml,js,png,jpeg,ico,gif,html,txt}', { cwd: tempDir }, (err, files) => {
               rimraf.sync(tempDir)
               if (err) {
                 done(err)
               } else {
-                assert(files.length === 5, 'there are more/less files than created')
+                assert(files.length === 75, 'there are more/less files than created')
                 done()
               }
             })
