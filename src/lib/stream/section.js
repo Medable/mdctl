@@ -1,8 +1,11 @@
 const slugify = require('slugify'),
       _ = require('lodash'),
+      fs = require('fs'),
       jp = require('jsonpath'),
       mime = require('mime'),
+      uuid = require('uuid'),
       pluralize = require('pluralize'),
+      { isCustomName } = require('../utils/values'),
       ENV_KEYS = {
         keys: ['app', 'config', 'notification', 'policy', 'role', 'smsNumber', 'serviceAccount', 'storageLocation', 'configuration', 'template', 'object', 'script', 'view'],
         folder: 'env'
@@ -21,60 +24,78 @@ const slugify = require('slugify'),
         html: 'html',
         plain: 'txt',
         subject: 'txt'
-      }
+      },
+      { privatesAccessor } = require('../privates')
 
-class SectionBase {
+class ExportSection {
 
   constructor(content, key = '') {
-    this.content = content
-    this.key = key
-    this.scriptFiles = []
-    this.extraFiles = []
-    this.templateFiles = []
+
+    Object.assign(privatesAccessor(this), {
+      content,
+      key,
+      scriptFiles: [],
+      extraFiles: [],
+      templateFiles: []
+    })
     SectionsCreated.push(this)
-    if (new.target === SectionBase) {
+    if (new.target === ExportSection) {
       Object.seal(this)
     }
   }
 
-  get isCustomObject() {
-    return typeof this.content.object === 'string' && (this.content.object.indexOf('c_') === 0 || this.content.object.includes('__'))
+  get key() {
+    return privatesAccessor(this).key
+  }
+
+  get content() {
+    return privatesAccessor(this).content
+  }
+
+  get extraFiles() {
+    return privatesAccessor(this).extraFiles
+  }
+
+  get scriptFiles() {
+    return privatesAccessor(this).scriptFiles
+  }
+
+  get templateFiles() {
+    return privatesAccessor(this).templateFiles
   }
 
   get name() {
-    const { resource, object } = this.content,
+    const { content, key } = privatesAccessor(this),
+          { resource, object } = content,
           [objectName, resourceName] = (resource || object).split('.')
 
-    if (this.key === 'env') {
-      return this.key
+    if (key === 'env') {
+      return key
     }
-    if (MANIFEST_KEYS.keys.slice(1).indexOf(this.key) > -1) {
-      return this.key.replace('manifest-', '')
+    if (MANIFEST_KEYS.keys.slice(1).indexOf(key) > -1) {
+      return key.replace('manifest-', '')
     }
     return resourceName || objectName
   }
 
-  clearScripts() {
-    this.jsInScript = {}
-  }
-
   get isWritable() {
-    return NON_WRITABLE_KEYS.indexOf(this.key) < 0
+    return NON_WRITABLE_KEYS.indexOf(privatesAccessor(this).key) < 0
   }
 
   getPath() {
+    const { key, content } = privatesAccessor(this),
+          { object } = content
     let path = ''
-    if (ENV_KEYS.keys.indexOf(this.key) > -1) {
+    if (ENV_KEYS.keys.indexOf(key) > -1) {
       path = ENV_KEYS.folder
-    } else if (DATA_KEYS.keys.indexOf(this.key) > -1) {
+    } else if (DATA_KEYS.keys.indexOf(key) > -1) {
       path = DATA_KEYS.folder
-    } else if (MANIFEST_KEYS.keys.indexOf(this.key) > -1) {
+    } else if (MANIFEST_KEYS.keys.indexOf(key) > -1) {
       path = MANIFEST_KEYS.folder
     }
-    const { object } = this.content
     if (object === 'env') {
       path = this.name
-    } else if (this.isCustomObject) {
+    } else if (isCustomName(object)) {
       path = `data/${pluralize(object)}`
     } else if (path) {
       path = `${path}/${pluralize(object)}`
@@ -83,7 +104,8 @@ class SectionBase {
   }
 
   getParentFromPath(path) {
-    const parent = jp.parent(this.content, jp.stringify(path))
+    const { content } = privatesAccessor(this),
+          parent = jp.parent(content, jp.stringify(path))
     if (parent.code || parent.name || parent.label) {
       return parent
     }
@@ -93,7 +115,7 @@ class SectionBase {
 
   extractAssets() {
     return new Promise(async(success) => {
-      const nodes = jp.nodes(this.content, '$..resourceId')
+      const nodes = jp.nodes(privatesAccessor(this).content, '$..resourceId')
       if (nodes.length) {
         _.forEach(nodes, (n) => {
           const parent = this.getParentFromPath(n.path),
@@ -103,7 +125,7 @@ class SectionBase {
             const { content } = facet,
                   objectPath = jp.stringify(n.path),
                   name = `${content.resourcePath}.${slugify(content.name, '_')}`
-            this.extraFiles.push({
+            privatesAccessor(this).extraFiles.push({
               name,
               facet,
               ext: mime.getExtension(content.mime),
@@ -121,14 +143,15 @@ class SectionBase {
   }
 
   async extractScripts() {
-    const nodes = jp.nodes(this.content, '$..script')
+    const { content, scriptFiles } = privatesAccessor(this),
+          nodes = jp.nodes(content, '$..script')
     nodes.forEach((n) => {
       if (!_.isObject(n.value)) {
         const path = _.clone(n.path),
               parent = this.getParentFromPath(n.path),
-              type = parent.type || `${this.content.resource}.${n.path.slice(1).join('.')}`,
+              type = parent.type || `${content.resource}.${n.path.slice(1).join('.')}`,
               name = `${type}.${slugify(parent.code || parent.name || parent.label, '_')}`
-        this.scriptFiles.push({
+        scriptFiles.push({
           name,
           ext: 'js',
           data: n.value,
@@ -137,22 +160,24 @@ class SectionBase {
         })
       }
     })
+    privatesAccessor(this, 'scriptFiles', scriptFiles)
     return true
   }
 
   async extractTemplates() {
-    if (this.key === 'template') {
-      if (_.isArray(this.content.localizations)) {
-        const name = `${this.content.resource}.${this.content.name}`
-        this.content.localizations.forEach((l) => {
-          const nodes = jp.nodes(this.content, '$..content'),
+    const { key, content, templateFiles } = privatesAccessor(this)
+    if (key === 'template') {
+      if (_.isArray(content.localizations)) {
+        const name = `${content.resource}.${content.name}`
+        content.localizations.forEach((l) => {
+          const nodes = jp.nodes(content, '$..content'),
                 { path } = nodes[0]
           nodes[0].value.forEach((cnt, i) => {
             const objectPath = _.clone(path)
             objectPath.push(i)
             objectPath.push('data')
             if (cnt.data) {
-              this.templateFiles.push({
+              templateFiles.push({
                 name: `${name}.${l.locale}.${cnt.name}`,
                 ext: TemplatesExt[cnt.name],
                 data: cnt.data,
@@ -162,6 +187,7 @@ class SectionBase {
             }
           })
         })
+        privatesAccessor(this, 'templateFiles', templateFiles)
       }
     }
     return true
@@ -169,7 +195,119 @@ class SectionBase {
 
 }
 
+class ImportSection {
+
+  constructor(content, key = '', path = '', basePath = process.cwd()) {
+
+    Object.assign(privatesAccessor(this), {
+      content,
+      key,
+      path,
+      basePath,
+      scriptFiles: [],
+      extraFiles: [],
+      templateFiles: []
+    })
+    if (new.target === ImportSection) {
+      Object.seal(this)
+    }
+  }
+
+  get key() {
+    return privatesAccessor(this).key
+  }
+
+  get content() {
+    return privatesAccessor(this).content
+  }
+
+  get extraFiles() {
+    return privatesAccessor(this).extraFiles
+  }
+
+  get scriptFiles() {
+    return privatesAccessor(this).scriptFiles
+  }
+
+  get templateFiles() {
+    return privatesAccessor(this).scriptFiles
+  }
+
+  getParentFromPath(path) {
+    const { content } = privatesAccessor(this),
+          parent = jp.parent(content, jp.stringify(path))
+    if (parent.code || parent.name || parent.label || parent.resource) {
+      return parent
+    }
+    path.pop()
+
+    return path.length > 1 ? this.getParentFromPath(path) : {}
+  }
+
+  async loadAssets() {
+    const { content, extraFiles, basePath } = privatesAccessor(this)
+    return new Promise(async(success) => {
+      const nodes = jp.nodes(content, '$..resourceId')
+      if (nodes.length) {
+        _.forEach(nodes, (n) => {
+          const parent = this.getParentFromPath(n.path)
+          if (parent.resourceId.indexOf('/env') === 0) {
+            const resourceKey = uuid.v4()
+            extraFiles.push({
+              resourceId: resourceKey,
+              object: 'stream',
+              data: fs.readFileSync(`${basePath}${parent.resourceId}`),
+              index: 0
+            })
+            parent.resourceId = resourceKey
+          }
+        })
+        return success()
+      }
+      return success()
+    })
+  }
+
+  async loadScripts() {
+    const { content, basePath } = privatesAccessor(this),
+          nodes = jp.nodes(content, '$..script')
+    nodes.forEach((n) => {
+      if (!_.isObject(n.value)) {
+        const parent = this.getParentFromPath(n.path)
+        if (parent.script.indexOf('/env') === 0) {
+          const jsFile = `${basePath}${parent.script}`
+          parent.script = fs.readFileSync(jsFile).toString()
+        }
+      }
+    })
+    return true
+  }
+
+  async loadTemplates() {
+    const { content, key, basePath } = privatesAccessor(this)
+    if (key === 'template') {
+      if (_.isArray(content.localizations)) {
+        const nodes = jp.nodes(content.localizations, '$..content')
+        nodes[0].value.forEach((cnt) => {
+          if (cnt.data.indexOf('/env') === 0) {
+            /* eslint no-param-reassign: "error" */
+            const tplFile = `${basePath}${cnt.data}`
+            cnt.data = fs.readFileSync(tplFile).toString()
+          }
+        })
+      }
+    }
+    return true
+  }
+
+  toJSON() {
+    return privatesAccessor(this)
+  }
+
+}
+
 module.exports = {
-  Section: SectionBase,
+  ExportSection,
+  ImportSection,
   TemplatesExt
 }

@@ -11,29 +11,40 @@ const { Writable } = require('stream'),
       Fault = require('../../fault'),
       { TemplatesExt } = require('../section'),
       { stringifyContent } = require('../../utils/values'),
-      { ensureDir } = require('../../utils/directory')
-
+      { ensureDir } = require('../../utils/directory'),
+      { privatesAccessor } = require('../../privates')
 
 class Layout extends Writable {
 
   constructor(output, { format = 'json', metadata = {} }) {
     super({ objectMode: true })
-    this.output = output
-    this.format = format
-    ensureDir(this.output)
-    this.metadata = metadata
+    Object.assign(privatesAccessor(this), {
+      output,
+      format,
+      metadata
+    })
+    ensureDir(output)
+  }
+
+  get format() {
+    return privatesAccessor(this).format
+  }
+
+  get metadata() {
+    return privatesAccessor(this).metadata
+  }
+
+  get output() {
+    return privatesAccessor(this).output
   }
 
   static downloadResources(url) {
     return request(url)
   }
 
-
   static fileNeedsUpdate(f, path) {
-
     if (f.ETag && fs.existsSync(path)) {
-      const fileEtag = md5FileHash(path)
-      return fileEtag !== f.ETag
+      return md5FileHash(path) !== f.ETag
     }
     return true
   }
@@ -142,7 +153,14 @@ class SingleFileLayout extends Layout {
 
   constructor(output, options) {
     super(output, options)
-    this.data = {}
+
+    Object.assign(privatesAccessor(this), {
+      data: {}
+    })
+  }
+
+  get data() {
+    return privatesAccessor(this).data
   }
 
   writeToFile(file, content) {
@@ -197,44 +215,57 @@ class SingleFileLayout extends Layout {
 
 }
 
-class FileAdapter extends EventEmitter {
+class ExportFileAdapter extends EventEmitter {
 
   constructor(outputPath, options = {}) {
     super()
     const { layout = 'tree', format = 'json', mdctl = null } = options,
-          output = outputPath || process.cwd()
-    this.layout = layout
-    this.format = format
-    this.mdctl = mdctl
-    this.cacheFile = `${output}/.cache.json`
+          output = outputPath || process.cwd(),
+          privates = {
+            format,
+            layout,
+            mdctl,
+            output,
+            cache: `${output}/.cache.json`,
+            metadata: {}
+          }
+    Object.assign(privatesAccessor(this), privates)
     this.loadMetadata()
     this.validateStructure()
-    this.metadata.format = format
-    this.metadata.layout = layout
     if (layout === 'tree') {
-      this.stream = new FilesLayout(output, {
-        format,
-        layout,
-        metadata: this.metadata,
-        cache: this.cacheFile
-      })
+      this.stream = new FilesLayout(privates.output, privates)
     } else if (layout === 'blob') {
-      this.stream = new SingleFileLayout(output, {
-        format,
-        layout,
-        metadata: this.metadata,
-        cache: this.cacheFile
-      })
+      this.stream = new SingleFileLayout(privates.output, privates)
     } else {
       throw new Fault('kLayoutNotSupported', 'the layout export is not supported')
     }
     return this.stream
   }
 
+  get format() {
+    return privatesAccessor(this).format
+  }
+
+  get layout() {
+    return privatesAccessor(this).layout
+  }
+
+  get cache() {
+    return privatesAccessor(this).cache
+  }
+
+  get metadata() {
+    return privatesAccessor(this).metadata
+  }
+
+  get mdctl() {
+    return privatesAccessor(this).mdctl
+  }
+
   validateStructure() {
     if (this.metadata) {
       if (this.metadata.format
-          && (this.format || (this.mdctl && this.mdctl.format)) !== this.metadata.format) {
+        && (this.format || (this.mdctl && this.mdctl.format)) !== this.metadata.format) {
         throw new Fault('kMismatchFormatExport',
           'the location contains exported data in different format, you will have duplicated information in different formats')
       }
@@ -247,14 +278,16 @@ class FileAdapter extends EventEmitter {
   }
 
   loadMetadata() {
-    const file = this.cacheFile
+    const file = this.cache
     if (fs.existsSync(file)) {
       const content = fs.readFileSync(file)
-      this.metadata = JSON.parse(content)
-    } else {
-      this.metadata = {}
+      privatesAccessor(this, 'metadata', JSON.parse(content))
     }
   }
+
+}
+
+class ManifestFileAdapter {
 
   static async addResource(output, format, type, template) {
     const out = `${output}/env/${pluralize(type)}`,
@@ -288,4 +321,7 @@ class FileAdapter extends EventEmitter {
 
 }
 
-module.exports = FileAdapter
+module.exports = {
+  ExportFileAdapter,
+  ManifestFileAdapter
+}
