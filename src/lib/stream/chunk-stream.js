@@ -106,6 +106,7 @@ class OutputStream extends Transform {
       idx: 0,
       dataField: rString(opts.dataField, 'data'),
       indexField: rString(opts.indexField, 'index'),
+      objectMode: rBool(opts.objectMode, false),
       pushBuffer: (buf, idx) => {
 
         const obj = sortKeys(Object.assign(clone(privates.template), {
@@ -127,7 +128,7 @@ class OutputStream extends Transform {
     })
 
     // eslint-disable-next-line no-underscore-dangle
-    this._writableState.objectMode = false
+    this._writableState.objectMode = privatesAccessor(this).objectMode
 
     // eslint-disable-next-line no-underscore-dangle
     this._readableState.objectMode = !privatesAccessor(this).ndjson

@@ -9,9 +9,9 @@ const _ = require('lodash'),
       pathTo = require('../../lib/utils/path.to'),
       Task = require('../lib/task'),
       { CredentialsManager } = require('../../lib/api/credentials'),
-      Stream = require('../../lib/stream'),
+      { ExportStream, ImportStream } = require('../../lib/stream'),
       { templates } = require('../../lib/schemas'),
-      FileAdapter = require('../../lib/stream/adapters/file_adapter'),
+      { ExportFileAdapter } = require('../../lib/stream/adapters/file_adapter'),
       { Manifest } = require('../../lib/manifest')
 
 class Env extends Task {
@@ -55,8 +55,8 @@ class Env extends Task {
             layout: exportOptions.layout,
             config: cli.config
           },
-          streamTransform = new Stream(),
-          fileWriter = new FileAdapter(outputDir, streamOptions)
+          streamTransform = new ExportStream(),
+          fileWriter = new ExportFileAdapter(outputDir, streamOptions)
 
     let manifest = {}
     if (fs.existsSync(manifestFile)) {
@@ -79,9 +79,37 @@ class Env extends Task {
     })
   }
 
-  async 'env@import'() {
+  async 'env@import'(cli) {
+    const envOptions = await cli.getArguments(['endpoint', 'env']),
+          importOptions = await cli.getArguments(this.optionKeys),
+          inputDir = importOptions.dir || cli.cwd,
+          // manifestFile = importOptions.manifest || `${inputDir}/manifest.${importOptions.format || 'json'}`,
+          // this is wrong because it will ignore a login.
+          // let manifest = {}
+          // if (fs.existsSync(manifestFile)) {
+          //  manifest = parseString(fs.readFileSync(manifestFile), importOptions.format)
+          // }
+          passwordSecret = !_.isEmpty(envOptions) && await CredentialsManager.get(envOptions),
+          client = await cli.getApiClient({ passwordSecret }),
+          url = new URL('/developer/environment/import', client.environment.url),
+          options = {
+            query: url.searchParams,
+            method: 'post'
+          },
+          importStream = new ImportStream(inputDir),
+          ndjsonStream = ndjson.stringify(),
+          stream = pump(importStream, ndjsonStream)
 
-    console.log('mdctl env import')
+    pathTo(options, 'requestOptions.headers.accept', 'application/x-ndjson')
+    await client.call(url.pathname, Object.assign(options, {
+      body: stream
+    }))
+    stream.on('data', (d) => {
+      console.log('Sending chunk...', d)
+    })
+    stream.on('end', () => {
+      console.log('ending...')
+    })
   }
 
   async 'env@add'(cli) {
