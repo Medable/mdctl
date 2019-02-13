@@ -316,12 +316,13 @@ class FileTransformStream extends Transform {
 
 class ImportFileAdapter extends EventEmitter {
 
-  constructor(inputDir, cache) {
+  constructor(inputDir, cache, format) {
     super()
     Object.assign(privatesAccessor(this), {
       files: [],
       input: inputDir || process.cwd(),
       cache: cache || `${inputDir || process.cwd()}/.cache.json`,
+      format: format || 'json',
       metadata: {},
       blobs: [],
       index: 0,
@@ -448,7 +449,7 @@ class ImportFileAdapter extends EventEmitter {
           this.walkFiles(pathFile)
         } else {
           const type = mime.lookup(pathFile)
-          if (type === 'application/json' || type === 'application/yaml') {
+          if (type === 'application/json' || ['text/yaml', 'application/yaml'].indexOf(type) > -1) {
             privatesAccessor(this, 'files').push(pathFile)
           }
         }
@@ -476,10 +477,12 @@ class ImportFileAdapter extends EventEmitter {
   }
 
   loadMetadata() {
-    const { cache } = privatesAccessor(this)
+    const { cache, format } = privatesAccessor(this)
     if (fs.existsSync(cache)) {
       const content = fs.readFileSync(cache)
-      privatesAccessor(this, 'metadata', JSON.parse(content))
+      const metadata = JSON.parse(content.toString())
+      metadata.format = format
+      privatesAccessor(this, 'metadata', metadata)
     }
   }
 
