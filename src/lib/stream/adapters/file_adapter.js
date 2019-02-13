@@ -1,5 +1,6 @@
-const { Writable } = require('stream'),
+const { Writable, Transform } = require('stream'),
       EventEmitter = require('events'),
+      mime = require('mime-types'),
       fs = require('fs'),
       jp = require('jsonpath'),
       _ = require('lodash'),
@@ -9,31 +10,43 @@ const { Writable } = require('stream'),
       pathTo = require('../../utils/path.to'),
       { md5FileHash } = require('../../utils/crypto'),
       Fault = require('../../fault'),
-      { TemplatesExt } = require('../section'),
-      { stringifyContent } = require('../../utils/values'),
-      { ensureDir } = require('../../utils/directory')
-
+      { TemplatesExt, ImportSection } = require('../section'),
+      { stringifyContent, parseString } = require('../../utils/values'),
+      { ensureDir } = require('../../utils/directory'),
+      { privatesAccessor } = require('../../privates'),
+      { OutputStream } = require('../chunk-stream')
 
 class Layout extends Writable {
 
   constructor(output, { format = 'json', metadata = {} }) {
     super({ objectMode: true })
-    this.output = output
-    this.format = format
-    ensureDir(this.output)
-    this.metadata = metadata
+    Object.assign(privatesAccessor(this), {
+      output,
+      format,
+      metadata
+    })
+    ensureDir(output)
+  }
+
+  get format() {
+    return privatesAccessor(this).format
+  }
+
+  get metadata() {
+    return privatesAccessor(this).metadata
+  }
+
+  get output() {
+    return privatesAccessor(this).output
   }
 
   static downloadResources(url) {
     return request(url)
   }
 
-
   static fileNeedsUpdate(f, path) {
-
     if (f.ETag && fs.existsSync(path)) {
-      const fileEtag = md5FileHash(path)
-      return fileEtag !== f.ETag
+      return md5FileHash(path) !== f.ETag
     }
     return true
   }
@@ -142,7 +155,14 @@ class SingleFileLayout extends Layout {
 
   constructor(output, options) {
     super(output, options)
-    this.data = {}
+
+    Object.assign(privatesAccessor(this), {
+      data: {}
+    })
+  }
+
+  get data() {
+    return privatesAccessor(this).data
   }
 
   writeToFile(file, content) {
@@ -197,44 +217,57 @@ class SingleFileLayout extends Layout {
 
 }
 
-class FileAdapter extends EventEmitter {
+class ExportFileAdapter extends EventEmitter {
 
   constructor(outputPath, options = {}) {
     super()
     const { layout = 'tree', format = 'json', mdctl = null } = options,
-          output = outputPath || process.cwd()
-    this.layout = layout
-    this.format = format
-    this.mdctl = mdctl
-    this.cacheFile = `${output}/.cache.json`
+          output = outputPath || process.cwd(),
+          privates = {
+            format,
+            layout,
+            mdctl,
+            output,
+            cache: `${output}/.cache.json`,
+            metadata: {}
+          }
+    Object.assign(privatesAccessor(this), privates)
     this.loadMetadata()
     this.validateStructure()
-    this.metadata.format = format
-    this.metadata.layout = layout
     if (layout === 'tree') {
-      this.stream = new FilesLayout(output, {
-        format,
-        layout,
-        metadata: this.metadata,
-        cache: this.cacheFile
-      })
+      this.stream = new FilesLayout(privates.output, privates)
     } else if (layout === 'blob') {
-      this.stream = new SingleFileLayout(output, {
-        format,
-        layout,
-        metadata: this.metadata,
-        cache: this.cacheFile
-      })
+      this.stream = new SingleFileLayout(privates.output, privates)
     } else {
       throw new Fault('kLayoutNotSupported', 'the layout export is not supported')
     }
     return this.stream
   }
 
+  get format() {
+    return privatesAccessor(this).format
+  }
+
+  get layout() {
+    return privatesAccessor(this).layout
+  }
+
+  get cache() {
+    return privatesAccessor(this).cache
+  }
+
+  get metadata() {
+    return privatesAccessor(this).metadata
+  }
+
+  get mdctl() {
+    return privatesAccessor(this).mdctl
+  }
+
   validateStructure() {
     if (this.metadata) {
       if (this.metadata.format
-          && (this.format || (this.mdctl && this.mdctl.format)) !== this.metadata.format) {
+        && (this.format || (this.mdctl && this.mdctl.format)) !== this.metadata.format) {
         throw new Fault('kMismatchFormatExport',
           'the location contains exported data in different format, you will have duplicated information in different formats')
       }
@@ -247,14 +280,215 @@ class FileAdapter extends EventEmitter {
   }
 
   loadMetadata() {
-    const file = this.cacheFile
+    const file = this.cache
     if (fs.existsSync(file)) {
       const content = fs.readFileSync(file)
-      this.metadata = JSON.parse(content)
-    } else {
-      this.metadata = {}
+      privatesAccessor(this, 'metadata', JSON.parse(content))
     }
   }
+
+}
+
+class FileTransformStream extends Transform {
+
+  constructor(metadata, file, basePath = process.cwd()) {
+    super({ objectMode: true })
+    Object.assign(privatesAccessor(this), {
+      metadata,
+      mime: mime.lookup(file),
+      file,
+      basePath
+    })
+  }
+
+  get metadata() {
+    return privatesAccessor(this).metadata
+  }
+
+  _transform(chunk, enc, callback) {
+    const { metadata, basePath, file } = privatesAccessor(this),
+          content = parseString(chunk, metadata.format)
+    this.push(new ImportSection(content, content.object, file, basePath))
+    callback()
+  }
+
+}
+
+class ImportFileAdapter extends EventEmitter {
+
+  constructor(inputDir, cache, format) {
+    super()
+    Object.assign(privatesAccessor(this), {
+      files: [],
+      input: inputDir || process.cwd(),
+      cache: cache || `${inputDir || process.cwd()}/.cache.json`,
+      format: format || 'json',
+      metadata: {},
+      blobs: [],
+      index: 0,
+      blobIndex: 0
+    })
+
+    this.loadMetadata()
+    this.walkFiles(privatesAccessor(this).input)
+  }
+
+  get files() {
+    return privatesAccessor(this).files
+  }
+
+  get metadata() {
+    return privatesAccessor(this).metadata
+  }
+
+  getAssetStream(ef) {
+    const { metadata } = privatesAccessor(this)
+    return new Promise((resolve, reject) => {
+      const data = [],
+            outS = new OutputStream({
+              ndjson: true,
+              template: ef
+            })
+      outS.on('data', (fileData) => {
+        if(fileData.toString() !== '\n') {
+          data.push(parseString(fileData.toString()))
+        }
+      })
+      outS.on('error', e => reject(e))
+      outS.on('end', () => {
+        resolve(data)
+      })
+      outS.write(stringifyContent(ef, metadata.format))
+      outS.end()
+    })
+  }
+
+  get iterator() {
+    const self = this
+    return {
+      [Symbol.asyncIterator]() {
+        return {
+          next: async() => self.getChunks()
+        }
+      }
+    }
+  }
+
+  get blobIterator() {
+    const self = this
+    return {
+      [Symbol.asyncIterator]() {
+        return {
+          next: async() => self.getBlobs()
+        }
+      }
+    }
+  }
+
+  async getBlobs() {
+    const { blobIndex, blobs, metadata } = privatesAccessor(this)
+    if (blobs.length > blobIndex) {
+      privatesAccessor(this, 'blobIndex', blobIndex + 1)
+      const stream = await this.getAssetStream(blobs[blobIndex])
+      return {
+        value: stream, // _.map(stream, s => stringifyContent(s, metadata.format)),
+        done: false
+      }
+    }
+    return {
+      value: null,
+      done: true
+    }
+  }
+
+  async getChunks() {
+    const { files, index } = privatesAccessor(this),
+          result = {
+            done: false,
+            value: []
+          }
+    let { blobs } = privatesAccessor(this)
+    if (files.length > index) {
+      // Increment index processing
+      privatesAccessor(this, 'index', index + 1)
+
+      const f = files[index],
+            section = await this.loadFile(f)
+
+      await section.loadFacets()
+      await section.loadScripts()
+      await section.loadTemplates()
+      result.value.push(section.content)
+
+      if (section && section.facets && section.facets.length) {
+        result.value = _.concat(
+          result.value,
+          section.facets
+        )
+        if (section.extraFiles && section.extraFiles.length) {
+          blobs = _.concat(blobs, section.extraFiles)
+        }
+        privatesAccessor(this, 'blobs', blobs)
+      }
+
+      return result
+
+    }
+    return {
+      value: null,
+      done: true
+    }
+  }
+
+  walkFiles(dir) {
+    const files = fs.readdirSync(dir)
+    files.forEach((f) => {
+      if (f.indexOf('.') !== 0) {
+        const pathFile = `${dir}/${f}`
+        if (fs.statSync(pathFile).isDirectory()) {
+          this.walkFiles(pathFile)
+        } else {
+          const type = mime.lookup(pathFile)
+          if (type === 'application/json' || ['text/yaml', 'application/yaml'].indexOf(type) > -1) {
+            privatesAccessor(this, 'files').push(pathFile)
+          }
+        }
+      }
+    })
+  }
+
+  loadFile(file) {
+    const {
+      input, metadata
+    } = privatesAccessor(this)
+    return new Promise((resolve, reject) => {
+      const contents = []
+      fs.createReadStream(file).pipe(new FileTransformStream(metadata, file, input))
+        .on('data', (chunk) => {
+          contents.push(chunk)
+        })
+        .on('error', (e) => {
+          reject(e)
+        })
+        .on('end', () => {
+          resolve(contents[0])
+        })
+    })
+  }
+
+  loadMetadata() {
+    const { cache, format } = privatesAccessor(this)
+    if (fs.existsSync(cache)) {
+      const content = fs.readFileSync(cache)
+      const metadata = JSON.parse(content.toString())
+      metadata.format = format
+      privatesAccessor(this, 'metadata', metadata)
+    }
+  }
+
+}
+
+class ManifestFileAdapter {
 
   static async addResource(output, format, type, template) {
     const out = `${output}/env/${pluralize(type)}`,
@@ -288,4 +522,8 @@ class FileAdapter extends EventEmitter {
 
 }
 
-module.exports = FileAdapter
+module.exports = {
+  ExportFileAdapter,
+  ImportFileAdapter,
+  ManifestFileAdapter
+}

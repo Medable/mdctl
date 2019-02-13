@@ -5,10 +5,11 @@ const { assert } = require('chai'),
       pump = require('pump'),
       rimraf = require('rimraf'),
       ndjson = require('ndjson'),
-      Stream = require('../../src/lib/stream'),
-      FileAdapter = require('../../src/lib/stream/adapters/file_adapter')
+      _ = require('lodash'),
+      { ExportStream, ImportStream } = require('../../src/lib/stream'),
+      { ExportFileAdapter } = require('../../src/lib/stream/adapters/file_adapter')
 
-describe('Adapters', () => {
+describe('Export Adapter', () => {
 
   let blob = null
 
@@ -24,7 +25,7 @@ describe('Adapters', () => {
     const tempDir = path.join(process.cwd(), `output-${new Date().getTime()}`),
           stream = ndjson.parse(),
           format = 'yaml',
-          streamWriter = new Stream(stream, { format }),
+          streamWriter = new ExportStream(stream, { format }),
           onEnd = (error) => {
             if (error) {
               rimraf.sync(tempDir)
@@ -41,14 +42,14 @@ describe('Adapters', () => {
             })
           }
 
-    pump(blob, stream, streamWriter, new FileAdapter(tempDir, { format }), onEnd)
+    pump(blob, stream, streamWriter, new ExportFileAdapter(tempDir, { format }), onEnd)
   })
 
   it('export using file adapter with single blob layout', (done) => {
     const tempDir = path.join(process.cwd(), `output-${new Date().getTime()}`),
           stream = ndjson.parse(),
           format = 'yaml',
-          streamWriter = new Stream({ format }),
+          streamWriter = new ExportStream({ format }),
           onEnd = (error) => {
             if (error) {
               rimraf.sync(tempDir)
@@ -64,7 +65,54 @@ describe('Adapters', () => {
               }
             })
           }
-    pump(blob, stream, streamWriter, new FileAdapter(tempDir, { format, layout: 'blob' }), onEnd)
+    pump(blob, stream, streamWriter, new ExportFileAdapter(tempDir, { format, layout: 'blob' }), onEnd)
+  })
+
+})
+
+describe('Import Adapters', () => {
+
+  let blob = null
+
+  beforeEach(() => {
+    blob = fs.createReadStream(`${process.cwd()}/test/data/blob.ndjson`)
+  })
+
+  afterEach(() => {
+    blob = null
+  })
+
+
+  it('testing import adapter', (done) => {
+
+    const tempDir = path.join(process.cwd(), `output-${new Date().getTime()}`),
+          stream = ndjson.parse(),
+          format = 'yaml',
+          streamWriter = new ExportStream(stream, { format }),
+          onEnd = async(error) => {
+            if (error) {
+              rimraf.sync(tempDir)
+              done(error)
+            }
+            const importAdapter = new ImportStream(tempDir, format),
+                  ndStream = ndjson.stringify(),
+                  items = []
+
+            ndStream.on('data', line => items.push(line))
+            pump(importAdapter, ndStream, () => {
+              rimraf.sync(tempDir)
+              const loadedItems = _.map(items, i => JSON.parse(i)),
+                    blobItems = _.filter(loadedItems, i => i.data && i.streamId),
+                    otherItems = _.filter(loadedItems, i => !i.data && !i.streamId)
+              assert(otherItems.length === 46, 'there are more/less files than loaded')
+              assert(blobItems.length === 15, 'there are more/less blob items than loaded')
+              done()
+            })
+            // call this in order to trigger end event or declare a data listener
+            ndStream.resume()
+          }
+
+    pump(blob, stream, streamWriter, new ExportFileAdapter(tempDir, { format }), onEnd)
   })
 
 })

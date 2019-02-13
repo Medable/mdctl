@@ -5,7 +5,7 @@ const _ = require('lodash'),
         rArray, rBool, isSet, isCustomName, removeFalsy
       } = require('./utils/values'),
       Fault = require('./fault'),
-      FileAdapter = require('./stream/adapters/file_adapter')
+      { ManifestFileAdapter } = require('./stream/adapters/file_adapter')
 
 // Augmented regular expresions. Accepts strings, star
 class ARegex {
@@ -275,8 +275,8 @@ class Manifest extends ManifestStage {
       } else {
         stages[pluralize(type)].includes.push(name)
       }
-      await FileAdapter.addResource(params.dir || process.cwd(), params.format || 'json', type, template)
-      await FileAdapter.saveManifest(params.dir || process.cwd(), params.format || 'json', stages)
+      await ManifestFileAdapter.addResource(params.dir || process.cwd(), params.format || 'json', type, template)
+      await ManifestFileAdapter.saveManifest(params.dir || process.cwd(), params.format || 'json', stages)
     } else {
       throw Fault.create('kNotAccepted', { reason: 'Resource already exists or not accepted by manifest definition' })
     }
