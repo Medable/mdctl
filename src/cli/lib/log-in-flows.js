@@ -82,8 +82,11 @@ async function logInWithDefCredentialsFlow(cli) {
 
 
 async function logInFlow(cli) {
-  const allowedArguments = ['file', 'endpoint', 'env', 'username', 'apiKey', 'strictSSL'],
+  const filteringArguments = ['endpoint', 'env', 'username', 'apiKey'],
+        allowedArguments = filteringArguments.concat(['file', 'strictSSL']),
         parsedArguments = cli.getArguments(allowedArguments),
+        areFilteringArgsPassed = parsedArgs => _.intersection(_(parsedArgs).keys().value(),
+          filteringArguments).length > 0,
         readFile = async(filePath) => {
           const result = await loadJsonOrYaml(filePath)
           return _.pick(result, 'endpoint', 'env', 'username', 'apiKey', 'password')
@@ -91,7 +94,7 @@ async function logInFlow(cli) {
         options = _.has(parsedArguments, 'file') ? await readFile(parsedArguments.file) : _.extend(_.clone(parsedArguments), { type: 'password' })
 
   let logInResult = false
-  if (_.isEmpty(parsedArguments)) {
+  if (areFilteringArgsPassed(parsedArguments)) {
     logInResult = await logInWithDefCredentialsFlow(cli)
                       || await logInByChoosingCredentialsFlow(cli, options)
                           || await logInRequestingCredentialsFlow(cli, options)

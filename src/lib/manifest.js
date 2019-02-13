@@ -266,7 +266,7 @@ class Manifest extends ManifestStage {
     const resourcePath = `${pluralize(type)}.${name}`,
           stages = privatesAccessor(this, 'thisStages')
     if (!this.accept(resourcePath) || Object.keys(stages).length === 0) {
-      stages[pluralize(type)] = stages[pluralize(type)] || type === 'object' ? [] : { includes: [] }
+      stages[pluralize(type)] = stages[pluralize(type)] || (type === 'object' ? [] : { includes: [] })
       if (type === 'object') {
         stages[pluralize(type)].push({
           includes: ['*'],
