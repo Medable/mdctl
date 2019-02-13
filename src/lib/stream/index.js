@@ -43,11 +43,12 @@ class ExportStream extends Transform {
 
 class ImportStream extends Readable {
 
-  constructor(inputDir) {
+  constructor(inputDir, format = 'json') {
     super({ objectMode: true })
     Object.assign(privatesAccessor(this), {
       input: inputDir || process.cwd(),
       cache: `${inputDir || process.cwd()}/.cache.json`,
+      format,
       iterator: null
     })
     this.loadIterator()
@@ -55,8 +56,8 @@ class ImportStream extends Readable {
   }
 
   loadIterator() {
-    const { input, cache } = privatesAccessor(this),
-          importAdapter = new ImportFileAdapter(input, cache)
+    const { input, cache, format } = privatesAccessor(this),
+          importAdapter = new ImportFileAdapter(input, cache, format)
 
     privatesAccessor(this, 'iterator', importAdapter.iterator)
     privatesAccessor(this, 'blobIterator', importAdapter.blobIterator)
