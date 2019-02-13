@@ -71,17 +71,14 @@ describe('Export Adapter', () => {
 
 describe('Import Adapters', () => {
 
-  it('testing import adapter', () => {
+  it('testing import adapter', async() => {
     const importAdapter = new ImportStream('/Users/gastonrobledo/medable-test'),
-          ndStream = ndjson.serialize()
-
-    ndStream.on('data', (item) => {
-      console.log(item)
-    })
-
+          ndStream = ndjson.stringify()
     pump(importAdapter, ndStream, () => {
-      console.log('Ending..')
+      console.log('finishing processing...')
     })
+    // call this in order to trigger end event or declare a data listener
+    ndStream.resume()
   })
 
 })
