@@ -1,5 +1,6 @@
-const { Writable } = require('stream'),
+const { Writable, Transform } = require('stream'),
       EventEmitter = require('events'),
+      mime = require('mime-types'),
       fs = require('fs'),
       jp = require('jsonpath'),
       _ = require('lodash'),
@@ -9,10 +10,11 @@ const { Writable } = require('stream'),
       pathTo = require('../../utils/path.to'),
       { md5FileHash } = require('../../utils/crypto'),
       Fault = require('../../fault'),
-      { TemplatesExt } = require('../section'),
-      { stringifyContent } = require('../../utils/values'),
+      { TemplatesExt, ImportSection } = require('../section'),
+      { stringifyContent, parseString } = require('../../utils/values'),
       { ensureDir } = require('../../utils/directory'),
-      { privatesAccessor } = require('../../privates')
+      { privatesAccessor } = require('../../privates'),
+      { OutputStream } = require('../chunk-stream')
 
 class Layout extends Writable {
 
@@ -287,6 +289,202 @@ class ExportFileAdapter extends EventEmitter {
 
 }
 
+class FileTransformStream extends Transform {
+
+  constructor(metadata, file, basePath = process.cwd()) {
+    super({ objectMode: true })
+    Object.assign(privatesAccessor(this), {
+      metadata,
+      mime: mime.lookup(file),
+      file,
+      basePath
+    })
+  }
+
+  get metadata() {
+    return privatesAccessor(this).metadata
+  }
+
+  _transform(chunk, enc, callback) {
+    const { metadata, basePath, file } = privatesAccessor(this),
+          content = parseString(chunk, metadata.format)
+    this.push(new ImportSection(content, content.object, file, basePath))
+    callback()
+  }
+
+}
+
+class ImportFileAdapter extends EventEmitter {
+
+  constructor(inputDir, cache) {
+    super()
+    Object.assign(privatesAccessor(this), {
+      files: [],
+      input: inputDir || process.cwd(),
+      cache: cache || `${inputDir || process.cwd()}/.cache.json`,
+      metadata: {},
+      blobs: [],
+      index: 0,
+      blobIndex: 0
+    })
+
+    this.loadMetadata()
+    this.walkFiles(privatesAccessor(this).input)
+  }
+
+  get files() {
+    return privatesAccessor(this).files
+  }
+
+  get metadata() {
+    return privatesAccessor(this).metadata
+  }
+
+  getAssetStream(ef) {
+    const { metadata } = privatesAccessor(this)
+    return new Promise((resolve, reject) => {
+      const data = [],
+            outS = new OutputStream({
+              ndjson: true,
+              template: ef
+            })
+      outS.on('data', (fileData) => {
+        if(fileData.toString() !== '\n') {
+          data.push(parseString(fileData.toString()))
+        }
+      })
+      outS.on('error', e => reject(e))
+      outS.on('end', () => {
+        resolve(data)
+      })
+      outS.write(stringifyContent(ef, metadata.format))
+      outS.end()
+    })
+  }
+
+  get iterator() {
+    const self = this
+    return {
+      [Symbol.asyncIterator]() {
+        return {
+          next: async() => self.getChunks()
+        }
+      }
+    }
+  }
+
+  get blobIterator() {
+    const self = this
+    return {
+      [Symbol.asyncIterator]() {
+        return {
+          next: async() => self.getBlobs()
+        }
+      }
+    }
+  }
+
+  async getBlobs() {
+    const { blobIndex, blobs, metadata } = privatesAccessor(this)
+    if (blobs.length > blobIndex) {
+      privatesAccessor(this, 'blobIndex', blobIndex + 1)
+      const stream = await this.getAssetStream(blobs[blobIndex])
+      return {
+        value: stream, // _.map(stream, s => stringifyContent(s, metadata.format)),
+        done: false
+      }
+    }
+    return {
+      value: null,
+      done: true
+    }
+  }
+
+  async getChunks() {
+    const { files, index } = privatesAccessor(this),
+          result = {
+            done: false,
+            value: []
+          }
+    let { blobs } = privatesAccessor(this)
+    if (files.length > index) {
+      // Increment index processing
+      privatesAccessor(this, 'index', index + 1)
+
+      const f = files[index],
+            section = await this.loadFile(f)
+
+      await section.loadFacets()
+      await section.loadScripts()
+      await section.loadTemplates()
+      result.value.push(section.content)
+
+      if (section && section.facets && section.facets.length) {
+        result.value = _.concat(
+          result.value,
+          section.facets
+        )
+        if (section.extraFiles && section.extraFiles.length) {
+          blobs = _.concat(blobs, section.extraFiles)
+        }
+        privatesAccessor(this, 'blobs', blobs)
+      }
+
+      return result
+
+    }
+    return {
+      value: null,
+      done: true
+    }
+  }
+
+  walkFiles(dir) {
+    const files = fs.readdirSync(dir)
+    files.forEach((f) => {
+      if (f.indexOf('.') !== 0) {
+        const pathFile = `${dir}/${f}`
+        if (fs.statSync(pathFile).isDirectory()) {
+          this.walkFiles(pathFile)
+        } else {
+          const type = mime.lookup(pathFile)
+          if (type === 'application/json' || type === 'application/yaml') {
+            privatesAccessor(this, 'files').push(pathFile)
+          }
+        }
+      }
+    })
+  }
+
+  loadFile(file) {
+    const {
+      input, metadata
+    } = privatesAccessor(this)
+    return new Promise((resolve, reject) => {
+      const contents = []
+      fs.createReadStream(file).pipe(new FileTransformStream(metadata, file, input))
+        .on('data', (chunk) => {
+          contents.push(chunk)
+        })
+        .on('error', (e) => {
+          reject(e)
+        })
+        .on('end', () => {
+          resolve(contents[0])
+        })
+    })
+  }
+
+  loadMetadata() {
+    const { cache } = privatesAccessor(this)
+    if (fs.existsSync(cache)) {
+      const content = fs.readFileSync(cache)
+      privatesAccessor(this, 'metadata', JSON.parse(content))
+    }
+  }
+
+}
+
 class ManifestFileAdapter {
 
   static async addResource(output, format, type, template) {
@@ -323,5 +521,6 @@ class ManifestFileAdapter {
 
 module.exports = {
   ExportFileAdapter,
+  ImportFileAdapter,
   ManifestFileAdapter
 }

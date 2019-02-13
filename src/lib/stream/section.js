@@ -122,6 +122,7 @@ class ExportSection {
                 facets = _.filter(SectionsCreated, sc => sc.key === 'facet'),
                 facet = _.find(facets, f => parent.resourceId === f.content.resourceId)
           if (facet) {
+            n.path.splice(n.path.length - 1, 1, 'filePath')
             const { content } = facet,
                   objectPath = jp.stringify(n.path),
                   name = `${content.resourcePath}.${slugify(content.name, '_')}`
@@ -206,6 +207,7 @@ class ImportSection {
       basePath,
       scriptFiles: [],
       extraFiles: [],
+      facets: [],
       templateFiles: []
     })
     if (new.target === ImportSection) {
@@ -219,6 +221,10 @@ class ImportSection {
 
   get content() {
     return privatesAccessor(this).content
+  }
+
+  get facets() {
+    return privatesAccessor(this).facets
   }
 
   get extraFiles() {
@@ -244,23 +250,28 @@ class ImportSection {
     return path.length > 1 ? this.getParentFromPath(path) : {}
   }
 
-  async loadAssets() {
-    const { content, extraFiles, basePath } = privatesAccessor(this)
+  async loadFacets() {
+    const {
+      content, facets, extraFiles, basePath
+    } = privatesAccessor(this)
     return new Promise(async(success) => {
       const nodes = jp.nodes(content, '$..resourceId')
       if (nodes.length) {
         _.forEach(nodes, (n) => {
-          const parent = this.getParentFromPath(n.path)
-          if (parent.resourceId.indexOf('/env') === 0) {
-            const resourceKey = uuid.v4()
-            extraFiles.push({
-              resourceId: resourceKey,
-              object: 'stream',
-              data: fs.readFileSync(`${basePath}${parent.resourceId}`),
-              index: 0
-            })
-            parent.resourceId = resourceKey
+          const parent = this.getParentFromPath(n.path),
+                resourceKey = uuid.v4(),
+                facet = Object.assign(parent, {
+                  streamId: resourceKey
+                })
+          if (facet.filePath) {
+            const asset = {
+              streamId: facet.streamId,
+              data: fs.readFileSync(`${basePath}${parent.filePath}`)
+            }
+            extraFiles.push(asset)
+            delete facet.filePath
           }
+          facets.push(facet)
         })
         return success()
       }
