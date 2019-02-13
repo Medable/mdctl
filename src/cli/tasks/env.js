@@ -10,7 +10,6 @@ const _ = require('lodash'),
       Task = require('../lib/task'),
       { CredentialsManager } = require('../../lib/api/credentials'),
       { ExportStream, ImportStream } = require('../../lib/stream'),
-      { OutputStream } = require('../../lib/stream/chunk-stream'),
       { templates } = require('../../lib/schemas'),
       { ExportFileAdapter } = require('../../lib/stream/adapters/file_adapter'),
       { Manifest } = require('../../lib/manifest')
@@ -86,6 +85,10 @@ class Env extends Task {
           inputDir = importOptions.dir || cli.cwd,
           // manifestFile = importOptions.manifest || `${inputDir}/manifest.${importOptions.format || 'json'}`,
           // this is wrong because it will ignore a login.
+          // let manifest = {}
+          // if (fs.existsSync(manifestFile)) {
+          //  manifest = parseString(fs.readFileSync(manifestFile), importOptions.format)
+          // }
           passwordSecret = !_.isEmpty(envOptions) && await CredentialsManager.get(envOptions),
           client = await cli.getApiClient({ passwordSecret }),
           url = new URL('/developer/environment/import', client.environment.url),
@@ -94,20 +97,15 @@ class Env extends Task {
             method: 'post'
           },
           importStream = new ImportStream(inputDir),
-          outputStream = new OutputStream(),
+          ndjsonStream = ndjson.stringify(),
+          stream = pump(importStream, ndjsonStream)
 
-          /* let manifest = {}
-    if (fs.existsSync(manifestFile)) {
-      manifest = parseString(fs.readFileSync(manifestFile), importOptions.format)
-    } */
-
-          stream = pump(importStream, outputStream)
     pathTo(options, 'requestOptions.headers.accept', 'application/x-ndjson')
     await client.call(url.pathname, Object.assign(options, {
       body: stream
     }))
     stream.on('data', (d) => {
-      console.log('Sending...', d)
+      console.log('Sending chunk...', d)
     })
     stream.on('end', () => {
       console.log('ending...')
