@@ -17,11 +17,29 @@ class Api extends Task {
 
   async run(cli) {
 
+    function searchParamsToObject(searchParams) {
+      return Array.from(searchParams.entries()).reduce(
+        (qs, [key, val]) => {
+          let v = pathTo(qs, key)
+          if (Array.isArray(v)) {
+            v.push(val)
+          } else if (isSet(v)) {
+            v = [v, val]
+            pathTo(qs, key, v)
+          } else {
+            pathTo(qs, key, val)
+          }
+          return qs
+        },
+        {}
+      )
+    }
+
     const method = rString(cli.args('1'), 'get').toLowerCase(),
-          { client } = await cli.getApiClient({ credentials: await cli.getAuthOptions() }),
+          client = await cli.getApiClient({ credentials: await cli.getAuthOptions() }),
           url = new URL(rString(cli.args('2'), '/'), client.environment.url),
           options = {
-            query: url.searchParams
+            query: searchParamsToObject(url.searchParams)
           },
           format = cli.args('format')
 
