@@ -6,18 +6,9 @@ const request = require('request'),
         rVal, rBool, rString, isSet
       } = require('../utils/values'),
       pathTo = require('../utils/path.to'),
-      { Credentials, CredentialsManager } = require('./credentials'),
+      { CredentialsManager } = require('./credentials'),
       Environment = require('./environment'),
       Request = require('./request')
-
-
-function loadCredentials(privates, credentials) {
-
-  if (credentials) {
-    return (credentials instanceof Credentials) ? credentials : new Credentials(credentials)
-  }
-  return privates.credentials
-}
 
 class Client {
 
@@ -37,9 +28,7 @@ class Client {
           environment = (options.environment instanceof Environment)
             ? options.environment
             : new Environment(options.environment),
-          credentials = options.credentials && (options.credentials instanceof Credentials)
-            ? options.credentials
-            : new Credentials(options.credentials)
+          credentials = CredentialsManager.create(environment, options.credentials)
 
     Object.assign(privates, {
 
@@ -98,8 +87,8 @@ class Client {
    * @param input
    *  credentials - defaults to client.credentials
    *  principal - set calling principal for signed requests
-   *  authType - type of headers to use. defaults to 'auto'. [auto,token,signature,password,none]
    *  method - request method
+   *  basic - boolean (false). force username/password basic auth headers for password credentials.
    *  body - request body for patch put and post
    *  json - defaults to true. if true, body must be an object.
    *  cookies - defaults to true. set to false to prevent sending cookies
@@ -124,11 +113,14 @@ class Client {
             options.requestOptions
           ),
           req = new Request(),
-          credentials = loadCredentials(privates, options.credentials),
+          basic = rBool(options.basic),
+          credentials = options.credentials
+            ? CredentialsManager.create(privates.environment, options.credentials)
+            : privates.credentials,
           { environment } = privates,
           uri = environment.buildUrl(path),
           { stream } = options,
-          isSession = privates.sessions && credentials.authType === 'password' && requestOptions.jar
+          isSession = privates.sessions && credentials.type === 'password' && requestOptions.jar
 
     // load the latest fingerprint and session data from the keychain whenever possible.
     if (isSession) {
@@ -153,7 +145,7 @@ class Client {
 
     requestOptions.headers = Object.assign(
       credentials.getAuthorizationHeaders({
-        type: options.authType, path, method: options.method, principal: options.principal
+        basic, path, method: options.method, principal: options.principal
       }),
       isSet(requestOptions.headers) ? requestOptions.headers : {}
     )

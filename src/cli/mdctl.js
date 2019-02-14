@@ -130,52 +130,58 @@ module.exports = class MdCtlCli {
 
   }
 
-  async getDefaultCredentials() {
-
-    const configureDir = path.join(process.env.HOME, '.medable'),
-          configureFile = path.join(configureDir, 'mdctl.yaml')
-
-    try {
-      return (await loadJsonOrYaml(configureFile))
-    } catch (err) {
-      return {}
-    }
-
-  }
-
+  /**
+   *  Get an authenticated api client.
+   *
+   * @param options
+   *  credentials (optional)
+   *    Secret, or plain object options used to look up secrets.
+   *  resurrect (optional, default true)
+   *    When true, attempts to resurrect an existing password login session
+   *
+   *
+   * @returns {Promise<void>}
+   */
   async getApiClient(options = {}) {
 
-    const ensureSession = rBool(options.testStatus, true),
-          getClientAndCredsFrom = async(passwordSecret) => {
-            const activeLogin = await CredentialsManager.getCustom('login', '*'),
+    const getClientAndCredsFrom = async(inputCredentials) => {
+
+            const activeCredentials = await CredentialsManager.get(inputCredentials),
+                  activeLogin = await CredentialsManager.getCustom('login', '*'),
                   activeClientConfig = _.get(activeLogin, 'client'),
                   isActiveClientReusable = !_.isUndefined(activeLogin)
-                    && this.doesClientMatchSecret(activeClientConfig, passwordSecret),
+                    && this.doesClientMatchSecret(activeClientConfig, activeCredentials),
                   client = isActiveClientReusable
                     ? new Client(activeClientConfig)
-                    : this.createNewClientBy(passwordSecret),
-                  activeCredentials = _.pick(passwordSecret, ['username', 'password'])
+                    : this.createNewClientBy(activeCredentials)
 
             return { client, activeCredentials }
           },
+
           getDefaultClientAndCreds = async() => {
             const defaultPasswordSecret = await CredentialsManager.get(this.config('defaultCredentials')),
                   activeLogin = await CredentialsManager.getCustom('login', '*'),
                   activeClientConfig = _.get(activeLogin, 'client'),
-                  client = activeLogin
-                    ? new Client(activeClientConfig)
-                    : this.createNewClientBy(defaultPasswordSecret),
                   activeCredentials = activeLogin
                     ? {
                       username: activeLogin.client.credentials.username,
+                      apiKey: activeLogin.client.credentials.apiKey,
                       password: activeLogin.password
                     }
-                    : _.pick(defaultPasswordSecret, ['username', 'password'])
+                    : defaultPasswordSecret,
+                  client = activeLogin
+                    ? new Client(Object.assign(
+                      {},
+                      activeClientConfig,
+                      { credentials: activeCredentials }
+                    ))
+                    : this.createNewClientBy(defaultPasswordSecret)
+
 
             return { client, activeCredentials }
           },
-          { client, activeCredentials } = options.passwordSecret
-            ? await getClientAndCredsFrom(options.passwordSecret)
+          { client, activeCredentials } = options.credentials
+            ? await getClientAndCredsFrom(options.credentials)
             : await getDefaultClientAndCreds()
 
     if (_.isUndefined(client)) {
@@ -183,7 +189,10 @@ module.exports = class MdCtlCli {
     }
 
     // is there an active login, attempt to resurrect it.
-    if (ensureSession) await this.resurrectClient(client, activeCredentials)
+    // this won't do much unless there's a session attached to the client.
+    if (activeCredentials && rBool(options.resurrect, true)) {
+      await this.resurrectClient(client, activeCredentials)
+    }
 
     return client
   }
@@ -215,10 +224,9 @@ module.exports = class MdCtlCli {
   }
 
 
-  async getOptions(extraKeys = []) {
+  async getAuthOptions() {
 
-    const options = {},
-          extraOptions = await this.getArguments(extraKeys)
+    const options = {}
 
     if (rString(this.args('file'))) {
       const file = await loadJsonOrYaml(this.args('file'))
@@ -231,15 +239,15 @@ module.exports = class MdCtlCli {
     this.assignArgIf(options, 'username')
     this.assignArgIf(options, 'apiKey')
 
-    return Object.assign(options, extraOptions)
+    return Object.keys(options).length > 0 ? options : null
 
   }
 
-  createNewClientBy(passwordSecret) {
-    return passwordSecret ? new Client({
-      environment: _.get(passwordSecret, 'environment.url'),
-      credentials: _.get(passwordSecret, 'credentials'),
-      sessions: _.get(passwordSecret, 'credentials.authType') === 'password',
+  createNewClientBy(credentials) {
+    return credentials ? new Client({
+      environment: _.get(credentials, 'environment.url'),
+      credentials: credentials,
+      sessions: _.get(credentials, 'type') === 'password',
       requestOptions: {
         strictSSL: stringToBoolean(this.config('strictSSL'), true)
       }

@@ -8,7 +8,6 @@ const _ = require('lodash'),
       { isSet, parseString } = require('../../lib/utils/values'),
       pathTo = require('../../lib/utils/path.to'),
       Task = require('../lib/task'),
-      { CredentialsManager } = require('../../lib/api/credentials'),
       { ExportStream, ImportStream } = require('../../lib/stream'),
       { templates } = require('../../lib/schemas'),
       { ExportFileAdapter } = require('../../lib/stream/adapters/file_adapter'),
@@ -36,18 +35,9 @@ class Env extends Task {
     return this[handler](cli)
   }
 
-  async getClient(cli) {
-    const options = await cli.getOptions(this.optionKeys),
-          passwordSecret = await CredentialsManager.get(options),
-          client = await cli.getApiClient({ passwordSecret })
-    return {
-      options,
-      client
-    }
-  }
-
   async 'env@export'(cli) {
-    const { client, options } = await this.getClient(cli),
+    const options = cli.getArguments(this.optionKeys),
+          client = await cli.getApiClient({ credentials: await cli.getAuthOptions() }),
           outputDir = options.dir || cli.cwd,
           manifestFile = options.manifest || `${outputDir}/manifest.${options.format || 'json'}`,
           stream = ndjson.parse(),
@@ -86,7 +76,8 @@ class Env extends Task {
   }
 
   async 'env@import'(cli) {
-    const { client, options } = await this.getClient(cli),
+    const options = cli.getArguments(this.optionKeys),
+          client = await cli.getApiClient({ credentials: await cli.getAuthOptions() }),
           url = new URL('/developer/environment/import', client.environment.url),
           requestOptions = {
             query: url.searchParams,

@@ -9,27 +9,16 @@ const _ = require('lodash'),
       Fault = require('../../lib/fault'),
       pathTo = require('../../lib/utils/path.to'),
       Task = require('../lib/task'),
-      { CredentialsManager } = require('../../lib/api/credentials'),
       methods = ['get', 'post', 'put', 'patch', 'delete']
 
 let Undefined
 
 class Api extends Task {
 
-  async getClient(cli) {
-    const options = await cli.getOptions(),
-          passwordSecret = await CredentialsManager.get(options),
-          client = await cli.getApiClient({ passwordSecret })
-    return {
-      options,
-      client
-    }
-  }
-
   async run(cli) {
 
     const method = rString(cli.args('1'), 'get').toLowerCase(),
-          { client } = await this.getClient(cli),
+          { client } = await cli.getApiClient({ credentials: await cli.getAuthOptions() }),
           url = new URL(rString(cli.args('2'), '/'), client.environment.url),
           options = {
             query: url.searchParams

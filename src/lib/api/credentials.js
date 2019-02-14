@@ -5,6 +5,7 @@ const jsonwebtoken = require('jsonwebtoken'),
       keytar = require('keytar'),
       { privatesAccessor } = require('../privates'),
       { rString, isSet } = require('../utils/values'),
+      pathTo = require('../utils/path.to'),
       { normalizeEndpoint } = require('../utils'),
       { signPath } = require('./signer'),
       Environment = require('./environment'),
@@ -12,153 +13,6 @@ const jsonwebtoken = require('jsonwebtoken'),
       typeNames = ['password', 'signature', 'token']
 
 let Undefined
-
-class Credentials {
-
-  /**
-   * @param input
-   *  token,     // jwt token
-   *  apiKey,    // required if no token is passed
-   *  apiSecret, // for signed requests
-   *  apiPrincipal, // for signed requests, sets the default principal
-   *  username,  // for password auth only
-   *  password   // for password auth only,
-   *  authType   // force a default authType for getting authorization headers. defaults to auto.
-   */
-  constructor(input) {
-
-    const options = isSet(input) ? input : {},
-          jwt = rString(options.token) && jsonwebtoken.decode(options.token)
-
-    Object.assign(privatesAccessor(this), {
-      jwt,
-      token: jwt && options.token,
-      apiKey: jwt ? jwt.iss : rString(options.apiKey),
-      apiSecret: rString(options.apiSecret),
-      apiPrincipal: rString(options.apiPrincipal),
-      username: rString((jwt && jwt['cortex/eml']) || options.username, ''),
-      password: rString(options.password, ''),
-    })
-
-    this.authType = rString(options.authType, 'auto')
-
-  }
-
-  get apiKey() {
-    return privatesAccessor(this).apiKey
-  }
-
-  get username() {
-    return privatesAccessor(this).username
-  }
-
-  get authType() {
-
-    const privates = privatesAccessor(this)
-
-    if (privates.authType !== 'auto') {
-      return privates.authType
-    }
-
-    if (privates.jwt) {
-      return 'token'
-    }
-    if (privates.apiSecret) {
-      return 'signature'
-    }
-    if (privates.username) {
-      return 'password'
-    }
-
-    return 'none'
-
-  }
-
-  // set the default auth type for generating auth headers.
-  set authType(type) {
-
-    if (!['auto', 'token', 'signature', 'password', 'basic', 'none'].includes(type)) {
-      throw new TypeError('Unsupported auth type. Expected auto, token, signature, password, basic, none')
-    }
-
-    privatesAccessor(this).authType = type
-
-  }
-
-  /**
-   * @param input
-   *  type    defaults to this.authType. the kind of headers to
-   *    produce: auto, token, signature, password, basic, none
-   *  path    required for signed requests (default '/')
-   *  method  required for signed requests (default 'GET')
-   *  principal optional. for signed requests. defaults to apiPrincipal
-   */
-  getAuthorizationHeaders(input) {
-
-    const options = isSet(input) ? input : {},
-          privates = privatesAccessor(this),
-          headers = {
-            'medable-client-key': privates.apiKey
-          }
-
-    let type = rString(options.type, privates.authType)
-    if (type === 'auto') {
-      if (privates.jwt) {
-        type = 'token'
-      } else if (privates.apiSecret) {
-        type = 'signature'
-      } else if (privates.username) {
-        type = 'password'
-      } else {
-        type = 'none'
-      }
-    }
-
-    switch (type) {
-
-      case 'token':
-
-        headers.authorization = `Bearer ${privates.token}`
-        break
-
-      case 'signature':
-
-        {
-          const { signature, nonce, timestamp } = signPath(
-                  rString(options.path, '/'),
-                  privates.apiKey,
-                  privates.apiSecret,
-                  rString(options.method, 'GET')
-                ),
-                principal = rString(options.principal, rString(privates.apiPrincipal))
-
-          Object.assign(headers, {
-            'medable-client-signature': signature,
-            'medable-client-nonce': nonce,
-            'medable-client-timestamp': timestamp
-          })
-
-          if (principal) {
-            headers['medable-client-account'] = principal
-          }
-        }
-        break
-
-      case 'basic':
-
-        headers.authorization = `Basic ${Buffer.from(`${privates.username}:${privates.password}`).toString('base64')}`
-        break
-
-      case 'password':
-      default:
-
-    }
-
-    return headers
-
-  }
-
-}
 
 // ------------------------------------------------------------------------------------------------
 // secrets are stored for a balanced lookup.
@@ -224,6 +78,22 @@ class Secret {
     }
   }
 
+  /**
+   * @param input
+   *  apiKey optional. force a different api key
+   */
+  getAuthorizationHeaders(input) {
+
+    const options = isSet(input) ? input : {},
+          privates = privatesAccessor(this),
+          headers = {
+            'medable-client-key': rString(options.apiKey, privates.apiKey)
+          }
+
+    return headers
+
+  }
+
 }
 
 class PasswordSecret extends Secret {
@@ -238,18 +108,28 @@ class PasswordSecret extends Secret {
     super('password', environment, options.username, options.apiKey, rString(options.password, ''))
   }
 
-  get credentials() {
-
-    const { username, password, apiKey } = privatesAccessor(this)
-    return new Credentials({ username, password, apiKey })
-  }
-
   toJSON() {
     return Object.assign(super.toJSON(), {
       email: this.username,
       password: this.password
     })
   }
+
+  /**
+   * @param input
+   *  basic: boolean. default false. if true, adds Basic auth authorization header.
+   */
+  getAuthorizationHeaders(input) {
+
+    const headers = super.getAuthorizationHeaders(input)
+
+    if (pathTo(input, 'basic') === true) {
+      headers.authorization = `Basic ${Buffer.from(`${this.username}:${this.password}`).toString('base64')}`
+    }
+
+    return headers
+  }
+
 
 }
 
@@ -271,16 +151,27 @@ class TokenSecret extends Secret {
     super('token', environment, jwt['cortex/eml'], jwt.iss, options.token)
   }
 
-  get credentials() {
-
-    const { password } = privatesAccessor(this)
-    return new Credentials({ token: password })
-  }
-
   toJSON() {
     return Object.assign(super.toJSON(), {
       token: this.password
     })
+  }
+
+  get token() {
+    return this.password
+  }
+
+  /**
+   * @param input
+   */
+  getAuthorizationHeaders(input) {
+
+    const headers = super.getAuthorizationHeaders(input)
+
+    headers.authorization = `Bearer ${this.password}`
+
+    return headers
+
   }
 
 }
@@ -300,16 +191,45 @@ class SignatureSecret extends Secret {
     super('signature', environment, '', options.apiKey, options.apiSecret)
   }
 
-  get credentials() {
-
-    const { apiKey, password } = privatesAccessor(this)
-    return new Credentials({ apiKey, apiSecret: password })
-  }
-
   toJSON() {
     return Object.assign(super.toJSON(), {
       apiSecret: this.password
     })
+  }
+
+  get apiSecret() {
+    return this.password
+  }
+
+  /**
+   * @param input
+   *  path    (default '/')
+   *  method  (default 'GET')
+   *  principal optional.
+   */
+  getAuthorizationHeaders(input) {
+
+    const options = isSet(input) ? input : {},
+          headers = super.getAuthorizationHeaders(options),
+          { signature, nonce, timestamp } = signPath(
+            rString(options.path, '/'),
+            this.apiKey,
+            this.password,
+            rString(options.method, 'GET')
+          )
+
+    Object.assign(headers, {
+      'medable-client-signature': signature,
+      'medable-client-nonce': nonce,
+      'medable-client-timestamp': timestamp
+    })
+
+    if (options.principal) {
+      headers['medable-client-account'] = options.principal
+    }
+
+    return headers
+
   }
 
 }
@@ -461,6 +381,9 @@ class CredentialsManager {
   }
 
   static async get(input) {
+    if (input instanceof Secret) {
+      return input
+    }
     return (await this.list(input))[0]
   }
 
@@ -591,9 +514,7 @@ CredentialsProvider.set(new KeytarStorageProvider())
 // ------------------------------------------------------------------------------------------------
 
 module.exports = {
-  Credentials,
   CredentialsManager,
-  PasswordSecret,
   detectAuthType,
   CredentialsProvider,
   validateApiKey,

@@ -15,6 +15,10 @@ class Task {
     return ''
   }
 
+  static get taskNames() {
+    return [this['name'].toLowerCase()]
+  }
+
   run() {
     return new Promise((resolve, reject) => reject(new Error('promises promises...)')))
   }
