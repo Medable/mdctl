@@ -350,7 +350,7 @@ class ImportFileAdapter extends EventEmitter {
               template: ef
             })
       outS.on('data', (fileData) => {
-        if(fileData.toString() !== '\n') {
+        if (fileData.toString() !== '\n') {
           data.push(parseString(fileData.toString()))
         }
       })
@@ -386,7 +386,7 @@ class ImportFileAdapter extends EventEmitter {
   }
 
   async getBlobs() {
-    const { blobIndex, blobs, metadata } = privatesAccessor(this)
+    const { blobIndex, blobs } = privatesAccessor(this)
     if (blobs.length > blobIndex) {
       privatesAccessor(this, 'blobIndex', blobIndex + 1)
       const stream = await this.getAssetStream(blobs[blobIndex])
@@ -479,8 +479,8 @@ class ImportFileAdapter extends EventEmitter {
   loadMetadata() {
     const { cache, format } = privatesAccessor(this)
     if (fs.existsSync(cache)) {
-      const content = fs.readFileSync(cache)
-      const metadata = JSON.parse(content.toString())
+      const content = fs.readFileSync(cache),
+            metadata = JSON.parse(content.toString())
       metadata.format = format
       privatesAccessor(this, 'metadata', metadata)
     }

@@ -4,7 +4,7 @@ const _ = require('lodash'),
         loadJsonOrYaml,
       } = require('../../lib/utils'),
       {
-        CredentialsManager, PasswordSecret,
+        CredentialsManager,
       } = require('../../lib/api/credentials'),
       Environment = require('../../lib/api/environment'),
       {
@@ -33,7 +33,7 @@ async function storeCredentials(credentials) {
 
 async function logInRequestingCredentialsFlow(cli, completedOptions) {
   const userCredentials = await askUserCredentials(completedOptions),
-        passwordSecret = new PasswordSecret(
+        passwordSecret = CredentialsManager.create(
           new Environment(userCredentials),
           userCredentials
         )
