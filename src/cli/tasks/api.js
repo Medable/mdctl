@@ -18,7 +18,7 @@ class Api extends Task {
   async run(cli) {
 
     const method = rString(cli.args('1'), 'get').toLowerCase(),
-          client = await cli.getApiClient(),
+          { client } = await cli.getApiClient({ credentials: await cli.getAuthOptions() }),
           url = new URL(rString(cli.args('2'), '/'), client.environment.url),
           options = {
             query: url.searchParams

@@ -23,6 +23,12 @@ const _ = require('lodash'),
 
 class Credentials extends Task {
 
+  static get taskNames () {
+
+    return ['credentials', 'creds']
+
+  }
+
   async run(cli) {
 
     const arg1 = cli.args('1'),
@@ -41,31 +47,16 @@ class Credentials extends Task {
 
   async 'credentials@add'(cli) {
 
-    const options = {}
+    const options = await cli.getAuthOptions()
 
     // load from input file?
     if (rString(cli.args('file'))) {
-
       // support adding a bunch at once.
       const file = await loadJsonOrYaml(cli.args('file'))
       if (Array.isArray(file)) {
         return Promise.all(file.map(input => CredentialsManager.add(input, input)))
       }
-
-      Object.assign(
-        options,
-        _.pick(
-          file,
-          'type', 'endpoint', 'env', 'username', 'apiKey', 'password', 'apiSecret', 'token'
-        )
-      )
     }
-
-    Credentials.assignArgIf(cli, options, 'type')
-    Credentials.assignArgIf(cli, options, 'endpoint')
-    Credentials.assignArgIf(cli, options, 'env')
-    Credentials.assignArgIf(cli, options, 'apiKey')
-
     // auto-detect type
     options.type = detectAuthType(options)
 
@@ -85,7 +76,7 @@ class Credentials extends Task {
 
   async 'credentials@list'(cli) {
 
-    const options = await Credentials.getCliOptions(cli),
+    const options = await cli.getAuthOptions(),
           format = rString(cli.args('format'), 'text')
 
     let list = await CredentialsManager.list(options)
@@ -134,7 +125,7 @@ class Credentials extends Task {
 
   async 'credentials@get'(cli) {
 
-    const options = await Credentials.getCliOptions(cli),
+    const options = await cli.getAuthOptions(),
           item = await CredentialsManager.get(options)
 
     if (item) {
@@ -151,7 +142,7 @@ class Credentials extends Task {
 
     if (verb === 'set') {
 
-      const options = await Credentials.getCliOptions(cli),
+      const options = await cli.getAuthOptions(),
             secret = await CredentialsManager.get(options)
 
       if (!secret) {
@@ -190,7 +181,7 @@ class Credentials extends Task {
 
     console.log(
       await CredentialsManager.clear(
-        await Credentials.getCliOptions(cli)
+        await cli.getAuthOptions()
       )
     )
 
@@ -206,7 +197,7 @@ class Credentials extends Task {
     // attempt to logout of the api.
     try {
 
-      const client = await cli.getApiClient({ ensureSession: false })
+      const client = await cli.getApiClient({ resurrect: false })
       await client.post('/accounts/logout')
 
     } catch (err) {
@@ -222,9 +213,9 @@ class Credentials extends Task {
 
     try {
 
-      const client = await cli.getApiClient(),
+      const client = await cli.getApiClient({ credentials: await cli.getAuthOptions() }),
             { environment, credentials } = client,
-            { authType: type, apiKey, username: email } = credentials,
+            { type, apiKey, username: email } = credentials,
             result = {
               type,
               url: environment.url,
@@ -303,7 +294,7 @@ class Credentials extends Task {
         --env sets the environment. eg. my-org-code
         --username for password and token auth, sets the lookup username / email / subject id
         --apiKey api key for looking up signing credentials (and token credentials)
-        --format - output format. defaults to text (json, yaml, text)             
+        --format - output format. defaults to json (json, yaml, text)             
         --strictSSL - for login. default true. set to false to allow invalid certs for local testing.                       
         
       Input file options (secrets cannot be read from the command-line):        
@@ -323,33 +314,6 @@ class Credentials extends Task {
       There can only be a single active session for the user at any one time on the client.                                   
                                      
     `
-  }
-
-  static assignArgIf(cli, options, arg) {
-
-    const value = cli.args(arg)
-    if (rString(value)) {
-      Object.assign(options, { [arg]: value })
-    }
-  }
-
-  static async getCliOptions(cli) {
-
-    const options = {}
-
-    if (rString(cli.args('file'))) {
-      const file = await loadJsonOrYaml(cli.args('file'))
-      Object.assign(options, _.pick(file, 'type', 'endpoint', 'env', 'username', 'apiKey'))
-    }
-
-    Credentials.assignArgIf(cli, options, 'type')
-    Credentials.assignArgIf(cli, options, 'endpoint')
-    Credentials.assignArgIf(cli, options, 'env')
-    Credentials.assignArgIf(cli, options, 'username')
-    Credentials.assignArgIf(cli, options, 'apiKey')
-
-    return options
-
   }
 
 }
