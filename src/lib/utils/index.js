@@ -118,10 +118,10 @@ function sortKeys(input, deep = false) {
 }
 
 function pathsTo(obj, ...paths) {
-  return paths.reduce((memo, path) => {
-    const value = pathTo(obj, path)
+  return paths.reduce((memo, p) => {
+    const value = pathTo(obj, p)
     if (value !== Undefined) {
-      pathTo(memo, path, value)
+      pathTo(memo, p, value)
     }
     return memo
   }, {})

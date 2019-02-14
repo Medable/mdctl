@@ -180,29 +180,45 @@ class Client {
               )[0]
 
               if (fingerprint) {
-                await CredentialsManager.setCustom(
-                  'fingerprint',
-                  `${environment.endpoint}/${credentials.apiKey}`,
-                  fingerprint.toString()
-                )
+
+                const fingerprintString = fingerprint.toString(),
+                      existing = await CredentialsManager.getCustom(
+                        'fingerprint',
+                        `${environment.endpoint}/${credentials.apiKey}`
+                      )
+
+                if (existing !== fingerprintString) {
+
+                  await CredentialsManager.setCustom(
+                    'fingerprint',
+                    `${environment.endpoint}/${credentials.apiKey}`,
+                    fingerprintString
+                  )
+
+                }
+
               }
             } catch (err) {
-              return err
+              return reject(err)
             }
 
             // store the csrf token and session cookie.
-            const session = {
-              csrf: response.headers['medable-csrf-token'],
-              sid: rVal(requestOptions.jar.getCookies(environment.url).filter(
-                cookie => cookie.key === 'md.sid' && cookie.path === `/${environment.env}`
-              )[0], '').toString()
-            }
+            const existing = await CredentialsManager.getCustom('session', environment.url),
+                  session = {
+                    csrf: response.headers['medable-csrf-token'],
+                    sid: rVal(requestOptions.jar.getCookies(environment.url).filter(
+                      cookie => cookie.key === 'md.sid' && cookie.path === `/${environment.env}`
+                    )[0], '').toString()
+                  }
 
-            await CredentialsManager.setCustom(
-              'session',
-              environment.url,
-              session
-            )
+            if (!existing || existing.csrf !== session.csrf || existing.sid !== session.sid) {
+
+              await CredentialsManager.setCustom(
+                'session',
+                environment.url,
+                session
+              )
+            }
 
           }
 
