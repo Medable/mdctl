@@ -27,9 +27,10 @@ function getRegisteredTasks() {
       .readdirSync(path.join(__dirname))
       .reduce((tasks, file) => {
         if (file !== 'index.js') {
-          const TaskClass = require(path.join(__dirname, file)),
-                taskName = TaskClass.name.toLowerCase()
-          Object.assign(tasks, { [taskName]: TaskClass })
+          const TaskClass = require(path.join(__dirname, file))
+          TaskClass.taskNames.forEach(taskName => {
+            tasks[taskName] = TaskClass
+          })
         }
         return tasks
       }, {})
