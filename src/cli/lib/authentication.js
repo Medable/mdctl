@@ -47,16 +47,16 @@ const _ = require('lodash'),
       },
 
       loginWithExistingCredentials = cli => async(credentialsQuery) => {
-        const passwordSecret = await CredentialsManager.get(credentialsQuery),
-              client = await cli.getApiClient({ passwordSecret, resurrect: false }),
-              loginBody = { email: _.get(passwordSecret, 'username'), password: _.get(passwordSecret, 'password') }
+        const credentials = await CredentialsManager.get(credentialsQuery),
+              client = await cli.getApiClient({ credentials, resurrect: false }),
+              loginBody = { email: _.get(credentials, 'username'), password: _.get(credentials, 'password') }
 
         return logInAndStoreLogIn(client)(loginBody)
       },
 
-      logInWithPasswordSecret = cli => async(passwordSecret) => {
-        const client = await cli.getApiClient({ passwordSecret, resurrect: false }),
-              loginBody = { email: _.get(passwordSecret, 'username'), password: _.get(passwordSecret, 'password') }
+      logInWithPasswordSecret = cli => async(credentials) => {
+        const client = await cli.getApiClient({ credentials, resurrect: false }),
+              loginBody = { email: _.get(credentials, 'username'), password: _.get(credentials, 'password') }
 
         return logInAndStoreLogIn(client)(loginBody)
       }
