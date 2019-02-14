@@ -16,7 +16,7 @@ class Task {
   }
 
   static get taskNames() {
-    return [this['name'].toLowerCase()]
+    return [this.name.toLowerCase()]
   }
 
   run() {

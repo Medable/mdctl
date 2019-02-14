@@ -197,7 +197,7 @@ module.exports = class MdCtlCli {
     return client
   }
 
-  async resurrectClient(client, passwordSecret) {
+  async resurrectClient(client, credentials) {
     try {
       await client.get('/accounts/me', { query: { paths: ['_id'] } })
     } catch (err) {
@@ -207,7 +207,7 @@ module.exports = class MdCtlCli {
         case 'kLoggedInElsewhere':
         case 'kCSRFTokenMismatch':
         case 'kSessionExpired':
-          await client.post('/accounts/login', { email: passwordSecret.username, password: passwordSecret.password })
+          await client.post('/accounts/login', { email: credentials.username, password: credentials.password })
           break
         default:
           throw err
@@ -246,7 +246,7 @@ module.exports = class MdCtlCli {
   createNewClientBy(credentials) {
     return credentials ? new Client({
       environment: _.get(credentials, 'environment.url'),
-      credentials: credentials,
+      credentials,
       sessions: _.get(credentials, 'type') === 'password',
       requestOptions: {
         strictSSL: stringToBoolean(this.config('strictSSL'), true)
@@ -254,11 +254,11 @@ module.exports = class MdCtlCli {
     }) : undefined
   }
 
-  doesClientMatchSecret(activeClientConfig, passwordSecret) {
-    return !_.isUndefined(passwordSecret) && !_.isUndefined(activeClientConfig)
-      && activeClientConfig.environment === passwordSecret.environment.url
-      && activeClientConfig.credentials.apiKey === passwordSecret.apiKey
-      && activeClientConfig.credentials.username === passwordSecret.username
+  doesClientMatchSecret(activeClientConfig, credentials) {
+    return !_.isUndefined(credentials) && !_.isUndefined(activeClientConfig)
+      && activeClientConfig.environment === credentials.environment.url
+      && activeClientConfig.credentials.apiKey === credentials.apiKey
+      && activeClientConfig.credentials.username === credentials.username
   }
 
   getArguments(arrayOfKeys) {
