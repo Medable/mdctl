@@ -98,12 +98,11 @@ const { prompt } = require('inquirer'),
             name: 'saveCredentials',
             message: 'Do you want to save these credentials?',
             validate: value => (value.toLowerCase() === 'y' || value.toLowerCase() === 'n') || 'Only valid values are: y-Y/n-N',
-            transform: value => _.startsWith(value.toLowerCase(), 'y'),
             default: 'n',
           }
         ])
 
-        return result.saveCredentials
+        return _.startsWith(result.saveCredentials.toLowerCase(), 'y')
       },
 
       askUserToChooseCredentials = async(listOfSecrets) => {
