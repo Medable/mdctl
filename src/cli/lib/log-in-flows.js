@@ -33,14 +33,14 @@ async function storeCredentials(credentials) {
 
 async function logInRequestingCredentialsFlow(cli, completedOptions) {
   const userCredentials = await askUserCredentials(completedOptions),
-        passwordSecret = CredentialsManager.create(
+        credentials = CredentialsManager.create(
           new Environment(userCredentials),
           userCredentials
         )
 
   let result = false
 
-  await logInWithPasswordSecret(cli)(passwordSecret)
+  await logInWithPasswordSecret(cli)(credentials)
   result = true
 
   // eslint-disable-next-line one-var
@@ -95,11 +95,11 @@ async function logInFlow(cli) {
 
   let logInResult = false
   if (areFilteringArgsPassed(parsedArguments)) {
-    logInResult = await logInWithDefCredentialsFlow(cli)
-                      || await logInByChoosingCredentialsFlow(cli, options)
-                          || await logInRequestingCredentialsFlow(cli, options)
-  } else {
     logInResult = await logInByChoosingCredentialsFlow(cli, options)
+                    || await logInRequestingCredentialsFlow(cli, options)
+  } else {
+    logInResult = await logInWithDefCredentialsFlow(cli)
+                    || await logInByChoosingCredentialsFlow(cli, options)
                       || await logInRequestingCredentialsFlow(cli, options)
   }
 

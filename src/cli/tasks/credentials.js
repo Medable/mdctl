@@ -23,7 +23,7 @@ const _ = require('lodash'),
 
 class Credentials extends Task {
 
-  static get taskNames () {
+  static get taskNames() {
 
     return ['credentials', 'creds']
 
@@ -47,7 +47,7 @@ class Credentials extends Task {
 
   async 'credentials@add'(cli) {
 
-    const options = await cli.getAuthOptions()
+    const options = (await cli.getAuthOptions()) || {}
 
     // load from input file?
     if (rString(cli.args('file'))) {

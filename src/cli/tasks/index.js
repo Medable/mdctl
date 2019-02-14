@@ -28,8 +28,8 @@ function getRegisteredTasks() {
       .reduce((tasks, file) => {
         if (file !== 'index.js') {
           const TaskClass = require(path.join(__dirname, file))
-          TaskClass.taskNames.forEach(taskName => {
-            tasks[taskName] = TaskClass
+          TaskClass.taskNames.forEach((taskName) => {
+            tasks[taskName] = TaskClass // eslint-disable-line no-param-reassign
           })
         }
         return tasks
