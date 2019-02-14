@@ -5,7 +5,7 @@ const _ = require('lodash'),
       jsyaml = require('js-yaml'),
       { loadDefaults, writeDefaults } = require('../lib/config'),
       {
-        loadJsonOrYaml,
+        loadJsonOrYaml, pathsTo
       } = require('../../lib/utils'),
       {
         rString, isSet
@@ -16,6 +16,7 @@ const _ = require('lodash'),
       } = require('../../lib/api/credentials'),
       Environment = require('../../lib/api/environment'),
       Task = require('../lib/task'),
+      Fault = require('../../lib/fault'),
       {
         askUserCredentials,
       } = require('../lib/questionnaires'),
@@ -216,10 +217,12 @@ class Credentials extends Task {
       const client = await cli.getApiClient({ credentials: await cli.getAuthOptions() }),
             { environment, credentials } = client,
             { type, apiKey, username: email } = credentials,
+            { fault, loggedin, account } = await client.get('/accounts/status?expand=true'),
             result = {
               type,
               url: environment.url,
-              apiKey
+              apiKey,
+              loggedin
             }
 
       if (email) {
@@ -228,12 +231,20 @@ class Credentials extends Task {
         }
       }
 
-      try {
-
-        result.account = await client.get('/accounts/me', { query: { paths: ['_id', 'email', 'name.first', 'name.last', 'roles'] } })
-
-      } catch (err) {
-        // eslint-disable-line no-empty
+      if (fault) {
+        console.log(formatOutput(Fault.from(fault, true).toJSON(), cli.args('format')))
+      } else {
+        if (!account) {
+          result.account = {
+            _id: '000000000000000000000001'
+          }
+        } else if (_.isString(account)) {
+          result.account = {
+            _id: account
+          }
+        } else {
+          result.account = pathsTo(account, '_id', 'email', 'name.first', 'name.last', 'roles')
+        }
       }
 
       console.log(formatOutput(result, cli.args('format')))

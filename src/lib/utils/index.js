@@ -117,6 +117,15 @@ function sortKeys(input, deep = false) {
   return object
 }
 
+function pathsTo(obj, ...paths) {
+  return paths.reduce((memo, path) => {
+    const value = pathTo(obj, path)
+    if (value !== Undefined) {
+      pathTo(memo, path, value)
+    }
+    return memo
+  }, {})
+}
 
 module.exports = {
   throwIf,
@@ -128,5 +137,6 @@ module.exports = {
   normalizeEndpoint,
   validateEndpoint,
   joinPaths,
-  sortKeys
+  sortKeys,
+  pathsTo
 }
