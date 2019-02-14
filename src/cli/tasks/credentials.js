@@ -41,31 +41,16 @@ class Credentials extends Task {
 
   async 'credentials@add'(cli) {
 
-    const options = {}
+    const options = cli.getOptions()
 
     // load from input file?
     if (rString(cli.args('file'))) {
-
       // support adding a bunch at once.
       const file = await loadJsonOrYaml(cli.args('file'))
       if (Array.isArray(file)) {
         return Promise.all(file.map(input => CredentialsManager.add(input, input)))
       }
-
-      Object.assign(
-        options,
-        _.pick(
-          file,
-          'type', 'endpoint', 'env', 'username', 'apiKey', 'password', 'apiSecret', 'token'
-        )
-      )
     }
-
-    Credentials.assignArgIf(cli, options, 'type')
-    Credentials.assignArgIf(cli, options, 'endpoint')
-    Credentials.assignArgIf(cli, options, 'env')
-    Credentials.assignArgIf(cli, options, 'apiKey')
-
     // auto-detect type
     options.type = detectAuthType(options)
 
@@ -85,7 +70,7 @@ class Credentials extends Task {
 
   async 'credentials@list'(cli) {
 
-    const options = await Credentials.getCliOptions(cli),
+    const options = await cli.getOptions(),
           format = rString(cli.args('format'), 'text')
 
     let list = await CredentialsManager.list(options)
@@ -134,7 +119,7 @@ class Credentials extends Task {
 
   async 'credentials@get'(cli) {
 
-    const options = await Credentials.getCliOptions(cli),
+    const options = await cli.getOptions(),
           item = await CredentialsManager.get(options)
 
     if (item) {
@@ -151,7 +136,7 @@ class Credentials extends Task {
 
     if (verb === 'set') {
 
-      const options = await Credentials.getCliOptions(cli),
+      const options = await cli.getOptions(),
             secret = await CredentialsManager.get(options)
 
       if (!secret) {
@@ -190,7 +175,7 @@ class Credentials extends Task {
 
     console.log(
       await CredentialsManager.clear(
-        await Credentials.getCliOptions(cli)
+        await cli.getOptions()
       )
     )
 
@@ -323,33 +308,6 @@ class Credentials extends Task {
       There can only be a single active session for the user at any one time on the client.                                   
                                      
     `
-  }
-
-  static assignArgIf(cli, options, arg) {
-
-    const value = cli.args(arg)
-    if (rString(value)) {
-      Object.assign(options, { [arg]: value })
-    }
-  }
-
-  static async getCliOptions(cli) {
-
-    const options = {}
-
-    if (rString(cli.args('file'))) {
-      const file = await loadJsonOrYaml(cli.args('file'))
-      Object.assign(options, _.pick(file, 'type', 'endpoint', 'env', 'username', 'apiKey'))
-    }
-
-    Credentials.assignArgIf(cli, options, 'type')
-    Credentials.assignArgIf(cli, options, 'endpoint')
-    Credentials.assignArgIf(cli, options, 'env')
-    Credentials.assignArgIf(cli, options, 'username')
-    Credentials.assignArgIf(cli, options, 'apiKey')
-
-    return options
-
   }
 
 }
