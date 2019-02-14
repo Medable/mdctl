@@ -7,6 +7,7 @@ const path = require('path'),
       Client = require('../lib/api/client'),
       { CredentialsManager } = require('../lib/api/credentials'),
       { loadJsonOrYaml } = require('../lib/utils'),
+      Fault = require('../lib/fault'),
       { stringToBoolean, rBool, rString } = require('../lib/utils/values'),
       { createConfig } = require('./lib/config')
 
@@ -198,9 +199,14 @@ module.exports = class MdCtlCli {
   }
 
   async resurrectClient(client, credentials) {
+
+    let err
     try {
-      await client.get('/accounts/me', { query: { paths: ['_id'] } })
-    } catch (err) {
+      err = Fault.from(await client.get('/accounts/status', { query: { paths: ['_id'] } }).fault, false)
+    } catch (e) {
+      err = e
+    }
+    if (err) {
       // attempt to recover by logging in again.
       switch (err.code) {
         case 'kNotLoggedIn':
