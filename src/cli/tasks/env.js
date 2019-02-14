@@ -36,23 +36,29 @@ class Env extends Task {
     return this[handler](cli)
   }
 
+  async getClient(cli) {
+    const options = await cli.getOptions(this.optionKeys),
+          passwordSecret = await CredentialsManager.get(options),
+          client = await cli.getApiClient({ passwordSecret })
+    return {
+      options,
+      client
+    }
+  }
+
   async 'env@export'(cli) {
-    const envOptions = await cli.getArguments(['endpoint', 'env']),
-          exportOptions = await cli.getArguments(this.optionKeys),
-          outputDir = exportOptions.dir || cli.cwd,
-          manifestFile = exportOptions.manifest || `${outputDir}/manifest.${exportOptions.format || 'json'}`,
+    const { client, options } = await this.getClient(cli),
+          outputDir = options.dir || cli.cwd,
+          manifestFile = options.manifest || `${outputDir}/manifest.${options.format || 'json'}`,
           stream = ndjson.parse(),
-          // this is wrong because it will ignore a login.
-          passwordSecret = !_.isEmpty(envOptions) && await CredentialsManager.get(envOptions),
-          client = await cli.getApiClient({ passwordSecret }),
           url = new URL('/developer/environment/export', client.environment.url),
-          options = {
+          requestOptions = {
             query: url.searchParams,
             method: 'post'
           },
-          streamOptions = exportOptions.format && {
-            format: exportOptions.format,
-            layout: exportOptions.layout,
+          streamOptions = {
+            format: options.format,
+            layout: options.layout,
             config: cli.config
           },
           streamTransform = new ExportStream(),
@@ -60,11 +66,11 @@ class Env extends Task {
 
     let manifest = {}
     if (fs.existsSync(manifestFile)) {
-      manifest = parseString(fs.readFileSync(manifestFile), exportOptions.format)
+      manifest = parseString(fs.readFileSync(manifestFile), options.format)
     }
 
     pathTo(options, 'requestOptions.headers.accept', 'application/x-ndjson')
-    await client.call(url.pathname, Object.assign(options, {
+    await client.call(url.pathname, Object.assign(requestOptions, {
       stream, body: { manifest }
     }))
 
@@ -80,28 +86,18 @@ class Env extends Task {
   }
 
   async 'env@import'(cli) {
-    const envOptions = await cli.getArguments(['endpoint', 'env']),
-          importOptions = await cli.getArguments(this.optionKeys),
-          inputDir = importOptions.dir || cli.cwd,
-          // manifestFile = importOptions.manifest || `${inputDir}/manifest.${importOptions.format || 'json'}`,
-          // this is wrong because it will ignore a login.
-          // let manifest = {}
-          // if (fs.existsSync(manifestFile)) {
-          //  manifest = parseString(fs.readFileSync(manifestFile), importOptions.format)
-          // }
-          passwordSecret = !_.isEmpty(envOptions) && await CredentialsManager.get(envOptions),
-          client = await cli.getApiClient({ passwordSecret }),
+    const { client, options } = await this.getClient(cli),
           url = new URL('/developer/environment/import', client.environment.url),
-          options = {
+          requestOptions = {
             query: url.searchParams,
             method: 'post'
           },
-          importStream = new ImportStream(inputDir),
+          importStream = new ImportStream(options.dir || cli.cwd),
           ndjsonStream = ndjson.stringify(),
           stream = pump(importStream, ndjsonStream)
 
     pathTo(options, 'requestOptions.headers.accept', 'application/x-ndjson')
-    await client.call(url.pathname, Object.assign(options, {
+    await client.call(url.pathname, Object.assign(requestOptions, {
       body: stream
     }))
     stream.on('data', (d) => {

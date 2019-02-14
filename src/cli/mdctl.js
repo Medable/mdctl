@@ -7,7 +7,7 @@ const path = require('path'),
       Client = require('../lib/api/client'),
       { CredentialsManager } = require('../lib/api/credentials'),
       { loadJsonOrYaml } = require('../lib/utils'),
-      { stringToBoolean, rBool } = require('../lib/utils/values'),
+      { stringToBoolean, rBool, rString } = require('../lib/utils/values'),
       { createConfig } = require('./lib/config')
 
 async function readConfig(config, from) {
@@ -33,7 +33,20 @@ module.exports = class MdCtlCli {
       // store cli arguments
       args: createConfig(Object.assign(
         {},
-        yargs.help('').version('').argv,
+        yargs.options({
+          format: {
+            default: 'json',
+            type: 'string'
+          },
+          manifest: {
+            default: '',
+            type: 'string'
+          },
+          layout: {
+            default: 'tree',
+            type: 'string'
+          }
+        }).help('').version('').argv,
         process.argv.slice(2)
       )),
 
@@ -191,6 +204,35 @@ module.exports = class MdCtlCli {
           throw err
       }
     }
+  }
+
+  assignArgIf(options, arg) {
+
+    const value = this.args(arg)
+    if (rString(value)) {
+      Object.assign(options, { [arg]: value })
+    }
+  }
+
+
+  async getOptions(extraKeys = []) {
+
+    const options = {},
+          extraOptions = await this.getArguments(extraKeys)
+
+    if (rString(this.args('file'))) {
+      const file = await loadJsonOrYaml(this.args('file'))
+      Object.assign(options, _.pick(file, 'type', 'endpoint', 'env', 'username', 'apiKey'))
+    }
+
+    this.assignArgIf(options, 'type')
+    this.assignArgIf(options, 'endpoint')
+    this.assignArgIf(options, 'env')
+    this.assignArgIf(options, 'username')
+    this.assignArgIf(options, 'apiKey')
+
+    return Object.assign(options, extraOptions)
+
   }
 
   createNewClientBy(passwordSecret) {
