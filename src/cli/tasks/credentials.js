@@ -190,6 +190,8 @@ class Credentials extends Task {
 
   async 'credentials@login'(cli) {
 
+    await this['credentials@logout'](cli)
+
     console.log(await logInFlow(cli) ? 'Log-in succeeded' : 'Log-in failed')
   }
 
@@ -232,8 +234,11 @@ class Credentials extends Task {
       }
 
       if (fault) {
+
         console.log(formatOutput(Fault.from(fault, true).toJSON(), cli.args('format')))
+
       } else {
+
         if (!account) {
           result.account = {
             _id: '000000000000000000000001'
@@ -245,9 +250,9 @@ class Credentials extends Task {
         } else {
           result.account = pathsTo(account, '_id', 'email', 'name.first', 'name.last', 'roles')
         }
-      }
 
-      console.log(formatOutput(result, cli.args('format')))
+        console.log(formatOutput(result, cli.args('format')))
+      }
 
     } catch (err) {
 
