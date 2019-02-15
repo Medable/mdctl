@@ -5,6 +5,7 @@ const slugify = require('slugify'),
       mime = require('mime'),
       uuid = require('uuid'),
       pluralize = require('pluralize'),
+      { md5FileHash } = require('../utils/crypto'),
       { isCustomName } = require('../utils/values'),
       ENV_KEYS = {
         keys: ['app', 'config', 'notification', 'policy', 'role', 'smsNumber', 'serviceAccount', 'storageLocation', 'configuration', 'template', 'object', 'script', 'view'],
@@ -155,10 +156,14 @@ class ExportSection {
         }
       }
       if (itemSource !== null) {
+        const { url, base64, streamId, path } = facet
         privatesAccessor(this).extraFiles.push({
           name: facet.resource,
           ext: mime.getExtension(facet.mime),
-          data: facet.url || facet.base64,
+          url,
+          base64,
+          streamId,
+          path,
           remoteLocation: !!facet.url,
           sectionPath: itemSource.sectionPath,
           pathTo: itemSource.path,
@@ -286,20 +291,23 @@ class ImportSection {
       if (nodes.length) {
         _.forEach(nodes, (n) => {
           const parent = this.getParentFromPath(n.path),
-                resourceKey = uuid.v4(),
-                facet = Object.assign(parent, {
-                  streamId: resourceKey
-                })
-          if (facet.filePath) {
-            const asset = {
-              streamId: facet.streamId,
-              data: fs.readFileSync(`${basePath}${parent.filePath}`)
-            }
+                facet = Object.assign(parent, {}),
+                localFile = `${basePath}${facet.filePath}`
+          if (facet.filePath && md5FileHash(localFile) !== facet.ETag) {
+            const resourceKey = uuid.v4(),
+                  asset = {
+                    streamId: resourceKey,
+                    data: fs.readFileSync(localFile)
+                  }
+            facet.ETag = md5FileHash(localFile)
+            facet.streamId = resourceKey
             extraFiles.push(asset)
-            delete facet.filePath
           }
+          delete facet.filePath
           facets.push(facet)
         })
+        privatesAccessor(this, 'facets', facets)
+        privatesAccessor(this, 'extraFiles', extraFiles)
         return success()
       }
       return success()

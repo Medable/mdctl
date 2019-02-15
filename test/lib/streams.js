@@ -28,44 +28,21 @@ describe('Export Adapter', () => {
           streamWriter = new ExportStream(stream, { format }),
           onEnd = (error) => {
             if (error) {
-              rimraf.sync(tempDir)
+              // rimraf.sync(tempDir)
               done(error)
             }
             glob('**/*.{yaml,js,png,jpeg,ico,gif,html,txt}', { cwd: tempDir }, (err, files) => {
-              rimraf.sync(tempDir)
+              // rimraf.sync(tempDir)
               if (err) {
                 done(err)
               } else {
-                assert(files.length === 120, 'there are some missing files created')
+                assert(files.length === 119, 'there are some missing files created')
                 done()
               }
             })
           }
 
     pump(blob, stream, streamWriter, new ExportFileAdapter(tempDir, { format }), onEnd)
-  })
-
-  it('export using file adapter with single blob layout', (done) => {
-    const tempDir = path.join(process.cwd(), `output-${new Date().getTime()}`),
-          stream = ndjson.parse(),
-          format = 'yaml',
-          streamWriter = new ExportStream({ format }),
-          onEnd = (error) => {
-            if (error) {
-              rimraf.sync(tempDir)
-              done(error)
-            }
-            glob('**/*.{yaml,js,png,jpeg,ico,gif,html,txt}', { cwd: tempDir }, (err, files) => {
-              rimraf.sync(tempDir)
-              if (err) {
-                done(err)
-              } else {
-                assert(files.length === 75, 'there are more/less files than created')
-                done()
-              }
-            })
-          }
-    pump(blob, stream, streamWriter, new ExportFileAdapter(tempDir, { format, layout: 'blob' }), onEnd)
   })
 
 })
@@ -94,6 +71,11 @@ describe('Import Adapters', () => {
               rimraf.sync(tempDir)
               done(error)
             }
+
+            // Update a file in order to get a blob to send
+            const exportedFile = fs.createReadStream(`${process.cwd()}/test/data/medable.jpg`)
+            exportedFile.pipe(fs.createWriteStream(`${tempDir}/env/assets/env.logo.content.jpeg`))
+
             const importAdapter = new ImportStream(tempDir, format),
                   ndStream = ndjson.stringify(),
                   items = []
@@ -104,8 +86,9 @@ describe('Import Adapters', () => {
               const loadedItems = _.map(items, i => JSON.parse(i)),
                     blobItems = _.filter(loadedItems, i => i.data && i.streamId),
                     otherItems = _.filter(loadedItems, i => !i.data && !i.streamId)
-              assert(otherItems.length === 46, 'there are more/less files than loaded')
-              assert(blobItems.length === 15, 'there are more/less blob items than loaded')
+              assert(otherItems.length === 43, 'there are more/less files than loaded')
+              assert(blobItems.length === 1, 'there are more/less blob items than loaded')
+              fs.writeFileSync('/Users/gastonrobledo/test.ndjson', items.join('\n'))
               done()
             })
             // call this in order to trigger end event or declare a data listener
