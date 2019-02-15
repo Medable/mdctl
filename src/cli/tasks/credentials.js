@@ -201,7 +201,7 @@ class Credentials extends Task {
     try {
 
       const client = await cli.getApiClient({ resurrect: false })
-      await client.post('/accounts/logout')
+      await client.post('/accounts/me/logout')
 
     } catch (err) {
       // eslint-disable-line no-empty
