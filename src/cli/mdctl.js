@@ -202,7 +202,11 @@ module.exports = class MdCtlCli {
 
     let err
     try {
-      err = Fault.from(await client.get('/accounts/status', { query: { paths: ['_id'] } }).fault, false)
+      const result = await client.get('/accounts/status', { query: { paths: ['_id'] } })
+      err = Fault.from(result.fault, false)
+      if (!err && !result.loggedin) {
+        await client.post('/accounts/login', { email: credentials.username, password: credentials.password })
+      }
     } catch (e) {
       err = e
     }
