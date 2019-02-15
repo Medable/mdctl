@@ -59,7 +59,7 @@ class Env extends Task {
       manifest = parseString(fs.readFileSync(manifestFile), options.format)
     }
 
-    pathTo(options, 'requestOptions.headers.accept', 'application/x-ndjson')
+    pathTo(requestOptions, 'requestOptions.headers.accept', 'application/x-ndjson')
     await client.call(url.pathname, Object.assign(requestOptions, {
       stream, body: { manifest }
     }))
