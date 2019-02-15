@@ -20,11 +20,6 @@ const slugify = require('slugify'),
       },
       NON_WRITABLE_KEYS = ['facet'],
       SectionsCreated = [],
-      TemplatesExt = {
-        html: 'html',
-        plain: 'txt',
-        subject: 'txt'
-      },
       { privatesAccessor } = require('../privates')
 
 class ExportSection {
@@ -36,12 +31,35 @@ class ExportSection {
       key,
       scriptFiles: [],
       extraFiles: [],
-      templateFiles: []
+      templateFiles: [],
+      id: uuid.v4(),
+      filePath: ''
     })
-    SectionsCreated.push(this)
+    if (this.isWritable) {
+      SectionsCreated.push(this)
+    }
     if (new.target === ExportSection) {
       Object.seal(this)
     }
+  }
+
+  updateFilePath(path) {
+    privatesAccessor(this, 'filePath', path)
+  }
+
+  updateSectionPath(path) {
+    const sc = _.find(SectionsCreated, s => s.id === this.id)
+    if(sc) {
+      sc.updateFilePath(path)
+    }
+  }
+
+  get id() {
+    return privatesAccessor(this).id
+  }
+
+  get filePath() {
+    return privatesAccessor(this).filePath
   }
 
   get key() {
@@ -82,6 +100,10 @@ class ExportSection {
     return NON_WRITABLE_KEYS.indexOf(privatesAccessor(this).key) < 0
   }
 
+  get isFacet() {
+    return privatesAccessor(this).key === 'facet'
+  }
+
   getPath() {
     const { key, content } = privatesAccessor(this),
           { object } = content
@@ -115,29 +137,33 @@ class ExportSection {
 
   extractAssets() {
     return new Promise(async(success) => {
-      const nodes = jp.nodes(privatesAccessor(this).content, '$..resourceId')
-      if (nodes.length) {
-        _.forEach(nodes, (n) => {
-          const parent = this.getParentFromPath(n.path),
-                facets = _.filter(SectionsCreated, sc => sc.key === 'facet'),
-                facet = _.find(facets, f => parent.resourceId === f.content.resourceId)
-          if (facet) {
-            n.path.splice(n.path.length - 1, 1, 'filePath')
-            const { content } = facet,
-                  objectPath = jp.stringify(n.path),
-                  name = `${content.resourcePath}.${slugify(content.name, '_')}`
-            privatesAccessor(this).extraFiles.push({
-              name,
-              facet,
-              ext: mime.getExtension(content.mime),
-              data: content.url || content.base64,
-              remoteLocation: !!content.url,
-              pathTo: objectPath,
-              ETag: parent.ETag
-            })
+
+      const facet = privatesAccessor(this).content
+      let itemSource = null
+      for (let i = 0; i < SectionsCreated.length; i += 1) {
+        const sc = SectionsCreated[i],
+              nodes = jp.nodes(sc.content, '$..resourceId'),
+              item = _.find(nodes, n => n.value === facet.resourceId)
+        if (item) {
+          // replace last path
+          item.path.splice(item.path.length - 1, 1, 'filePath')
+          itemSource = {
+            sectionPath: sc.filePath,
+            path: jp.stringify(item.path)
           }
+          break
+        }
+      }
+      if (itemSource !== null) {
+        privatesAccessor(this).extraFiles.push({
+          name: facet.resource,
+          ext: mime.getExtension(facet.mime),
+          data: facet.url || facet.base64,
+          remoteLocation: !!facet.url,
+          sectionPath: itemSource.sectionPath,
+          pathTo: itemSource.path,
+          ETag: facet.ETag
         })
-        return success()
       }
       return success()
     })
@@ -178,9 +204,10 @@ class ExportSection {
             objectPath.push(i)
             objectPath.push('data')
             if (cnt.data) {
+              const findMime = _.find(content.spec, s => s.name === cnt.name)
               templateFiles.push({
                 name: `${name}.${l.locale}.${cnt.name}`,
-                ext: TemplatesExt[cnt.name],
+                ext: mime.getExtension(findMime.mime),
                 data: cnt.data,
                 remoteLocation: false,
                 pathTo: jp.stringify(objectPath)
@@ -319,6 +346,5 @@ class ImportSection {
 
 module.exports = {
   ExportSection,
-  ImportSection,
-  TemplatesExt
+  ImportSection
 }

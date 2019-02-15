@@ -62,6 +62,7 @@ class Layout extends Writable {
             resolve({
               name: f.name,
               path: f.pathTo,
+              targetFilePath: f.sectionPath,
               dest
             })
           })
@@ -88,10 +89,12 @@ class Layout extends Writable {
   }
 
   async writeExtraFiles(folder, chunk) {
-    let paths = []
+    let paths = [],
+        updateAlreadyCreatedFile = false
     if (chunk.extraFiles.length > 0) {
       ensureDir(`${folder}/assets`)
       paths = await this.writeAssets(`${folder}/assets`, chunk.extraFiles)
+      updateAlreadyCreatedFile = true
     }
     if (chunk.scriptFiles.length > 0) {
       ensureDir(`${folder}/js`)
@@ -101,9 +104,19 @@ class Layout extends Writable {
       ensureDir(`${folder}/tpl`)
       paths = await this.writeAssets(`${folder}/tpl`, chunk.templateFiles)
     }
-    _.forEach(paths, (d) => {
-      jp.value(chunk.content, d.path, d.dest.replace(this.output, ''))
-    })
+    if (!updateAlreadyCreatedFile) {
+      _.forEach(paths, (d) => {
+        jp.value(chunk.content, d.path, d.dest.replace(this.output, ''))
+      })
+    } else {
+      _.forEach(paths, (d) => {
+        if (d.targetFilePath) {
+          const content = parseString(fs.readFileSync(d.targetFilePath), this.format)
+          jp.value(content, d.path, d.dest.replace(this.output, ''))
+          fs.writeFileSync(d.targetFilePath, stringifyContent(content, this.format))
+        }
+      })
+    }
   }
 
 }
@@ -120,14 +133,20 @@ class FilesLayout extends Layout {
 
   async processChunk(chunk) {
     try {
-      if (chunk.isWritable) {
-        const folder = `${this.output}/${chunk.getPath()}`
+      const folder = `${this.output}/${chunk.getPath()}`
+      if (chunk.isFacet) {
+        await chunk.extractAssets()
+      } else {
         await chunk.extractScripts()
         await chunk.extractTemplates()
-        await chunk.extractAssets()
-        ensureDir(folder)
-        await this.writeExtraFiles(folder, chunk)
-        this.writeToFile(`${folder}/${slugify(chunk.name, '_')}.${this.format}`, chunk.content)
+      }
+      ensureDir(folder)
+      await this.writeExtraFiles(folder, chunk)
+
+      if (chunk.isWritable) {
+        const filePath = `${folder}/${slugify(chunk.name, '_')}.${this.format}`
+        this.writeToFile(filePath, chunk.content)
+        chunk.updateSectionPath(filePath)
       }
       return true
     } catch (e) {
