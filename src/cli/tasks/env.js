@@ -48,7 +48,6 @@ class Env extends Task {
           },
           streamOptions = {
             format: options.format,
-            layout: options.layout,
             config: cli.config
           },
           streamTransform = new ExportStream(),
