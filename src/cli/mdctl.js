@@ -191,7 +191,7 @@ module.exports = class MdCtlCli {
 
     // is there an active login, attempt to resurrect it.
     // this won't do much unless there's a session attached to the client.
-    if (activeCredentials && activeCredentials.type === 'password' && rBool(options.resurrect, true)) {
+    if (activeCredentials && client.credentials.type === 'password' && rBool(options.resurrect, true)) {
       await this.resurrectClient(client, activeCredentials)
     }
 

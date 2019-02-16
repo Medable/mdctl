@@ -89,7 +89,7 @@ class Client {
    *  principal - set calling principal for signed requests
    *  method - request method
    *  basic - boolean (false). force username/password basic auth headers for password credentials.
-   *  body - request body for patch put and post
+   *  body - request body for patch put and post. can be a stream.
    *  json - defaults to true. if true, body must be an object.
    *  cookies - defaults to true. set to false to prevent sending cookies
    *  query - request uri query parameters
