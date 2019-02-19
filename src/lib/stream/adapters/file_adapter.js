@@ -1,8 +1,6 @@
 const { Writable, Transform } = require('stream'),
       EventEmitter = require('events'),
-      path = require('path'),
       mime = require('mime-types'),
-      { getExtension } = require('mime'),
       fs = require('fs'),
       jp = require('jsonpath'),
       _ = require('lodash'),
@@ -11,7 +9,7 @@ const { Writable, Transform } = require('stream'),
       pluralize = require('pluralize'),
       { md5FileHash } = require('../../utils/crypto'),
       Fault = require('../../fault'),
-      { TemplatesExt, ImportSection } = require('../section'),
+      { ImportSection } = require('../section'),
       { stringifyContent, parseString } = require('../../utils/values'),
       { ensureDir } = require('../../utils/directory'),
       { privatesAccessor } = require('../../privates'),
@@ -20,12 +18,13 @@ const { Writable, Transform } = require('stream'),
 class Layout extends Writable {
 
   constructor(output, { format = 'json', metadata = {} }) {
-    super({ objectMode: true })
+    super({ objectMode: true, end: false})
     Object.assign(privatesAccessor(this), {
       output,
       format,
       metadata,
-      binaries: []
+      resources: [],
+      streams: {}
     })
     ensureDir(output)
   }
@@ -53,95 +52,78 @@ class Layout extends Writable {
     return true
   }
 
-  async writeBinaryAsset(folder, f, notDownload = false) {
-    return new Promise((resolve, reject) => {
-      const dest = `${folder}/${slugify(f.name)}.${f.ext}`
-      if(Layout.fileNeedsUpdate(f, dest) && !notDownload) {
-        const fileWriter = fs.createWriteStream(dest)
-        fileWriter.on('finish', () => {
-          resolve({
-            name: f.name,
-            path: f.pathTo,
-            targetFilePath: f.sectionPath,
-            dest
-          })
-        })
-        fileWriter.on('error', (e) => {
-          reject(e)
-        })
+  addResource(f) {
+    privatesAccessor(this).resources.push(f)
+  }
 
-        if (f.url) {
-          Layout.downloadResources(f.url).pipe(fileWriter)
-        } else if (f.base64) {
-          fileWriter.write(f.base64)
-          fileWriter.end()
-        } else if (f.streamId) {
-          // TBD
-        } else {
-          resolve({
-            name: f.name,
-            path: f.pathTo,
-            dest
-          })
+  async writeAndUpdatePaths() {
+    const { resources } = privatesAccessor(this)
+
+    _.forEach(resources, (r) => {
+      const isAsset = ['assets', 'tpl', 'js'].indexOf(r.type) > -1,
+            dest = r.dest || `${r.name}.${r.ext}`
+      r.isAsset = isAsset
+      if (!isAsset) {
+        ensureDir(r.folder)
+        r.file = `${r.folder}/${dest}`
+      } else {
+        const section = _.find(resources, doc => doc.id === r.sectionId)
+        ensureDir(`${section.folder}/${r.type}`)
+        r.file = `${section.folder}/${r.type}/${dest}`
+        jp.value(section.data, r.pathTo, r.file.replace(this.output, ''))
+        if (r.PathETag) {
+          jp.value(section.data, r.PathETag, r.ETag)
+        }
+        if (r.stream && r.stream.length) {
+          r.data = r.stream.join()
+        }
+      }
+    })
+
+    _.forEach(resources, (r) => {
+      if(r.isAsset) {
+        if (Layout.fileNeedsUpdate(r, r.file)) {
+          if(r.remoteLocation && r.url) {
+            // download remote resource
+            fs.createReadStream(r.file).pipe(Layout.downloadResources(r.url))
+          } else if (r.base64) {
+            this.writeToFile(r.file, Buffer.from(r.base64, 'base64'), true)
+          } else {
+            this.writeToFile(r.file, r.data, true)
+          }
         }
       } else {
-        resolve({
-          name: f.name,
-          path: f.pathTo,
-          dest
-        })
+        this.writeToFile(r.file, r.data, false)
       }
     })
   }
 
-  async writeAssets(folder, files, notDownload = false) {
-    const promises = []
-    _.forEach(files, (f) => {
-      promises.push(this.writeBinaryAsset(folder, f, notDownload))
-    })
-    return Promise.all(promises)
-  }
-
-  async updatePaths() {
-    const { binaries } = privatesAccessor(this),
-          paths = _.groupBy(binaries, 'targetFilePath'),
-          keys = Object.keys(paths)
-
-    _.forEach(keys, (k) => {
-      const updates = paths[k],
-            content = parseString(fs.readFileSync(k), this.format)
-      _.forEach(updates, (d) => {
-        jp.value(content, d.path, d.dest.replace(this.output, ''))
-      })
-      fs.writeFileSync(k, stringifyContent(content, this.format))
-    })
+  async writeStreamAsset(chunk) {
+    const { resources } = privatesAccessor(this),
+          existingStream = _.find(resources, r => r.streamId === chunk.content.streamId)
+    if (existingStream) {
+      if (!existingStream.stream) {
+        existingStream.stream = []
+      }
+      if (chunk.content.data !== null) {
+        existingStream.stream.push(Buffer.from(chunk.content.data, 'base64'))
+      } else {
+        existingStream.stream.push(null)
+      }
+      privatesAccessor(this, 'resources', resources)
+    }
   }
 
   async writeBinaryFiles(chunk) {
-    if (chunk.extraFiles.length > 0) {
-      const promises = []
-      _.forEach(chunk.extraFiles, (ef) => {
-        const folder = `${path.dirname(ef.sectionPath)}/assets`
-        ensureDir(folder)
-        promises.push(this.writeBinaryAsset(folder, ef))
-      })
-      privatesAccessor(this, 'binaries', _.concat(privatesAccessor(this).binaries, await Promise.all(promises)))
-    }
+    _.forEach(chunk.extraFiles, (ef) => {
+      const file = Object.assign(ef, { type: 'assets' })
+      this.addResource(file)
+    })
   }
 
   async writeExtraFiles(folder, chunk) {
-    let paths = []
-    if (chunk.scriptFiles.length > 0) {
-      ensureDir(`${folder}/js`)
-      paths = await this.writeAssets(`${folder}/js`, chunk.scriptFiles)
-    }
-    if (chunk.templateFiles.length > 0) {
-      ensureDir(`${folder}/tpl`)
-      paths = await this.writeAssets(`${folder}/tpl`, chunk.templateFiles)
-    }
-    _.forEach(paths, (d) => {
-      jp.value(chunk.content, d.path, d.dest.replace(this.output, ''))
-    })
+    _.forEach(chunk.scriptFiles, sf => this.addResource(Object.assign(sf, { type: 'js' })))
+    _.forEach(chunk.templateFiles, tf => this.addResource(Object.assign(tf, { type: 'tpl' })))
   }
 
 }
@@ -156,23 +138,29 @@ class FilesLayout extends Layout {
     this.writeToFile(`${this.output}/.cache.json`, JSON.stringify(this.metadata, null, 2), true)
   }
 
-  async processChunk(chunk) {
+  processChunk(chunk) {
     try {
-      const folder = `${this.output}/${chunk.getPath()}`
-      if (chunk.isFacet) {
-        await chunk.extractAssets()
-        await this.writeBinaryFiles(chunk)
+      if (chunk.key === 'stream') {
+        this.writeStreamAsset(chunk)
       } else {
-        ensureDir(folder)
-        await chunk.extractScripts()
-        await chunk.extractTemplates()
-        await this.writeExtraFiles(folder, chunk)
-      }
-
-      if (chunk.isWritable) {
-        const filePath = `${folder}/${slugify(chunk.name, '_')}.${this.format}`
-        this.writeToFile(filePath, chunk.content)
-        chunk.updateSectionPath(filePath)
+        const folder = `${this.output}/${chunk.getPath()}`
+        if (chunk.isFacet) {
+          chunk.extractAssets()
+          this.writeBinaryFiles(chunk)
+        } else {
+          // ensureDir(folder)
+          chunk.extractScripts()
+          chunk.extractTemplates()
+          this.writeExtraFiles(folder, chunk)
+        }
+        if (chunk.isWritable) {
+          this.addResource({
+            folder,
+            id: chunk.id,
+            data: chunk.content,
+            dest: `${slugify(chunk.name, '_')}.${this.format}`
+          })
+        }
       }
       return true
     } catch (e) {
@@ -181,18 +169,14 @@ class FilesLayout extends Layout {
   }
 
   _write(chunk, enc, cb) {
-    this.processChunk(chunk).then(() => {
-      cb()
-    }).catch(e => cb(e))
+    this.processChunk(chunk)
+    cb()
   }
 
   _final(cb) {
-    this.updatePaths()
+    this.writeAndUpdatePaths()
     this.createCheckpointFile()
     cb()
-    setTimeout(() => {
-      this.emit('end_writing')
-    }, 300)
   }
 
 }
@@ -313,26 +297,19 @@ class ImportFileAdapter extends EventEmitter {
     return privatesAccessor(this).metadata
   }
 
-  getAssetStream(ef) {
-    const { metadata } = privatesAccessor(this)
-    return new Promise((resolve, reject) => {
-      const data = [],
-            outS = new OutputStream({
-              ndjson: true,
-              template: ef
-            })
-      outS.on('data', (fileData) => {
-        if (fileData.toString() !== '\n') {
-          data.push(parseString(fileData.toString()))
-        }
-      })
-      outS.on('error', e => reject(e))
-      outS.on('end', () => {
-        resolve(data)
-      })
-      outS.write(stringifyContent(ef, metadata.format))
-      outS.end()
+  getAssetStream(ef, callback) {
+    const { metadata } = privatesAccessor(this),
+          outS = new OutputStream({
+            ndjson: false,
+            template: ef
+          })
+    outS.on('data', (fileData) => {
+      callback(null, fileData)
     })
+    outS.on('error', e => callback(e))
+    outS.write(stringifyContent(ef, metadata.format))
+    outS.end()
+    return outS
   }
 
   get iterator() {
@@ -346,31 +323,13 @@ class ImportFileAdapter extends EventEmitter {
     }
   }
 
-  get blobIterator() {
-    const self = this
-    return {
-      [Symbol.asyncIterator]() {
-        return {
-          next: async() => self.getBlobs()
-        }
-      }
-    }
-  }
 
-  async getBlobs() {
-    const { blobIndex, blobs } = privatesAccessor(this)
-    if (blobs.length > blobIndex) {
-      privatesAccessor(this, 'blobIndex', blobIndex + 1)
-      const stream = await this.getAssetStream(blobs[blobIndex])
-      return {
-        value: stream, // _.map(stream, s => stringifyContent(s, metadata.format)),
-        done: false
-      }
-    }
-    return {
-      value: null,
-      done: true
-    }
+  getBlobs(callback) {
+    const { blobs } = privatesAccessor(this)
+    blobs.forEach((blob) => {
+      this.getAssetStream(blob, callback)
+    })
+    callback(null, null)
   }
 
   async getChunks() {

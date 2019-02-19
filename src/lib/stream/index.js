@@ -1,5 +1,5 @@
 const { Transform, Readable } = require('stream'),
-      { ExportSection } = require('./section'),
+      { ExportSection, StreamChunk } = require('./section'),
       Fault = require('../fault'),
       { isCustomName } = require('../utils/values'),
       KEYS = ['manifest', 'manifest-dependencies', 'manifest-exports', 'env', 'app', 'config', 'notification', 'policy', 'role', 'smsNumber', 'serviceAccount', 'storageLocation', 'configuration', 'facet', 'object', 'script', 'template', 'view'],
@@ -28,6 +28,9 @@ class ExportStream extends Transform {
       if (this.checkKeys(chunk.object)) {
         const section = new ExportSection(chunk, chunk.object)
         this.push(section)
+      } else if (chunk.object === 'stream') {
+        const section = new StreamChunk(chunk, chunk.object)
+        this.push(section)
       }
       // ignore unhandled chunks
       callback()
@@ -49,34 +52,43 @@ class ImportStream extends Readable {
       input: inputDir || process.cwd(),
       cache: `${inputDir || process.cwd()}/.cache.json`,
       format,
-      iterator: null
+      adapter: null
     })
     this.loadIterator()
-
+    this.docProcessed = false
+    this.items = []
   }
 
   loadIterator() {
     const { input, cache, format } = privatesAccessor(this),
           importAdapter = new ImportFileAdapter(input, cache, format)
 
-    privatesAccessor(this, 'iterator', importAdapter.iterator)
-    privatesAccessor(this, 'blobIterator', importAdapter.blobIterator)
+    privatesAccessor(this, 'adapter', importAdapter)
   }
 
-  async _read(size) {
-    const { iterator, blobIterator } = privatesAccessor(this),
-          iter = iterator[Symbol.asyncIterator](),
-          item = await iter.next()
-    if (!item.done) {
-      return item.value.forEach(v => this.push(v))
-    }
-    const biter = blobIterator[Symbol.asyncIterator](),
-          blob = await biter.next()
-    if (!blob.done) {
-      return blob.value.forEach(v => this.push(v))
-    }
 
-    return this.push(null)
+  async _read(size) {
+    const { adapter } = privatesAccessor(this)
+    if (!this.docProcessed) {
+      const iter = adapter.iterator[Symbol.asyncIterator](),
+            item = await iter.next()
+      if (!item.done) {
+        return item.value.forEach((v) => {
+          this.items.push(v)
+          this.push(v)
+        })
+      }
+      this.docProcessed = true
+    }
+    return adapter.getBlobs((err, data) => {
+      if(!err) {
+        if(data) {
+          this.push(data)
+        } else{
+          this.push(null)
+        }
+      }
+    })
   }
 
 }
