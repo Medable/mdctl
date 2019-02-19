@@ -98,11 +98,10 @@ describe('Export and Import Adapters', () => {
               pump(importAdapter, ndStream, () => {
                 rimraf.sync(tempDir)
                 const loadedItems = _.map(items, i => JSON.parse(i)),
-                      blobItems = _.filter(loadedItems, i => i.data && i.streamId),
+                      blobItems = _.groupBy(_.filter(loadedItems, i => i.data && i.streamId), 'streamId'),
                       otherItems = _.filter(loadedItems, i => !i.data && !i.streamId)
-                assert(otherItems.length === 43, 'there are more/less files than loaded')
-                assert(blobItems.length === 1, 'there are more/less blob items than loaded')
-                fs.writeFileSync('/Users/gastonrobledo/test.ndjson', items.join('\n'))
+                assert(otherItems.length === 42, 'there are more/less files than loaded')
+                assert(Object.keys(blobItems).length === 1, 'there are more/less blob items than loaded')
                 done()
               })
               // call this in order to trigger end event or declare a data listener

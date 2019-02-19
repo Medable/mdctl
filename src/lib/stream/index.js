@@ -52,14 +52,13 @@ class ImportStream extends Readable {
       input: inputDir || process.cwd(),
       cache: `${inputDir || process.cwd()}/.cache.json`,
       format,
-      adapter: null
+      adapter: null,
+      docProcessed: false
     })
-    this.loadIterator()
-    this.docProcessed = false
-    this.items = []
+    this.loadAdapter()
   }
 
-  loadIterator() {
+  loadAdapter() {
     const { input, cache, format } = privatesAccessor(this),
           importAdapter = new ImportFileAdapter(input, cache, format)
 
@@ -68,8 +67,8 @@ class ImportStream extends Readable {
 
 
   async _read(size) {
-    const { adapter } = privatesAccessor(this)
-    if (!this.docProcessed) {
+    const { adapter, docProcessed } = privatesAccessor(this)
+    if (!docProcessed) {
       const iter = adapter.iterator[Symbol.asyncIterator](),
             item = await iter.next()
       if (!item.done) {
@@ -78,17 +77,20 @@ class ImportStream extends Readable {
           this.push(v)
         })
       }
-      this.docProcessed = true
-    }
-    return adapter.getBlobs((err, data) => {
-      if(!err) {
-        if(data) {
-          this.push(data)
-        } else{
-          this.push(null)
-        }
+      privatesAccessor(this, 'docProcessed', true)
+    } else {
+      const { blobs } = adapter
+      if (blobs.length) {
+        blobs.forEach((b) => {
+          adapter.getAssetStream(b).on('data', (d) => {
+            this.push(d)
+          }).on('end', () => {
+            this.push(null)
+          })
+          blobs.pop()
+        })
       }
-    })
+    }
   }
 
 }
