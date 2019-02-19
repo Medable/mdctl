@@ -297,16 +297,12 @@ class ImportFileAdapter extends EventEmitter {
     return privatesAccessor(this).metadata
   }
 
-  getAssetStream(ef, callback) {
+  getAssetStream(ef) {
     const { metadata } = privatesAccessor(this),
           outS = new OutputStream({
             ndjson: false,
             template: ef
           })
-    outS.on('data', (fileData) => {
-      callback(null, fileData)
-    })
-    outS.on('error', e => callback(e))
     outS.write(stringifyContent(ef, metadata.format))
     outS.end()
     return outS
@@ -324,12 +320,8 @@ class ImportFileAdapter extends EventEmitter {
   }
 
 
-  getBlobs(callback) {
-    const { blobs } = privatesAccessor(this)
-    blobs.forEach((blob) => {
-      this.getAssetStream(blob, callback)
-    })
-    callback(null, null)
+  get blobs() {
+    return privatesAccessor(this).blobs
   }
 
   async getChunks() {
