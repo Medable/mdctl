@@ -155,7 +155,7 @@ class Client {
     }
 
     return new Promise((resolve, reject) => {
-      requestOptions.strictSSL = false
+      requestOptions.strictSSL = false // TODO: delete me
       req.run(Object.assign({ uri, stream }, requestOptions))
         .then(async(result) => {
 

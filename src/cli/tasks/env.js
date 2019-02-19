@@ -44,7 +44,8 @@ class Env extends Task {
           url = new URL('/developer/environment/export', client.environment.url),
           requestOptions = {
             query: url.searchParams,
-            method: 'post'
+            method: 'post',
+            preferUrls: false
           },
           streamOptions = {
             format: options.format,

@@ -48,13 +48,6 @@ class ExportSection {
     privatesAccessor(this, 'filePath', path)
   }
 
-  updateSectionPath(path) {
-    const sc = _.find(SectionsCreated, s => s.id === this.id)
-    if(sc) {
-      sc.updateFilePath(path)
-    }
-  }
-
   get id() {
     return privatesAccessor(this).id
   }
@@ -137,44 +130,46 @@ class ExportSection {
   }
 
   extractAssets() {
-    return new Promise(async(success) => {
-
-      const facet = privatesAccessor(this).content
-      let itemSource = null
-      for (let i = 0; i < SectionsCreated.length; i += 1) {
-        const sc = SectionsCreated[i],
-              nodes = jp.nodes(sc.content, '$..resourceId'),
-              item = _.find(nodes, n => n.value === facet.resourceId)
-        if (item) {
-          // replace last path
-          item.path.splice(item.path.length - 1, 1, 'filePath')
-          itemSource = {
-            sectionPath: sc.filePath,
-            path: jp.stringify(item.path)
-          }
-          break
+    const facet = privatesAccessor(this).content
+    let itemSource = null
+    for (let i = 0; i < SectionsCreated.length; i += 1) {
+      const sc = SectionsCreated[i],
+            nodes = jp.nodes(sc.content, '$..resourceId'),
+            item = _.find(nodes, n => n.value === facet.resourceId)
+      if (item) {
+        // replace last path
+        const ETagPathItem = _.clone(item.path)
+        item.path.splice(item.path.length - 1, 1, 'filePath')
+        ETagPathItem.splice(ETagPathItem.length - 1, 1, 'ETag')
+        itemSource = {
+          sectionId: sc.id,
+          path: jp.stringify(item.path),
+          pathETag: jp.stringify(ETagPathItem)
         }
+        break
       }
-      if (itemSource !== null) {
-        const { url, base64, streamId, path } = facet
-        privatesAccessor(this).extraFiles.push({
-          name: facet.resource,
-          ext: mime.getExtension(facet.mime),
-          url,
-          base64,
-          streamId,
-          path,
-          remoteLocation: !!facet.url,
-          sectionPath: itemSource.sectionPath,
-          pathTo: itemSource.path,
-          ETag: facet.ETag
-        })
-      }
-      return success()
-    })
+    }
+    if (itemSource !== null) {
+      const {
+        url, base64, streamId, path
+      } = facet
+      privatesAccessor(this).extraFiles.push({
+        name: facet.resource,
+        ext: mime.getExtension(facet.mime),
+        url,
+        base64,
+        streamId,
+        path,
+        remoteLocation: !!facet.url,
+        sectionId: itemSource.sectionId,
+        pathTo: itemSource.path,
+        ETag: facet.ETag,
+        PathETag: itemSource.pathETag
+      })
+    }
   }
 
-  async extractScripts() {
+  extractScripts() {
     const { content, scriptFiles } = privatesAccessor(this),
           nodes = jp.nodes(content, '$..script')
     nodes.forEach((n) => {
@@ -188,15 +183,15 @@ class ExportSection {
           ext: 'js',
           data: n.value,
           remoteLocation: false,
-          pathTo: jp.stringify(path)
+          pathTo: jp.stringify(path),
+          sectionId: this.id
         })
       }
     })
     privatesAccessor(this, 'scriptFiles', scriptFiles)
-    return true
   }
 
-  async extractTemplates() {
+  extractTemplates() {
     const { key, content, templateFiles } = privatesAccessor(this)
     if (key === 'template') {
       if (_.isArray(content.localizations)) {
@@ -215,7 +210,8 @@ class ExportSection {
                 ext: mime.getExtension(findMime.mime),
                 data: cnt.data,
                 remoteLocation: false,
-                pathTo: jp.stringify(objectPath)
+                pathTo: jp.stringify(objectPath),
+                sectionId: this.id
               })
             }
           })
@@ -223,9 +219,29 @@ class ExportSection {
         privatesAccessor(this, 'templateFiles', templateFiles)
       }
     }
-    return true
   }
 
+}
+
+class StreamChunk {
+  constructor(content, key = '') {
+
+    Object.assign(privatesAccessor(this), {
+      content,
+      key
+    })
+    if (new.target === StreamChunk) {
+      Object.seal(this)
+    }
+  }
+
+  get key() {
+    return privatesAccessor(this).key
+  }
+
+  get content() {
+    return privatesAccessor(this).content
+  }
 }
 
 class ImportSection {
@@ -354,5 +370,6 @@ class ImportSection {
 
 module.exports = {
   ExportSection,
+  StreamChunk,
   ImportSection
 }
