@@ -3,7 +3,7 @@ const { prompt } = require('inquirer'),
       Table = require('cli-table'),
       {
         validateApiKey, validateApiSecret
-      } = require('../../lib/api/credentials'),
+      } = require('../../lib/credentials/credentials'),
       {
         rString, rInt, isSet
       } = require('../../lib/utils/values'),

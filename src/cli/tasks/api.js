@@ -4,10 +4,10 @@ const _ = require('lodash'),
       { URL } = require('url'),
       jsyaml = require('js-yaml'),
       ndjson = require('ndjson'),
+      fs = require('fs'),
       { rString, isSet } = require('../../lib/utils/values'),
-      { loadJsonOrYaml } = require('../../lib/utils'),
+      { loadJsonOrYaml, pathTo } = require('../../lib/utils'),
       Fault = require('../../lib/fault'),
-      pathTo = require('../../lib/utils/path.to'),
       Task = require('../lib/task'),
       methods = ['get', 'post', 'put', 'patch', 'delete']
 
@@ -50,6 +50,10 @@ class Api extends Task {
     if (rString(cli.args('file'))) {
       const file = await loadJsonOrYaml(cli.args('file'))
       Object.assign(options, _.pick(file, 'body', 'query', 'requestOptions', 'grep'))
+    }
+
+    if (rString(cli.args('stream'))) {
+      options.body = fs.createReadStream(cli.args('stream'))
     }
 
     Api.mergeJsonArgIf(cli, options, 'body')
@@ -208,10 +212,11 @@ class Api extends Task {
       Options 
         
         --body - payload
-        --ndjson -- sends the "accept: application/x-ndjson" header and outputs as the stream is received
+        --ndjson -- sends the "accept: application/x-ndjson" header and outputs as the stream is received                 
         --query - query arguments json. merges with path query arguments                                   
         --requestOptions - custom request options json                    
-        --file - reads body, query, grep and requestOptions from a json/yaml file.                                                   
+        --file - reads body, query, grep and requestOptions from a json/yaml file.                       
+        --stream - streams a local file directly to the request.                          
         --format - output format. defaults to pretty (json, pretty, yaml, raw)
         --grep - grep text in an ndjson stream and output matching objects
         --verbose - outputs an object with request and response information                

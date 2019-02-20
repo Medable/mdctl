@@ -1,5 +1,5 @@
 
-const pathTo = require('./utils/path.to'),
+const { pathTo } = require('./utils'),
       privatesAccessor = createAccessor()
 
 let Undefined

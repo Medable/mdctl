@@ -1,14 +1,11 @@
 const _ = require('lodash'),
       os = require('os'),
-      {
-        CredentialsManager,
-      } = require('../../lib/api/credentials'),
       { question } = require('./questionnaires'),
 
-      storeCurrentLogin = async({ client, password }) => {
+      storeCurrentLogin = async(cli, { client, password }) => {
         let result
         try {
-          result = await CredentialsManager.setCustom('login', '*', {
+          result = await cli.credentialsManager.setCustom('login', '*', {
             client: {
               environment: client.environment.url,
               credentials: {
@@ -26,11 +23,11 @@ const _ = require('lodash'),
         return result
       },
 
-      logInAndStoreLogIn = client => async(loginBody) => {
+      logInAndStoreLogIn = (cli, client) => async(loginBody) => {
         let result
         try {
           result = await client.post('/accounts/login', loginBody)
-          await storeCurrentLogin({ client, password: loginBody.password })
+          await storeCurrentLogin(cli, { client, password: loginBody.password })
         } catch (err) {
           if (err.code === 'kCallbackNotFound') {
             const location = {
@@ -39,7 +36,7 @@ const _ = require('lodash'),
                     singleUse: false
                   },
                   loginBodyWithLocation = _.extend(_.clone(loginBody), { location })
-            return logInAndStoreLogIn(client)(loginBodyWithLocation)
+            return logInAndStoreLogIn(cli, client)(loginBodyWithLocation)
           }
           throw new Error(err)
         }
@@ -47,23 +44,21 @@ const _ = require('lodash'),
       },
 
       loginWithExistingCredentials = cli => async(credentialsQuery) => {
-        const credentials = await CredentialsManager.get(credentialsQuery),
+        const credentials = await cli.credentialsManager.get(credentialsQuery),
               client = await cli.getApiClient({ credentials, resurrect: false }),
               loginBody = { email: _.get(credentials, 'username'), password: _.get(credentials, 'password') }
 
-        return logInAndStoreLogIn(client)(loginBody)
+        return logInAndStoreLogIn(cli, client)(loginBody)
       },
 
       logInWithPasswordSecret = cli => async(credentials) => {
         const client = await cli.getApiClient({ credentials, resurrect: false }),
               loginBody = { email: _.get(credentials, 'username'), password: _.get(credentials, 'password') }
 
-        return logInAndStoreLogIn(client)(loginBody)
+        return logInAndStoreLogIn(cli, client)(loginBody)
       }
 
 module.exports = {
-  // logInWithDefaultCreds,
-  // logInWithUserCredentials,
   loginWithExistingCredentials,
   logInWithPasswordSecret
 }

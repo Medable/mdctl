@@ -3,9 +3,6 @@ const _ = require('lodash'),
       {
         loadJsonOrYaml,
       } = require('../../lib/utils'),
-      {
-        CredentialsManager,
-      } = require('../../lib/api/credentials'),
       Environment = require('../../lib/api/environment'),
       {
         askUserCredentials,
@@ -17,10 +14,10 @@ const _ = require('lodash'),
         logInWithPasswordSecret
       } = require('../lib/authentication')
 
-async function storeCredentials(credentials) {
+async function storeCredentials(cli, credentials) {
   let result
   try {
-    result = await CredentialsManager.add(
+    result = await cli.credentialsManager.add(
       new Environment(credentials),
       credentials
     )
@@ -33,7 +30,7 @@ async function storeCredentials(credentials) {
 
 async function logInRequestingCredentialsFlow(cli, completedOptions) {
   const userCredentials = await askUserCredentials(completedOptions),
-        credentials = CredentialsManager.create(
+        credentials = cli.credentialsManager.create(
           new Environment(userCredentials),
           userCredentials
         )
@@ -44,17 +41,17 @@ async function logInRequestingCredentialsFlow(cli, completedOptions) {
   result = true
 
   // eslint-disable-next-line one-var
-  const existingCredentials = await CredentialsManager.list(userCredentials)
+  const existingCredentials = await cli.credentialsManager.list(userCredentials)
   if (_.isEmpty(existingCredentials)) {
     const saveCredentials = await askUserToSaveCredentials()
-    if (saveCredentials) await storeCredentials(userCredentials)
+    if (saveCredentials) await storeCredentials(cli, userCredentials)
   }
 
   return result
 }
 
 async function logInByChoosingCredentialsFlow(cli, completedOptions) {
-  const existingPasswordSecrets = await CredentialsManager.list(completedOptions)
+  const existingPasswordSecrets = await cli.credentialsManager.list(completedOptions)
 
   let result = false
 
