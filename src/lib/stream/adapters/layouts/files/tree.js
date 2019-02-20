@@ -32,6 +32,7 @@ class FileTreeLayout extends Layout {
           this.addResource({
             folder,
             id: chunk.id,
+            name: chunk.name,
             data: chunk.content,
             dest: `${slugify(chunk.name, '_')}.${this.format}`
           })

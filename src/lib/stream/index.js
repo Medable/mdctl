@@ -1,7 +1,7 @@
 const { Transform, Readable } = require('stream'),
       { ExportSection, StreamChunk } = require('./section'),
       Fault = require('../fault'),
-      { isCustomName, parseString } = require('../utils/values'),
+      { isCustomName } = require('../utils/values'),
       KEYS = ['manifest', 'manifest-dependencies', 'manifest-exports', 'env', 'app', 'config', 'notification', 'policy', 'role', 'smsNumber', 'serviceAccount', 'storageLocation', 'configuration', 'facet', 'object', 'script', 'template', 'view'],
       { privatesAccessor } = require('../privates'),
       { ImportFileAdapter } = require('./adapters/file_adapter')
@@ -66,7 +66,7 @@ class ImportStream extends Readable {
   }
 
 
-  async _read(size) {
+  async _read() {
     const { adapter, docProcessed } = privatesAccessor(this)
     if (!docProcessed) {
       const iter = adapter.iterator[Symbol.asyncIterator](),
@@ -90,6 +90,7 @@ class ImportStream extends Readable {
         })
       }
     }
+    return true
   }
 
 }

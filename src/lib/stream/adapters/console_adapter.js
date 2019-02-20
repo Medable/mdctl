@@ -4,11 +4,13 @@ const { Writable } = require('stream'),
 
 class ExportConsoleAdapter extends Writable {
 
-  constructor(outputPath, options = {}) {
-    super()
-    const { format = 'json' } = options,
+  constructor(options = {}) {
+    super({ objectMode: true })
+    const { format = 'json', print = true } = options,
           privates = {
-            format
+            format,
+            print,
+            items: []
           }
     Object.assign(privatesAccessor(this), privates)
   }
@@ -17,8 +19,23 @@ class ExportConsoleAdapter extends Writable {
     return privatesAccessor(this).format
   }
 
+  get items() {
+    return privatesAccessor(this).items
+  }
+
+  add(content) {
+    privatesAccessor(this).items.push(content)
+  }
+
   _write(chunk, enc, cb) {
-    console.log(stringifyContent(chunk, this.format))
+    if (privatesAccessor(this).print) {
+      console.log(stringifyContent(chunk, this.format))
+    }
+    this.add(stringifyContent(chunk, this.format))
+    cb()
+  }
+
+  _final(cb) {
     cb()
   }
 
