@@ -1,231 +1,26 @@
-const { Writable, Transform } = require('stream'),
+const { Transform } = require('stream'),
       EventEmitter = require('events'),
       mime = require('mime-types'),
       fs = require('fs'),
-      jp = require('jsonpath'),
       _ = require('lodash'),
-      request = require('request'),
-      slugify = require('slugify'),
       pluralize = require('pluralize'),
-      { pathTo } = require('../../utils'),
-      { md5FileHash } = require('../../utils/crypto'),
       Fault = require('../../fault'),
-      { TemplatesExt, ImportSection } = require('../section'),
+      { ImportSection } = require('../section'),
       { stringifyContent, parseString } = require('../../utils/values'),
       { ensureDir } = require('../../utils/directory'),
       { privatesAccessor } = require('../../privates'),
-      { OutputStream } = require('../chunk-stream')
+      { OutputStream } = require('../chunk-stream'),
+      FileTreeLayout = require('./layouts/files/tree')
 
-class Layout extends Writable {
-
-  constructor(output, { format = 'json', metadata = {} }) {
-    super({ objectMode: true })
-    Object.assign(privatesAccessor(this), {
-      output,
-      format,
-      metadata
-    })
-    ensureDir(output)
-  }
-
-  get format() {
-    return privatesAccessor(this).format
-  }
-
-  get metadata() {
-    return privatesAccessor(this).metadata
-  }
-
-  get output() {
-    return privatesAccessor(this).output
-  }
-
-  static downloadResources(url) {
-    return request(url)
-  }
-
-  static fileNeedsUpdate(f, path) {
-    if (f.ETag && fs.existsSync(path)) {
-      return md5FileHash(path) !== f.ETag
-    }
-    return true
-  }
-
-  async writeAssets(path, files, notDownload = false) {
-    const promises = []
-    _.forEach(files, (f) => {
-      promises.push(new Promise((resolve, reject) => {
-        const dest = `${path}/${slugify(f.name)}.${f.ext}`
-        if (!notDownload && Layout.fileNeedsUpdate(f, dest)) {
-          const fileWriter = fs.createWriteStream(dest)
-          fileWriter.on('finish', () => {
-            resolve({
-              name: f.name,
-              path: f.pathTo,
-              dest
-            })
-          })
-          fileWriter.on('error', () => {
-            reject()
-          })
-          if (f.remoteLocation) {
-            Layout.downloadResources(f.data).pipe(fileWriter)
-
-          } else {
-            fileWriter.write(f.data)
-            fileWriter.end()
-          }
-        } else {
-          resolve({
-            name: f.name,
-            path: f.pathTo,
-            dest
-          })
-        }
-      }))
-    })
-    return Promise.all(promises)
-  }
-
-  async writeExtraFiles(folder, chunk) {
-    let paths = []
-    if (chunk.extraFiles.length > 0) {
-      ensureDir(`${folder}/assets`)
-      paths = await this.writeAssets(`${folder}/assets`, chunk.extraFiles)
-    }
-    if (chunk.scriptFiles.length > 0) {
-      ensureDir(`${folder}/js`)
-      paths = await this.writeAssets(`${folder}/js`, chunk.scriptFiles)
-    }
-    if (chunk.templateFiles.length > 0) {
-      ensureDir(`${folder}/tpl`)
-      paths = await this.writeAssets(`${folder}/tpl`, chunk.templateFiles)
-    }
-    _.forEach(paths, (d) => {
-      jp.value(chunk.content, d.path, d.dest.replace(this.output, ''))
-    })
-  }
-
-}
-
-class FilesLayout extends Layout {
-
-  writeToFile(file, content, plain = false) {
-    return fs.writeFileSync(file, !plain ? stringifyContent(content, this.format) : content)
-  }
-
-  createCheckpointFile() {
-    this.writeToFile(`${this.output}/.cache.json`, JSON.stringify(this.metadata, null, 2), true)
-  }
-
-  async processChunk(chunk) {
-    try {
-      if (chunk.isWritable) {
-        const folder = `${this.output}/${chunk.getPath()}`
-        await chunk.extractScripts()
-        await chunk.extractTemplates()
-        await chunk.extractAssets()
-        ensureDir(folder)
-        await this.writeExtraFiles(folder, chunk)
-        this.writeToFile(`${folder}/${slugify(chunk.name, '_')}.${this.format}`, chunk.content)
-      }
-      return true
-    } catch (e) {
-      throw e
-    }
-  }
-
-  _write(chunk, enc, cb) {
-    this.processChunk(chunk).then(() => {
-      cb()
-    }).catch(e => cb(e))
-  }
-
-  _final(cb) {
-    this.createCheckpointFile()
-    cb()
-    setTimeout(() => {
-      this.emit('end_writing')
-    }, 300)
-  }
-
-}
-
-class SingleFileLayout extends Layout {
-
-  constructor(output, options) {
-    super(output, options)
-
-    Object.assign(privatesAccessor(this), {
-      data: {}
-    })
-  }
-
-  get data() {
-    return privatesAccessor(this).data
-  }
-
-  writeToFile(file, content) {
-    return fs.writeFileSync(file, stringifyContent(content, this.format))
-  }
-
-  createCheckpointFile() {
-    this.writeToFile(`${this.output}/.cache.json`, JSON.stringify(this.metadata, null, 2))
-  }
-
-  async processChunk(chunk) {
-    try {
-      await chunk.extractScripts()
-      await chunk.extractTemplates()
-      await chunk.extractAssets()
-      await this.writeExtraFiles(this.output, chunk)
-      const { key } = chunk
-      let exists = pathTo(this.data, key)
-      if (!exists) {
-        pathTo(this.data, key, [])
-        exists = []
-      }
-      if (_.isArray(exists)) {
-        exists.push(chunk.content)
-      } else if (_.isObject(exists)) {
-        exists = _.extend(exists, chunk.content)
-      }
-      if (exists) {
-        pathTo(this.data, key, exists)
-      }
-    } catch (e) {
-      throw e
-    }
-  }
-
-  _write(chunk, enc, cb) {
-    if (chunk.isWritable) {
-      this.processChunk(chunk).then(() => {
-        cb()
-      }).catch(e => cb(e))
-    } else {
-      cb()
-    }
-  }
-
-  _final(cb) {
-    this.createCheckpointFile()
-    this.writeToFile(`${this.output}/blob.${this.format}`, this.data)
-    this.emit('end_writing')
-    cb()
-  }
-
-}
 
 class ExportFileAdapter extends EventEmitter {
 
   constructor(outputPath, options = {}) {
     super()
-    const { layout = 'tree', format = 'json', mdctl = null } = options,
+    const { format = 'json', mdctl = null } = options,
           output = outputPath || process.cwd(),
           privates = {
             format,
-            layout,
             mdctl,
             output,
             cache: `${output}/.cache.json`,
@@ -234,14 +29,7 @@ class ExportFileAdapter extends EventEmitter {
     Object.assign(privatesAccessor(this), privates)
     this.loadMetadata()
     this.validateStructure()
-    if (layout === 'tree') {
-      this.stream = new FilesLayout(privates.output, privates)
-    } else if (layout === 'blob') {
-      this.stream = new SingleFileLayout(privates.output, privates)
-    } else {
-      throw new Fault('kLayoutNotSupported', 'the layout export is not supported')
-    }
-    return this.stream
+    return new FileTreeLayout(privates.output, privates)
   }
 
   get format() {
@@ -289,7 +77,7 @@ class ExportFileAdapter extends EventEmitter {
 
 }
 
-class FileTransformStream extends Transform {
+class ImportFileTransformStream extends Transform {
 
   constructor(metadata, file, basePath = process.cwd()) {
     super({ objectMode: true })
@@ -342,25 +130,14 @@ class ImportFileAdapter extends EventEmitter {
   }
 
   getAssetStream(ef) {
-    const { metadata } = privatesAccessor(this)
-    return new Promise((resolve, reject) => {
-      const data = [],
-            outS = new OutputStream({
-              ndjson: true,
-              template: ef
-            })
-      outS.on('data', (fileData) => {
-        if (fileData.toString() !== '\n') {
-          data.push(parseString(fileData.toString()))
-        }
-      })
-      outS.on('error', e => reject(e))
-      outS.on('end', () => {
-        resolve(data)
-      })
-      outS.write(stringifyContent(ef, metadata.format))
-      outS.end()
-    })
+    const { metadata } = privatesAccessor(this),
+          outS = new OutputStream({
+            ndjson: false,
+            template: ef
+          })
+    outS.write(stringifyContent(ef, metadata.format))
+    outS.end()
+    return outS
   }
 
   get iterator() {
@@ -374,31 +151,9 @@ class ImportFileAdapter extends EventEmitter {
     }
   }
 
-  get blobIterator() {
-    const self = this
-    return {
-      [Symbol.asyncIterator]() {
-        return {
-          next: async() => self.getBlobs()
-        }
-      }
-    }
-  }
 
-  async getBlobs() {
-    const { blobIndex, blobs } = privatesAccessor(this)
-    if (blobs.length > blobIndex) {
-      privatesAccessor(this, 'blobIndex', blobIndex + 1)
-      const stream = await this.getAssetStream(blobs[blobIndex])
-      return {
-        value: stream, // _.map(stream, s => stringifyContent(s, metadata.format)),
-        done: false
-      }
-    }
-    return {
-      value: null,
-      done: true
-    }
+  get blobs() {
+    return privatesAccessor(this).blobs
   }
 
   async getChunks() {
@@ -463,7 +218,7 @@ class ImportFileAdapter extends EventEmitter {
     } = privatesAccessor(this)
     return new Promise((resolve, reject) => {
       const contents = []
-      fs.createReadStream(file).pipe(new FileTransformStream(metadata, file, input))
+      fs.createReadStream(file).pipe(new ImportFileTransformStream(metadata, file, input))
         .on('data', (chunk) => {
           contents.push(chunk)
         })
@@ -505,7 +260,15 @@ class ManifestFileAdapter {
       ensureDir(`${out}/tpl`)
       _.forEach(object.localizations, (loc) => {
         _.forEach(loc.content, (cnt) => {
-          const file = `${out}/tpl/${template.exportKey}.${cnt.name}.${TemplatesExt[cnt.name]}`
+          let ext = ''
+          switch (cnt.name) {
+            case 'html':
+              ext = 'html'
+              break
+            default:
+              ext = 'txt'
+          }
+          const file = `${out}/tpl/${template.exportKey}.${cnt.name}.${ext}`
           fs.writeFileSync(file, cnt.data)
           cnt.data = file.replace(out, '')
         })

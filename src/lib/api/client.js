@@ -183,7 +183,6 @@ class Client {
     }
 
     return new Promise((resolve, reject) => {
-
       req.run(Object.assign({ uri, stream }, requestOptions))
         .then(async(result) => {
 
