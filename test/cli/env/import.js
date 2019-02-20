@@ -21,8 +21,10 @@ describe('Env Import', () => {
   it('testing import adapter', async() => {
 
     const tempDir = path.join(process.cwd(), `output-for-import-${new Date().getTime()}`),
-          cli = new MdCtlCli(),
-          client = await cli.getApiClient({ credentials: await cli.getAuthOptions() })
+          cli = new MdCtlCli()
+    await cli.configure()
+    /* eslint-disable one-var */
+    const client = await cli.getApiClient({ credentials: await cli.getAuthOptions() })
     return Environment.export({
       client,
       stream: blob,

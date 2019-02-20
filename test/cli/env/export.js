@@ -24,8 +24,10 @@ describe('Export and Import Adapters', () => {
 
   it('export using file adapter with default layout', async() => {
     const tempDir = path.join(process.cwd(), `output-${new Date().getTime()}`),
-          cli = new MdCtlCli(),
-          client = await cli.getApiClient({ credentials: await cli.getAuthOptions() })
+          cli = new MdCtlCli()
+    await cli.configure()
+    /* eslint-disable one-var */
+    const client = await cli.getApiClient({ credentials: await cli.getAuthOptions() })
     return Environment.export({
       client,
       stream: blob,
@@ -48,8 +50,10 @@ describe('Export and Import Adapters', () => {
 
   it('export using streamIds for assets', async() => {
     const tempDir = path.join(process.cwd(), `output-${new Date().getTime()}`),
-          cli = new MdCtlCli(),
-          client = await cli.getApiClient({ credentials: await cli.getAuthOptions() })
+          cli = new MdCtlCli()
+    await cli.configure()
+    /* eslint-disable one-var */
+    const client = await cli.getApiClient({ credentials: await cli.getAuthOptions() })
     return Environment.export({
       client,
       stream: streamedBlob,
@@ -72,9 +76,12 @@ describe('Export and Import Adapters', () => {
 
   it('export using console adapter', async() => {
     const tempDir = path.join(process.cwd(), `output-${new Date().getTime()}`),
-          cli = new MdCtlCli(),
-          client = await cli.getApiClient({ credentials: await cli.getAuthOptions() }),
+          cli = new MdCtlCli()
+    await cli.configure()
+    /* eslint-disable one-var */
+    const client = await cli.getApiClient({ credentials: await cli.getAuthOptions() }),
           adapter = new ExportConsoleAdapter({ print: false })
+
     return Environment.export({
       client,
       adapter,

@@ -9,14 +9,15 @@ const fs = require('fs'),
       { Manifest } = require('../../lib/manifest'),
       { Config } = require('../config'),
       { ExportStream, ImportStream } = require('../../lib/stream'),
-      { ExportFileAdapter } = require('../../lib/stream/adapters/file_adapter')
+      { ExportFileAdapter } = require('../../lib/stream/adapters/file_adapter'),
+      Client = require('../../lib/api/client')
 
 module.exports = {
 
   async export(input) {
 
     const options = isSet(input) ? input : {},
-          client = options.client || Config.global.client,
+          client = options.client || new Client({ ...Config.global.client, ...options }),
           outputDir = options.dir || process.cwd(),
           manifestFile = options.manifest || `${outputDir}/manifest.${options.format || 'json'}`,
           // stream = ndjson.parse(),
@@ -62,7 +63,7 @@ module.exports = {
   async import(input) {
 
     const options = isSet(input) ? input : {},
-          client = options.client || Config.global.client,
+          client = options.client || new Client({ ...Config.global.client, ...options }),
           inputDir = options.dir || process.cwd(),
           progress = rFunction(options.progress),
           url = new URL('/developer/environment/import', client.environment.url),
