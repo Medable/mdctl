@@ -7,6 +7,7 @@ const request = require('request'),
       } = require('../utils/values'),
       Fault = require('../fault'),
       { CredentialsManager } = require('../credentials/credentials'),
+      { Config, ClientConfig } = require('../config'),
       Environment = require('./environment'),
       Request = require('./request')
 
@@ -18,6 +19,8 @@ class Client {
    *  environment
    *  credentials
    *  requestOptions (object) default request options
+   *    strictSSL: default true || Config.global.client.strictSSL
+   *    ...
    *  credentialsManager
    *  sessions (boolean:false) automatically load and store fingerprints and
    *    session data in the keychain for a login session.
@@ -37,6 +40,11 @@ class Client {
           credentials = credentialsManager.create(environment, options.credentials)
 
     Object.assign(privates, {
+
+      // use strictSSL in requests. this gets merged into requestOptions during a call.
+      config: new ClientConfig({
+        strictSSL: rBool(options.strictSSL, Config.global.client.strictSSL)
+      }),
 
       // for apps using csrf tokens
       csrfToken: null,
@@ -63,6 +71,14 @@ class Client {
 
     })
 
+  }
+
+  get strictSSL() {
+    return privatesAccessor(this).config.strictSSL
+  }
+
+  set strictSSL(strictSSL) {
+    privatesAccessor(this).config.strictSSL = Boolean(strictSSL)
   }
 
   get credentials() {
@@ -103,6 +119,7 @@ class Client {
    *  cookies - defaults to true. set to false to prevent sending cookies
    *  query - request uri query parameters
    *  requestOptions - custom request options, passed directly to the request (https://github.com/request)
+   *    strictSSL: default to client strictSSL
    *  stream - pipes the req to the stream and returns (errors and results are not parsed)
    * @returns {Promise<*>}
    */
@@ -158,6 +175,8 @@ class Client {
       }),
       isSet(requestOptions.headers) ? requestOptions.headers : {}
     )
+
+    requestOptions.strictSSL = rBool(requestOptions.strictSSL, this.strictSSL)
 
     if (privates.csrfToken) {
       requestOptions.headers['medable-csrf-token'] = privates.csrfToken

@@ -4,6 +4,7 @@ const path = require('path'),
       yargs = require('yargs'),
       { privatesAccessor } = require('../lib/privates'),
       { createTask } = require('./tasks'),
+      { Config } = require('../..'),
       Client = require('../lib/api/client'),
       { CredentialsManager, KeytarCredentialsProvider } = require('../lib/credentials'),
       { loadJsonOrYaml } = require('../lib/utils'),
@@ -137,6 +138,9 @@ module.exports = class MdCtlCli {
 
     // reset configuration
     privates.config = config
+
+    // update module defaults
+    Config.global.client.strictSSL = config('strictSSL')
 
   }
 
