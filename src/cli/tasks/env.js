@@ -1,17 +1,9 @@
 /* eslint-disable class-methods-use-this */
 
 const _ = require('lodash'),
-      fs = require('fs'),
-      { URL } = require('url'),
-      pump = require('pump'),
-      ndjson = require('ndjson'),
-      { isSet, parseString } = require('../../lib/utils/values'),
-      { pathTo } = require('../../lib/utils'),
-      Task = require('../lib/task'),
-      { ExportStream, ImportStream } = require('../../lib/stream'),
-      { templates } = require('../../lib/schemas'),
-      { ExportFileAdapter } = require('../../lib/stream/adapters/file_adapter'),
-      { Manifest } = require('../../lib/manifest')
+      Environment = require('../../lib/env'),
+      { isSet } = require('../../lib/utils/values'),
+      Task = require('../lib/task')
 
 class Env extends Task {
 
@@ -36,81 +28,26 @@ class Env extends Task {
   }
 
   async 'env@export'(cli) {
-    const options = cli.getArguments(this.optionKeys),
-          client = await cli.getApiClient({ credentials: await cli.getAuthOptions() }),
-          outputDir = options.dir || cli.cwd,
-          manifestFile = options.manifest || `${outputDir}/manifest.${options.format || 'json'}`,
-          stream = ndjson.parse(),
-          url = new URL('/developer/environment/export', client.environment.url),
-          requestOptions = {
-            query: url.searchParams,
-            method: 'post'
-          },
-          streamOptions = {
-            format: options.format,
-            layout: options.layout,
-            config: cli.config
-          },
-          streamTransform = new ExportStream(),
-          fileWriter = new ExportFileAdapter(outputDir, streamOptions)
-
-    let manifest = {}
-    if (fs.existsSync(manifestFile)) {
-      manifest = parseString(fs.readFileSync(manifestFile), options.format)
-    }
-
-    pathTo(requestOptions, 'requestOptions.headers.accept', 'application/x-ndjson')
-    await client.call(url.pathname, Object.assign(requestOptions, {
-      stream, body: { manifest }
-    }))
-
-    return new Promise((resolve, reject) => {
-      pump(stream, streamTransform, fileWriter, (error) => {
-        if (error) {
-          return reject(error)
-        }
-        console.log('Export finished...')
-        return resolve()
-      })
-    })
+    const client = await cli.getApiClient({ credentials: await cli.getAuthOptions() })
+    await Environment.export({ client })
+    console.log('Export finished...!')
   }
 
   async 'env@import'(cli) {
-    const options = cli.getArguments(this.optionKeys),
-          client = await cli.getApiClient({ credentials: await cli.getAuthOptions() }),
-          url = new URL('/developer/environment/import', client.environment.url),
-          requestOptions = {
-            query: url.searchParams,
-            method: 'post'
-          },
-          importStream = new ImportStream(options.dir || cli.cwd),
-          ndjsonStream = ndjson.stringify(),
-          stream = pump(importStream, ndjsonStream)
-
-    pathTo(options, 'requestOptions.headers.accept', 'application/x-ndjson')
-    await client.call(url.pathname, Object.assign(requestOptions, {
-      body: stream
-    }))
-    stream.on('data', (d) => {
-      console.log('Sending chunk...', d)
-    })
-    stream.on('end', () => {
-      console.log('ending...')
-    })
+    const client = await cli.getApiClient({ credentials: await cli.getAuthOptions() })
+    await Environment.import({ client })
+    console.log('Import finished...!')
   }
 
   async 'env@add'(cli) {
-    const template = await templates.create(cli.args('2'), cli.args('3'), cli.args('4')),
-          params = await cli.getArguments(this.optionKeys),
-          outputDir = params.dir || cli.cwd,
-          manifestFile = params.manifest || `${outputDir}/manifest.${params.format || 'json'}`
-
-    let manifest = {}
-    if (fs.existsSync(manifestFile)) {
-      manifest = parseString(fs.readFileSync(manifestFile), params.format || 'json')
-    }
-
-    await new Manifest(manifest).addResource(template.object, template.exportKey, template, params)
+    const params = await cli.getArguments(this.optionKeys),
+          options = Object.assign(params, {
+            object: cli.args('2'),
+            type: cli.args('3'),
+            name: cli.args('4')
+          })
+    await Environment.add(options)
+    console.log('Resource added...!')
   }
 
   // ----------------------------------------------------------------------------------------------

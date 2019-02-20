@@ -5,6 +5,7 @@ const slugify = require('slugify'),
       mime = require('mime'),
       uuid = require('uuid'),
       pluralize = require('pluralize'),
+      { md5FileHash } = require('../utils/crypto'),
       { isCustomName } = require('../utils/values'),
       ENV_KEYS = {
         keys: ['app', 'config', 'notification', 'policy', 'role', 'smsNumber', 'serviceAccount', 'storageLocation', 'configuration', 'template', 'object', 'script', 'view'],
@@ -20,11 +21,6 @@ const slugify = require('slugify'),
       },
       NON_WRITABLE_KEYS = ['facet'],
       SectionsCreated = [],
-      TemplatesExt = {
-        html: 'html',
-        plain: 'txt',
-        subject: 'txt'
-      },
       { privatesAccessor } = require('../privates')
 
 class ExportSection {
@@ -36,12 +32,19 @@ class ExportSection {
       key,
       scriptFiles: [],
       extraFiles: [],
-      templateFiles: []
+      templateFiles: [],
+      id: uuid.v4()
     })
-    SectionsCreated.push(this)
     if (new.target === ExportSection) {
       Object.seal(this)
     }
+    if (this.isWritable) {
+      SectionsCreated.push(this)
+    }
+  }
+
+  get id() {
+    return privatesAccessor(this).id
   }
 
   get key() {
@@ -82,6 +85,10 @@ class ExportSection {
     return NON_WRITABLE_KEYS.indexOf(privatesAccessor(this).key) < 0
   }
 
+  get isFacet() {
+    return privatesAccessor(this).key === 'facet'
+  }
+
   getPath() {
     const { key, content } = privatesAccessor(this),
           { object } = content
@@ -114,36 +121,48 @@ class ExportSection {
   }
 
   extractAssets() {
-    return new Promise(async(success) => {
-      const nodes = jp.nodes(privatesAccessor(this).content, '$..resourceId')
-      if (nodes.length) {
-        _.forEach(nodes, (n) => {
-          const parent = this.getParentFromPath(n.path),
-                facets = _.filter(SectionsCreated, sc => sc.key === 'facet'),
-                facet = _.find(facets, f => parent.resourceId === f.content.resourceId)
-          if (facet) {
-            n.path.splice(n.path.length - 1, 1, 'filePath')
-            const { content } = facet,
-                  objectPath = jp.stringify(n.path),
-                  name = `${content.resourcePath}.${slugify(content.name, '_')}`
-            privatesAccessor(this).extraFiles.push({
-              name,
-              facet,
-              ext: mime.getExtension(content.mime),
-              data: content.url || content.base64,
-              remoteLocation: !!content.url,
-              pathTo: objectPath,
-              ETag: parent.ETag
-            })
-          }
-        })
-        return success()
+    const facet = privatesAccessor(this).content
+    let itemSource = null
+    for (let i = 0; i < SectionsCreated.length; i += 1) {
+      const sc = SectionsCreated[i],
+            nodes = jp.nodes(sc.content, '$..resourceId'),
+            item = _.find(nodes, n => n.value === facet.resourceId)
+      if (item) {
+        // replace last path
+        const ETagPathItem = _.clone(item.path)
+        item.path.splice(item.path.length - 1, 1, 'filePath')
+        ETagPathItem.splice(ETagPathItem.length - 1, 1, 'ETag')
+        itemSource = {
+          sectionId: sc.id,
+          sectionName: sc.name,
+          path: jp.stringify(item.path),
+          pathETag: jp.stringify(ETagPathItem)
+        }
+        break
       }
-      return success()
-    })
+    }
+    if (itemSource !== null) {
+      const {
+        url, base64, streamId, path
+      } = facet
+      privatesAccessor(this).extraFiles.push({
+        name: facet.resource,
+        ext: mime.getExtension(facet.mime),
+        url,
+        base64,
+        streamId,
+        path,
+        remoteLocation: !!facet.url,
+        sectionId: itemSource.sectionId,
+        sectionName: itemSource.sectionName,
+        pathTo: itemSource.path,
+        ETag: facet.ETag,
+        PathETag: itemSource.pathETag
+      })
+    }
   }
 
-  async extractScripts() {
+  extractScripts() {
     const { content, scriptFiles } = privatesAccessor(this),
           nodes = jp.nodes(content, '$..script')
     nodes.forEach((n) => {
@@ -157,15 +176,15 @@ class ExportSection {
           ext: 'js',
           data: n.value,
           remoteLocation: false,
-          pathTo: jp.stringify(path)
+          pathTo: jp.stringify(path),
+          sectionId: this.id
         })
       }
     })
     privatesAccessor(this, 'scriptFiles', scriptFiles)
-    return true
   }
 
-  async extractTemplates() {
+  extractTemplates() {
     const { key, content, templateFiles } = privatesAccessor(this)
     if (key === 'template') {
       if (_.isArray(content.localizations)) {
@@ -178,12 +197,14 @@ class ExportSection {
             objectPath.push(i)
             objectPath.push('data')
             if (cnt.data) {
+              const findMime = _.find(content.spec, s => s.name === cnt.name)
               templateFiles.push({
                 name: `${name}.${l.locale}.${cnt.name}`,
-                ext: TemplatesExt[cnt.name],
+                ext: mime.getExtension(findMime.mime),
                 data: cnt.data,
                 remoteLocation: false,
-                pathTo: jp.stringify(objectPath)
+                pathTo: jp.stringify(objectPath),
+                sectionId: this.id
               })
             }
           })
@@ -191,7 +212,41 @@ class ExportSection {
         privatesAccessor(this, 'templateFiles', templateFiles)
       }
     }
-    return true
+  }
+
+  toJSON() {
+    return privatesAccessor(this)
+  }
+
+}
+
+class StreamChunk {
+
+  constructor(content, key = '') {
+    Object.assign(privatesAccessor(this), {
+      content,
+      key,
+      id: uuid.v4()
+    })
+    if (new.target === StreamChunk) {
+      Object.seal(this)
+    }
+  }
+
+  get id() {
+    return privatesAccessor(this).id
+  }
+
+  get key() {
+    return privatesAccessor(this).key
+  }
+
+  get content() {
+    return privatesAccessor(this).content
+  }
+
+  toJSON() {
+    return privatesAccessor(this)
   }
 
 }
@@ -259,20 +314,23 @@ class ImportSection {
       if (nodes.length) {
         _.forEach(nodes, (n) => {
           const parent = this.getParentFromPath(n.path),
-                resourceKey = uuid.v4(),
-                facet = Object.assign(parent, {
-                  streamId: resourceKey
-                })
-          if (facet.filePath) {
-            const asset = {
-              streamId: facet.streamId,
-              data: fs.readFileSync(`${basePath}${parent.filePath}`)
-            }
+                facet = Object.assign(parent, {}),
+                localFile = `${basePath}${facet.filePath}`
+          if (facet.filePath && md5FileHash(localFile) !== facet.ETag) {
+            const resourceKey = uuid.v4(),
+                  asset = {
+                    streamId: resourceKey,
+                    data: fs.readFileSync(localFile)
+                  }
+            facet.ETag = md5FileHash(localFile)
+            facet.streamId = resourceKey
             extraFiles.push(asset)
-            delete facet.filePath
           }
+          delete facet.filePath
           facets.push(facet)
         })
+        privatesAccessor(this, 'facets', facets)
+        privatesAccessor(this, 'extraFiles', extraFiles)
         return success()
       }
       return success()
@@ -319,6 +377,6 @@ class ImportSection {
 
 module.exports = {
   ExportSection,
-  ImportSection,
-  TemplatesExt
+  StreamChunk,
+  ImportSection
 }
