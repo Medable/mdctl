@@ -6,9 +6,8 @@ const _ = require('lodash'),
       ndjson = require('ndjson'),
       fs = require('fs'),
       { rString, isSet } = require('../../lib/utils/values'),
-      { loadJsonOrYaml } = require('../../lib/utils'),
+      { loadJsonOrYaml, pathTo } = require('../../lib/utils'),
       Fault = require('../../lib/fault'),
-      pathTo = require('../../lib/utils/path.to'),
       Task = require('../lib/task'),
       methods = ['get', 'post', 'put', 'patch', 'delete']
 
