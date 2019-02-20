@@ -28,14 +28,16 @@ class Env extends Task {
   }
 
   async 'env@export'(cli) {
-    const client = await cli.getApiClient({ credentials: await cli.getAuthOptions() })
-    await Environment.export({ client })
+    const client = await cli.getApiClient({ credentials: await cli.getAuthOptions() }),
+          params = await cli.getArguments(this.optionKeys)
+    await Environment.export({ client, ...params })
     console.log('Export finished...!')
   }
 
   async 'env@import'(cli) {
-    const client = await cli.getApiClient({ credentials: await cli.getAuthOptions() })
-    await Environment.import({ client })
+    const client = await cli.getApiClient({ credentials: await cli.getAuthOptions() }),
+          params = await cli.getArguments(this.optionKeys)
+    await Environment.import({ client, ...params })
     console.log('Import finished...!')
   }
 
