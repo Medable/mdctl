@@ -171,7 +171,7 @@ module.exports = class MdCtlCli {
 
           getDefaultClientAndCreds = async() => {
             const { credentialsManager } = this,
-                  defaultPasswordSecret = await credentialsManager.get(this.config.defaultCredentials),
+                  defaultPasswordSecret = await credentialsManager.get(this.config('defaultCredentials')),
                   activeLogin = await credentialsManager.getCustom('login', '*'),
                   activeClientConfig = _.get(activeLogin, 'client'),
                   activeCredentials = activeLogin
@@ -270,7 +270,7 @@ module.exports = class MdCtlCli {
       credentials,
       sessions: _.get(credentials, 'type') === 'password',
       requestOptions: {
-        strictSSL: stringToBoolean(this.config.strictSSL, true)
+        strictSSL: stringToBoolean(this.config('strictSSL'), true)
       },
       credentialsManager
     }) : undefined

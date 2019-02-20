@@ -33,27 +33,18 @@ class ExportSection {
       scriptFiles: [],
       extraFiles: [],
       templateFiles: [],
-      id: uuid.v4(),
-      filePath: ''
+      id: uuid.v4()
     })
-    if (this.isWritable) {
-      SectionsCreated.push(this)
-    }
     if (new.target === ExportSection) {
       Object.seal(this)
     }
-  }
-
-  updateFilePath(path) {
-    privatesAccessor(this, 'filePath', path)
+    if (this.isWritable) {
+      SectionsCreated.push(this)
+    }
   }
 
   get id() {
     return privatesAccessor(this).id
-  }
-
-  get filePath() {
-    return privatesAccessor(this).filePath
   }
 
   get key() {
@@ -143,6 +134,7 @@ class ExportSection {
         ETagPathItem.splice(ETagPathItem.length - 1, 1, 'ETag')
         itemSource = {
           sectionId: sc.id,
+          sectionName: sc.name,
           path: jp.stringify(item.path),
           pathETag: jp.stringify(ETagPathItem)
         }
@@ -162,6 +154,7 @@ class ExportSection {
         path,
         remoteLocation: !!facet.url,
         sectionId: itemSource.sectionId,
+        sectionName: itemSource.sectionName,
         pathTo: itemSource.path,
         ETag: facet.ETag,
         PathETag: itemSource.pathETag
@@ -221,18 +214,27 @@ class ExportSection {
     }
   }
 
+  toJSON() {
+    return privatesAccessor(this)
+  }
+
 }
 
 class StreamChunk {
-  constructor(content, key = '') {
 
+  constructor(content, key = '') {
     Object.assign(privatesAccessor(this), {
       content,
-      key
+      key,
+      id: uuid.v4()
     })
     if (new.target === StreamChunk) {
       Object.seal(this)
     }
+  }
+
+  get id() {
+    return privatesAccessor(this).id
   }
 
   get key() {
@@ -242,6 +244,11 @@ class StreamChunk {
   get content() {
     return privatesAccessor(this).content
   }
+
+  toJSON() {
+    return privatesAccessor(this)
+  }
+
 }
 
 class ImportSection {

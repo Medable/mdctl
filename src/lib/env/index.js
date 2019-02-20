@@ -49,12 +49,11 @@ module.exports = {
     }
 
     return new Promise((resolve, reject) => {
-      pump(inputStream, streamTransform, adapter, (error) => {
+      const resultStream = pump(inputStream, streamTransform, adapter, (error) => {
         if (error) {
           return reject(error)
         }
-        console.log('Export finished...')
-        return resolve()
+        return resolve(resultStream)
       })
     })
 
@@ -76,10 +75,12 @@ module.exports = {
           ndjsonStream = ndjson.stringify(),
           streamChain = pump(importStream, ndjsonStream)
 
-    pathTo(options, 'requestOptions.headers.accept', 'application/x-ndjson')
-    await client.call(url.pathname, Object.assign(requestOptions, {
-      body: streamChain
-    }))
+    if (!options.stream) {
+      pathTo(options, 'requestOptions.headers.accept', 'application/x-ndjson')
+      await client.call(url.pathname, Object.assign(requestOptions, {
+        body: streamChain
+      }))
+    }
 
     return new Promise((resolve, reject) => {
       streamChain.on('data', (d) => {

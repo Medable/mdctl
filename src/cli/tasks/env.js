@@ -1,12 +1,9 @@
 /* eslint-disable class-methods-use-this */
 
 const _ = require('lodash'),
-      fs = require('fs'),
       Environment = require('../../lib/env'),
-      { isSet, parseString } = require('../../lib/utils/values'),
-      Task = require('../lib/task'),
-      { templates } = require('../../lib/schemas'),
-      { Manifest } = require('../../lib/manifest')
+      { isSet } = require('../../lib/utils/values'),
+      Task = require('../lib/task')
 
 class Env extends Task {
 
@@ -50,6 +47,7 @@ class Env extends Task {
             name: cli.args('4')
           })
     await Environment.add(options)
+    console.log('Resource added...!')
   }
 
   // ----------------------------------------------------------------------------------------------

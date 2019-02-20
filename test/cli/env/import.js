@@ -20,7 +20,7 @@ describe('Env Import', () => {
 
   it('testing import adapter', async() => {
 
-    const tempDir = path.join(process.cwd(), `output-${new Date().getTime()}`),
+    const tempDir = path.join(process.cwd(), `output-for-import-${new Date().getTime()}`),
           cli = new MdCtlCli(),
           client = await cli.getApiClient({ credentials: await cli.getAuthOptions() })
     return Environment.export({
@@ -48,9 +48,15 @@ describe('Env Import', () => {
           assert(otherItems.length === 42, 'there are more/less files than loaded')
           assert(Object.keys(blobItems).length === 1, 'there are more/less blob items than loaded')
           return true
+        }).catch((e) => {
+          rimraf.sync(tempDir)
+          return Promise.reject(e)
         })
       }
       return Promise.reject(new Error('Exported files not found'))
+    }).catch((e) => {
+      rimraf.sync(tempDir)
+      return Promise.reject(e)
     })
   })
 })
