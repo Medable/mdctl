@@ -1,7 +1,7 @@
 
 const request = require('request'),
       { privatesAccessor } = require('../privates'),
-      pathTo = require('../utils/path.to'),
+      { pathTo } = require('../utils'),
       { isSet, rBool } = require('../utils/values'),
       Fault = require('../fault')
 

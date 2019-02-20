@@ -11,9 +11,8 @@ const _ = require('lodash'),
         rString, isSet
       } = require('../../lib/utils/values'),
       {
-        CredentialsManager,
         detectAuthType
-      } = require('../../lib/api/credentials'),
+      } = require('../../lib/credentials/credentials'),
       Environment = require('../../lib/api/environment'),
       Task = require('../lib/task'),
       Fault = require('../../lib/fault'),
@@ -55,7 +54,7 @@ class Credentials extends Task {
       // support adding a bunch at once.
       const file = await loadJsonOrYaml(cli.args('file'))
       if (Array.isArray(file)) {
-        return Promise.all(file.map(input => CredentialsManager.add(input, input)))
+        return Promise.all(file.map(input => cli.credentialsManager.add(input, input)))
       }
     }
     // auto-detect type
@@ -66,7 +65,7 @@ class Credentials extends Task {
       await askUserCredentials(options)
     )
 
-    await CredentialsManager.add(
+    await cli.credentialsManager.add(
       new Environment(`${options.endpoint}/${options.env}`),
       options
     )
@@ -80,7 +79,7 @@ class Credentials extends Task {
     const options = await cli.getAuthOptions(),
           format = rString(cli.args('format'), 'text')
 
-    let list = await CredentialsManager.list(options)
+    let list = await cli.credentialsManager.list(options)
 
     list = list.map(({
       environment, type, username, apiKey
@@ -127,7 +126,7 @@ class Credentials extends Task {
   async 'credentials@get'(cli) {
 
     const options = await cli.getAuthOptions(),
-          item = await CredentialsManager.get(options)
+          item = await cli.credentialsManager.get(options)
 
     if (item) {
       console.log(formatOutput(item, cli.args('format')))
@@ -144,7 +143,7 @@ class Credentials extends Task {
     if (verb === 'set') {
 
       const options = await cli.getAuthOptions(),
-            secret = await CredentialsManager.get(options)
+            secret = await cli.credentialsManager.get(options)
 
       if (!secret) {
         throw new RangeError('Credentials not found.')
@@ -181,7 +180,7 @@ class Credentials extends Task {
   async 'credentials@clear'(cli) {
 
     console.log(
-      await CredentialsManager.clear(
+      await cli.credentialsManager.clear(
         await cli.getAuthOptions()
       )
     )
@@ -208,7 +207,7 @@ class Credentials extends Task {
     }
 
     // erase any previously stored active login
-    await CredentialsManager.setCustom('login', '*')
+    await cli.credentialsManager.setCustom('login', '*')
 
   }
 
@@ -261,12 +260,12 @@ class Credentials extends Task {
 
   }
 
-  async 'credentials@flush'() {
+  async 'credentials@flush'(cli) {
 
-    const deleted = (await CredentialsManager.clear())
-      + (await CredentialsManager.flush('fingerprint'))
-      + (await CredentialsManager.flush('session'))
-      + (await CredentialsManager.flush('login'))
+    const deleted = (await cli.credentialsManager.clear())
+      + (await cli.credentialsManager.flush('fingerprint'))
+      + (await cli.credentialsManager.flush('session'))
+      + (await cli.credentialsManager.flush('login'))
 
     console.log(deleted)
 

@@ -2,17 +2,15 @@
 
 const jsonwebtoken = require('jsonwebtoken'),
       { URL } = require('url'),
-      keytar = require('keytar'),
       { privatesAccessor } = require('../privates'),
-      { rString, isSet } = require('../utils/values'),
-      pathTo = require('../utils/path.to'),
-      { normalizeEndpoint } = require('../utils'),
-      { signPath } = require('./signer'),
-      Environment = require('./environment'),
-      serviceName = 'com.medable.mdctl',
+      { Config, CredentialsConfig } = require('../config'),
+      {
+        rString, isSet, rPath
+      } = require('../utils/values'),
+      { normalizeEndpoint, pathTo } = require('../utils'),
+      { signPath } = require('../api/signer'),
+      Environment = require('../api/environment'),
       typeNames = ['password', 'signature', 'token']
-
-let Undefined
 
 // ------------------------------------------------------------------------------------------------
 // secrets are stored for a balanced lookup.
@@ -59,11 +57,6 @@ class Secret {
     return privatesAccessor(this).password
   }
 
-  get service() {
-    const { typeName } = privatesAccessor(this)
-    return `${serviceName}.${typeName}`
-  }
-
   get encoded() {
     const { environment, username, apiKey } = privatesAccessor(this)
     return `${environment.url}/${apiKey}/${username}`
@@ -85,12 +78,11 @@ class Secret {
   getAuthorizationHeaders(input) {
 
     const options = isSet(input) ? input : {},
-          privates = privatesAccessor(this),
-          headers = {
-            'medable-client-key': rString(options.apiKey, privates.apiKey)
-          }
+          privates = privatesAccessor(this)
 
-    return headers
+    return {
+      'medable-client-key': rString(options.apiKey, privates.apiKey)
+    }
 
   }
 
@@ -236,48 +228,41 @@ class SignatureSecret extends Secret {
 
 // ------------------------------------------------------------------------------------------------
 
-class CredentialsProvider {
-
-  static get() {
-    return privatesAccessor(this).provider
-  }
-
-  static set(provider) {
-
-    if (!(provider instanceof CredentialsProvider)) {
-      throw new TypeError('storage provider must extend CredentialsProvider')
-    }
-    privatesAccessor(this).provider = provider
-  }
-
-  // eslint-disable-next-line no-unused-vars
-  async getCredentials(service) {
-    return []
-  }
-
-  // eslint-disable-next-line no-unused-vars
-  async setCredentials(service, account, password) {
-    return Undefined
-  }
-
-  // eslint-disable-next-line no-unused-vars
-  async deleteCredentials(service, account) {
-    return false
-  }
-
-}
-
-// ------------------------------------------------------------------------------------------------
-
 class CredentialsManager {
 
+  /**
+   * @param config
+   *  provider: credentials provider
+   *  prefix: the prefix given to keys. defaults to 'com.medable.mdctl'
+   */
+  constructor(config) {
 
-  static decode(inputService, inputAccount, inputSecret) {
+    Object.assign(privatesAccessor(this), {
+      config: {
+        credentials: new CredentialsConfig({ provider: rPath(config, 'provider', Config.global.credentials.provider) }),
+      },
+      prefix: rString(rPath(config, 'provider'), 'com.medable.mdctl')
+    })
+  }
+
+  get provider() {
+    return privatesAccessor(this).config.credentials.provider
+  }
+
+  set provider(provider) {
+    privatesAccessor(this).config.credentials.provider = provider
+  }
+
+  get prefix() {
+    return privatesAccessor(this).prefix
+  }
+
+  decode(inputService, inputAccount, inputSecret) {
 
     const service = rString(inputService, ''),
           account = rString(inputAccount, ''),
           secret = rString(inputSecret, ''),
-          type = service.startsWith(serviceName) && service.substr(serviceName.length + 1),
+          type = service.startsWith(this.prefix) && service.substr(this.prefix.length + 1),
           url = new URL('', account),
           [, env, version, apiKey, username] = url.pathname.split('/'),
           environment = new Environment(`${url.protocol}//${url.host}/${env}/${version}`)
@@ -295,7 +280,7 @@ class CredentialsManager {
 
   }
 
-  static create(environment, input) {
+  create(environment, input) {
 
     const env = (environment instanceof Environment) ? environment : new Environment(environment),
           options = isSet(input) ? input : {},
@@ -328,10 +313,11 @@ class CredentialsManager {
    *
    * @returns {Promise<void>}
    */
-  static async add(environment, input) {
+  async add(environment, input) {
 
     const secret = this.create(environment, input)
-    await CredentialsProvider.get().setCredentials(secret.service, secret.encoded, secret.password)
+
+    await this.provider.setCredentials(`${this.prefix}.${secret.type}`, secret.encoded, secret.password)
     return true
   }
 
@@ -345,7 +331,7 @@ class CredentialsManager {
    *
    * @returns {Promise<void>}
    */
-  static async list(input) {
+  async list(input) {
 
     const options = isSet(input) ? input : {},
           type = rString(options.type) && detectAuthType({ type: options.type }),
@@ -353,12 +339,11 @@ class CredentialsManager {
           env = rString(options.env),
           username = rString(options.username),
           apiKey = rString(options.apiKey),
-
           list = await Promise.all(
             (type ? [type] : typeNames).map(async(typeName) => {
 
-              const service = `${serviceName}.${typeName}`
-              return (await CredentialsProvider.get().getCredentials(service))
+              const service = `${this.prefix}.${typeName}`
+              return (await this.provider.getCredentials(service))
                 .map((item) => {
                   try {
                     return this.decode(service, item && item.account, item && item.password)
@@ -380,34 +365,34 @@ class CredentialsManager {
 
   }
 
-  static async get(input) {
+  async get(input) {
     if (input instanceof Secret) {
       return input
     }
     return (await this.list(input))[0]
   }
 
-  static async clear(input) {
+  async clear(input) {
 
     const list = await this.list(input)
 
     return (await Promise.all(
       list.map(async(item) => {
-        const deleted = await CredentialsProvider.get().deleteCredentials(`${serviceName}.${item.type}`, item.encoded)
+        const deleted = await this.provider.deleteCredentials(`${this.prefix}.${item.type}`, item.encoded)
         return deleted ? 1 : 0
       })
     )).reduce((memo, count) => memo + count, 0)
 
   }
 
-  static async flush(typeName) {
+  async flush(typeName) {
 
-    const service = `${serviceName}.${typeName}`,
-          list = await CredentialsProvider.get().getCredentials(service)
+    const service = `${this.prefix}.${typeName}`,
+          list = await this.provider.getCredentials(service)
 
     return (await Promise.all(
       list.map(async(item) => {
-        const deleted = await CredentialsProvider.get().deleteCredentials(`${serviceName}.${typeName}`, item.account)
+        const deleted = await this.provider.deleteCredentials(`${this.prefix}.${typeName}`, item.account)
         return deleted ? 1 : 0
       })
     )).reduce((memo, count) => memo + count, 0)
@@ -415,9 +400,9 @@ class CredentialsManager {
   }
 
 
-  static async getCustom(name, context) {
+  async getCustom(name, context) {
 
-    const list = await CredentialsProvider.get().getCredentials(`${serviceName}.${name}`),
+    const list = await this.provider.getCredentials(`${this.prefix}.${name}`),
           item = list
             .filter(({ account }) => account === context)
             .map(({ password }) => password)[0]
@@ -430,15 +415,15 @@ class CredentialsManager {
 
   }
 
-  static async setCustom(name, context, data = null) {
+  async setCustom(name, context, data = null) {
 
-    const service = `${serviceName}.${name}`
+    const service = `${this.prefix}.${name}`
 
     if (data === null) {
-      return CredentialsProvider.get().deleteCredentials(service, context)
+      return this.provider.deleteCredentials(service, context)
     }
 
-    return CredentialsProvider.get().setCredentials(
+    return this.provider.setCredentials(
       service,
       context,
       Buffer.from(JSON.stringify(data), 'utf8').toString('base64')
@@ -493,31 +478,12 @@ function equalsStringOrRegex(test, input) {
 
 }
 
-class KeytarStorageProvider extends CredentialsProvider {
-
-  async getCredentials(service) {
-    return keytar.findCredentials(service)
-  }
-
-  async setCredentials(service, account, password) {
-    return keytar.setPassword(service, account, password)
-  }
-
-  async deleteCredentials(service, account) {
-    return keytar.deletePassword(service, account)
-  }
-
-}
-
-CredentialsProvider.set(new KeytarStorageProvider())
 
 // ------------------------------------------------------------------------------------------------
 
 module.exports = {
   CredentialsManager,
   detectAuthType,
-  CredentialsProvider,
   validateApiKey,
-  validateApiSecret,
-  normalizeEndpoint
+  validateApiSecret
 }

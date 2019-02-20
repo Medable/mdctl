@@ -5,7 +5,7 @@ const path = require('path'),
       { privatesAccessor } = require('../lib/privates'),
       { createTask } = require('./tasks'),
       Client = require('../lib/api/client'),
-      { CredentialsManager } = require('../lib/api/credentials'),
+      { CredentialsManager, KeytarCredentialsProvider } = require('../lib/credentials'),
       { loadJsonOrYaml } = require('../lib/utils'),
       Fault = require('../lib/fault'),
       { stringToBoolean, rBool, rString } = require('../lib/utils/values'),
@@ -55,7 +55,12 @@ module.exports = class MdCtlCli {
       task: null,
 
       // the loaded config
-      config: {}
+      config: {},
+
+      credentialsManager: new CredentialsManager({
+        prefix: 'com.medable.mdctl',
+        provider: new KeytarCredentialsProvider()
+      })
 
     })
 
@@ -75,6 +80,10 @@ module.exports = class MdCtlCli {
 
   get task() {
     return privatesAccessor(this, 'task')
+  }
+
+  get credentialsManager() {
+    return privatesAccessor(this, 'credentialsManager')
   }
 
   async run(taskName = process.argv[2]) {
@@ -147,21 +156,23 @@ module.exports = class MdCtlCli {
 
     const getClientAndCredsFrom = async(inputCredentials) => {
 
-            const activeCredentials = await CredentialsManager.get(inputCredentials),
-                  activeLogin = await CredentialsManager.getCustom('login', '*'),
+            const { credentialsManager } = this,
+                  activeCredentials = await credentialsManager.get(inputCredentials),
+                  activeLogin = await credentialsManager.getCustom('login', '*'),
                   activeClientConfig = _.get(activeLogin, 'client'),
                   isActiveClientReusable = !_.isUndefined(activeLogin)
                     && this.doesClientMatchSecret(activeClientConfig, activeCredentials),
                   client = isActiveClientReusable
-                    ? new Client(activeClientConfig)
+                    ? new Client(Object.assign({ credentialsManager }, activeClientConfig))
                     : this.createNewClientBy(activeCredentials)
 
             return { client, activeCredentials }
           },
 
           getDefaultClientAndCreds = async() => {
-            const defaultPasswordSecret = await CredentialsManager.get(this.config('defaultCredentials')),
-                  activeLogin = await CredentialsManager.getCustom('login', '*'),
+            const { credentialsManager } = this,
+                  defaultPasswordSecret = await credentialsManager.get(this.config('defaultCredentials')),
+                  activeLogin = await credentialsManager.getCustom('login', '*'),
                   activeClientConfig = _.get(activeLogin, 'client'),
                   activeCredentials = activeLogin
                     ? {
@@ -172,9 +183,8 @@ module.exports = class MdCtlCli {
                     : defaultPasswordSecret,
                   client = activeLogin
                     ? new Client(Object.assign(
-                      {},
                       activeClientConfig,
-                      { credentials: activeCredentials }
+                      { credentialsManager, credentials: activeCredentials }
                     ))
                     : this.createNewClientBy(defaultPasswordSecret)
 
@@ -254,13 +264,15 @@ module.exports = class MdCtlCli {
   }
 
   createNewClientBy(credentials) {
+    const { credentialsManager } = this
     return credentials ? new Client({
       environment: _.get(credentials, 'environment.url'),
       credentials,
       sessions: _.get(credentials, 'type') === 'password',
       requestOptions: {
         strictSSL: stringToBoolean(this.config('strictSSL'), true)
-      }
+      },
+      credentialsManager
     }) : undefined
   }
 
