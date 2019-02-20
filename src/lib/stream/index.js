@@ -1,7 +1,7 @@
 const { Transform, Readable } = require('stream'),
       { ExportSection, StreamChunk } = require('./section'),
       Fault = require('../fault'),
-      { isCustomName } = require('../utils/values'),
+      { isCustomName, parseString } = require('../utils/values'),
       KEYS = ['manifest', 'manifest-dependencies', 'manifest-exports', 'env', 'app', 'config', 'notification', 'policy', 'role', 'smsNumber', 'serviceAccount', 'storageLocation', 'configuration', 'facet', 'object', 'script', 'template', 'view'],
       { privatesAccessor } = require('../privates'),
       { ImportFileAdapter } = require('./adapters/file_adapter')
@@ -73,7 +73,6 @@ class ImportStream extends Readable {
             item = await iter.next()
       if (!item.done) {
         return item.value.forEach((v) => {
-          this.items.push(v)
           this.push(v)
         })
       }

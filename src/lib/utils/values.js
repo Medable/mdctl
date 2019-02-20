@@ -115,6 +115,53 @@ function rDate(d = null, defaultValue = null) {
 
 }
 
+function rPath(options, path, defaultValue) {
+  const value = pathTo(options, path)
+  if (value !== Undefined) {
+    return value
+  }
+  return defaultValue
+}
+
+function pathTo(object, propertyPath, value, returnTopOnWrite) {
+
+  if (object === null || object === Undefined) {
+    return Undefined
+  }
+
+  let obj = object
+
+  const isStringPath = _.isString(propertyPath),
+        isArray = Array.isArray(propertyPath),
+        p = (isArray && propertyPath) || (isStringPath && propertyPath.split('.')),
+        write = arguments.length > 2
+
+  if (!isStringPath && !isArray) {
+    return Undefined
+  }
+
+  if (write) {
+    if (!isSet(obj)) obj = {}
+    const top = obj
+    for (let i = 0, j = p.length - 1; i < j; i += 1) {
+      if (obj[p[i]] === null || obj[p[i]] === Undefined) {
+        obj[p[i]] = {}
+      }
+      obj = obj[p[i]]
+    }
+    obj[p[p.length - 1]] = value
+    if (returnTopOnWrite) return top
+  } else {
+    for (let i = 0, j = p.length; i < j; i += 1) {
+      if (obj !== null && obj !== Undefined) {
+        obj = obj[p[i]]
+      }
+    }
+  }
+  return obj
+}
+
+
 /**
  * pad(text, size, [char]): Left padding
  * pad(size, text, [char]): Right padding
@@ -244,6 +291,7 @@ module.exports = {
   rString,
   rBool,
   rDate,
+  rPath,
   pad,
   clamp,
   resolveCallbackArguments,
@@ -253,5 +301,6 @@ module.exports = {
   naturalCmp,
   stringifyContent,
   parseString,
-  removeFalsy
+  removeFalsy,
+  pathTo
 }

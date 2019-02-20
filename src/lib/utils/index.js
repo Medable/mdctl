@@ -5,9 +5,8 @@ const _ = require('lodash'),
       jsyaml = require('js-yaml'),
       path = require('path'),
       isPlainObject = require('lodash.isplainobject'),
-      pathTo = require('./path.to'),
       {
-        isSet, rString, rFunction, naturalCmp
+        isSet, rString, rFunction, naturalCmp, pathTo
       } = require('./values')
 
 let Undefined
@@ -138,5 +137,6 @@ module.exports = {
   validateEndpoint,
   joinPaths,
   sortKeys,
+  pathTo,
   pathsTo
 }

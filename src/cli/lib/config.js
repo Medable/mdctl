@@ -5,7 +5,7 @@ const cloneObject = require('clone'),
       jsyaml = require('js-yaml'),
       { merge } = require('lodash'),
       { loadJsonOrYaml } = require('../../lib/utils'),
-      pathTo = require('../../lib/utils/path.to'),
+      { pathTo } = require('../../lib/utils'),
       { privatesAccessor } = require('../../lib/privates')
 
 let Undefined
