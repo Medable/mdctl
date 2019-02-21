@@ -3,6 +3,7 @@
 const _ = require('lodash'),
       Table = require('cli-table'),
       jsyaml = require('js-yaml'),
+      jsonwebtoken = require('jsonwebtoken'),
       { loadDefaults, writeDefaults } = require('../lib/config'),
       {
         loadJsonOrYaml, pathsTo
@@ -12,13 +13,14 @@ const _ = require('lodash'),
       } = require('../../lib/utils/values'),
       {
         detectAuthType
-      } = require('../../lib/credentials/credentials'),
+      } = require('../../lib/credentials'),
       Environment = require('../../lib/api/environment'),
       Task = require('../lib/task'),
       Fault = require('../../lib/fault'),
       {
         askUserCredentials,
       } = require('../lib/questionnaires'),
+      { jwt } = require('../../index').sandbox,
       { logInFlow } = require('../lib/log-in-flows')
 
 class Credentials extends Task {
@@ -54,7 +56,7 @@ class Credentials extends Task {
       // support adding a bunch at once.
       const file = await loadJsonOrYaml(cli.args('file'))
       if (Array.isArray(file)) {
-        return Promise.all(file.map(input => cli.credentialsManager.add(input, input)))
+        return Promise.all(file.map(input => cli.credentialsProvider.add(input, input)))
       }
     }
     // auto-detect type
@@ -65,7 +67,7 @@ class Credentials extends Task {
       await askUserCredentials(options)
     )
 
-    await cli.credentialsManager.add(
+    await cli.credentialsProvider.add(
       new Environment(`${options.endpoint}/${options.env}`),
       options
     )
@@ -79,7 +81,7 @@ class Credentials extends Task {
     const options = await cli.getAuthOptions(),
           format = rString(cli.args('format'), 'text')
 
-    let list = await cli.credentialsManager.list(options)
+    let list = await cli.credentialsProvider.list(options)
 
     list = list.map(({
       environment, type, username, apiKey
@@ -126,7 +128,7 @@ class Credentials extends Task {
   async 'credentials@get'(cli) {
 
     const options = await cli.getAuthOptions(),
-          item = await cli.credentialsManager.get(options)
+          item = await cli.credentialsProvider.get(options)
 
     if (item) {
       console.log(formatOutput(item, cli.args('format')))
@@ -143,7 +145,7 @@ class Credentials extends Task {
     if (verb === 'set') {
 
       const options = await cli.getAuthOptions(),
-            secret = await cli.credentialsManager.get(options)
+            secret = await cli.credentialsProvider.get(options)
 
       if (!secret) {
         throw new RangeError('Credentials not found.')
@@ -180,7 +182,7 @@ class Credentials extends Task {
   async 'credentials@clear'(cli) {
 
     console.log(
-      await cli.credentialsManager.clear(
+      await cli.credentialsProvider.clear(
         await cli.getAuthOptions()
       )
     )
@@ -207,7 +209,63 @@ class Credentials extends Task {
     }
 
     // erase any previously stored active login
-    await cli.credentialsManager.setCustom('login', '*')
+    await cli.credentialsProvider.setCustom('login', '*')
+
+  }
+
+  async 'credentials@jwt'(cli) {
+
+    const command = cli.args('2'),
+          client = await cli.getApiClient({ credentials: await cli.getAuthOptions() })
+
+    console.log(formatOutput(await (async() => {
+
+      switch (command) {
+
+        case 'list':
+
+          return (await jwt.list({ client })).data
+
+        /**
+         * revoke and remove a token from the credentials list.
+         */
+        case 'revoke': {
+
+          const jti = cli.args('3'),
+                secret = (await cli.credentialsProvider.list({ type: 'token' }))
+                  .filter(v => v.jti === jti)[0],
+                local = Boolean(
+                  secret
+                  && await cli.credentialsProvider.deleteCredentials(secret.type, secret.encoded)
+                )
+
+          return {
+            local,
+            remote: await jwt.revoke({ client, token: jti })
+          }
+        }
+
+        case 'decode': {
+
+          if (client.credentials.type !== 'token') {
+            throw Fault.create('kInvalidArgument', { reason: 'The current credentials are not token-based' })
+          }
+          return jsonwebtoken.decode(client.credentials.token)
+        }
+
+        case 'create': {
+
+          return jwt.create({ client })
+        }
+
+        default: {
+
+          throw Fault.create('kInvalidArgument', { reason: `Unknown jwt command "${command}".` })
+        }
+
+      }
+
+    })(), cli.args('format')))
 
   }
 
@@ -262,10 +320,10 @@ class Credentials extends Task {
 
   async 'credentials@flush'(cli) {
 
-    const deleted = (await cli.credentialsManager.clear())
-      + (await cli.credentialsManager.flush('fingerprint'))
-      + (await cli.credentialsManager.flush('session'))
-      + (await cli.credentialsManager.flush('login'))
+    const deleted = (await cli.credentialsProvider.clear())
+      + (await cli.credentialsProvider.flush('fingerprint'))
+      + (await cli.credentialsProvider.flush('session'))
+      + (await cli.credentialsProvider.flush('login'))
 
     console.log(deleted)
 

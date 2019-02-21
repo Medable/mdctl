@@ -1,9 +1,11 @@
 const { prompt } = require('inquirer'),
       _ = require('lodash'),
+      jsonwebtoken = require('jsonwebtoken'),
       Table = require('cli-table'),
       {
         validateApiKey, validateApiSecret
-      } = require('../../lib/credentials/credentials'),
+      } = require('../../lib/utils'),
+      { api: { Environment } } = require('../../index'),
       {
         rString, rInt, isSet
       } = require('../../lib/utils/values'),
@@ -27,7 +29,7 @@ const { prompt } = require('inquirer'),
             name: 'endpoint',
             message: 'The api endpoint (example: https://api.dev.medable.com)',
             type: 'input',
-            when: () => !isSet(currentArgs.endpoint),
+            when: hash => !isSet(currentArgs.endpoint) && (hash.type !== 'token'),
             validate: value => validateEndpoint(value) || 'Invalid URL',
             default: rString(_.get(currentArgs, 'endpoint'))
           },
@@ -36,7 +38,7 @@ const { prompt } = require('inquirer'),
             name: 'env',
             message: 'The env (org code)',
             default: rString(_.get(currentArgs, 'env')),
-            when: !isSet(currentArgs.env)
+            when: hash => !isSet(currentArgs.env) && (hash.type !== 'token'),
           },
           {
             type: 'input',
@@ -57,7 +59,16 @@ const { prompt } = require('inquirer'),
             message: 'The JSON Web Token',
             type: 'password',
             default: rString(_.get(currentArgs, 'token')),
-            when: hash => !isSet(currentArgs.token) && (hash.type === 'token' || _.get(currentArgs, 'type') === 'token')
+            when: hash => !isSet(currentArgs.token) && (hash.type === 'token' || _.get(currentArgs, 'type') === 'token'),
+            validate: (input, hash) => {
+              const jwt = jsonwebtoken.decode(input)
+              if (jwt) {
+                const environment = new Environment(jwt.aud)
+                hash.endpoint = environment.endpoint // eslint-disable-line no-param-reassign
+                hash.env = environment.env // eslint-disable-line no-param-reassign
+              }
+              return !!jwt
+            }
           },
           {
             name: 'apiKey',

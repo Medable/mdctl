@@ -17,7 +17,7 @@ const _ = require('lodash'),
 async function storeCredentials(cli, credentials) {
   let result
   try {
-    result = await cli.credentialsManager.add(
+    result = await cli.credentialsProvider.add(
       new Environment(credentials),
       credentials
     )
@@ -30,7 +30,7 @@ async function storeCredentials(cli, credentials) {
 
 async function logInRequestingCredentialsFlow(cli, completedOptions) {
   const userCredentials = await askUserCredentials(completedOptions),
-        credentials = cli.credentialsManager.create(
+        credentials = cli.credentialsProvider.create(
           new Environment(userCredentials),
           userCredentials
         )
@@ -41,7 +41,7 @@ async function logInRequestingCredentialsFlow(cli, completedOptions) {
   result = true
 
   // eslint-disable-next-line one-var
-  const existingCredentials = await cli.credentialsManager.list(userCredentials)
+  const existingCredentials = await cli.credentialsProvider.list(userCredentials)
   if (_.isEmpty(existingCredentials)) {
     const saveCredentials = await askUserToSaveCredentials()
     if (saveCredentials) await storeCredentials(cli, userCredentials)
@@ -51,7 +51,7 @@ async function logInRequestingCredentialsFlow(cli, completedOptions) {
 }
 
 async function logInByChoosingCredentialsFlow(cli, completedOptions) {
-  const existingPasswordSecrets = await cli.credentialsManager.list(completedOptions)
+  const existingPasswordSecrets = await cli.credentialsProvider.list(completedOptions)
 
   let result = false
 
