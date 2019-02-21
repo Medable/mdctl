@@ -6,7 +6,7 @@ const { assert } = require('chai'),
       Environment = require('../../../src/lib/env'),
       MdCtlCli = require('../../../src/cli/mdctl')
 
-describe('Env Import', () => {
+describe('Environment Import', () => {
 
   let blob
 
@@ -36,6 +36,7 @@ describe('Env Import', () => {
               items = []
         exportedFile.pipe(fs.createWriteStream(`${tempDir}/env/assets/env.logo.content.jpeg`))
         return Environment.import({
+          local: true,
           client,
           dir: tempDir,
           format: 'yaml',
