@@ -3,7 +3,7 @@ const request = require('request'),
       clone = require('clone'),
       { privatesAccessor } = require('../privates'),
       {
-        rVal, rBool, rString, isSet, pathTo
+        rVal, rBool, rString, isSet, pathTo, rPath
       } = require('../utils/values'),
       Fault = require('../fault'),
       { CredentialsProvider } = require('../credentials/provider'),
@@ -27,13 +27,13 @@ class Client {
    */
   constructor(input) {
 
-    if (rVal(input.provider) && !(input.provider instanceof CredentialsProvider)) {
+    if (rPath(input, 'provider') && !(input.provider instanceof CredentialsProvider)) {
       throw Fault.create('kInvalidArgument', { reason: 'The provider options requires a CredentialsProvider' })
     }
 
-    const provider = rVal(input.provider, Config.global.credentials.provider),
+    const options = Object.assign({}, isSet(input) ? input : {}),
           privates = privatesAccessor(this),
-          options = Object.assign({}, isSet(input) ? input : {}),
+          provider = rVal(options.provider, Config.global.credentials.provider),
           environment = (options.environment instanceof Environment)
             ? options.environment
             : new Environment(options.environment),
