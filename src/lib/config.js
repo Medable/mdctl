@@ -1,10 +1,41 @@
 
 const { privatesAccessor } = require('./privates'),
       { CredentialsProvider, MemoryProvider } = require('./credentials/provider'),
-      { rPath, rBool } = require('./utils/values')
+      { rPath, rBool } = require('./utils/values'),
+      { normalizeEndpoint, validateEndpoint } = require('./utils')
 
 let instance
 
+class EnvironmentConfig {
+
+  constructor(config) {
+    this.endpoint = rPath(config, 'endpoint')
+    this.env = rPath(config, 'env')
+
+  }
+
+  get endpoint() {
+    return privatesAccessor(this).endpoint
+  }
+
+  set endpoint(endpoint) {
+
+    const value = normalizeEndpoint(endpoint)
+    if (!validateEndpoint(value)) {
+      throw new TypeError(`environment endpoint "${endpoint}" is invalid`)
+    }
+    privatesAccessor(this).endpoint = value
+  }
+
+  get env() {
+    return privatesAccessor(this).env
+  }
+
+  set env(env) {
+    privatesAccessor(this).env = env
+  }
+
+}
 
 class CredentialsConfig {
 
@@ -17,6 +48,7 @@ class CredentialsConfig {
   }
 
   set provider(provider) {
+
     if (!(provider instanceof CredentialsProvider)) {
       throw new TypeError('storage provider must extend CredentialsProvider')
     }
@@ -47,7 +79,8 @@ class Config {
 
     Object.assign(privatesAccessor(this), {
       credentials: new CredentialsConfig(),
-      client: new ClientConfig()
+      client: new ClientConfig(),
+      environment: new EnvironmentConfig({ endpoint: 'https://localhost', env: 'example', version: 'v2' })
     })
 
   }
@@ -67,11 +100,15 @@ class Config {
     return privatesAccessor(this).client
   }
 
+  get environment() {
+    return privatesAccessor(this).environment
+  }
 
 }
 
 module.exports = {
   Config,
   CredentialsConfig,
-  ClientConfig
+  ClientConfig,
+  EnvironmentConfig
 }

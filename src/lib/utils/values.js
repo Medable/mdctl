@@ -123,6 +123,10 @@ function rPath(options, path, defaultValue) {
   return defaultValue
 }
 
+function rInstance(value, Cls, defaultValue) {
+  return (isSet(value) && (value instanceof Cls)) ? value : defaultValue
+}
+
 function pathTo(object, propertyPath, value, returnTopOnWrite) {
 
   if (object === null || object === Undefined) {
@@ -292,6 +296,7 @@ module.exports = {
   rBool,
   rDate,
   rPath,
+  rInstance,
   pad,
   clamp,
   resolveCallbackArguments,

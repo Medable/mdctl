@@ -1,7 +1,6 @@
 
 const { assert } = require('chai'),
-      { CredentialsManager } = require('../../../src/lib/credentials/credentials'),
-      { MemoryProvider } = require('../../../src/lib/credentials/provider'),
+      { MemoryProvider } = require('../../../src/lib/credentials'),
       testEntries = {
         password: {
           environment: 'api.test.medable.com/test',
@@ -48,16 +47,16 @@ const { assert } = require('chai'),
 
 describe('Module - Credentials', () => {
 
-  const credentialsManager = new CredentialsManager({ provider: new MemoryProvider() })
+  const credentialsProvider = new MemoryProvider()
 
   it('should find entries', async() => {
 
     const { password } = testEntries
 
-    await credentialsManager.clear()
-    await credentialsManager.add(password.environment, password.input)
+    await credentialsProvider.clear()
+    await credentialsProvider.add(password.environment, password.input)
 
-    assert((await credentialsManager.list(
+    assert((await credentialsProvider.list(
       password.environment, {
         type: 'password',
         username: password.input.username
@@ -68,20 +67,20 @@ describe('Module - Credentials', () => {
 
   it('should add and clear entries', async() => {
 
-    await credentialsManager.clear()
-    assert((await credentialsManager.list()).length === 0, 'list should be empty')
+    await credentialsProvider.clear()
+    assert((await credentialsProvider.list()).length === 0, 'list should be empty')
 
     const { password, signature, token } = testEntries
 
-    await credentialsManager.add(password.environment, password.input)
-    await credentialsManager.add(signature.environment, signature.input)
-    await credentialsManager.add(token.environment, token.input)
+    await credentialsProvider.add(password.environment, password.input)
+    await credentialsProvider.add(signature.environment, signature.input)
+    await credentialsProvider.add(token.environment, token.input)
 
-    assert((await credentialsManager.list()).length === 3, 'list should have entries.')
-    assert((await credentialsManager.clear({ type: 'token' })) === 1, 'list should have cleared 1 entry.')
-    assert((await credentialsManager.clear({ username: 'test@medable.com' })) === 1, 'list should have cleared 1 entry.')
-    assert((await credentialsManager.clear()) === 1, 'list should have cleared 1 entry.')
-    assert((await credentialsManager.list()).length === 0, 'list should be empty.')
+    assert((await credentialsProvider.list()).length === 3, 'list should have entries.')
+    assert((await credentialsProvider.clear({ type: 'token' })) === 1, 'list should have cleared 1 entry.')
+    assert((await credentialsProvider.clear({ username: 'test@medable.com' })) === 1, 'list should have cleared 1 entry.')
+    assert((await credentialsProvider.clear()) === 1, 'list should have cleared 1 entry.')
+    assert((await credentialsProvider.list()).length === 0, 'list should be empty.')
 
   })
 

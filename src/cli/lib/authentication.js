@@ -5,7 +5,7 @@ const _ = require('lodash'),
       storeCurrentLogin = async(cli, { client, password }) => {
         let result
         try {
-          result = await cli.credentialsManager.setCustom('login', '*', {
+          result = await cli.credentialsProvider.setCustom('login', '*', {
             client: {
               environment: client.environment.url,
               credentials: {
@@ -44,7 +44,7 @@ const _ = require('lodash'),
       },
 
       loginWithExistingCredentials = cli => async(credentialsQuery) => {
-        const credentials = await cli.credentialsManager.get(credentialsQuery),
+        const credentials = await cli.credentialsProvider.get(credentialsQuery),
               client = await cli.getApiClient({ credentials, resurrect: false }),
               loginBody = { email: _.get(credentials, 'username'), password: _.get(credentials, 'password') }
 
