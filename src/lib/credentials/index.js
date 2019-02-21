@@ -1,8 +1,9 @@
-const { CredentialsManager } = require('./credentials'),
-      { CredentialsProvider, MemoryProvider, KeytarCredentialsProvider } = require('./provider')
+const {
+  CredentialsProvider, MemoryProvider, KeytarCredentialsProvider, detectAuthType
+} = require('./provider')
 
 module.exports = {
-  CredentialsManager,
+  detectAuthType,
   CredentialsProvider,
   MemoryProvider,
   KeytarCredentialsProvider

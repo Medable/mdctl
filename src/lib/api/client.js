@@ -3,10 +3,10 @@ const request = require('request'),
       clone = require('clone'),
       { privatesAccessor } = require('../privates'),
       {
-        rVal, rBool, rString, isSet, rPath, pathTo
+        rVal, rBool, rString, isSet, pathTo
       } = require('../utils/values'),
       Fault = require('../fault'),
-      { CredentialsManager } = require('../credentials/credentials'),
+      { CredentialsProvider } = require('../credentials/provider'),
       { Config, ClientConfig } = require('../config'),
       Environment = require('./environment'),
       Request = require('./request')
@@ -21,23 +21,23 @@ class Client {
    *  requestOptions (object) default request options
    *    strictSSL: default true || Config.global.client.strictSSL
    *    ...
-   *  credentialsManager
+   *  provider: credentials provider || Config.global.credentials.provider
    *  sessions (boolean:false) automatically load and store fingerprints and
    *    session data in the keychain for a login session.
    */
   constructor(input) {
 
-    if (!(rPath(input, 'credentialsManager') instanceof CredentialsManager)) {
-      throw Fault.create('kInvalidArgument', { reason: 'The credentialsManager options requires a CredentialsManager' })
+    if (rVal(input.provider) && !(input.provider instanceof CredentialsProvider)) {
+      throw Fault.create('kInvalidArgument', { reason: 'The provider options requires a CredentialsProvider' })
     }
 
-    const privates = privatesAccessor(this),
+    const provider = rVal(input.provider, Config.global.credentials.provider),
+          privates = privatesAccessor(this),
           options = Object.assign({}, isSet(input) ? input : {}),
-          { credentialsManager } = options,
           environment = (options.environment instanceof Environment)
             ? options.environment
             : new Environment(options.environment),
-          credentials = credentialsManager.create(environment, options.credentials)
+          credentials = provider.create(environment, options.credentials)
 
     Object.assign(privates, {
 
@@ -57,8 +57,8 @@ class Client {
       // environment endpoint
       environment,
 
-      // the credentials manager
-      credentialsManager,
+      // the credentials provider
+      provider,
 
       // default credentials for the client
       credentials,
@@ -71,6 +71,10 @@ class Client {
 
     })
 
+  }
+
+  get provider() {
+    return privatesAccessor(this).provider
   }
 
   get strictSSL() {
@@ -141,7 +145,7 @@ class Client {
           req = new Request(),
           basic = rBool(options.basic),
           credentials = options.credentials
-            ? privates.credentialsManager.create(privates.environment, options.credentials)
+            ? privates.provider.create(privates.environment, options.credentials)
             : privates.credentials,
           { environment } = privates,
           uri = environment.buildUrl(path),
@@ -151,8 +155,8 @@ class Client {
     // load the latest fingerprint and session data from the keychain whenever possible.
     if (isSession) {
 
-      const fingerprint = await privates.credentialsManager.getCustom('fingerprint', `${environment.endpoint}/${credentials.apiKey}`),
-            session = await privates.credentialsManager.getCustom('session', environment.url)
+      const fingerprint = await privates.provider.getCustom('fingerprint', `${environment.endpoint}/${credentials.apiKey}`),
+            session = await privates.provider.getCustom('session', environment.url)
 
       if (fingerprint) {
         requestOptions.jar.setCookie(fingerprint, environment.endpoint)
@@ -209,14 +213,14 @@ class Client {
               if (fingerprint) {
 
                 const fingerprintString = fingerprint.toString(),
-                      existing = await privates.credentialsManager.getCustom(
+                      existing = await privates.provider.getCustom(
                         'fingerprint',
                         `${environment.endpoint}/${credentials.apiKey}`
                       )
 
                 if (existing !== fingerprintString) {
 
-                  await privates.credentialsManager.setCustom(
+                  await privates.provider.setCustom(
                     'fingerprint',
                     `${environment.endpoint}/${credentials.apiKey}`,
                     fingerprintString
@@ -230,7 +234,7 @@ class Client {
             }
 
             // store the csrf token and session cookie.
-            const existing = await privates.credentialsManager.getCustom('session', environment.url),
+            const existing = await privates.provider.getCustom('session', environment.url),
                   session = {
                     csrf: response.headers['medable-csrf-token'],
                     sid: rVal(requestOptions.jar.getCookies(environment.url).filter(
@@ -240,7 +244,7 @@ class Client {
 
             if (!existing || existing.csrf !== session.csrf || existing.sid !== session.sid) {
 
-              await privates.credentialsManager.setCustom(
+              await privates.provider.setCustom(
                 'session',
                 environment.url,
                 session

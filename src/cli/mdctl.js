@@ -6,7 +6,7 @@ const path = require('path'),
       { createTask } = require('./tasks'),
       { Config } = require('../..'),
       Client = require('../lib/api/client'),
-      { CredentialsManager, KeytarCredentialsProvider } = require('../lib/credentials'),
+      { KeytarCredentialsProvider } = require('../lib/credentials'),
       { loadJsonOrYaml } = require('../lib/utils'),
       Fault = require('../lib/fault'),
       { stringToBoolean, rBool, rString } = require('../lib/utils/values'),
@@ -58,10 +58,7 @@ module.exports = class MdCtlCli {
       // the loaded config
       config: {},
 
-      credentialsManager: new CredentialsManager({
-        prefix: 'com.medable.mdctl',
-        provider: new KeytarCredentialsProvider()
-      })
+      credentialsProvider: new KeytarCredentialsProvider('com.medable.mdctl')
 
     })
 
@@ -83,8 +80,8 @@ module.exports = class MdCtlCli {
     return privatesAccessor(this, 'task')
   }
 
-  get credentialsManager() {
-    return privatesAccessor(this, 'credentialsManager')
+  get credentialsProvider() {
+    return privatesAccessor(this, 'credentialsProvider')
   }
 
   async run(taskName = process.argv[2]) {
@@ -141,6 +138,7 @@ module.exports = class MdCtlCli {
 
     // update module defaults
     Config.global.client.strictSSL = config('strictSSL')
+    Config.global.credentials.provider = this.credentialsProvider
 
   }
 
@@ -160,23 +158,23 @@ module.exports = class MdCtlCli {
 
     const getClientAndCredsFrom = async(inputCredentials) => {
 
-            const { credentialsManager } = this,
-                  activeCredentials = await credentialsManager.get(inputCredentials),
-                  activeLogin = await credentialsManager.getCustom('login', '*'),
+            const { credentialsProvider } = this,
+                  activeCredentials = await credentialsProvider.get(inputCredentials),
+                  activeLogin = await credentialsProvider.getCustom('login', '*'),
                   activeClientConfig = _.get(activeLogin, 'client'),
                   isActiveClientReusable = !_.isUndefined(activeLogin)
                     && this.doesClientMatchSecret(activeClientConfig, activeCredentials),
                   client = isActiveClientReusable
-                    ? new Client(Object.assign({ credentialsManager }, activeClientConfig))
+                    ? new Client(Object.assign({ credentialsProvider }, activeClientConfig))
                     : this.createNewClientBy(activeCredentials)
 
             return { client, activeCredentials }
           },
 
           getDefaultClientAndCreds = async() => {
-            const { credentialsManager } = this,
-                  defaultPasswordSecret = await credentialsManager.get(this.config('defaultCredentials')),
-                  activeLogin = await credentialsManager.getCustom('login', '*'),
+            const { credentialsProvider } = this,
+                  defaultPasswordSecret = await credentialsProvider.get(this.config('defaultCredentials')),
+                  activeLogin = await credentialsProvider.getCustom('login', '*'),
                   activeClientConfig = _.get(activeLogin, 'client'),
                   activeCredentials = activeLogin
                     ? {
@@ -188,7 +186,7 @@ module.exports = class MdCtlCli {
                   client = activeLogin
                     ? new Client(Object.assign(
                       activeClientConfig,
-                      { credentialsManager, credentials: activeCredentials }
+                      { provider: credentialsProvider, credentials: activeCredentials }
                     ))
                     : this.createNewClientBy(defaultPasswordSecret)
 
@@ -268,7 +266,7 @@ module.exports = class MdCtlCli {
   }
 
   createNewClientBy(credentials) {
-    const { credentialsManager } = this
+    const { credentialsProvider } = this
     return credentials ? new Client({
       environment: _.get(credentials, 'environment.url'),
       credentials,
@@ -276,7 +274,7 @@ module.exports = class MdCtlCli {
       requestOptions: {
         strictSSL: stringToBoolean(this.config('strictSSL'), true)
       },
-      credentialsManager
+      provider: credentialsProvider
     }) : undefined
   }
 
@@ -285,6 +283,7 @@ module.exports = class MdCtlCli {
       && activeClientConfig.environment === credentials.environment.url
       && activeClientConfig.credentials.apiKey === credentials.apiKey
       && activeClientConfig.credentials.username === credentials.username
+      && activeClientConfig.credentials.type === credentials.type
   }
 
   getArguments(arrayOfKeys) {
