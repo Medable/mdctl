@@ -81,6 +81,20 @@ function validateEndpoint(endpoint) {
   }
 }
 
+function validateApiKey(apiKey) {
+  if (/^([0-9a-z-A-Z]){22}$/i.test(rString(apiKey))) {
+    return true
+  }
+  throw new TypeError('Invalid api key')
+}
+
+function validateApiSecret(secret) {
+  if (/^([0-9a-z-A-Z]){64}$/i.test(rString(secret))) {
+    return true
+  }
+  throw new TypeError('Invalid api secret')
+}
+
 function joinPaths(...paths) {
 
   return paths
@@ -138,5 +152,7 @@ module.exports = {
   joinPaths,
   sortKeys,
   pathTo,
-  pathsTo
+  pathsTo,
+  validateApiKey,
+  validateApiSecret
 }
