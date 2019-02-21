@@ -1,11 +1,9 @@
 const slugify = require('slugify'),
       _ = require('lodash'),
-      fs = require('fs'),
       jp = require('jsonpath'),
       mime = require('mime'),
       uuid = require('uuid'),
       pluralize = require('pluralize'),
-      { md5FileHash } = require('../utils/crypto'),
       { isCustomName } = require('../utils/values'),
       ENV_KEYS = {
         keys: ['app', 'config', 'notification', 'policy', 'role', 'smsNumber', 'serviceAccount', 'storageLocation', 'configuration', 'template', 'object', 'script', 'view'],
@@ -163,7 +161,7 @@ class ExportSection {
   }
 
   extractScripts() {
-    const { content, scriptFiles } = privatesAccessor(this),
+    const { content } = privatesAccessor(this),
           nodes = jp.nodes(content, '$..script')
     nodes.forEach((n) => {
       if (!_.isObject(n.value)) {
@@ -171,7 +169,7 @@ class ExportSection {
               parent = this.getParentFromPath(n.path),
               type = parent.type || `${content.resource}.${n.path.slice(1).join('.')}`,
               name = `${type}.${slugify(parent.code || parent.name || parent.label, '_')}`
-        scriptFiles.push({
+        privatesAccessor(this).scriptFiles.push({
           name,
           ext: 'js',
           data: n.value,
@@ -181,11 +179,10 @@ class ExportSection {
         })
       }
     })
-    privatesAccessor(this, 'scriptFiles', scriptFiles)
   }
 
   extractTemplates() {
-    const { key, content, templateFiles } = privatesAccessor(this)
+    const { key, content } = privatesAccessor(this)
     if (key === 'template') {
       if (_.isArray(content.localizations)) {
         const name = `${content.resource}.${content.name}`
@@ -198,7 +195,7 @@ class ExportSection {
             objectPath.push('data')
             if (cnt.data) {
               const findMime = _.find(content.spec, s => s.name === cnt.name)
-              templateFiles.push({
+              privatesAccessor(this).templateFiles.push({
                 name: `${name}.${l.locale}.${cnt.name}`,
                 ext: mime.getExtension(findMime.mime),
                 data: cnt.data,
@@ -209,7 +206,6 @@ class ExportSection {
             }
           })
         })
-        privatesAccessor(this, 'templateFiles', templateFiles)
       }
     }
   }
@@ -292,81 +288,6 @@ class ImportSection {
 
   get templateFiles() {
     return privatesAccessor(this).scriptFiles
-  }
-
-  getParentFromPath(path) {
-    const { content } = privatesAccessor(this),
-          parent = jp.parent(content, jp.stringify(path))
-    if (parent.code || parent.name || parent.label || parent.resource) {
-      return parent
-    }
-    path.pop()
-
-    return path.length > 1 ? this.getParentFromPath(path) : {}
-  }
-
-  async loadFacets() {
-    const {
-      content, facets, extraFiles, basePath
-    } = privatesAccessor(this)
-    return new Promise(async(success) => {
-      const nodes = jp.nodes(content, '$..resourceId')
-      if (nodes.length) {
-        _.forEach(nodes, (n) => {
-          const parent = this.getParentFromPath(n.path),
-                facet = Object.assign(parent, {}),
-                localFile = `${basePath}${facet.filePath}`
-          if (facet.filePath && md5FileHash(localFile) !== facet.ETag) {
-            const resourceKey = uuid.v4(),
-                  asset = {
-                    streamId: resourceKey,
-                    data: fs.readFileSync(localFile)
-                  }
-            facet.ETag = md5FileHash(localFile)
-            facet.streamId = resourceKey
-            extraFiles.push(asset)
-          }
-          delete facet.filePath
-          facets.push(facet)
-        })
-        privatesAccessor(this, 'facets', facets)
-        privatesAccessor(this, 'extraFiles', extraFiles)
-        return success()
-      }
-      return success()
-    })
-  }
-
-  async loadScripts() {
-    const { content, basePath } = privatesAccessor(this),
-          nodes = jp.nodes(content, '$..script')
-    nodes.forEach((n) => {
-      if (!_.isObject(n.value)) {
-        const parent = this.getParentFromPath(n.path)
-        if (parent.script.indexOf('/env') === 0) {
-          const jsFile = `${basePath}${parent.script}`
-          parent.script = fs.readFileSync(jsFile).toString()
-        }
-      }
-    })
-    return true
-  }
-
-  async loadTemplates() {
-    const { content, key, basePath } = privatesAccessor(this)
-    if (key === 'template') {
-      if (_.isArray(content.localizations)) {
-        const nodes = jp.nodes(content.localizations, '$..content')
-        nodes[0].value.forEach((cnt) => {
-          if (cnt.data.indexOf('/env') === 0) {
-            /* eslint no-param-reassign: "error" */
-            const tplFile = `${basePath}${cnt.data}`
-            cnt.data = fs.readFileSync(tplFile).toString()
-          }
-        })
-      }
-    }
-    return true
   }
 
   toJSON() {

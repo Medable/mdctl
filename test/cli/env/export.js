@@ -7,7 +7,7 @@ const { assert } = require('chai'),
       MdCtlCli = require('../../../src/cli/mdctl'),
       ExportConsoleAdapter = require('../../../src/lib/stream/adapters/console_adapter')
 
-describe('Export and Import Adapters', () => {
+describe('Environment Export', () => {
 
   let blob,
       streamedBlob = null
