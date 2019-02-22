@@ -10,7 +10,7 @@ let Undefined
 module.exports = {
 
   /**
-   * run a sandboxed script in the target environment. returns { result, stats }
+   * run a sandboxed script in the target environment.
    *
    * @param input
    *  client: client or { provider, environment, credentials, etc }
@@ -74,10 +74,8 @@ module.exports = {
       client: rPath(input, 'client'),
       arguments: rPath(input, 'value'),
       script() {
-        /* eslint-disable */
         /* global script */
         script.exit(script.arguments)
-        /* eslint-enable */
       }
     })
 

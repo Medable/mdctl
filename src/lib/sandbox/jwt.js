@@ -12,14 +12,19 @@ module.exports = {
     return sandbox.run({
       client: rPath(input, 'client'),
       script() {
-        /* eslint-disable */
-        /* global org script */
-        const req = require('request'),
-          apiKey = req.getHeader('medable-client-key'),
-          { accounts } = org.objects
 
-        script.exit(accounts.getSubjectTokens(apiKey, script.principal._id))
-        /* eslint-enable */
+        /* global org script */
+        const req = require('request'), // eslint-disable-line global-require
+              apiKey = req.getHeader('medable-client-key'),
+              { accounts } = org.objects
+
+        script.exit(
+          accounts.getSubjectTokens(
+            apiKey,
+            script.principal._id // eslint-disable-line no-underscore-dangle
+          )
+        )
+
       }
     })
   },
@@ -29,14 +34,17 @@ module.exports = {
     return sandbox.run({
       client: rPath(input, 'client'),
       script() {
-        /* eslint-disable */
         /* global org, script */
-        const req = require('request'),
-          apiKey = req.getHeader('medable-client-key'),
-          { accounts } = org.objects
+        const req = require('request'), // eslint-disable-line global-require
+              apiKey = req.getHeader('medable-client-key'),
+              { accounts } = org.objects
 
-        script.exit(accounts.revokeSubjectTokens(apiKey, script.principal._id))
-        /* eslint-enable */
+        script.exit(
+          accounts.revokeSubjectTokens(
+            apiKey,
+            script.principal._id // eslint-disable-line no-underscore-dangle
+          )
+        )
       }
     })
 
@@ -60,13 +68,11 @@ module.exports = {
       client,
       arguments: { token },
       script() {
-        /* eslint-disable */
         /* global org, script */
         const { accounts } = org.objects,
-          { token } = script.arguments
+              { token } = script.arguments // eslint-disable-line no-shadow
 
         script.exit(accounts.revokeAuthToken(token))
-        /* eslint-enable */
       }
     })
 
@@ -91,24 +97,24 @@ module.exports = {
           token = await sandbox.run({
             client,
             script() {
-              /* eslint-disable */
-          /* global org, script */
-          const req = require('request'),
-            apiKey = req.getHeader('medable-client-key'),
-            { accounts } = org.objects
 
-          script.exit(
-            accounts.createAuthToken(
-              apiKey,
-              script.principal._id,
-              {
-                permanent: true,
-                scope: ['*'],
-                includeEmail: true
-              }
-            )
-          )
-          /* eslint-enable */
+              /* global org, script */
+              const req = require('request'), // eslint-disable-line global-require
+                    apiKey = req.getHeader('medable-client-key'),
+                    { accounts } = org.objects
+
+              script.exit(
+                accounts.createAuthToken(
+                  apiKey,
+                  script.principal._id, // eslint-disable-line no-underscore-dangle
+                  {
+                    permanent: true,
+                    scope: ['*'],
+                    includeEmail: true
+                  }
+                )
+              )
+
             }
           })
 
