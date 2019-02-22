@@ -6,7 +6,7 @@ const request = require('request'),
         rVal, rBool, rString, isSet, pathTo, rPath
       } = require('../utils/values'),
       Fault = require('../fault'),
-      { CredentialsProvider } = require('../credentials/provider'),
+      { CredentialsProvider } = require('../credentials'),
       { Config, ClientConfig } = require('../config'),
       Environment = require('./environment'),
       Request = require('./request')
