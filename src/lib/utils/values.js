@@ -165,6 +165,24 @@ function pathTo(object, propertyPath, value, returnTopOnWrite) {
   return obj
 }
 
+function pathParts(input = null) {
+
+  let propertyPath
+  if (input === null) {
+    propertyPath = ''
+  } else if (!_.isString(input)) {
+    propertyPath = input.toString()
+  } else {
+    propertyPath = input
+  }
+  const dot = propertyPath.indexOf('.'),
+        prefix = dot !== -1 ? propertyPath.substr(0, dot) : propertyPath,
+        suffix = dot !== -1 ? propertyPath.substr(dot + 1) : Undefined
+
+  return [prefix || Undefined, suffix || Undefined]
+
+}
+
 
 /**
  * pad(text, size, [char]): Left padding
@@ -307,5 +325,6 @@ module.exports = {
   stringifyContent,
   parseString,
   removeFalsy,
-  pathTo
+  pathTo,
+  pathParts
 }

@@ -7,9 +7,11 @@ const path = require('path'),
       { Config } = require('../..'),
       Client = require('../lib/api/client'),
       { KeytarCredentialsProvider } = require('../lib/credentials'),
-      { loadJsonOrYaml } = require('../lib/utils'),
+      { loadJsonOrYaml, guessEndpoint } = require('../lib/utils'),
       Fault = require('../lib/fault'),
-      { stringToBoolean, rBool, rString } = require('../lib/utils/values'),
+      {
+        stringToBoolean, rBool, rString
+      } = require('../lib/utils/values'),
       { createConfig } = require('./lib/config')
 
 async function readConfig(config, from) {
@@ -245,7 +247,6 @@ module.exports = class MdCtlCli {
     }
   }
 
-
   async getAuthOptions() {
 
     const options = {}
@@ -260,6 +261,11 @@ module.exports = class MdCtlCli {
     this.assignArgIf(options, 'env')
     this.assignArgIf(options, 'username')
     this.assignArgIf(options, 'apiKey')
+
+    Object.assign(
+      options,
+      guessEndpoint(options)
+    )
 
     return Object.keys(options).length > 0 ? options : null
 
