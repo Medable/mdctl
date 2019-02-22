@@ -27,8 +27,6 @@ const _ = require('lodash'),
       { jwt } = require('../../index').sandbox,
       { logInFlow } = require('../lib/log-in-flows')
 
-let Undefined
-
 class Credentials extends Task {
 
   static get taskNames() {
@@ -252,7 +250,7 @@ class Credentials extends Task {
 
       try {
         await client.post('/accounts/logout')
-      } catch(err) {
+      } catch (err) {
         // eslint-disable-line no-empty
       }
 
