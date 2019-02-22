@@ -260,9 +260,10 @@ class Credentials extends Task {
       client = null
     }
 
-    await setDefaultCredentials(cli, await tokenOptions)
+    console.log(
+      await setDefaultCredentials(cli, await tokenClient.credentials.toJSON())
+    )
 
-    console.log(tokenOptions)
   }
 
 
