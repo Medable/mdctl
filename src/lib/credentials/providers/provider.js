@@ -191,7 +191,6 @@ class CredentialsProvider {
 
   // ----------------------------------------------------
 
-
   // eslint-disable-next-line no-unused-vars
   async getCredentials(service) {
     return []
@@ -205,6 +204,10 @@ class CredentialsProvider {
   // eslint-disable-next-line no-unused-vars
   async deleteCredentials(service, account) {
     return false
+  }
+
+  async close() {
+    return true
   }
 
 }

@@ -108,7 +108,7 @@ const { prompt } = require('inquirer'),
                 }
               ])
 
-        return _.extend(result)
+        return _.extend(currentArgs, result)
       },
 
       askUserToSaveCredentials = async() => {
