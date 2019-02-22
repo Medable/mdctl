@@ -1,13 +1,16 @@
-const crypto = require('crypto'),
+const randomBytes = require('randombytes'),
+      createHash = require('create-hash'),
       fs = require('fs'),
-      { rInt } = require('./values'),
-      alphaNumChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
+      { rInt, rString } = require('./values'),
+      alphaNumChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789',
+      allChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789 !"#$%&\'()*+,-./:;<=>?@[\\]^_`{|}~'
+
 
 let Undefined
 
 function secureRandomInt(minimum, maximum) {
 
-  const bytes = crypto.randomBytes(8),
+  const bytes = randomBytes(8),
         rand = bytes.readUInt32LE(0)
 
   if (minimum !== Undefined) {
@@ -26,23 +29,36 @@ function secureRandomInt(minimum, maximum) {
   return rand
 }
 
-function randomAlphaNum(length) {
+function randomChars(set, length) {
 
-  const len = rInt(length, 0),
+  const chars = rString(set, allChars),
+        len = rInt(length, 0),
         buf = Buffer.allocUnsafe(len),
-        max = alphaNumChars.length - 1
+        max = set.length - 1
 
   for (let i = 0; i < len; i += 1) {
-    buf.write(alphaNumChars[secureRandomInt(0, max)], i, 1)
+    buf.write(chars[secureRandomInt(0, max)], i, 1)
   }
   return buf.toString()
 
 }
 
+function randomAlphaNum(length) {
+
+  return randomChars(alphaNumChars, length)
+}
+
+function randomAlphaNumSym(length) {
+
+  return randomChars(allChars, length)
+
+}
+
+
 function md5FileHash(filename) {
   const size = 8192,
         fd = fs.openSync(filename, 'r'),
-        hash = crypto.createHash('md5'),
+        hash = createHash('md5'),
         buffer = Buffer.alloc(size)
 
   try {
@@ -62,5 +78,7 @@ function md5FileHash(filename) {
 module.exports = {
   secureRandomInt,
   randomAlphaNum,
+  randomAlphaNumSym,
+  randomChars,
   md5FileHash
 }
