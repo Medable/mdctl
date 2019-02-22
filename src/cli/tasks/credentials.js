@@ -3,6 +3,8 @@
 const _ = require('lodash'),
       async = require('async'),
       os = require('os'),
+      path = require('path'),
+      rimraf = require('rimraf'),
       Table = require('cli-table'),
       jsyaml = require('js-yaml'),
       jsonwebtoken = require('jsonwebtoken'),
@@ -482,12 +484,28 @@ class Credentials extends Task {
 
   async 'credentials@flush'(cli) {
 
-    const keyProvider = new KeytarCredentialsProvider('com.medable.mdctl'),
-          deleted = (await cli.credentialsProvider.clear())
-      + (await cli.credentialsProvider.flush('fingerprint'))
-      + (await cli.credentialsProvider.flush('session'))
-      + (await cli.credentialsProvider.flush('login'))
-      + (await keyProvider.flush('pouchKey'))
+    let deleted = 0
+
+    const keyProvider = new KeytarCredentialsProvider('com.medable.mdctl')
+
+    try {
+
+      deleted += (await cli.credentialsProvider.clear())
+        + (await cli.credentialsProvider.flush('fingerprint'))
+        + (await cli.credentialsProvider.flush('session'))
+        + (await cli.credentialsProvider.flush('login'))
+
+    } catch(err) {
+      // eslint-disable-line no-empty
+    }
+
+    await keyProvider.flush('pouchKey')
+
+    try {
+      rimraf.sync(path.join(process.env.HOME, '.medable/mdctl.db*'))
+    } catch (err) {
+
+    }
 
     console.log(deleted)
 
