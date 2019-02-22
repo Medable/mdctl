@@ -24,6 +24,7 @@ const _ = require('lodash'),
         question
       } = require('../lib/questionnaires'),
       { Client } = require('../../index').api,
+      { KeytarCredentialsProvider } = require('../../index').credentials,
       { jwt } = require('../../index').sandbox,
       { logInFlow } = require('../lib/log-in-flows')
 
@@ -222,7 +223,12 @@ class Credentials extends Task {
         })
       }
 
-      client = new Client({ environment: loginSecret.environment, credentials: loginSecret })
+      client = new Client({
+        environment: loginSecret.environment,
+        credentials: loginSecret,
+        sessions: true
+      })
+
       Object.assign(
         loginBody,
         { email: loginSecret.username, password: loginSecret.password }
@@ -476,10 +482,12 @@ class Credentials extends Task {
 
   async 'credentials@flush'(cli) {
 
-    const deleted = (await cli.credentialsProvider.clear())
+    const keyProvider = new KeytarCredentialsProvider('com.medable.mdctl'),
+          deleted = (await cli.credentialsProvider.clear())
       + (await cli.credentialsProvider.flush('fingerprint'))
       + (await cli.credentialsProvider.flush('session'))
       + (await cli.credentialsProvider.flush('login'))
+      + (await keyProvider.flush('pouchKey'))
 
     console.log(deleted)
 
@@ -517,7 +525,7 @@ class Credentials extends Task {
         logout - end a login session        
         whoami - get the current authorization state
         revoke - revokes the current token credentials and removes it from local storage.
-        flush - clear everything (credentials, fingerprints, logins, session data, etc) from the keychain
+        flush - clear everything (credentials, fingerprints, logins, session data, etc)
         jwt - low-level token commands (these must be called using 'password' credentials, ie. a login)
           list - lists all user tokens in the current environment for the current apiKey (issuer)                   
           revoke - takes an additional jti argument. revokes the token in the current environment removes it from local storage.
