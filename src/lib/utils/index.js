@@ -19,6 +19,24 @@ async function loadJsonOrYaml(file, multi) {
   return JSON.parse(fs.readFileSync(file, 'utf8'))
 }
 
+function searchParamsToObject(searchParams) {
+  return Array.from(searchParams.entries()).reduce(
+    (qs, [key, val]) => {
+      let v = pathTo(qs, key)
+      if (Array.isArray(v)) {
+        v.push(val)
+      } else if (isSet(v)) {
+        v = [v, val]
+        pathTo(qs, key, v)
+      } else {
+        pathTo(qs, key, val)
+      }
+      return qs
+    },
+    {}
+  )
+}
+
 function tryCatch(fn = () => {}, callback = () => {}, waitLoop = false) {
 
   let err,
@@ -159,6 +177,7 @@ function guessEndpoint(options = {}) {
 
 module.exports = {
   loadJsonOrYaml,
+  searchParamsToObject,
   tryCatch,
   normalizeEndpoint,
   validateEndpoint,

@@ -6,7 +6,7 @@ const _ = require('lodash'),
       ndjson = require('ndjson'),
       fs = require('fs'),
       { rString, isSet } = require('../../lib/utils/values'),
-      { loadJsonOrYaml, pathTo } = require('../../lib/utils'),
+      { loadJsonOrYaml, pathTo, searchParamsToObject } = require('../../lib/utils'),
       Fault = require('../../lib/fault'),
       Task = require('../lib/task'),
       methods = ['get', 'post', 'put', 'patch', 'delete']
@@ -16,24 +16,6 @@ let Undefined
 class Api extends Task {
 
   async run(cli) {
-
-    function searchParamsToObject(searchParams) {
-      return Array.from(searchParams.entries()).reduce(
-        (qs, [key, val]) => {
-          let v = pathTo(qs, key)
-          if (Array.isArray(v)) {
-            v.push(val)
-          } else if (isSet(v)) {
-            v = [v, val]
-            pathTo(qs, key, v)
-          } else {
-            pathTo(qs, key, val)
-          }
-          return qs
-        },
-        {}
-      )
-    }
 
     const method = rString(cli.args('1'), 'get').toLowerCase(),
           client = await cli.getApiClient({ credentials: await cli.getAuthOptions() }),
