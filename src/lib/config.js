@@ -1,6 +1,7 @@
 
 const { privatesAccessor } = require('./privates'),
-      { CredentialsProvider, MemoryProvider } = require('./credentials/provider'),
+      { CredentialsProvider } = require('./credentials/providers/provider'),
+      { MemoryCredentialsProvider } = require('./credentials/providers/memory'),
       { rPath, rBool } = require('./utils/values'),
       { normalizeEndpoint, validateEndpoint } = require('./utils')
 
@@ -40,7 +41,7 @@ class EnvironmentConfig {
 class CredentialsConfig {
 
   constructor(config) {
-    this.provider = rPath(config, 'provider', new MemoryProvider())
+    this.provider = rPath(config, 'provider', new MemoryCredentialsProvider())
   }
 
   get provider() {

@@ -1,4 +1,5 @@
 const path = require('path'),
+      os = require('os'),
       fs = require('fs'),
       _ = require('lodash'),
       yargs = require('yargs'),
@@ -6,16 +7,21 @@ const path = require('path'),
       { createTask } = require('./tasks'),
       { Config } = require('../..'),
       Client = require('../lib/api/client'),
-      { KeytarCredentialsProvider } = require('../lib/credentials'),
-      { loadJsonOrYaml } = require('../lib/utils'),
+      { KeytarCredentialsProvider, PouchDbCredentialsProvider } = require('../lib/credentials'),
+      { loadJsonOrYaml, guessEndpoint } = require('../lib/utils'),
       Fault = require('../lib/fault'),
-      { stringToBoolean, rBool, rString } = require('../lib/utils/values'),
+      {
+        stringToBoolean, rBool, rString
+      } = require('../lib/utils/values'),
+      {
+        randomAlphaNumSym
+      } = require('../lib/utils/crypto'),
       { createConfig } = require('./lib/config')
 
 async function readConfig(config, from) {
   let file = from
   if (file.slice(0, 2) === '~/') {
-    file = `${process.env.HOME}/${file.slice(2)}`
+    file = `${os.homedir()}/${file.slice(2)}`
   }
   if (fs.existsSync(file)) {
     await config.load(file)
@@ -56,10 +62,7 @@ module.exports = class MdCtlCli {
       task: null,
 
       // the loaded config
-      config: {},
-
-      credentialsProvider: new KeytarCredentialsProvider('com.medable.mdctl')
-
+      config: {}
     })
 
   }
@@ -86,36 +89,67 @@ module.exports = class MdCtlCli {
 
   async run(taskName = process.argv[2]) {
 
-    const privates = privatesAccessor(this),
-          task = createTask(taskName)
+    let err,
+        result
 
-    // get cli arguments and options
-    privates.args = createConfig(Object.assign(
-      {},
-      yargs.help('').version('').argv,
-      process.argv.slice(2)
-    ))
+    try {
 
-    await this.configure()
+      const privates = privatesAccessor(this),
+            task = createTask(taskName)
 
-    privatesAccessor(this).task = task
+      // get cli arguments and options
+      privates.args = createConfig(Object.assign(
+        {},
+        yargs.help('').version('').argv,
+        process.argv.slice(2)
+      ))
 
-    return task.run(this)
+      await this.configure()
+
+      privatesAccessor(this).task = task
+
+      result = await task.run(this)
+
+    } catch (e) {
+      err = e
+    }
+    try {
+      await this.credentialsProvider.close()
+    } catch (e) {
+      // eslint-disable-line no-empty
+    }
+
+    if (err) {
+      throw err
+    }
+    return result
 
   }
 
   async configure() {
 
     const privates = privatesAccessor(this),
-          config = createConfig()
+          config = createConfig(),
+          keyProvider = new KeytarCredentialsProvider('com.medable.mdctl')
 
-    let env = privates.args('env')
+    let encryptionKey = await keyProvider.getCustom('pouchKey', '*'),
+        env = privates.args('env')
+
+    if (!encryptionKey) {
+      encryptionKey = randomAlphaNumSym(32)
+      await keyProvider.setCustom('pouchKey', '*', encryptionKey)
+    }
+
+    privates.credentialsProvider = new PouchDbCredentialsProvider({
+      name: path.join(os.homedir(), '.medable/mdctl.db'),
+      key: encryptionKey
+    })
 
     config.update({ env })
 
     // read program config, prefs, then local overrides
     await readConfig(config, path.join(__dirname, './.mdctl.yaml'))
-    await readConfig(config, path.join(process.env.HOME, '.medable', 'mdctl.yaml'))
+    await readConfig(config, path.join(os.homedir(), '.medable', 'mdctl.yaml'))
     await readConfig(config, path.join(__dirname, './.mdctl.local.yaml'))
 
     // ensure an environment is selected
@@ -127,7 +161,7 @@ module.exports = class MdCtlCli {
 
     // load environment defaults then reset overrides
     await readConfig(config, path.join(__dirname, 'environments', `${env}.yaml`))
-    await readConfig(config, path.join(process.env.HOME, '.medable', 'mdctl.yaml'))
+    await readConfig(config, path.join(os.homedir(), '.medable', 'mdctl.yaml'))
     await readConfig(config, path.join(__dirname, './mdctl.local.yaml'))
 
     // ensure correct env is still selected
@@ -245,7 +279,6 @@ module.exports = class MdCtlCli {
     }
   }
 
-
   async getAuthOptions() {
 
     const options = {}
@@ -260,6 +293,11 @@ module.exports = class MdCtlCli {
     this.assignArgIf(options, 'env')
     this.assignArgIf(options, 'username')
     this.assignArgIf(options, 'apiKey')
+
+    Object.assign(
+      options,
+      guessEndpoint(options)
+    )
 
     return Object.keys(options).length > 0 ? options : null
 

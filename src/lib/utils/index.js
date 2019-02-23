@@ -1,26 +1,14 @@
 const _ = require('lodash'),
-      util = require('util'),
       fs = require('fs'),
       { URL } = require('url'),
       jsyaml = require('js-yaml'),
       path = require('path'),
       isPlainObject = require('lodash.isplainobject'),
       {
-        isSet, rString, rFunction, naturalCmp, pathTo
+        isSet, rString, naturalCmp, pathTo, pathParts
       } = require('./values')
 
 let Undefined
-
-function throwIf(message, expression) {
-  if (expression) {
-    throw new Error(message)
-  }
-  return true
-}
-
-function throwIfNot(message, expression) {
-  return throwIf(message, !expression)
-}
 
 async function loadJsonOrYaml(file, multi) {
   if (path.extname(file) === '.yaml') {
@@ -49,17 +37,6 @@ function tryCatch(fn = () => {}, callback = () => {}, waitLoop = false) {
   }
   return [err, result]
 
-}
-
-async function promised(scope, fn, ...args) {
-
-  const p = util.promisify(rFunction(fn, pathTo(scope, fn)))
-
-  return p.call(scope, ...args)
-}
-
-async function sleep(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms))
 }
 
 function normalizeEndpoint(endpoint) {
@@ -140,11 +117,47 @@ function pathsTo(obj, ...paths) {
   }, {})
 }
 
+/**
+ * @param options
+ *  endpoint
+ *  env
+ *
+ */
+function guessEndpoint(options = {}) {
+
+  const out = {},
+        aliasedEndpoints = {
+          prod: 'https://api.medable.com',
+          'int-dev': 'https://api-int-dev.medable.com'
+        },
+        { endpoint, env } = options
+
+  if (aliasedEndpoints[endpoint]) {
+    out.endpoint = aliasedEndpoints[endpoint]
+  }
+  if (env) {
+    const [endpointPart, envPart] = pathParts(env)
+    if (endpointPart && envPart) {
+      out.env = envPart
+      if (aliasedEndpoints[endpointPart]) {
+        out.endpoint = aliasedEndpoints[endpointPart]
+      } else {
+        out.endpoint = `https://api.${endpointPart}.medable.com`
+      }
+    } else {
+      if (endpoint) {
+        out.endpoint = endpoint
+      }
+      out.env = env
+    }
+  } else if (endpoint) {
+    out.endpoint = endpoint
+  }
+
+  return out
+}
+
 module.exports = {
-  throwIf,
-  throwIfNot,
-  sleep,
-  promised,
   loadJsonOrYaml,
   tryCatch,
   normalizeEndpoint,
@@ -154,5 +167,6 @@ module.exports = {
   pathTo,
   pathsTo,
   validateApiKey,
-  validateApiSecret
+  validateApiSecret,
+  guessEndpoint
 }
