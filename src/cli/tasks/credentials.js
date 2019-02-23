@@ -495,16 +495,16 @@ class Credentials extends Task {
         + (await cli.credentialsProvider.flush('session'))
         + (await cli.credentialsProvider.flush('login'))
 
-    } catch(err) {
+    } catch (err) {
       // eslint-disable-line no-empty
     }
 
     await keyProvider.flush('pouchKey')
 
     try {
-      rimraf.sync(path.join(process.env.HOME, '.medable/mdctl.db*'))
+      rimraf.sync(path.join(os.homedir(), '.medable/mdctl.db*'))
     } catch (err) {
-
+      // eslint-disable-line no-empty
     }
 
     console.log(deleted)

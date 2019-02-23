@@ -1,4 +1,5 @@
 const path = require('path'),
+      os = require('os'),
       fs = require('fs'),
       _ = require('lodash'),
       yargs = require('yargs'),
@@ -20,7 +21,7 @@ const path = require('path'),
 async function readConfig(config, from) {
   let file = from
   if (file.slice(0, 2) === '~/') {
-    file = `${process.env.HOME}/${file.slice(2)}`
+    file = `${os.homedir()}/${file.slice(2)}`
   }
   if (fs.existsSync(file)) {
     await config.load(file)
@@ -140,7 +141,7 @@ module.exports = class MdCtlCli {
     }
 
     privates.credentialsProvider = new PouchDbCredentialsProvider({
-      name: path.join(process.env.HOME, '.medable/mdctl.db'),
+      name: path.join(os.homedir(), '.medable/mdctl.db'),
       key: encryptionKey
     })
 
@@ -148,7 +149,7 @@ module.exports = class MdCtlCli {
 
     // read program config, prefs, then local overrides
     await readConfig(config, path.join(__dirname, './.mdctl.yaml'))
-    await readConfig(config, path.join(process.env.HOME, '.medable', 'mdctl.yaml'))
+    await readConfig(config, path.join(os.homedir(), '.medable', 'mdctl.yaml'))
     await readConfig(config, path.join(__dirname, './.mdctl.local.yaml'))
 
     // ensure an environment is selected
@@ -160,7 +161,7 @@ module.exports = class MdCtlCli {
 
     // load environment defaults then reset overrides
     await readConfig(config, path.join(__dirname, 'environments', `${env}.yaml`))
-    await readConfig(config, path.join(process.env.HOME, '.medable', 'mdctl.yaml'))
+    await readConfig(config, path.join(os.homedir(), '.medable', 'mdctl.yaml'))
     await readConfig(config, path.join(__dirname, './mdctl.local.yaml'))
 
     // ensure correct env is still selected
