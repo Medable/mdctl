@@ -3,8 +3,11 @@ const fs = require('fs'),
       ndjson = require('ndjson'),
       { URL } = require('url'),
       {
-        isSet, parseString, pathTo, rFunction
+        isSet, parseString, pathTo, rFunction, rBool
       } = require('../utils/values'),
+      {
+        searchParamsToObject
+      } = require('../utils'),
       { templates } = require('../../lib/schemas'),
       { Manifest } = require('../../lib/manifest'),
       { Config } = require('../config'),
@@ -14,6 +17,19 @@ const fs = require('fs'),
 
 module.exports = {
 
+  /**
+   *
+   * @param input
+   *  format: defaults to json. 'yaml|json'
+   *  manifest
+   *  client
+   *  dir
+   *  adapter
+   *  stream
+   *  silent
+   *
+   * @returns {Promise<*>}
+   */
   async export(input) {
 
     const options = isSet(input) ? input : {},
@@ -23,9 +39,12 @@ module.exports = {
           // stream = ndjson.parse(),
           url = new URL('/developer/environment/export', client.environment.url),
           requestOptions = {
-            query: url.searchParams,
-            method: 'post',
-            preferUrls: false
+            query: {
+              ...searchParamsToObject(url.searchParams),
+              preferUrls: rBool(options.preferUrls, false),
+              silent: rBool(options.silent, false)
+            },
+            method: 'post'
           },
           streamOptions = {
             format: options.format
@@ -68,19 +87,22 @@ module.exports = {
           progress = rFunction(options.progress),
           url = new URL('/developer/environment/import', client.environment.url),
           requestOptions = {
-            query: url.searchParams,
-            method: 'post',
-            preferUrls: false
+            query: {
+              ...searchParamsToObject(url.searchParams),
+              preferUrls: rBool(options.preferUrls, false),
+              silent: rBool(options.silent, false)
+            },
+            method: 'post'
           },
           importStream = new ImportStream(inputDir, options.format),
           ndjsonStream = ndjson.stringify(),
           streamChain = pump(importStream, ndjsonStream)
 
     if (!options.local) {
-      pathTo(options, 'requestOptions.headers.accept', 'application/x-ndjson')
-      await client.call(url.pathname, Object.assign(requestOptions, {
-        body: streamChain
-      }))
+      pathTo(requestOptions, 'headers.accept', 'application/x-ndjson')
+      requestOptions.headers['Content-Type'] = 'application/x-ndjson'
+      requestOptions.json = false
+      await client.post(url.pathname, streamChain, { requestOptions })
     }
 
     return new Promise((resolve, reject) => {

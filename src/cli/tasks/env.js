@@ -9,7 +9,7 @@ class Env extends Task {
 
   constructor() {
     super()
-    this.optionKeys = ['manifest', 'format', 'layout', 'dir']
+    this.optionKeys = ['manifest', 'format', 'layout', 'dir', 'preferUrls', 'silent']
   }
 
   async run(cli) {
@@ -78,7 +78,10 @@ class Env extends Task {
           --endpoint sets the endpoint. eg. api.dev.medable.com     
           --env sets the environment. eg. example                              
           --manifest - defaults to $cwd/manifest.json
-          --format - export format (json, yaml) defaults to json                        
+          --format - export format (json, yaml) defaults to json
+          --preferUrls - set to true to force the server to send urls instead of base64 encoded chunks 
+          --silent - skip documents with mssing export keys instead of failing
+                                  
     `
   }
 
