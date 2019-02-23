@@ -4,7 +4,7 @@ const { Transform, Readable } = require('stream'),
       { isCustomName } = require('../utils/values'),
       KEYS = ['manifest', 'manifest-dependencies', 'manifest-exports', 'env', 'app', 'config', 'notification', 'policy', 'role', 'smsNumber', 'serviceAccount', 'storageLocation', 'configuration', 'facet', 'object', 'script', 'template', 'view'],
       { privatesAccessor } = require('../privates'),
-      { ImportFileAdapter } = require('./adapters/file_adapter')
+      { ImportFileTreeAdapter } = require('./adapters/file_adapter')
 
 class ExportStream extends Transform {
 
@@ -60,7 +60,7 @@ class ImportStream extends Readable {
 
   loadAdapter() {
     const { input, cache, format } = privatesAccessor(this),
-          importAdapter = new ImportFileAdapter(input, cache, format)
+          importAdapter = new ImportFileTreeAdapter(input, cache, format)
 
     privatesAccessor(this, 'adapter', importAdapter)
   }
