@@ -9,7 +9,7 @@ const fs = require('fs'),
       { Manifest } = require('../../lib/manifest'),
       { Config } = require('../config'),
       { ExportStream, ImportStream } = require('../../lib/stream'),
-      { ExportFileAdapter } = require('../../lib/stream/adapters/file_adapter'),
+      { ExportFileTreeAdapter } = require('../../lib/stream/adapters/file_adapter'),
       Client = require('../../lib/api/client')
 
 module.exports = {
@@ -31,7 +31,7 @@ module.exports = {
             format: options.format
           },
           streamTransform = new ExportStream(),
-          adapter = options.adapter || new ExportFileAdapter(outputDir, streamOptions)
+          adapter = options.adapter || new ExportFileTreeAdapter(outputDir, streamOptions)
 
     let inputStream = ndjson.parse()
     if (!options.stream) {
@@ -76,7 +76,7 @@ module.exports = {
           ndjsonStream = ndjson.stringify(),
           streamChain = pump(importStream, ndjsonStream)
 
-    if (!options.stream) {
+    if (!options.local) {
       pathTo(options, 'requestOptions.headers.accept', 'application/x-ndjson')
       await client.call(url.pathname, Object.assign(requestOptions, {
         body: streamChain

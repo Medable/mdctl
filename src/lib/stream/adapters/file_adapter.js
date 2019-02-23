@@ -1,22 +1,25 @@
-const { Transform } = require('stream'),
+const { Transform, Writable } = require('stream'),
       EventEmitter = require('events'),
       mime = require('mime-types'),
       fs = require('fs'),
+      jp = require('jsonpath'),
       _ = require('lodash'),
+      slugify = require('slugify'),
+      request = require('request'),
       pluralize = require('pluralize'),
+      uuid = require('uuid'),
       Fault = require('../../fault'),
       { ImportSection } = require('../section'),
       { stringifyContent, parseString } = require('../../utils/values'),
+      { md5FileHash } = require('../../utils/crypto'),
       { ensureDir } = require('../../utils/directory'),
       { privatesAccessor } = require('../../privates'),
-      { OutputStream } = require('../chunk-stream'),
-      FileTreeLayout = require('./layouts/files/tree')
+      { OutputStream } = require('../chunk-stream')
 
-
-class ExportFileAdapter extends EventEmitter {
+class ExportFileTreeAdapter extends Writable {
 
   constructor(outputPath, options = {}) {
-    super()
+    super({ objectMode: true })
     const { format = 'json', mdctl = null } = options,
           output = outputPath || process.cwd(),
           privates = {
@@ -24,20 +27,20 @@ class ExportFileAdapter extends EventEmitter {
             mdctl,
             output,
             cache: `${output}/.cache.json`,
-            metadata: {}
+            metadata: {},
+            resources: []
           }
     Object.assign(privatesAccessor(this), privates)
     this.loadMetadata()
     this.validateStructure()
-    return new FileTreeLayout(privates.output, privates)
+  }
+
+  get output() {
+    return privatesAccessor(this).output
   }
 
   get format() {
     return privatesAccessor(this).format
-  }
-
-  get layout() {
-    return privatesAccessor(this).layout
   }
 
   get cache() {
@@ -75,6 +78,148 @@ class ExportFileAdapter extends EventEmitter {
     }
   }
 
+  static downloadResources(url) {
+    return request(url)
+  }
+
+  static fileNeedsUpdate(f, pathFile) {
+    if (f.ETag && fs.existsSync(pathFile)) {
+      return md5FileHash(pathFile) !== f.ETag
+    }
+    return true
+  }
+
+  addResource(f) {
+    privatesAccessor(this).resources.push(f)
+  }
+
+  async writeAndUpdatePaths() {
+    const { resources } = privatesAccessor(this),
+          sections = _.map(_.filter(resources, res => !res.sectionId), (s) => {
+            const dest = s.dest || `${s.name}.${s.ext}`
+            return Object.assign(s, { file: `${s.folder}/${dest}` })
+          }),
+          assets = _.filter(resources, res => res.sectionId)
+
+    _.forEach(assets, (asset) => {
+      const dest = asset.dest || `${asset.name}.${asset.ext}`,
+            section = _.find(sections, doc => doc.id === asset.sectionId || doc.name === `${asset.sectionName}`)
+      if (section) {
+        /* eslint-disable no-param-reassign */
+        asset.folder = `${section.folder}/${asset.type}`
+        asset.file = `${section.folder}/${asset.type}/${dest}`
+        jp.value(section.data, asset.pathTo, asset.file.replace(this.output, ''))
+        if (asset.PathETag) {
+          jp.value(section.data, asset.PathETag, asset.ETag)
+        }
+      } else {
+        throw Fault.create('kSectionNotFound', {
+          reason: `We coudn't find any section matching to update file path: Id: ${asset.sectionId}, name: ${asset.sectionName}`
+        })
+      }
+      if (asset.stream && asset.stream.length) {
+        /* eslint-disable no-param-reassign */
+        asset.data = asset.stream.join()
+      }
+    })
+
+    _.forEach(sections, (s) => {
+      ensureDir(s.folder)
+      this.writeToFile(s.file, s.data, false)
+    })
+    _.forEach(assets, (r) => {
+      ensureDir(r.folder)
+      if (ExportFileTreeAdapter.fileNeedsUpdate(r, r.file)) {
+        if (r.remoteLocation && r.url) {
+          // download remote resource
+          fs.createWriteStream(r.file).pipe(ExportFileTreeAdapter.downloadResources(r.url))
+        } else if (r.base64) {
+          this.writeToFile(r.file, Buffer.from(r.base64, 'base64'), true)
+        } else {
+          this.writeToFile(r.file, r.data, true)
+        }
+      }
+    })
+  }
+
+  async writeStreamAsset(chunk) {
+    const { resources } = privatesAccessor(this),
+          existingStream = _.find(resources, r => r.streamId === chunk.content.streamId)
+    if (existingStream) {
+      if (!existingStream.stream) {
+        existingStream.stream = []
+      }
+      if (chunk.content.data !== null) {
+        existingStream.stream.push(Buffer.from(chunk.content.data, 'base64'))
+      } else {
+        existingStream.stream.push(null)
+      }
+      privatesAccessor(this, 'resources', resources)
+    }
+  }
+
+  async writeBinaryFiles(chunk) {
+    _.forEach(chunk.extraFiles, (ef) => {
+      const file = Object.assign(ef, { type: 'assets' })
+      this.addResource(file)
+    })
+  }
+
+  async writeExtraFiles(folder, chunk) {
+    _.forEach(chunk.scriptFiles, sf => this.addResource(Object.assign(sf, { type: 'js' })))
+    _.forEach(chunk.templateFiles, tf => this.addResource(Object.assign(tf, { type: 'tpl' })))
+  }
+
+  writeToFile(file, content, plain = false) {
+    return fs.writeFileSync(file, !plain ? stringifyContent(content, this.format) : content)
+  }
+
+  createCheckpointFile() {
+    this.writeToFile(`${this.output}/.cache.json`, JSON.stringify(this.metadata, null, 2), true)
+  }
+
+  processChunk(chunk) {
+    try {
+      if (chunk.key === 'stream') {
+        this.writeStreamAsset(chunk)
+      } else {
+        const folder = `${this.output}/${chunk.getPath()}`
+        if (chunk.isFacet) {
+          chunk.extractAssets()
+          this.writeBinaryFiles(chunk)
+        } else {
+          // ensureDir(folder)
+          chunk.extractScripts()
+          chunk.extractTemplates()
+          this.writeExtraFiles(folder, chunk)
+        }
+        if (chunk.isWritable) {
+          this.addResource({
+            folder,
+            id: chunk.id,
+            name: chunk.name,
+            data: chunk.content,
+            dest: `${slugify(chunk.name, '_')}.${this.format}`
+          })
+        }
+      }
+      return true
+    } catch (e) {
+      throw e
+    }
+  }
+
+  _write(chunk, enc, cb) {
+    this.processChunk(chunk)
+    cb()
+  }
+
+  _final(cb) {
+    this.writeAndUpdatePaths()
+    this.createCheckpointFile()
+    cb()
+  }
+
 }
 
 class ImportFileTransformStream extends Transform {
@@ -102,7 +247,7 @@ class ImportFileTransformStream extends Transform {
 
 }
 
-class ImportFileAdapter extends EventEmitter {
+class ImportFileTreeAdapter extends EventEmitter {
 
   constructor(inputDir, cache, format) {
     super()
@@ -170,9 +315,9 @@ class ImportFileAdapter extends EventEmitter {
       const f = files[index],
             section = await this.loadFile(f)
 
-      await section.loadFacets()
-      await section.loadScripts()
-      await section.loadTemplates()
+      await this.loadFacets(section)
+      await this.loadScripts(section)
+      await this.loadTemplates(section)
       result.value.push(section.content)
 
       if (section && section.facets && section.facets.length) {
@@ -241,6 +386,81 @@ class ImportFileAdapter extends EventEmitter {
     }
   }
 
+  getParentFromPath(chunk, path) {
+    const { content } = privatesAccessor(chunk),
+          parent = jp.parent(content, jp.stringify(path))
+    if (parent.code || parent.name || parent.label || parent.resource) {
+      return parent
+    }
+    path.pop()
+
+    return path.length > 1 ? this.getParentFromPath(chunk, path) : {}
+  }
+
+  async loadFacets(chunk) {
+    const {
+      content, facets, extraFiles, basePath
+    } = privatesAccessor(chunk)
+    return new Promise(async(success) => {
+      const nodes = jp.nodes(content, '$..resourceId')
+      if (nodes.length) {
+        _.forEach(nodes, (n) => {
+          const parent = this.getParentFromPath(chunk, n.path),
+                facet = Object.assign(parent, {}),
+                localFile = `${basePath}${facet.filePath}`
+          if (facet.filePath && md5FileHash(localFile) !== facet.ETag) {
+            const resourceKey = uuid.v4(),
+                  asset = {
+                    streamId: resourceKey,
+                    data: fs.readFileSync(localFile)
+                  }
+            facet.ETag = md5FileHash(localFile)
+            facet.streamId = resourceKey
+            extraFiles.push(asset)
+          }
+          delete facet.filePath
+          facets.push(facet)
+        })
+        privatesAccessor(chunk, 'facets', facets)
+        privatesAccessor(chunk, 'extraFiles', extraFiles)
+        return success()
+      }
+      return success()
+    })
+  }
+
+  async loadScripts(chunk) {
+    const { content, basePath } = privatesAccessor(chunk),
+          nodes = jp.nodes(content, '$..script')
+    nodes.forEach((n) => {
+      if (!_.isObject(n.value)) {
+        const parent = this.getParentFromPath(chunk, n.path)
+        if (parent.script.indexOf('/env') === 0) {
+          const jsFile = `${basePath}${parent.script}`
+          parent.script = fs.readFileSync(jsFile).toString()
+        }
+      }
+    })
+    return true
+  }
+
+  async loadTemplates(chunk) {
+    const { content, key, basePath } = privatesAccessor(chunk)
+    if (key === 'template') {
+      if (_.isArray(content.localizations)) {
+        const nodes = jp.nodes(content.localizations, '$..content')
+        nodes[0].value.forEach((cnt) => {
+          if (cnt.data.indexOf('/env') === 0) {
+            /* eslint no-param-reassign: "error" */
+            const tplFile = `${basePath}${cnt.data}`
+            cnt.data = fs.readFileSync(tplFile).toString()
+          }
+        })
+      }
+    }
+    return true
+  }
+
 }
 
 class ManifestFileAdapter {
@@ -286,7 +506,7 @@ class ManifestFileAdapter {
 }
 
 module.exports = {
-  ExportFileAdapter,
-  ImportFileAdapter,
+  ExportFileTreeAdapter,
+  ImportFileTreeAdapter,
   ManifestFileAdapter
 }
