@@ -1,6 +1,6 @@
 
 const { assert } = require('chai'),
-      { MemoryProvider } = require('../../../src/lib/credentials'),
+      { MemoryCredentialsProvider } = require('../../../src/lib/credentials'),
       testEntries = {
         password: {
           environment: 'api.test.medable.com/test',
@@ -47,7 +47,7 @@ const { assert } = require('chai'),
 
 describe('Module - Credentials', () => {
 
-  const credentialsProvider = new MemoryProvider()
+  const credentialsProvider = new MemoryCredentialsProvider()
 
   it('should find entries', async() => {
 

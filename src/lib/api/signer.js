@@ -1,6 +1,6 @@
 
 const { URL } = require('url'),
-      { createHmac } = require('crypto'),
+      createHmac = require('create-hmac'),
       {
         rInt, rString, rDate, isInteger
       } = require('../utils/values'),
