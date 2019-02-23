@@ -1,6 +1,7 @@
 const cloneObject = require('clone'),
       path = require('path'),
       fs = require('fs'),
+      os = require('os'),
       sh = require('shelljs'),
       jsyaml = require('js-yaml'),
       { merge } = require('lodash'),
@@ -103,7 +104,7 @@ function createConfig(data) {
 
 async function clearDefaults() {
 
-  const configureDir = path.join(process.env.HOME, '.medable'),
+  const configureDir = path.join(os.homedir(), '.medable'),
         configureFile = path.join(configureDir, 'mdctl.yaml')
 
   try {
@@ -116,7 +117,7 @@ async function clearDefaults() {
 
 async function loadDefaults() {
 
-  const configureDir = path.join(process.env.HOME, '.medable'),
+  const configureDir = path.join(os.homedir(), '.medable'),
         configureFile = path.join(configureDir, 'mdctl.yaml')
 
   try {
@@ -129,7 +130,7 @@ async function loadDefaults() {
 
 async function writeDefaults(contents) {
 
-  const configureDir = path.join(process.env.HOME, '.medable'),
+  const configureDir = path.join(os.homedir(), '.medable'),
         configureFile = path.join(configureDir, 'mdctl.yaml'),
         local = await loadDefaults()
 
