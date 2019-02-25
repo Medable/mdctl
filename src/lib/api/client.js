@@ -180,7 +180,7 @@ class Client {
       isSet(requestOptions.headers) ? requestOptions.headers : {}
     )
 
-    requestOptions.strictSSL = rBool(requestOptions.strictSSL, this.strictSSL)
+    requestOptions.strictSSL = false // rBool(requestOptions.strictSSL, this.strictSSL)
 
     if (privates.csrfToken) {
       requestOptions.headers['medable-csrf-token'] = privates.csrfToken

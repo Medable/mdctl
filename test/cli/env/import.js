@@ -1,6 +1,7 @@
 const { assert } = require('chai'),
       fs = require('fs'),
       path = require('path'),
+      zlib = require('zlib'),
       rimraf = require('rimraf'),
       _ = require('lodash'),
       Environment = require('../../../src/lib/env'),
@@ -45,11 +46,14 @@ describe('Environment Import', () => {
           }
         }).then(() => {
           rimraf.sync(tempDir)
-          const loadedItems = _.map(items, i => JSON.parse(i)),
-                blobItems = _.groupBy(_.filter(loadedItems, i => i.data && i.streamId), 'streamId'),
-                otherItems = _.filter(loadedItems, i => !i.data && !i.streamId)
-          assert(otherItems.length === 42, 'there are more/less files than loaded')
-          assert(Object.keys(blobItems).length === 1, 'there are more/less blob items than loaded')
+          zlib.unzip(Buffer.concat(items), (err, dezipped) => {
+            const result = _.filter(dezipped.toString().split('\n'), i => i !== ''),
+                  loadedItems = _.map(result, i => JSON.parse(i)),
+                  blobItems = _.groupBy(_.filter(loadedItems, i => i.data && i.streamId), 'streamId'),
+                  otherItems = _.filter(loadedItems, i => !i.data && !i.streamId)
+            assert(otherItems.length === 42, 'there are more/less files than loaded')
+            assert(Object.keys(blobItems).length === 1, 'there are more/less blob items than loaded')
+          })
           return true
         }).catch((e) => {
           rimraf.sync(tempDir)
