@@ -1,6 +1,7 @@
 const fs = require('fs'),
       pump = require('pump'),
       ndjson = require('ndjson'),
+      zlib = require('zlib'),
       { URL } = require('url'),
       {
         isSet, parseString, pathTo, rFunction, rBool
@@ -47,7 +48,8 @@ module.exports = {
             method: 'post'
           },
           streamOptions = {
-            format: options.format
+            format: options.format,
+            clearOutput: options.clear || false
           },
           streamTransform = new ExportStream(),
           adapter = options.adapter || new ExportFileTreeAdapter(outputDir, streamOptions)
@@ -96,11 +98,13 @@ module.exports = {
           },
           importStream = new ImportStream(inputDir, options.format),
           ndjsonStream = ndjson.stringify(),
-          streamChain = pump(importStream, ndjsonStream)
+          gz = zlib.createGzip(),
+          streamChain = pump(importStream, ndjsonStream, gz)
 
     if (!options.local) {
       pathTo(requestOptions, 'headers.accept', 'application/x-ndjson')
       requestOptions.headers['Content-Type'] = 'application/x-ndjson'
+      requestOptions.headers['Content-Encoding'] = 'application/gzip'
       requestOptions.json = false
       await client.post(url.pathname, streamChain, { requestOptions })
     }
