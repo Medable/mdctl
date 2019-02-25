@@ -49,7 +49,7 @@ module.exports = {
           },
           streamOptions = {
             format: options.format,
-            clearOutput: options.clear || false
+            clearOutput: options.clear
           },
           streamTransform = new ExportStream(),
           adapter = options.adapter || new ExportFileTreeAdapter(outputDir, streamOptions)
