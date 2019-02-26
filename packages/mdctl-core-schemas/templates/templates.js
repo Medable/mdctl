@@ -1,9 +1,9 @@
 /* eslint-disable global-require */
 
 const isPlainObject = require('lodash.isplainobject'),
-      { privatesAccessor } = require('../../privates'),
-      Fault = require('../../fault'),
-      { isCustomName, rString } = require('../../utils/values'),
+      { privatesAccessor } = require('mdctl-core-utils/privates'),
+      Fault = require('mdctl-core/fault'),
+      { isCustomName, rString } = require('mdctl-core-utils/values'),
       singleton = privatesAccessor({}),
       Template = require('./template'),
       resourceTypes = {

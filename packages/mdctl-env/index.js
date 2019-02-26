@@ -1,6 +1,4 @@
-const { templates } = require('mdctl-core-schemas'),
-      ExportEnv = require('export'),
-      ImportEnv = require('import')
+const { templates } = require('mdctl-core-schemas')
 
 const add = async(input) => {
   const options = isSet(input) ? input : {},
@@ -17,7 +15,5 @@ const add = async(input) => {
 }
 
 module.exports = {
-  add,
-  export: ExportEnv,
-  import: ImportEnv
+  add
 }
