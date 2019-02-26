@@ -3,6 +3,6 @@
   "version": "1.0.0",
   "private": true,
   "dependencies": {
-    "mdctl-core-utils": "v1.0.0"
+    "mdctl-core-utils": "^1.0.0"
   }
 }
