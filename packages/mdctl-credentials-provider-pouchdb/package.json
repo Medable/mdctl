@@ -3,13 +3,13 @@
   "version": "1.0.0",
   "private": true,
   "dependencies": {
-    "browserify-aes": "^1.2.0",
     "async": "^2.6.1",
+    "browserify-aes": "^1.2.0",
+    "mdctl-core": "^1.0.0",
+    "mdctl-core-utils": "^1.0.0",
     "pouchdb-adapter-node-websql": "^7.0.0",
     "pouchdb-core": "^7.0.0",
     "pouchdb-find": "^7.0.0",
-    "transform-pouch": "^1.1.4",
-    "mdctl-core-utils": "^1.0.0",
-    "mdctl-core": "^1.0.0"
+    "transform-pouch": "^1.1.4"
   }
 }
