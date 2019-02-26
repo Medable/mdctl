@@ -1,6 +1,8 @@
 const keytar = require('keytar'),
       { CredentialsProvider } = require('mdctl-core/credentials/provider'),
-      { rString, privatesAccessor, joinPaths } = require('mdctl-core-utils')
+      { joinPaths } = require('mdctl-core-utils'),
+      { rString } = require('mdctl-core-utils/values'),
+      { privatesAccessor } = require('mdctl-core-utils/privates')
 
 class KeytarCredentialsProvider extends CredentialsProvider {
 

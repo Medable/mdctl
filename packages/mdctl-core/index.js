@@ -3,7 +3,7 @@ const { Manifest, ARegex } = require('./manifest'),
       Fault = require('./fault')
 
 
-modules.export = {
+module.exports = {
   Manifest,
   ARegex,
   Fault

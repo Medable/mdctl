@@ -1,4 +1,7 @@
 {
   "name": "mdctl",
-  "version": "1.0.0"
+  "version": "1.0.0",
+  "devDependencies": {
+    "lerna": "^3.13.0"
+  }
 }
