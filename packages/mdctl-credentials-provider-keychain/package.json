@@ -1,6 +1,7 @@
 {
   "name": "mdctl-credentials-provider-keychain",
   "version": "1.0.0",
+  "private": true,
   "dependencies": {
     "keytar": "^4.3.0",
     "mdctl-core-utils": "^1.0.0",

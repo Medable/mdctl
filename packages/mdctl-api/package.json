@@ -1,11 +1,16 @@
 {
   "name": "mdctl-api",
   "version": "1.0.0",
+  "private": true,
   "dependencies": {
     "request": "^2.88.0",
     "clone": "^2.1.2",
     "create-hmac": "^1.1.7",
+    "pump": "^3.0.0",
+    "ndjson": "^1.5.0",
     "mdctl-core-utils": "^1.0.0",
-    "mdctl-core": "^1.0.0"
+    "mdctl-core": "^1.0.0",
+    "mdctl-export-adapter-tree": "^1.0.0",
+    "mdctl-import-adapter": "^1.0.0"
   }
 }
