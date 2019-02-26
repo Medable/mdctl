@@ -1,0 +1,24 @@
+{
+  "name": "mdctl-plugins-cli",
+  "version": "1.0.0",
+  "bin": {
+    "mdctl": "./cli.js"
+  },
+  "dependencies": {
+    "mdctl-core-utils": "^1.0.0",
+    "mdctl-core": "^1.0.0",
+    "mdctl-api": "^1.0.0",
+    "mdctl-env": "^1.0.0",
+    "mdctl-credentials-provider-pouchdb": "^1.0.0",
+    "mdctl-credentials-provider-keychain": "^1.0.0",
+    "mdctl-sandbox": "^1.0.0",
+    "lodash": "^4.17.11",
+    "yargs": "^12.0.5",
+    "ndjson": "^1.5.0",
+    "js-yaml": "^3.12.1",
+    "jsonwebtoken": "^8.4.0",
+    "shelljs": "^0.8.3",
+    "inquirer": "^6.2.1",
+    "cli-table": "^0.3.1"
+  }
+}

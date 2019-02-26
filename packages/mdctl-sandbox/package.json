@@ -1,0 +1,9 @@
+{
+  "name": "mdctl-sandbox",
+  "version": "1.0.0",
+  "dependencies": {
+    "mdctl-core-utils": "^1.0.0",
+    "mdctl-core": "^1.0.0",
+    "mdctl-api": "^1.0.0"
+  }
+}

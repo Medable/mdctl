@@ -1,0 +1,8 @@
+{
+  "name": "mdctl-core",
+  "version": "1.0.0",
+  "dependencies": {
+    "mdctl-core-utils": "^1.0.0",
+    "pluralize": "^7.0.0"
+  }
+}

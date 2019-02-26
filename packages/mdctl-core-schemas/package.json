@@ -1,0 +1,8 @@
+{
+  "name": "mdctl-core-schemas",
+  "version": "1.0.0",
+  "dependencies": {
+    "mdctl-core-utils": "v1.0.0",
+    "mdctl-core": "^1.0.0"
+  }
+}
