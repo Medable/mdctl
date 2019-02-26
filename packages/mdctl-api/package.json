@@ -1,0 +1,11 @@
+{
+  "name": "mdctl-api",
+  "version": "1.0.0",
+  "dependencies": {
+    "request": "^2.88.0",
+    "clone": "^2.1.2",
+    "create-hmac": "^1.1.7",
+    "mdctl-core-utils": "^1.0.0",
+    "mdctl-core": "^1.0.0"
+  }
+}

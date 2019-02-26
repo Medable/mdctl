@@ -1,0 +1,13 @@
+{
+  "name": "mdctl-credentials-provider-pouchdb",
+  "version": "1.0.0",
+  "dependencies": {
+    "mdctl-core-utils": "^1.0.0",
+    "mdctl-core": "^1.0.0",
+    "browserify-aes": "^1.2.0",
+    "async": "^2.6.1",
+    "pouchdb-adapter-node-websql": "^7.0.0",
+    "pouchdb-core": "^7.0.0",
+    "pouchdb-find": "^7.0.0"
+  }
+}
