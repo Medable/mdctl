@@ -6,7 +6,8 @@ const PouchDB = require('pouchdb-core')
       {
         createCipheriv, createDecipheriv, listCiphers
       } = require('browserify-aes'),
-      { createHash, randomBytes } = require('mdctl-core-utils/crypto'),
+      createHash = require('create-hash'),
+      randomBytes = require('randombytes'),
       { privatesAccessor } = require('mdctl-core-utils/privates'),
       { isSet, rString, rPath } = require('mdctl-core-utils/values'),
       { CredentialsProvider } = require('mdctl-core/credentials/provider'),
