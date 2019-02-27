@@ -37,6 +37,7 @@ describe('Environment Import', () => {
               items = []
         exportedFile.pipe(fs.createWriteStream(`${tempDir}/env/assets/env.logo.content.jpeg`))
         return Environment.import({
+          gzip: true,
           local: true,
           client,
           dir: tempDir,

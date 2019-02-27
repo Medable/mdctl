@@ -98,17 +98,22 @@ module.exports = {
           },
           importStream = new ImportStream(inputDir, options.format),
           ndjsonStream = ndjson.stringify(),
-          gz = zlib.createGzip(),
-          streamChain = pump(importStream, ndjsonStream, gz)
+          streamList = [importStream, ndjsonStream]
+    if (options.gzip) {
+      streamList.push(zlib.createGzip())
+    }
+    /* eslint-disable one-var */
+    const streamChain = pump(...streamList)
 
     if (!options.local) {
       pathTo(requestOptions, 'headers.accept', 'application/x-ndjson')
       requestOptions.headers['Content-Type'] = 'application/x-ndjson'
-      requestOptions.headers['Content-Encoding'] = 'application/gzip'
+      if (options.gzip) {
+        requestOptions.headers['Content-Encoding'] = 'application/gzip'
+      }
       requestOptions.json = false
-      await client.post(url.pathname, streamChain, { requestOptions })
+      return client.post(url.pathname, streamChain, { requestOptions })
     }
-
     return new Promise((resolve, reject) => {
       streamChain.on('data', (d) => {
         progress(d)
@@ -120,7 +125,6 @@ module.exports = {
         resolve()
       })
     })
-
   },
 
   async add(input) {
