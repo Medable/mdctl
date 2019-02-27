@@ -87,7 +87,7 @@ class Fault extends Error {
           )
 
     rArray(opts ? opts.faults : childFaults).forEach((f) => {
-      const child = Fault.from(childFaults[f])
+      const child = Fault.from(f)
       if (child) fault.add(child)
     })
 
