@@ -109,7 +109,8 @@ module.exports = {
       pathTo(requestOptions, 'headers.accept', 'application/x-ndjson')
       requestOptions.headers['Content-Type'] = 'application/x-ndjson'
       if (options.gzip) {
-        requestOptions.headers['Content-Encoding'] = 'application/gzip'
+        requestOptions.headers['Content-Type'] = 'application/gzip'
+        requestOptions.headers['Content-Encoding'] = 'gzip'
       }
       requestOptions.json = false
       return client.post(url.pathname, streamChain, { requestOptions })
