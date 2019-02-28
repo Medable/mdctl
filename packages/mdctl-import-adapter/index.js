@@ -3,6 +3,8 @@ const { Transform } = require('stream'),
       mime = require('mime-types'),
       uuid = require('uuid'),
       jp = require('jsonpath'),
+      fs = require('fs'),
+      _ = require('lodash'),
       { ImportSection } = require('mdctl-core/streams/section'),
       { stringifyContent, parseString } = require('mdctl-core-utils/values'),
       { md5FileHash } = require('mdctl-core-utils/crypto'),
@@ -27,7 +29,7 @@ class ImportFileTransformStream extends Transform {
 
   _transform(chunk, enc, callback) {
     const { metadata, basePath, file } = privatesAccessor(this),
-      content = parseString(chunk, metadata.format)
+          content = parseString(chunk, metadata.format)
     this.push(new ImportSection(content, content.object, file, basePath))
     callback()
   }
@@ -63,10 +65,10 @@ class ImportFileTreeAdapter extends EventEmitter {
 
   getAssetStream(ef) {
     const { metadata } = privatesAccessor(this),
-      outS = new OutputStream({
-        ndjson: false,
-        template: ef
-      })
+          outS = new OutputStream({
+            ndjson: false,
+            template: ef
+          })
     outS.write(stringifyContent(ef, metadata.format))
     outS.end()
     return outS
@@ -90,17 +92,17 @@ class ImportFileTreeAdapter extends EventEmitter {
 
   async getChunks() {
     const { files, index } = privatesAccessor(this),
-      result = {
-        done: false,
-        value: []
-      }
+          result = {
+            done: false,
+            value: []
+          }
     let { blobs } = privatesAccessor(this)
     if (files.length > index) {
       // Increment index processing
       privatesAccessor(this, 'index', index + 1)
 
       const f = files[index],
-        section = await this.loadFile(f)
+            section = await this.loadFile(f)
 
       await this.loadFacets(section)
       await this.loadScripts(section)
@@ -151,15 +153,15 @@ class ImportFileTreeAdapter extends EventEmitter {
     return new Promise((resolve, reject) => {
       const contents = []
       fs.createReadStream(file).pipe(new ImportFileTransformStream(metadata, file, input))
-      .on('data', (chunk) => {
-        contents.push(chunk)
-      })
-      .on('error', (e) => {
-        reject(e)
-      })
-      .on('end', () => {
-        resolve(contents[0])
-      })
+        .on('data', (chunk) => {
+          contents.push(chunk)
+        })
+        .on('error', (e) => {
+          reject(e)
+        })
+        .on('end', () => {
+          resolve(contents[0])
+        })
     })
   }
 
@@ -167,7 +169,7 @@ class ImportFileTreeAdapter extends EventEmitter {
     const { cache, format } = privatesAccessor(this)
     if (fs.existsSync(cache)) {
       const content = fs.readFileSync(cache),
-        metadata = JSON.parse(content.toString())
+            metadata = JSON.parse(content.toString())
       metadata.format = format
       privatesAccessor(this, 'metadata', metadata)
     }
@@ -175,7 +177,7 @@ class ImportFileTreeAdapter extends EventEmitter {
 
   getParentFromPath(chunk, path) {
     const { content } = privatesAccessor(chunk),
-      parent = jp.parent(content, jp.stringify(path))
+          parent = jp.parent(content, jp.stringify(path))
     if (parent.code || parent.name || parent.label || parent.resource) {
       return parent
     }
@@ -193,14 +195,14 @@ class ImportFileTreeAdapter extends EventEmitter {
       if (nodes.length) {
         _.forEach(nodes, (n) => {
           const parent = this.getParentFromPath(chunk, n.path),
-            facet = Object.assign(parent, {}),
-            localFile = `${basePath}${facet.filePath}`
+                facet = Object.assign(parent, {}),
+                localFile = `${basePath}${facet.filePath}`
           if (facet.filePath && md5FileHash(localFile) !== facet.ETag) {
             const resourceKey = uuid.v4(),
-              asset = {
-                streamId: resourceKey,
-                data: fs.readFileSync(localFile)
-              }
+                  asset = {
+                    streamId: resourceKey,
+                    data: fs.readFileSync(localFile)
+                  }
             facet.ETag = md5FileHash(localFile)
             facet.streamId = resourceKey
             extraFiles.push(asset)
@@ -218,7 +220,7 @@ class ImportFileTreeAdapter extends EventEmitter {
 
   async loadScripts(chunk) {
     const { content, basePath } = privatesAccessor(chunk),
-      nodes = jp.nodes(content, '$..script')
+          nodes = jp.nodes(content, '$..script')
     nodes.forEach((n) => {
       if (!_.isObject(n.value)) {
         const parent = this.getParentFromPath(chunk, n.path)

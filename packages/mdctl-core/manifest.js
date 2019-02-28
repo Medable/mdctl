@@ -1,9 +1,11 @@
 const _ = require('lodash'),
+      fs = require('fs'),
       pluralize = require('pluralize'),
       {
-        rArray, rBool, isSet, isCustomName, removeFalsy
+        rArray, rBool, isSet, isCustomName, removeFalsy, stringifyContent
       } = require('mdctl-core-utils/values'),
-      { privatesAccessor } = require('mdctl-core-utils/privates')
+      { ensureDir } = require('mdctl-core-utils/directory'),
+      { privatesAccessor } = require('mdctl-core-utils/privates'),
       Fault = require('./fault')
 
 // Augmented regular expresions. Accepts strings, star
@@ -134,7 +136,7 @@ class ManifestFileAdapter {
 
   static async addResource(output, format, type, template) {
     const out = `${output}/env/${pluralize(type)}`,
-      object = template.getBoilerplate()
+          object = template.getBoilerplate()
     ensureDir(out)
     if (type === 'script') {
       const filePath = `${out}/js/${template.exportKey}.js`

@@ -1,5 +1,6 @@
-const Client = require('./client'),
-      Environment = require('mdctl-core/credentials/environment')
+const Environment = require('mdctl-core/credentials/environment'),
+      Client = require('./client')
+
 
 module.exports = {
   Client,

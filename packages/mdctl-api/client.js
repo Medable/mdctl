@@ -2,7 +2,9 @@
 const request = require('request'),
       clone = require('clone'),
       { pathTo } = require('mdctl-core-utils'),
-      {rVal, rBool, rString, isSet, rPath} = require('mdctl-core-utils/values'),
+      {
+        rVal, rBool, rString, isSet, rPath
+      } = require('mdctl-core-utils/values'),
       { privatesAccessor } = require('mdctl-core-utils/privates'),
       { CredentialsProvider } = require('mdctl-core/credentials/provider'),
       { Config, ClientConfig } = require('mdctl-core/config'),

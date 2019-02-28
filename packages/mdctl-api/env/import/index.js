@@ -9,35 +9,42 @@ const pump = require ('pump'),
     searchParamsToObject
   } = require ('mdctl-core-utils'),
   { Config } = require ('mdctl-core'),
-  { ImportStream} = require ('./stream'),
+  ImportStream = require ('./stream'),
   Client = require ('../../client')
 
 const importEnv = async (input) => {
 
   const options = isSet (input) ? input : {},
-    client = options.client || new Client ({...Config.global.client, ...options}),
-    inputDir = options.dir || process.cwd (),
-    progress = rFunction (options.progress),
-    url = new URL ('/developer/environment/import', client.environment.url),
-    requestOptions = {
-      query: {
-        ...searchParamsToObject (url.searchParams),
-        preferUrls: rBool (options.preferUrls, false),
-        silent: rBool (options.silent, false)
-      },
-      method: 'post'
-    },
-    importStream = new ImportStream (inputDir, options.format),
-    ndjsonStream = ndjson.stringify (),
-    gz = zlib.createGzip (),
-    streamChain = pump (importStream, ndjsonStream, gz)
+        client = options.client || new Client ({ ...Config.global.client, ...options }),
+        inputDir = options.dir || process.cwd (),
+        progress = rFunction (options.progress),
+        url = new URL ('/developer/environment/import', client.environment.url),
+        requestOptions = {
+          query: {
+            ...searchParamsToObject (url.searchParams),
+            preferUrls: rBool (options.preferUrls, false),
+            silent: rBool (options.silent, false)
+          },
+          method: 'post'
+        },
+        importStream = new ImportStream (inputDir, options.format),
+        ndjsonStream = ndjson.stringify (),
+        streamList = [importStream, ndjsonStream]
+  if (options.gzip) {
+    streamList.push(zlib.createGzip())
+  }
+  /* eslint-disable one-var */
+  const streamChain = pump(...streamList)
 
   if (!options.local) {
     pathTo (requestOptions, 'headers.accept', 'application/x-ndjson')
     requestOptions.headers['Content-Type'] = 'application/x-ndjson'
-    requestOptions.headers['Content-Encoding'] = 'application/gzip'
+    if (options.gzip) {
+      requestOptions.headers['Content-Type'] = 'application/gzip'
+      requestOptions.headers['Content-Encoding'] = 'gzip'
+    }
     requestOptions.json = false
-    await client.post (url.pathname, streamChain, {requestOptions})
+    return client.post (url.pathname, streamChain, {requestOptions})
   }
 
   return new Promise ((resolve, reject) => {

@@ -1,9 +1,9 @@
 
 const { privatesAccessor } = require('mdctl-core-utils/privates'),
-  { CredentialsProvider } = require('./credentials/provider'),
-  MemoryCredentialsProvider = require('./credentials/memory_provider'),
-  { rPath, rBool } = require('mdctl-core-utils/values'),
-  { normalizeEndpoint, validateEndpoint } = require('mdctl-core-utils')
+      { rPath, rBool } = require('mdctl-core-utils/values'),
+      { normalizeEndpoint, validateEndpoint } = require('mdctl-core-utils'),
+      { CredentialsProvider } = require('./credentials/provider'),
+      MemoryCredentialsProvider = require('./credentials/memory_provider')
 
 let instance
 
