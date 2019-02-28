@@ -1,18 +1,26 @@
-const { templates } = require('mdctl-core-schemas')
+const { templates } = require('mdctl-core-schemas'),
+      fs = require('fs'),
+      { isSet, parseString } = require('mdctl-core-utils/values'),
+      { Manifest } = require('mdctl-core'),
 
-const add = async(input) => {
-  const options = isSet(input) ? input : {},
-    template = await templates.create(options.object, options.type, options.name),
-    outputDir = options.dir || process.cwd,
-    manifestFile = options.manifest || `${outputDir}/manifest.${options.format || 'json'}`
+      add = async(input) => {
+        const options = isSet(input) ? input : {},
+              template = await templates.create(options.object, options.type, options.name),
+              outputDir = options.dir || process.cwd,
+              manifestFile = options.manifest || `${outputDir}/manifest.${options.format || 'json'}`
 
-  let manifest = {}
-  if (fs.existsSync(manifestFile)) {
-    manifest = parseString(fs.readFileSync(manifestFile), options.format || 'json')
-  }
+        let manifest = {}
+        if (fs.existsSync(manifestFile)) {
+          manifest = parseString(fs.readFileSync(manifestFile), options.format || 'json')
+        }
 
-  await new Manifest(manifest).addResource(template.object, template.exportKey, template, options)
-}
+        return new Manifest(manifest).addResource(
+          template.object,
+          template.exportKey,
+          template,
+          options
+        )
+      }
 
 module.exports = {
   add

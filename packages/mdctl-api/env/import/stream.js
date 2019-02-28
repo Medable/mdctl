@@ -19,7 +19,7 @@ class ImportStream extends Readable {
 
   loadAdapter() {
     const { input, cache, format } = privatesAccessor(this),
-      importAdapter = new ImportFileTreeAdapter(input, cache, format)
+          importAdapter = new ImportFileTreeAdapter(input, cache, format)
 
     privatesAccessor(this, 'adapter', importAdapter)
   }
@@ -29,7 +29,7 @@ class ImportStream extends Readable {
     const { adapter, docProcessed } = privatesAccessor(this)
     if (!docProcessed) {
       const iter = adapter.iterator[Symbol.asyncIterator](),
-        item = await iter.next()
+            item = await iter.next()
       if (!item.done) {
         return item.value.forEach((v) => {
           this.push(v)
