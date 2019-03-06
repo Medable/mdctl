@@ -1,6 +1,6 @@
 const { Writable } = require('stream'),
-      { stringifyContent } = require('mdctl-core-utils/values'),
-      { privatesAccessor } = require('mdctl-core-utils/privates')
+      { stringifyContent } = require('@medable/mdctl-core-utils/values'),
+      { privatesAccessor } = require('@medable/mdctl-core-utils/privates')
 
 class ExportConsoleAdapter extends Writable {
 

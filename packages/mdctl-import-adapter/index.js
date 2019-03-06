@@ -5,10 +5,10 @@ const { Transform } = require('stream'),
       jp = require('jsonpath'),
       fs = require('fs'),
       _ = require('lodash'),
-      { ImportSection } = require('mdctl-core/streams/section'),
-      { stringifyContent, parseString } = require('mdctl-core-utils/values'),
-      { md5FileHash } = require('mdctl-core-utils/crypto'),
-      { privatesAccessor } = require('mdctl-core-utils/privates'),
+      { ImportSection } = require('@medable/mdctl-core/streams/section'),
+      { stringifyContent, parseString } = require('@medable/mdctl-core-utils/values'),
+      { md5FileHash } = require('@medable/mdctl-core-utils/crypto'),
+      { privatesAccessor } = require('@medable/mdctl-core-utils/privates'),
       { OutputStream } = require('./chunk-stream')
 
 class ImportFileTransformStream extends Transform {

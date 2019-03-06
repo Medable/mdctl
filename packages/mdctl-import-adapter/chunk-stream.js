@@ -1,10 +1,10 @@
 const { Transform } = require('stream'),
       clone = require('clone'),
       isPlainObject = require('lodash.isplainobject'),
-      { rBool, rInt, rString } = require('mdctl-core-utils/values'),
-      { sortKeys } = require('mdctl-core-utils'),
-      { privatesAccessor } = require('mdctl-core-utils/privates'),
-      { Fault } = require('mdctl-core')
+      { rBool, rInt, rString } = require('@medable/mdctl-core-utils/values'),
+      { sortKeys } = require('@medable/mdctl-core-utils'),
+      { privatesAccessor } = require('@medable/mdctl-core-utils/privates'),
+      { Fault } = require('@medable/mdctl-core')
 
 /**
  * outputs a binary stream from incoming stream of json objects

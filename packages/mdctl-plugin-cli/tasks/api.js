@@ -5,9 +5,9 @@ const _ = require('lodash'),
       jsyaml = require('js-yaml'),
       ndjson = require('ndjson'),
       fs = require('fs'),
-      { rString, isSet } = require('mdctl-core-utils/values'),
-      { loadJsonOrYaml, pathTo, searchParamsToObject } = require('mdctl-core-utils'),
-      { Fault } = require('mdctl-core'),
+      { rString, isSet } = require('@medable/mdctl-core-utils/values'),
+      { loadJsonOrYaml, pathTo, searchParamsToObject } = require('@medable/mdctl-core-utils'),
+      { Fault } = require('@medable/mdctl-core'),
       Task = require('../lib/task'),
       methods = ['get', 'post', 'put', 'patch', 'delete']
 

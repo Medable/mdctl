@@ -1,8 +1,8 @@
 /* eslint-disable import/no-extraneous-dependencies */
 const { assert } = require('chai'),
-      { tryCatch } = require('mdctl-core-utils'),
-      { isSet } = require('mdctl-core-utils/values'),
-      { privatesAccessor } = require('mdctl-core-utils/privates'),
+      { tryCatch } = require('@medable/mdctl-core-utils'),
+      { isSet } = require('@medable/mdctl-core-utils/values'),
+      { privatesAccessor } = require('@medable/mdctl-core-utils/privates'),
       { Manifest, ARegex } = require('../manifest')
 
 describe('Augmented Regular Expression', () => {

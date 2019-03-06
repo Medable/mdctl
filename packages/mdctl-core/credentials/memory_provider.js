@@ -1,5 +1,5 @@
 const { CredentialsProvider } = require('./provider'),
-      { privatesAccessor } = require('mdctl-core-utils/privates')
+      { privatesAccessor } = require('@medable/mdctl-core-utils/privates')
 
 class MemoryCredentialsProvider extends CredentialsProvider {
 

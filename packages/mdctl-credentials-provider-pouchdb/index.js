@@ -8,10 +8,10 @@ const PouchDB = require('pouchdb-core')
       } = require('browserify-aes'),
       createHash = require('create-hash'),
       randomBytes = require('randombytes'),
-      { privatesAccessor } = require('mdctl-core-utils/privates'),
-      { isSet, rString, rPath } = require('mdctl-core-utils/values'),
-      { CredentialsProvider } = require('mdctl-core/credentials/provider'),
-      { Fault } = require('mdctl-core')
+      { privatesAccessor } = require('@medable/mdctl-core-utils/privates'),
+      { isSet, rString, rPath } = require('@medable/mdctl-core-utils/values'),
+      { CredentialsProvider } = require('@medable/mdctl-core/credentials/provider'),
+      { Fault } = require('@medable/mdctl-core')
 
 class EncryptionTransformer {
 

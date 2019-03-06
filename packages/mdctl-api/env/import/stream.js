@@ -1,6 +1,6 @@
 const { Readable } = require('stream'),
-      { privatesAccessor } = require('mdctl-core-utils/privates'),
-      ImportFileTreeAdapter = require('mdctl-import-adapter')
+      { privatesAccessor } = require('@medable/mdctl-core-utils/privates'),
+      ImportFileTreeAdapter = require('@medable/mdctl-import-adapter')
 
 
 class ImportStream extends Readable {

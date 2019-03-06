@@ -4,7 +4,7 @@ const slugify = require('slugify'),
       mime = require('mime'),
       uuid = require('uuid'),
       pluralize = require('pluralize'),
-      { isCustomName } = require('mdctl-core-utils/values'),
+      { isCustomName } = require('@medable/mdctl-core-utils/values'),
       ENV_KEYS = {
         keys: ['app', 'config', 'notification', 'policy', 'role', 'smsNumber', 'serviceAccount', 'storageLocation', 'configuration', 'template', 'object', 'script', 'view'],
         folder: 'env'
@@ -17,9 +17,22 @@ const slugify = require('slugify'),
         keys: ['manifest', 'manifest-dependencies', 'manifest-exports'],
         folder: ''
       },
+      TEMPLATES_EXT = {
+        email: {
+          html: 'html',
+          plain: 'txt',
+          subject: 'txt'
+        },
+        push: {
+          message: 'txt'
+        },
+        sms: {
+          message: 'txt'
+        }
+      },
       NON_WRITABLE_KEYS = ['facet'],
       SectionsCreated = [],
-      { privatesAccessor } = require('mdctl-core-utils/privates')
+      { privatesAccessor } = require('@medable/mdctl-core-utils/privates')
 
 class ExportSection {
 
@@ -194,10 +207,9 @@ class ExportSection {
             objectPath.push(i)
             objectPath.push('data')
             if (cnt.data) {
-              const findMime = _.find(content.spec, s => s.name === cnt.name)
               privatesAccessor(this).templateFiles.push({
                 name: `${name}.${l.locale}.${cnt.name}`,
-                ext: mime.getExtension(findMime.mime),
+                ext: TEMPLATES_EXT[content.type][cnt.name],
                 data: cnt.data,
                 remoteLocation: false,
                 pathTo: jp.stringify(objectPath),

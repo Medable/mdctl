@@ -1,7 +1,7 @@
 
-const { privatesAccessor } = require('mdctl-core-utils/privates'),
-      { rPath, rBool } = require('mdctl-core-utils/values'),
-      { normalizeEndpoint, validateEndpoint } = require('mdctl-core-utils'),
+const { privatesAccessor } = require('@medable/mdctl-core-utils/privates'),
+      { rPath, rBool } = require('@medable/mdctl-core-utils/values'),
+      { normalizeEndpoint, validateEndpoint } = require('@medable/mdctl-core-utils'),
       { CredentialsProvider } = require('./credentials/provider'),
       MemoryCredentialsProvider = require('./credentials/memory_provider')
 

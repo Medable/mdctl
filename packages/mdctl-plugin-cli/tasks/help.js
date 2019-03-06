@@ -3,7 +3,7 @@
 
 const Task = require('../lib/task'),
       { getRegisteredTasks } = require('./index'),
-      { pad } = require('mdctl-core-utils/values')
+      { pad } = require('@medable/mdctl-core-utils/values')
 
 class Help extends Task {
 

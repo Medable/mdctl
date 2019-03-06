@@ -3,9 +3,9 @@ const _ = require('lodash'),
       pluralize = require('pluralize'),
       {
         rArray, rBool, isSet, isCustomName, removeFalsy, stringifyContent
-      } = require('mdctl-core-utils/values'),
-      { ensureDir } = require('mdctl-core-utils/directory'),
-      { privatesAccessor } = require('mdctl-core-utils/privates'),
+      } = require('@medable/mdctl-core-utils/values'),
+      { ensureDir } = require('@medable/mdctl-core-utils/directory'),
+      { privatesAccessor } = require('@medable/mdctl-core-utils/privates'),
       Fault = require('./fault')
 
 // Augmented regular expresions. Accepts strings, star

@@ -1,9 +1,9 @@
 const _ = require('lodash'),
       {
         rInstance, isSet, rPath
-      } = require('mdctl-core-utils/values'),
+      } = require('@medable/mdctl-core-utils/values'),
       sandbox = require('./sandbox'),
-      Client = require('mdctl-api/client')
+      Client = require('@medable/mdctl-api/client')
 
 module.exports = {
 

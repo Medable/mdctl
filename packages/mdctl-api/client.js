@@ -1,15 +1,15 @@
 
 const request = require('request'),
       clone = require('clone'),
-      { pathTo } = require('mdctl-core-utils'),
+      { pathTo } = require('@medable/mdctl-core-utils'),
       {
         rVal, rBool, rString, isSet, rPath
-      } = require('mdctl-core-utils/values'),
-      { privatesAccessor } = require('mdctl-core-utils/privates'),
-      { CredentialsProvider } = require('mdctl-core/credentials/provider'),
-      { Config, ClientConfig } = require('mdctl-core/config'),
-      { Fault } = require('mdctl-core'),
-      Environment = require('mdctl-core/credentials/environment'),
+      } = require('@medable/mdctl-core-utils/values'),
+      { privatesAccessor } = require('@medable/mdctl-core-utils/privates'),
+      { CredentialsProvider } = require('@medable/mdctl-core/credentials/provider'),
+      { Config, ClientConfig } = require('@medable/mdctl-core/config'),
+      { Fault } = require('@medable/mdctl-core'),
+      Environment = require('@medable/mdctl-core/credentials/environment'),
       Request = require('./request')
 
 class Client {

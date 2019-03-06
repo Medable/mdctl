@@ -5,11 +5,11 @@ const { Writable } = require('stream'),
       _ = require('lodash'),
       slugify = require('slugify'),
       request = require('request'),
-      { Fault } = require('mdctl-core'),
-      { stringifyContent } = require('mdctl-core-utils/values'),
-      { md5FileHash } = require('mdctl-core-utils/crypto'),
-      { ensureDir } = require('mdctl-core-utils/directory'),
-      { privatesAccessor } = require('mdctl-core-utils/privates')
+      { Fault } = require('@medable/mdctl-core'),
+      { stringifyContent } = require('@medable/mdctl-core-utils/values'),
+      { md5FileHash } = require('@medable/mdctl-core-utils/crypto'),
+      { ensureDir } = require('@medable/mdctl-core-utils/directory'),
+      { privatesAccessor } = require('@medable/mdctl-core-utils/privates')
 
 class ExportFileTreeAdapter extends Writable {
 

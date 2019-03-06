@@ -2,8 +2,8 @@
 const _ = require('lodash'),
       {
         loadJsonOrYaml,
-      } = require('mdctl-core-utils'),
-      Environment = require('mdctl-core/credentials/environment'),
+      } = require('@medable/mdctl-core-utils'),
+      Environment = require('@medable/mdctl-core/credentials/environment'),
       {
         askUserCredentials,
         askUserToSaveCredentials,

@@ -1,9 +1,9 @@
 const { URL } = require('url'),
-      { rString, isSet } = require('mdctl-core-utils/values'),
+      { rString, isSet } = require('@medable/mdctl-core-utils/values'),
       {
         Secret, PasswordSecret, TokenSecret, SignatureSecret
       } = require('./secrets'),
-      { normalizeEndpoint } = require('mdctl-core-utils'),
+      { normalizeEndpoint } = require('@medable/mdctl-core-utils'),
       Environment = require('./environment'),
       typeNames = ['password', 'signature', 'token']
 

@@ -3,10 +3,10 @@
 const _ = require('lodash'),
       jsyaml = require('js-yaml'),
       fs = require('fs'),
-      { rString, isSet, stringToBoolean } = require('mdctl-core-utils/values'),
-      { loadJsonOrYaml } = require('mdctl-core-utils'),
+      { rString, isSet, stringToBoolean } = require('@medable/mdctl-core-utils/values'),
+      { loadJsonOrYaml } = require('@medable/mdctl-core-utils'),
       Task = require('../lib/task'),
-      sandbox = require('mdctl-sandbox')
+      sandbox = require('@medable/mdctl-sandbox')
 
 
 class Sandbox extends Task {

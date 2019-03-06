@@ -3,7 +3,7 @@
 
 const _ = require('lodash'),
       sh = require('shelljs'),
-      { throwIfNot } = require('mdctl-core-utils')
+      { throwIfNot } = require('@medable/mdctl-core-utils')
 
 class Task {
 

@@ -1,4 +1,4 @@
-const Environment = require('mdctl-core/credentials/environment'),
+const Environment = require('@medable/mdctl-core/credentials/environment'),
       Client = require('./client')
 
 
