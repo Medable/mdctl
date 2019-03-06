@@ -1,7 +1,7 @@
 {
   "name": "@medable/mdctl-core",
   "version": "1.0.0",
-  "description": "Medable Developer Tools :: Core",
+  "description": "Medable Developer Client Tools :: Core",
   "bugs": {
     "url": "https://github.com/Medable/mdctl/issues"
   },
