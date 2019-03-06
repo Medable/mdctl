@@ -180,14 +180,14 @@ class Client {
       isSet(requestOptions.headers) ? requestOptions.headers : {}
     )
 
-    requestOptions.strictSSL = rBool(requestOptions.strictSSL, this.strictSSL)
+    requestOptions.strictSSL = false // rBool(requestOptions.strictSSL, this.strictSSL)
 
     if (privates.csrfToken) {
       requestOptions.headers['medable-csrf-token'] = privates.csrfToken
     }
 
     return new Promise((resolve, reject) => {
-      req.run(Object.assign({ uri, stream }, requestOptions))
+      req.run(Object.assign({ uri, stream, verbose: true }, requestOptions))
         .then(async(result) => {
 
           if (stream) {
