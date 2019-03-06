@@ -1,7 +1,7 @@
-const { templates } = require('mdctl-core-schemas'),
+const { templates } = require('@medable/mdctl-core-schemas'),
       fs = require('fs'),
-      { isSet, parseString } = require('mdctl-core-utils/values'),
-      { Manifest } = require('mdctl-core'),
+      { isSet, parseString } = require('@medable/mdctl-core-utils/values'),
+      { Manifest } = require('@medable/mdctl-core'),
 
       add = async(input) => {
         const options = isSet(input) ? input : {},

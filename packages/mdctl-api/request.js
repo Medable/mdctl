@@ -1,9 +1,9 @@
 
 const request = require('request'),
-      { pathTo } = require('mdctl-core-utils'),
-      { isSet, rBool } = require('mdctl-core-utils/values'),
-      { privatesAccessor } = require('mdctl-core-utils/privates'),
-      { Fault } = require('mdctl-core')
+      { pathTo } = require('@medable/mdctl-core-utils'),
+      { isSet, rBool } = require('@medable/mdctl-core-utils/values'),
+      { privatesAccessor } = require('@medable/mdctl-core-utils/privates'),
+      { Fault } = require('@medable/mdctl-core')
 
 class Request {
 

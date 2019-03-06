@@ -1,11 +1,11 @@
 /* eslint-disable class-methods-use-this */
 
 const jsonwebtoken = require('jsonwebtoken'),
-      { privatesAccessor } = require('mdctl-core-utils/privates'),
+      { privatesAccessor } = require('@medable/mdctl-core-utils/privates'),
       {
         rString, isSet,
-      } = require('mdctl-core-utils/values'),
-      { pathTo, validateApiKey, validateApiSecret } = require('mdctl-core-utils'),
+      } = require('@medable/mdctl-core-utils/values'),
+      { pathTo, validateApiKey, validateApiSecret } = require('@medable/mdctl-core-utils'),
       { signPath } = require('./signer')
 
 // ------------------------------------------------------------------------------------------------

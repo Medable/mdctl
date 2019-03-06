@@ -4,7 +4,7 @@ const { assert } = require('chai'),
       path = require('path'),
       glob = require('glob'),
       rimraf = require('rimraf'),
-      ExportConsoleAdapter = require('mdctl-export-adapter-console'),
+      ExportConsoleAdapter = require('@medable/mdctl-export-adapter-console'),
       { Client } = require('../../'),
       Environment = require('../../env')
 

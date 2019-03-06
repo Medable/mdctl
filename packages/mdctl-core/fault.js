@@ -1,6 +1,6 @@
 const isPlainObject = require('lodash.isplainobject'),
-      { pathTo } = require('mdctl-core-utils'),
-      { rString, rArray } = require('mdctl-core-utils/values')
+      { pathTo } = require('@medable/mdctl-core-utils'),
+      { rString, rArray } = require('@medable/mdctl-core-utils/values')
 
 class Fault extends Error {
 

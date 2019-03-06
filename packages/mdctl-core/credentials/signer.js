@@ -1,8 +1,8 @@
 
 const { URL } = require('url'),
       createHmac = require('create-hmac'),
-      { rInt, rString, rDate, isInteger } = require('mdctl-core-utils/values'),
-      { randomAlphaNum } = require('mdctl-core-utils')
+      { rInt, rString, rDate, isInteger } = require('@medable/mdctl-core-utils/values'),
+      { randomAlphaNum } = require('@medable/mdctl-core-utils')
 
 function sign(command, method, secret, timestamp) {
 

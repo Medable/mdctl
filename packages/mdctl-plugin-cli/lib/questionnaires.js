@@ -4,11 +4,11 @@ const { prompt } = require('inquirer'),
       Table = require('cli-table'),
       {
         validateApiKey, validateApiSecret, guessEndpoint, validateEndpoint
-      } = require('mdctl-core-utils'),
-      Environment = require('mdctl-core/credentials/environment'),
+      } = require('@medable/mdctl-core-utils'),
+      Environment = require('@medable/mdctl-core/credentials/environment'),
       {
         rString, rInt, isSet
-      } = require('mdctl-core-utils/values')
+      } = require('@medable/mdctl-core-utils/values')
 
       askUserCredentials = async(inputArgs) => {
 

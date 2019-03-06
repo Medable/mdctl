@@ -6,7 +6,7 @@ const Task = require('../lib/task'),
         clearDefaults, createConfig, loadDefaults, writeDefaults
       } = require('../lib/config'),
       { question } = require('../lib/questionnaires'),
-      { stringToBoolean, rVal, rString } = require('mdctl-core-utils/values'),
+      { stringToBoolean, rVal, rString } = require('@medable/mdctl-core-utils/values'),
       configureOptions = {
         defaultEndpoint: {
           message: 'The default cortex endpoint',

@@ -5,8 +5,8 @@ const cloneObject = require('clone'),
       sh = require('shelljs'),
       jsyaml = require('js-yaml'),
       { merge } = require('lodash'),
-      { loadJsonOrYaml, pathTo } = require('mdctl-core-utils'),
-      { privatesAccessor } = require('mdctl-core-utils/privates')
+      { loadJsonOrYaml, pathTo } = require('@medable/mdctl-core-utils'),
+      { privatesAccessor } = require('@medable/mdctl-core-utils/privates')
 
 let Undefined
 

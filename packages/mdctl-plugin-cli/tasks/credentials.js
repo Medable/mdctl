@@ -11,23 +11,23 @@ const _ = require('lodash'),
       { loadDefaults, writeDefaults } = require('../lib/config'),
       {
         loadJsonOrYaml, pathsTo
-      } = require('mdctl-core-utils'),
+      } = require('@medable/mdctl-core-utils'),
       {
         rString, isSet
-      } = require('mdctl-core-utils/values'),
+      } = require('@medable/mdctl-core-utils/values'),
       {
         detectAuthType
-      } = require('mdctl-core/credentials/provider'),
-      { Environment } = require('mdctl-api'),
+      } = require('@medable/mdctl-core/credentials/provider'),
+      { Environment } = require('@medable/mdctl-api'),
       Task = require('../lib/task'),
-      Fault = require('mdctl-core'),
+      Fault = require('@medable/mdctl-core'),
       {
         askUserCredentials,
         question
       } = require('../lib/questionnaires'),
-      { Client } = require('mdctl-api'),
-      KeytarCredentialsProvider = require('mdctl-credentials-provider-keychain'),
-      { jwt } = require('mdctl-sandbox'),
+      { Client } = require('@medable/mdctl-api'),
+      KeytarCredentialsProvider = require('@medable/mdctl-credentials-provider-keychain'),
+      { jwt } = require('@medable/mdctl-sandbox'),
       { logInFlow } = require('../lib/log-in-flows')
 
 class Credentials extends Task {

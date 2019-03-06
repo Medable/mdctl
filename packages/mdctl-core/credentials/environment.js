@@ -1,7 +1,7 @@
 
 const { URL } = require('url'),
-      { rString, isSet } = require('mdctl-core-utils/values'),
-      { privatesAccessor } = require('mdctl-core-utils/privates'),
+      { rString, isSet } = require('@medable/mdctl-core-utils/values'),
+      { privatesAccessor } = require('@medable/mdctl-core-utils/privates'),
       supportedProtocols = new Set(['http:', 'https:']),
       supportedVersions = new Set(['v2'])
 

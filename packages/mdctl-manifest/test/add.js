@@ -3,7 +3,7 @@ const { assert } = require('chai'),
       path = require('path'),
       fs = require('fs'),
       rimraf = require('rimraf'),
-      { parseString } = require('mdctl-core-utils/values'),
+      { parseString } = require('@medable/mdctl-core-utils/values'),
       { add } = require('../')
 
 describe('CLI - Env - Adding Resources', () => {

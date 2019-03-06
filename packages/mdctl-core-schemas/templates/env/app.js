@@ -1,6 +1,6 @@
 const _ = require('lodash'),
       { Template: Base } = require('../template'),
-      { sortKeys } = require('mdctl-core-utils')
+      { sortKeys } = require('@medable/mdctl-core-utils')
 
 class Template extends Base {
 

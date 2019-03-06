@@ -1,9 +1,9 @@
 /* eslint-disable class-methods-use-this */
 
 const _ = require('lodash'),
-      { add } = require('mdctl-env'),
-      Environment = require('mdctl-api/env'),
-      { isSet } = require('mdctl-core-utils/values'),
+      { add } = require('@medable/mdctl-env'),
+      Environment = require('@medable/mdctl-api/env'),
+      { isSet } = require('@medable/mdctl-core-utils/values'),
       Task = require('../lib/task')
 
 class Env extends Task {

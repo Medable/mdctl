@@ -3,21 +3,21 @@ const path = require('path'),
       fs = require('fs'),
       _ = require('lodash'),
       yargs = require('yargs'),
-      { privatesAccessor } = require('mdctl-core-utils/privates'),
+      { privatesAccessor } = require('@medable/mdctl-core-utils/privates'),
       { createTask } = require('./tasks'),
-      { Fault } = require('mdctl-core'),
+      { Fault } = require('@medable/mdctl-core'),
       { createConfig } = require('./lib/config'),
-      { Config } = require('mdctl-core/config'),
-      { Client } = require('mdctl-api'),
-      KeytarCredentialsProvider = require('mdctl-credentials-provider-keychain'),
-      PouchDbCredentialsProvider = require('mdctl-credentials-provider-pouchdb'),
-      { loadJsonOrYaml, guessEndpoint } = require('mdctl-core-utils'),
+      { Config } = require('@medable/mdctl-core/config'),
+      { Client } = require('@medable/mdctl-api'),
+      KeytarCredentialsProvider = require('@medable/mdctl-credentials-provider-keychain'),
+      PouchDbCredentialsProvider = require('@medable/mdctl-credentials-provider-pouchdb'),
+      { loadJsonOrYaml, guessEndpoint } = require('@medable/mdctl-core-utils'),
       {
         stringToBoolean, rBool, rString
-      } = require('mdctl-core-utils/values'),
+      } = require('@medable/mdctl-core-utils/values'),
       {
         randomAlphaNumSym
-      } = require('mdctl-core-utils/crypto')
+      } = require('@medable/mdctl-core-utils/crypto')
 
 async function readConfig(config, from) {
   let file = from
