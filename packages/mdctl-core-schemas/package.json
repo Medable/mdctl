@@ -1,11 +1,21 @@
 {
-  "name": "mdctl-core-schemas",
+  "name": "@medable/mdctl-core-schemas",
   "version": "1.0.0",
+  "description": "Medable Developer Tools :: Schemas",
+  "bugs": {
+    "url": "https://github.com/Medable/mdctl/issues"
+  },
+  "engines": {
+    "node": ">=8",
+    "npm": ">=6"
+  },
+  "author": "Medable, Inc. <mdctl@medable.com>",
+  "license": "MIT",
   "private": true,
   "dependencies": {
     "lodash": "^4.17.11",
     "lodash.isplainobject": "^4.0.6",
-    "mdctl-core": "^1.0.0",
-    "mdctl-core-utils": "^1.0.0"
+    "@medable/mdctl-core": "^1.0.0",
+    "@medable/mdctl-core-utils": "^1.0.0"
   }
 }

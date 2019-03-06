@@ -1,12 +1,22 @@
 {
-  "name": "mdctl-export-adapter-tree",
+  "name": "@medable/mdctl-export-adapter-tree",
   "version": "1.0.0",
+  "description": "Medable Developer Tools :: Export Tree Adapter",
+  "bugs": {
+    "url": "https://github.com/Medable/mdctl/issues"
+  },
+  "engines": {
+    "node": ">=8",
+    "npm": ">=6"
+  },
+  "author": "Medable, Inc. <mdctl@medable.com>",
+  "license": "MIT",
   "private": true,
   "dependencies": {
     "jsonpath": "^1.0.0",
     "lodash": "^4.17.11",
-    "mdctl-core-utils": "^1.0.0",
-    "mdctl-core": "^1.0.0",
+    "@medable/mdctl-core-utils": "^1.0.0",
+    "@medable/mdctl-core": "^1.0.0",
     "mime-types": "^2.1.21",
     "pluralize": "^7.0.0",
     "request": "^2.88.0",

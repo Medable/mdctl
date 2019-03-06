@@ -1,6 +1,16 @@
 {
-  "name": "mdctl-plugin-cli",
+  "name": "@medable/mdctl-plugin-cli",
   "version": "1.0.0",
+  "description": "Medable Developer Tools :: Cli plugin",
+  "bugs": {
+    "url": "https://github.com/Medable/mdctl/issues"
+  },
+  "engines": {
+    "node": ">=8",
+    "npm": ">=6"
+  },
+  "author": "Medable, Inc. <mdctl@medable.com>",
+  "license": "MIT",
   "private": true,
   "bin": {
     "mdctl": "./cli.js"
@@ -13,13 +23,13 @@
     "js-yaml": "^3.12.1",
     "jsonwebtoken": "^8.4.0",
     "lodash": "^4.17.11",
-    "mdctl-api": "^1.0.0",
-    "mdctl-core": "^1.0.0",
-    "mdctl-core-utils": "^1.0.0",
-    "mdctl-credentials-provider-keychain": "^1.0.0",
-    "mdctl-credentials-provider-pouchdb": "^1.0.0",
-    "mdctl-env": "^1.0.0",
-    "mdctl-sandbox": "^1.0.0",
+    "@medable/mdctl-api": "^1.0.0",
+    "@medable/mdctl-core": "^1.0.0",
+    "@medable/mdctl-core-utils": "^1.0.0",
+    "@medable/mdctl-credentials-provider-keychain": "^1.0.0",
+    "@medable/mdctl-credentials-provider-pouchdb": "^1.0.0",
+    "@medable/mdctl-manifest": "^1.0.0",
+    "@medable/mdctl-sandbox": "^1.0.0",
     "ndjson": "^1.5.0",
     "rimraf": "^2.6.3",
     "shelljs": "^0.8.3",
