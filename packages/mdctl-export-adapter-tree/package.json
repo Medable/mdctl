@@ -13,10 +13,10 @@
   "license": "MIT",
   "private": true,
   "dependencies": {
+    "@medable/mdctl-core": "^1.0.0",
+    "@medable/mdctl-core-utils": "^1.0.0",
     "jsonpath": "^1.0.0",
     "lodash": "^4.17.11",
-    "@medable/mdctl-core-utils": "^1.0.0",
-    "@medable/mdctl-core": "^1.0.0",
     "mime-types": "^2.1.21",
     "pluralize": "^7.0.0",
     "request": "^2.88.0",
