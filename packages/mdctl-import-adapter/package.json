@@ -1,6 +1,16 @@
 {
-  "name": "mdctl-import-adapter",
+  "name": "@medable/mdctl-import-adapter",
   "version": "1.0.0",
+  "description": "Medable Developer Tools :: Import Adapter",
+  "bugs": {
+    "url": "https://github.com/Medable/mdctl/issues"
+  },
+  "engines": {
+    "node": ">=8",
+    "npm": ">=6"
+  },
+  "author": "Medable, Inc. <mdctl@medable.com>",
+  "license": "MIT",
   "private": true,
   "scripts": {
     "test": "npm run lint && npm run cover",
@@ -16,8 +26,8 @@
     "jsonpath": "^1.0.0",
     "lodash": "^4.17.11",
     "lodash.isplainobject": "^4.0.6",
-    "mdctl-core": "^1.0.0",
-    "mdctl-core-utils": "^1.0.0",
+    "@medable/mdctl-core": "^1.0.0",
+    "@medable/mdctl-core-utils": "^1.0.0",
     "mime-types": "^2.1.21",
     "uuid": "^3.3.2"
   }

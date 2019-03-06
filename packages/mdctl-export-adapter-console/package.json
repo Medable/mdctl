@@ -1,8 +1,18 @@
 {
-  "name": "mdctl-export-adapter-console",
+  "name": "@medable/mdctl-export-adapter-console",
   "version": "1.0.0",
+  "description": "Medable Developer Tools :: Export Console Adapter",
+  "bugs": {
+    "url": "https://github.com/Medable/mdctl/issues"
+  },
+  "engines": {
+    "node": ">=8",
+    "npm": ">=6"
+  },
+  "author": "Medable, Inc. <mdctl@medable.com>",
+  "license": "MIT",
   "private": true,
   "dependencies": {
-    "mdctl-core-utils": "^1.0.0"
+    "@medable/mdctl-core-utils": "^1.0.0"
   }
 }
