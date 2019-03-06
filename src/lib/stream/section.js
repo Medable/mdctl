@@ -80,7 +80,7 @@ class ExportSection {
 
   get name() {
     const { content, key } = privatesAccessor(this),
-          { resource, object } = content,
+          { resource, object, label } = content,
           [objectName, resourceName] = (resource || object).split('.')
 
     if (key === 'env') {
@@ -89,7 +89,7 @@ class ExportSection {
     if (MANIFEST_KEYS.keys.slice(1).indexOf(key) > -1) {
       return key.replace('manifest-', '')
     }
-    return resourceName || objectName
+    return label ? slugify(label, '_') : resourceName || objectName
   }
 
   get isWritable() {
