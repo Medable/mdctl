@@ -9,7 +9,7 @@ class Env extends Task {
 
   constructor() {
     super()
-    this.optionKeys = ['manifest', 'format', 'layout', 'dir', 'preferUrls', 'silent']
+    this.optionKeys = ['manifest', 'format', 'clear', 'gzip', 'dir', 'preferUrls', 'silent']
   }
 
   async run(cli) {
@@ -30,15 +30,23 @@ class Env extends Task {
   async 'env@export'(cli) {
     const client = await cli.getApiClient({ credentials: await cli.getAuthOptions() }),
           params = await cli.getArguments(this.optionKeys)
-    await Environment.export({ client, ...params })
-    console.log('Export finished...!')
+    try {
+      await Environment.export({ client, ...params })
+      console.log('Export finished...!')
+    } catch (e) {
+      throw e
+    }
   }
 
   async 'env@import'(cli) {
     const client = await cli.getApiClient({ credentials: await cli.getAuthOptions() }),
           params = await cli.getArguments(this.optionKeys)
-    await Environment.import({ client, ...params })
-    console.log('Import finished...!')
+    try {
+      const response = await Environment.import({ client, ...params })
+      console.log('Import finished...!', response)
+    } catch (e) {
+      throw e
+    }
   }
 
   async 'env@add'(cli) {
@@ -79,6 +87,7 @@ class Env extends Task {
           --env sets the environment. eg. example                              
           --manifest - defaults to $cwd/manifest.json
           --format - export format (json, yaml) defaults to json
+          --clear - export will clear output dir before export default true
           --preferUrls - set to true to force the server to send urls instead of base64 encoded chunks 
           --silent - skip documents with mssing export keys instead of failing
                                   

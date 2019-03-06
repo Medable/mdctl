@@ -49,10 +49,6 @@ module.exports = class MdCtlCli {
           manifest: {
             default: '',
             type: 'string'
-          },
-          layout: {
-            default: 'tree',
-            type: 'string'
           }
         }).help('').version('').argv,
         process.argv.slice(2)

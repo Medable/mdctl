@@ -2,6 +2,7 @@ const { Transform, Writable } = require('stream'),
       EventEmitter = require('events'),
       mime = require('mime-types'),
       fs = require('fs'),
+      rimraf = require('rimraf'),
       jp = require('jsonpath'),
       _ = require('lodash'),
       slugify = require('slugify'),
@@ -20,9 +21,10 @@ class ExportFileTreeAdapter extends Writable {
 
   constructor(outputPath, options = {}) {
     super({ objectMode: true })
-    const { format = 'json', mdctl = null } = options,
+    const { format = 'json', mdctl = null, clearOutput = true } = options,
           output = outputPath || process.cwd(),
           privates = {
+            clearOutput,
             format,
             mdctl,
             output,
@@ -68,6 +70,8 @@ class ExportFileTreeAdapter extends Writable {
           'the location contains exported data in different layout, you will have duplicated information in different layout')
       }
     }
+
+    this.clearOutput()
   }
 
   loadMetadata() {
@@ -206,6 +210,17 @@ class ExportFileTreeAdapter extends Writable {
       return true
     } catch (e) {
       throw e
+    }
+  }
+
+  clearOutput() {
+    const { clearOutput } = privatesAccessor(this)
+    if (clearOutput) {
+      rimraf.sync(`${this.output}/*`, {
+        glob: {
+          ignore: '.cache.json, .gitignore, .git'
+        }
+      })
     }
   }
 
