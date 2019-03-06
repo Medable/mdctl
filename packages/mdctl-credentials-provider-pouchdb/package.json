@@ -21,5 +21,6 @@
     "pouchdb-find": "^7.0.0",
     "randombytes": "^2.1.0",
     "transform-pouch": "^1.1.4"
-  }
+  },
+  "gitHead": "d01a4a15ac8c6f7f1eb3a53fc36d0d155db291d6"
 }
