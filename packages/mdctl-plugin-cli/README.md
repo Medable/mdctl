@@ -124,3 +124,61 @@ Use `mdclt credentials whoami` to get the current authorization state.
 
 #### Clear all credentials
 Use `mdctl credentials flush` to remove everything.
+
+# Environments
+
+#### Export Environment
+
+`Note: You must have a credential already set`
+
+If you don't specify any additional parameter it will try to export current default env set on credentials.
+```
+mdctl env export
+```
+
+but you can specify any other credential to use by using any of the arguments that is used by that credential like
+```
+--env filters by environment
+--username filters by username
+--endpoint filters by endpoint
+--apiKey filters by apiKey
+```
+
+```
+mdctl env export --env medable
+```
+
+You can specify the output format JSON | Yaml, json is used by default
+```
+mdctl env export --env medable --format yaml
+```
+You can also specify where you want to export your org configurations
+```
+mdctl env export --env medable --format yaml --dir /User/my_user/exports/medable
+```
+
+It will create the folder if not present, if you don't set `--dir` it will use current location
+
+#### Import Environment
+
+`Note: You must have a credential already set`
+
+If you don't specify any additional parameter it will try to export current default env set on credentials.
+```
+mdctl env import
+```
+
+but you can specify any other credential to use by using any of the arguments that is used by that credential like
+```
+--env filters by environment
+--username filters by username
+--endpoint filters by endpoint
+--apiKey filters by apiKey
+```
+
+You can also specify where you want to take org configs from, by setting `--dir` option
+```
+mdctl env export --env medable  --dir /User/my_user/exports/medable
+```
+
+if you don't set `--dir` it will use current location and try to import from it.

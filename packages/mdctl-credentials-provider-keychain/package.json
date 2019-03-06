@@ -1,7 +1,7 @@
 {
   "name": "@medable/mdctl-credentials-provider-keychain",
   "version": "1.0.0",
-  "description": "Medable Developer Tools :: Keychain Creds Provider",
+  "description": "Medable Developer Client Tools :: Keychain Creds Provider",
   "bugs": {
     "url": "https://github.com/Medable/mdctl/issues"
   },
