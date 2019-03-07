@@ -14,5 +14,8 @@
   "private": true,
   "dependencies": {
     "@medable/mdctl-core-utils": "^1.0.0"
+  },
+  "publishConfig": {
+    "access": "restricted"
   }
 }
