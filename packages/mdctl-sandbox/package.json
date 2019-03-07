@@ -18,5 +18,8 @@
     "@medable/mdctl-core-utils": "^1.0.0",
     "lodash": "^4.17.11",
     "request": "^2.88.0"
+  },
+  "publishConfig": {
+    "access": "restricted"
   }
 }

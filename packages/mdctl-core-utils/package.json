@@ -29,5 +29,8 @@
     "lodash.isplainobject": "^4.0.6",
     "randombytes": "^2.1.0",
     "string-natural-compare": "^2.0.3"
+  },
+  "publishConfig": {
+    "access": "restricted"
   }
 }
