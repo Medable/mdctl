@@ -11,7 +11,6 @@
   },
   "author": "Medable, Inc. <mdctl@medable.com>",
   "license": "MIT",
-  "private": true,
   "scripts": {
     "test": "npm run lint && npm run cover",
     "test:prod": "npm run test",
