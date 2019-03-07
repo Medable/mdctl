@@ -11,7 +11,6 @@
   },
   "author": "Medable, Inc. <mdctl@medable.com>",
   "license": "MIT",
-  "private": true,
   "bin": {
     "mdctl": "./cli.js"
   },

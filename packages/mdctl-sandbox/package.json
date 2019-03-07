@@ -1,7 +1,6 @@
 {
   "name": "@medable/mdctl-sandbox",
   "version": "1.0.0",
-  "private": true,
   "description": "Medable Developer Tools :: Sandbox",
   "bugs": {
     "url": "https://github.com/Medable/mdctl/issues"
