@@ -2,6 +2,10 @@
   "name": "@medable/mdctl-plugin-cli",
   "version": "1.0.0",
   "description": "Medable Developer Tools :: Cli plugin",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Medable/mdctl.git"
+  },
   "bugs": {
     "url": "https://github.com/Medable/mdctl/issues"
   },
@@ -34,7 +38,5 @@
     "shelljs": "^0.8.3",
     "yargs": "^12.0.5"
   },
-  "publishConfig": {
-    "access": "restricted"
-  }
+  "gitHead": "861837cac7fa69640d8f175d95cc5f9f5c3fb08a"
 }

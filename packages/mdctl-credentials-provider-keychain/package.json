@@ -2,6 +2,10 @@
   "name": "@medable/mdctl-credentials-provider-keychain",
   "version": "1.0.0",
   "description": "Medable Developer Client Tools :: Keychain Creds Provider",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Medable/mdctl.git"
+  },
   "bugs": {
     "url": "https://github.com/Medable/mdctl/issues"
   },
@@ -16,7 +20,5 @@
     "@medable/mdctl-core-utils": "^1.0.0",
     "keytar": "^4.3.0"
   },
-  "publishConfig": {
-    "access": "restricted"
-  }
+  "gitHead": "861837cac7fa69640d8f175d95cc5f9f5c3fb08a"
 }
