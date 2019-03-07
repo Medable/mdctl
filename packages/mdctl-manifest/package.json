@@ -1,0 +1,46 @@
+{
+  "name": "@medable/mdctl-manifest",
+  "version": "1.0.0",
+  "description": "Medable Developer Tools :: Manifest Manager",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Medable/mdctl.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Medable/mdctl/issues"
+  },
+  "engines": {
+    "node": ">=8",
+    "npm": ">=6"
+  },
+  "author": "Medable, Inc. <mdctl@medable.com>",
+  "license": "MIT",
+  "scripts": {
+    "test": "npm run lint && npm run cover",
+    "test:prod": "npm run test",
+    "test:only": "mocha --recursive",
+    "test:watch": "npm run test:only -- --watch",
+    "test:examples": "node examples/",
+    "cover": "istanbul cover ../../node_modules/mocha/bin/_mocha -- --recursive --timeout 10000",
+    "lint": "eslint *.js test"
+  },
+  "dependencies": {
+    "@medable/mdctl-core": "^1.0.0",
+    "@medable/mdctl-core-schemas": "^1.0.0",
+    "@medable/mdctl-core-utils": "^1.0.0"
+  },
+  "devDependencies": {
+    "chai": "^4.1.2",
+    "eslint": "^5.8.0",
+    "eslint-config-airbnb": "^17.1.0",
+    "eslint-config-standard": "^12.0.0",
+    "eslint-plugin-import": "^2.14.0",
+    "eslint-plugin-node": "^8.0.0",
+    "eslint-plugin-promise": "^4.0.1",
+    "eslint-plugin-standard": "^4.0.0",
+    "istanbul": "^1.0.0-alpha",
+    "mocha": "^5.0.0",
+    "sinon": "^7.2.2"
+  },
+  "gitHead": "4d50c0a1a7e84d29ac2490436643434205ce3f6d"
+}

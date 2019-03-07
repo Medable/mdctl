@@ -1,126 +1,58 @@
-# mdctl
+# Medable Developer Tools
 
-Developer Tools for Medable
+### Install Dependencies
 
-# Credentials
+`npm install`
 
-Our developer tools allow you to store your credentials in a safe way and use them to perform other operations later on.
+#### Install packages dependencies and link them
 
-#### Add new credentials 
+`lerna bootstrap --hoist`
 
-To add new credentials simply run the next command follow the prompts.
-
-`mdctl credentials add` 
-
-You can also specify some arguments
-```
---type - sets the type (password, token, signature). auto-detected when adding/updating.
---endpoint - sets the endpoint. eg. https://api.dev.medable.com
---env sets the environment. eg. my-org-code
---apiKey api key for looking up signing credentials (and token credentials)
-```
-
-Secret fields are still required to be filled manually (e.g: password).
-
-You can add credentials from a file by using the `--file path/to/file` argument.
-
-##### Reading credentials from file
-
-File can be provided in YAML or JSON format, the following fields can be defined
-```
-type - sets the type (password, token, signature). auto-detected when adding/updating.
-endpoint - sets the endpoint. eg. https://api.dev.medable.com
-env - sets the environment. eg. my-org-code
-apiKey - api key for looking up signing credentials (and token credentials)
-password - account password for login
-apiSecret - api secret key for signing
-token - jwt token, which must include the 'cortex/eml' claim for lookup
-```
-
-#### Listing credentials
-
-To list the existing credentials simply run
-
-`mdctl credentials list`
-
-It's also possible to filter the credentials by providing arguments
-```
---type filters by type
---username filters by username
---endpoint filters by endpoint
---env filters by environment
---apiKey filters by apiKey
-```
-
-#### Clear credentials
-
-Use the following command in combination with our filters to delete 1 or more credentials 
-
-`mdctl credentials clear --username john@medable.com`
-
-Available filters are:
-```
---type deletes by type
---endpoint deletes by endpoint
---username deletes by username
---env deletes by environment
---apiKey deletes by apiKey
-```
-
-#### Get credentials
-
-It's also possible to retrieve the first matching credential by running
-
-`mdctl credentials get`
-
-You can also provide filters to help our tool to decide which credential we want to retrieve
-```
---type filters by type
---username filters by username
---endpoint filters by endpoint
---env filters by environment
---apiKey filters by apiKey
-```
-
-#### Default credentials
-
-Default credentials can be used to perform operations without having to explicitly specify the
-credentials to use, for example:
-`mdctl env export //will try to perform the environment export with the default credentials`
-
-The following commands help you to manage the default credentials
-```
-mdctl credentials default set     //Sets default credentails, see filters below
-mdctl credentials default get    //Gets default credentails, see filters below
-mdctl credentials default clear //Removes default credentails, see filters below
-```
-
-#### Password session
-Only if you use credentials of type 'password' you can start a session by doing:
+### Using local npm registry
 
 ```
-mdctl credentials login
+docker pull verdaccio/verdaccio
+docker run -it --rm --name verdaccio -p 4873:4873 verdaccio/verdaccio
+or use any of these configurations: https://github.com/verdaccio/docker-examples
+
+npm adduser --registry http://localhost:4873
+
+npm login
+
+## You can check pages navigating http://localhost:4873
+
 ```
 
-In order to avoid interactions with the CLI it is possible to use the following filters to narrow down the credentials to use:
+### Publish packages
 ```
---username filters by username
---endpoint filters by endpoint
---env filters by environment
---apiKey filters by apiKey
+lerna publish --no-git-tag-version --no-push --registry=http://localhost:4873
 ```
 
-If no filters are provided then the CLI will try to use the default credentials (as long as they are type 'password').
+#### Run test
+`lerna run test`
 
-If there are no default credentials or if the filters provided return more than 1 result then follow the prompts to choose
-the desired credentials.
+#### Packages
 
-It is also possible to provide a path to a file with this information by using  `--file path/to/file`
+[mdctl-api](packages/mdctl-api/README.md)
 
-Use `mdctl credentials logout` to end the session.
+[mdctl-cli](packages/mdctl-cli/README.md)
 
-#### Check current session
-Use `mdclt credentials whoami` to get the current authorization state.
+[mdctl-core](packages/mdctl-core/README.md)
 
-#### Clear all credentials
-Use `mdctl credentials flush` to remove everything.
+[mdctl-core-schemas](packages/mdctl-core-schemas/README.md)
+
+[mdctl-core-utils](packages/mdctl-core-utils/README.md)
+
+[mdctl-credentials-provider-keychain](packages/mdctl-credentials-provider-keychain/README.md)
+
+[mdctl-credentials-provider-pouchdb](packages/mdctl-credentials-provider-pouchdb/README.md)
+
+[mdctl-export-adapter-console](packages/mdctl-export-adapter-console/README.md)
+
+[mdctl-export-adapter-tree](packages/mdctl-export-adapter-tree/README.md)
+
+[mdctl-import-adapter](packages/mdctl-import-adapter/README.md)
+
+[mdctl-manifest](packages/mdctl-manifest/README.md)
+
+[mdctl-sandbox](packages/mdctl-sandbox/README.md)
