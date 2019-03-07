@@ -2,6 +2,10 @@
   "name": "@medable/mdctl-core-schemas",
   "version": "1.0.0",
   "description": "Medable Developer Client Tools :: Schemas",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Medable/mdctl.git"
+  },
   "bugs": {
     "url": "https://github.com/Medable/mdctl/issues"
   },
@@ -17,7 +21,5 @@
     "lodash": "^4.17.11",
     "lodash.isplainobject": "^4.0.6"
   },
-  "publishConfig": {
-    "access": "restricted"
-  }
+  "gitHead": "861837cac7fa69640d8f175d95cc5f9f5c3fb08a"
 }

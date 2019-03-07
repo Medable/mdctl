@@ -2,6 +2,10 @@
   "name": "@medable/mdctl-core-utils",
   "version": "1.0.0",
   "description": "Medable Developer Client Tools :: Utils",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Medable/mdctl.git"
+  },
   "bugs": {
     "url": "https://github.com/Medable/mdctl/issues"
   },
@@ -29,7 +33,5 @@
     "randombytes": "^2.1.0",
     "string-natural-compare": "^2.0.3"
   },
-  "publishConfig": {
-    "access": "restricted"
-  }
+  "gitHead": "861837cac7fa69640d8f175d95cc5f9f5c3fb08a"
 }
