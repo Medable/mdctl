@@ -423,11 +423,12 @@ class ImportFileTreeAdapter extends EventEmitter {
           const parent = this.getParentFromPath(chunk, n.path),
                 facet = Object.assign(parent, {}),
                 localFile = `${basePath}${facet.filePath}`
-          if (facet.filePath && md5FileHash(localFile) !== facet.ETag) {
+          if (facet.filePath) {
             const resourceKey = uuid.v4(),
                   asset = {
                     streamId: resourceKey,
-                    data: fs.readFileSync(localFile)
+                    data: fs.readFileSync(localFile),
+                    object: 'stream'
                   }
             facet.ETag = md5FileHash(localFile)
             facet.streamId = resourceKey
