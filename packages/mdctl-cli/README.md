@@ -1,8 +1,8 @@
-# mdctl-plugin-cli
+# mdctl-cli
 
-Developer Tools for Medable
+Developer Tools Cli for Medable 
 
-# Credentials
+## Credentials
 
 Our developer tools allow you to store your credentials in a safe way and use them to perform other operations later on.
 
@@ -125,7 +125,7 @@ Use `mdclt credentials whoami` to get the current authorization state.
 #### Clear all credentials
 Use `mdctl credentials flush` to remove everything.
 
-# Environments
+## Environments
 
 #### Export Environment
 
