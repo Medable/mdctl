@@ -1,5 +1,6 @@
 const { Transform } = require('stream'),
       EventEmitter = require('events'),
+      globby = require('globby'),
       mime = require('mime-types'),
       uuid = require('uuid'),
       jp = require('jsonpath'),
@@ -9,7 +10,12 @@ const { Transform } = require('stream'),
       { stringifyContent, parseString } = require('@medable/mdctl-core-utils/values'),
       { md5FileHash } = require('@medable/mdctl-core-utils/crypto'),
       { privatesAccessor } = require('@medable/mdctl-core-utils/privates'),
-      { OutputStream } = require('./chunk-stream')
+      { OutputStream } = require('./chunk-stream'),
+      KNOWN_FILES = {
+        data: 'data/**/*.{json,yaml}',
+        objects: 'env/**/*.{json,yaml}',
+        manifest: 'manifest.{json,yaml}'
+      }
 
 class ImportFileTransformStream extends Transform {
 
@@ -28,9 +34,13 @@ class ImportFileTransformStream extends Transform {
   }
 
   _transform(chunk, enc, callback) {
-    const { metadata, basePath, file } = privatesAccessor(this),
-          content = parseString(chunk, metadata.format)
-    this.push(new ImportSection(content, content.object, file, basePath))
+    const { metadata, basePath, file } = privatesAccessor(this)
+    try {
+      const content = parseString(chunk, metadata.format)
+      this.push(new ImportSection(content, content.object, file, basePath))
+    } catch (e) {
+      console.log(e, chunk.toString())
+    }
     callback()
   }
 
@@ -130,20 +140,9 @@ class ImportFileTreeAdapter extends EventEmitter {
   }
 
   walkFiles(dir) {
-    const files = fs.readdirSync(dir)
-    files.forEach((f) => {
-      if (f.indexOf('.') !== 0) {
-        const pathFile = `${dir}/${f}`
-        if (fs.statSync(pathFile).isDirectory()) {
-          this.walkFiles(pathFile)
-        } else {
-          const type = mime.lookup(pathFile)
-          if (type === 'application/json' || ['text/yaml', 'application/yaml'].indexOf(type) > -1) {
-            privatesAccessor(this, 'files').push(pathFile)
-          }
-        }
-      }
-    })
+    const files = globby.sync([KNOWN_FILES.manifest, KNOWN_FILES.objects], { cwd: dir }),
+          mappedFiles = _.map(files, f => `${dir}/${f}`)
+    privatesAccessor(this, 'files', mappedFiles)
   }
 
   loadFile(file) {
