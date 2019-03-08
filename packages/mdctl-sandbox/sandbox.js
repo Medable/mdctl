@@ -68,7 +68,7 @@ module.exports = {
    *  value
    * @returns {*}
    */
-  echo(input) {
+  async echo(input) {
 
     return module.exports.run({
       client: rPath(input, 'client'),
