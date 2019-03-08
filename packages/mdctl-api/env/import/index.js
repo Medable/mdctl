@@ -37,6 +37,10 @@ const pump = require('pump'),
         /* eslint-disable one-var */
         const streamChain = pump(...streamList)
 
+        streamChain.on('data', (d) => {
+          progress(d)
+        })
+
         if (!options.local) {
           pathTo(requestOptions, 'headers.accept', 'application/x-ndjson')
           requestOptions.headers['Content-Type'] = 'application/x-ndjson'
@@ -49,9 +53,6 @@ const pump = require('pump'),
         }
 
         return new Promise((resolve, reject) => {
-          streamChain.on('data', (d) => {
-            progress(d)
-          })
           streamChain.on('error', (e) => {
             reject(e)
           })
