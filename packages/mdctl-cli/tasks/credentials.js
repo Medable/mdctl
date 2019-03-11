@@ -20,7 +20,7 @@ const _ = require('lodash'),
       } = require('@medable/mdctl-core/credentials/provider'),
       { Environment } = require('@medable/mdctl-api'),
       Task = require('../lib/task'),
-      Fault = require('@medable/mdctl-core'),
+      { Fault } = require('@medable/mdctl-core'),
       {
         askUserCredentials,
         question
