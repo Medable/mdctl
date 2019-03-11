@@ -32,6 +32,19 @@ const Task = require('../lib/task'),
 
 class Configure extends Task {
 
+  constructor(){
+    super({
+      clean: {
+        type: 'boolean',
+        default: false
+      },
+      quiet: {
+        type: 'boolean',
+        default: false
+      }
+    })
+  }
+
   async run(cli) {
 
     const isClean = this.args('clean'),
