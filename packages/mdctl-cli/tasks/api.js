@@ -21,6 +21,10 @@ class Api extends Task {
         default: 'json',
         type: 'string'
       },
+      stream: {
+        type: 'string',
+        default: ''
+      },
       file: {
         type: 'string',
         default: ''
@@ -37,21 +41,17 @@ class Api extends Task {
         type: 'boolean',
         default: false
       },
-      strictSSL: {
-        type: 'boolean',
-        default: true
-      },
-      preferUrls: {
-        type: 'boolean',
-        default: false
+      requestOptions: {
+        type: 'string',
+        default: ''
       },
       ndjson: {
         type: 'boolean',
         default: false
       },
-      silent: {
+      verbose: {
         type: 'boolean',
-        default: true
+        default: false
       }
     })
 

@@ -35,8 +35,8 @@ class Credentials extends Task {
   constructor() {
     super({
       format: {
-        default: 'text',
-        type: 'string'
+        type: 'string',
+        default: 'text'
       }
     })
   }

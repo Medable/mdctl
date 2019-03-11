@@ -15,7 +15,16 @@ class Task {
     Object.assign(privatesAccessor(this), {
       // store cli arguments
       args: createConfig(Object.assign(
-        {},
+        {
+          strictSSL: {
+            type: 'boolean',
+            default: true
+          },
+          preferUrls: {
+            type: 'boolean',
+            default: false
+          }
+        },
         yargs.options(args || {}).help('').version('').argv,
         process.argv.slice(2)
       )),
