@@ -42,16 +42,7 @@ module.exports = class MdCtlCli {
       // store cli arguments
       args: createConfig(Object.assign(
         {},
-        yargs.options({
-          format: {
-            default: 'json',
-            type: 'string'
-          },
-          manifest: {
-            default: '',
-            type: 'string'
-          }
-        }).help('').version('').argv,
+        yargs.options({}).help('').version('').argv,
         process.argv.slice(2)
       )),
 
