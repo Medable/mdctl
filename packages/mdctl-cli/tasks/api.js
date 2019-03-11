@@ -15,33 +15,75 @@ let Undefined
 
 class Api extends Task {
 
+  constructor() {
+    super({
+      format: {
+        default: 'json',
+        type: 'string'
+      },
+      file: {
+        type: 'string',
+        default: ''
+      },
+      body: {
+        type: 'string',
+        default: ''
+      },
+      query: {
+        type: 'string',
+        default: ''
+      },
+      grep: {
+        type: 'boolean',
+        default: false
+      },
+      strictSSL: {
+        type: 'boolean',
+        default: true
+      },
+      preferUrls: {
+        type: 'boolean',
+        default: false
+      },
+      ndjson: {
+        type: 'boolean',
+        default: false
+      },
+      silent: {
+        type: 'boolean',
+        default: true
+      }
+    })
+
+  }
+
   async run(cli) {
 
-    const method = rString(cli.args('1'), 'get').toLowerCase(),
+    const method = rString(this.args('1'), 'get').toLowerCase(),
           client = await cli.getApiClient({ credentials: await cli.getAuthOptions() }),
-          url = new URL(rString(cli.args('2'), '/'), client.environment.url),
+          url = new URL(rString(this.args('2'), '/'), client.environment.url),
           options = {
             query: searchParamsToObject(url.searchParams)
           },
-          format = cli.args('format')
+          format = this.args('format')
 
     if (!methods.includes(method)) {
       throw new TypeError(`Invalid request method. Expected: ${methods}`)
     }
 
-    if (rString(cli.args('file'))) {
-      const file = await loadJsonOrYaml(cli.args('file'))
+    if (rString(this.args('file'))) {
+      const file = await loadJsonOrYaml(this.args('file'))
       Object.assign(options, _.pick(file, 'body', 'query', 'requestOptions', 'grep'))
     }
 
-    if (rString(cli.args('stream'))) {
-      options.body = fs.createReadStream(cli.args('stream'))
+    if (rString(this.args('stream'))) {
+      options.body = fs.createReadStream(this.args('stream'))
     }
 
-    Api.mergeJsonArgIf(cli, options, 'body')
-    Api.mergeJsonArgIf(cli, options, 'query')
-    Api.mergeJsonArgIf(cli, options, 'requestOptions')
-    Api.applyArgIf(cli, options, 'grep')
+    this.mergeJsonArgIf(options, 'body')
+    this.mergeJsonArgIf(options, 'query')
+    this.mergeJsonArgIf(options, 'requestOptions')
+    this.applyArgIf(options, 'grep')
 
     let err,
         result,
@@ -76,7 +118,7 @@ class Api extends Task {
 
     }
 
-    if (cli.args('ndjson')) {
+    if (this.args('ndjson')) {
 
       pathTo(options, 'requestOptions.headers.accept', 'application/x-ndjson')
       options.stream = ndjson.parse()
@@ -120,7 +162,7 @@ class Api extends Task {
       output = result
     }
 
-    if (cli.args('verbose')) {
+    if (this.args('verbose')) {
       output = {
         response: client.response.toJSON(),
         result: output
@@ -135,18 +177,18 @@ class Api extends Task {
 
   }
 
-  static mergeJsonArgIf(cli, options, arg) {
+  mergeJsonArgIf(options, arg) {
 
-    const value = cli.args(arg)
+    const value = this.args(arg)
     if (rString(value)) {
       const parsed = JSON.parse(value)
       options[arg] = _.merge(options[arg], parsed) // eslint-disable-line no-param-reassign
     }
   }
 
-  static applyArgIf(cli, options, arg) {
+  applyArgIf(options, arg) {
 
-    const value = cli.args(arg)
+    const value = this.args(arg)
     if (isSet(value)) {
       options[arg] = value // eslint-disable-line no-param-reassign
     }

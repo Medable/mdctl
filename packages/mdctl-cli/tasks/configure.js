@@ -34,7 +34,7 @@ class Configure extends Task {
 
   async run(cli) {
 
-    const isClean = cli.args('clean'),
+    const isClean = this.args('clean'),
           keys = Object.keys(configureOptions),
           local = {},
           localCfg = createConfig() // attempt to re-read the config from the configure file.
