@@ -67,8 +67,8 @@ describe('Environment Import', () => {
                     loadedItems = _.map(result, i => JSON.parse(i)),
                     blobItems = _.groupBy(_.filter(loadedItems, i => i.data && i.streamId), 'streamId'),
                     otherItems = _.filter(loadedItems, i => !i.data && !i.streamId)
-              assert(otherItems.length === 42, 'there are more/less files than loaded')
-              assert(Object.keys(blobItems).length === 1, 'there are more/less blob items than loaded')
+              assert(otherItems.length === 38, 'there are more/less files than loaded')
+              assert(Object.keys(blobItems).length === 3, 'there are more/less blob items than loaded')
               return resolve()
             })
           })
