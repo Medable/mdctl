@@ -321,7 +321,7 @@ class Manifest extends ManifestStage {
       await ManifestFileAdapter.addResource(params.dir || process.cwd(), params.format || 'json', type, template)
       await ManifestFileAdapter.saveManifest(params.dir || process.cwd(), params.format || 'json', stages)
     } else {
-      throw Fault.create('kNotAccepted', { reason: 'Resource already exists or not accepted by manifest definition' })
+      throw new Fault('kNotAccepted', { reason: 'Resource already exists or not accepted by manifest definition' })
     }
   }
 

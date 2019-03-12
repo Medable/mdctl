@@ -1,7 +1,7 @@
 const { privatesAccessor } = require('@medable/mdctl-core-utils/privates'),
       { joinPaths, sortKeys } = require('@medable/mdctl-core-utils'),
       { isCustomName, isExportKey } = require('@medable/mdctl-core-utils/values'),
-      Fault = require('@medable/mdctl-core')
+      { Fault } = require('@medable/mdctl-core')
 
 class Template {
 

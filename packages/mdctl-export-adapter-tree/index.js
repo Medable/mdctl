@@ -9,7 +9,12 @@ const { Writable } = require('stream'),
       { stringifyContent } = require('@medable/mdctl-core-utils/values'),
       { md5FileHash } = require('@medable/mdctl-core-utils/crypto'),
       { ensureDir } = require('@medable/mdctl-core-utils/directory'),
-      { privatesAccessor } = require('@medable/mdctl-core-utils/privates')
+      { privatesAccessor } = require('@medable/mdctl-core-utils/privates'),
+      KNOWN_FILES = {
+        assets: 'env/**/*.{png,jpeg,jpg,gif,html,txt,bin}',
+        objects: 'env/**/*.{json,yaml}',
+        manifest: '{manifest,manifest-*}.{json,yaml}'
+      }
 
 class ExportFileTreeAdapter extends Writable {
 
@@ -210,7 +215,7 @@ class ExportFileTreeAdapter extends Writable {
   clearOutput() {
     const { clearOutput } = privatesAccessor(this)
     if (clearOutput) {
-      rimraf.sync(`${this.output}/*`, {
+      rimraf.sync(`${this.output}/(${KNOWN_FILES.main}|${KNOWN_FILES.objects}|${KNOWN_FILES.assets})`, {
         glob: {
           ignore: '.cache.json, .gitignore, .git'
         }

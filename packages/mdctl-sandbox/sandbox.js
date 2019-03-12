@@ -2,7 +2,7 @@ const _ = require('lodash'),
       {
         rInstance, isSet, rVal, rBool, rString, rPath
       } = require('@medable/mdctl-core-utils/values'),
-      Fault = require('@medable/mdctl-core/fault'),
+      { Fault } = require('@medable/mdctl-core'),
       Client = require('@medable/mdctl-api/client')
 
 let Undefined

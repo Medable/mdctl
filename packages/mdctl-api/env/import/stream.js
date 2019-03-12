@@ -20,36 +20,18 @@ class ImportStream extends Readable {
   loadAdapter() {
     const { input, cache, format } = privatesAccessor(this),
           importAdapter = new ImportFileTreeAdapter(input, cache, format)
-
     privatesAccessor(this, 'adapter', importAdapter)
   }
 
-
   async _read() {
-    const { adapter, docProcessed } = privatesAccessor(this)
-    if (!docProcessed) {
-      const iter = adapter.iterator[Symbol.asyncIterator](),
-            item = await iter.next()
-      if (!item.done) {
-        return item.value.forEach((v) => {
-          this.push(v)
-        })
-      }
-      privatesAccessor(this, 'docProcessed', true)
+    const { adapter } = privatesAccessor(this),
+          iter = adapter.iterator[Symbol.asyncIterator](),
+          item = await iter.next()
+    if (!item.done) {
+      this.push(item.value)
     } else {
-      const { blobs } = adapter
-      if (blobs.length) {
-        blobs.forEach((b) => {
-          adapter.getAssetStream(b).on('data', (d) => {
-            this.push(d)
-          }).on('end', () => {
-            this.push(null)
-          })
-          blobs.pop()
-        })
-      }
+      this.push(null)
     }
-    return true
   }
 
 }

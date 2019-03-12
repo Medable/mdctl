@@ -1,10 +1,9 @@
-const slugify = require('slugify'),
-      _ = require('lodash'),
+const _ = require('lodash'),
       jp = require('jsonpath'),
       mime = require('mime'),
       uuid = require('uuid'),
       pluralize = require('pluralize'),
-      { isCustomName } = require('@medable/mdctl-core-utils/values'),
+      { isCustomName, isInteger } = require('@medable/mdctl-core-utils/values'),
       ENV_KEYS = {
         keys: ['app', 'config', 'notification', 'policy', 'role', 'smsNumber', 'serviceAccount', 'storageLocation', 'configuration', 'template', 'object', 'script', 'view'],
         folder: 'env'
@@ -50,6 +49,7 @@ class ExportSection {
       Object.seal(this)
     }
     if (this.isWritable) {
+      delete this.content.resource
       SectionsCreated.push(this)
     }
   }
@@ -80,8 +80,7 @@ class ExportSection {
 
   get name() {
     const { content, key } = privatesAccessor(this),
-          { resource, object, label } = content,
-          [objectName, resourceName] = (resource || object).split('.')
+          { name, code, object } = content
 
     if (key === 'env') {
       return key
@@ -89,7 +88,10 @@ class ExportSection {
     if (MANIFEST_KEYS.keys.slice(1).indexOf(key) > -1) {
       return key.replace('manifest-', '')
     }
-    return label ? slugify(label, '_') : resourceName || objectName
+    if (key === 'role') {
+      return code || name || object
+    }
+    return name || object
   }
 
   get isWritable() {
@@ -124,12 +126,33 @@ class ExportSection {
   getParentFromPath(path) {
     const { content } = privatesAccessor(this),
           parent = jp.parent(content, jp.stringify(path))
-    if (parent.code || parent.name || parent.label) {
+    if (parent.code || isCustomName(parent.name)) {
       return parent
     }
     path.pop()
     return this.getParentFromPath(path)
   }
+
+  getNameFromPath(path) {
+    const { content } = privatesAccessor(this),
+          pathAcc = []
+    path.forEach((p) => {
+      if (isInteger(p)) {
+        const currentPath = _.clone(pathAcc)
+        currentPath.push(p)
+        const currentItem = jp.value(content, jp.stringify(currentPath))
+        if (currentItem && (currentItem.code || isCustomName(currentItem.name))) {
+          pathAcc.push(currentItem.code || currentItem.name)
+        } else {
+          pathAcc.push(p)
+        }
+      } else if (p !== '$') {
+        pathAcc.push(p)
+      }
+    })
+    return pathAcc.join('.')
+  }
+
 
   extractAssets() {
     const facet = privatesAccessor(this).content
@@ -179,11 +202,19 @@ class ExportSection {
     nodes.forEach((n) => {
       if (!_.isObject(n.value)) {
         const path = _.clone(n.path),
-              parent = this.getParentFromPath(n.path),
-              type = parent.type || `${content.resource}.${n.path.slice(1).join('.')}`,
-              name = `${type}.${slugify(parent.code || parent.name || parent.label, '_')}`
+              namePath = this.getNameFromPath(path),
+              items = [content.object, content.name || content.code]
+        if (namePath.indexOf('.') > -1) {
+          items.push(namePath)
+        }
+        if (content.object === 'script') {
+          const parent = this.getParentFromPath(_.clone(n.path))
+          if (parent && parent.type) {
+            items.push(parent.type)
+          }
+        }
         privatesAccessor(this).scriptFiles.push({
-          name,
+          name: items.join('.'),
           ext: 'js',
           data: n.value,
           remoteLocation: false,
@@ -198,7 +229,7 @@ class ExportSection {
     const { key, content } = privatesAccessor(this)
     if (key === 'template') {
       if (_.isArray(content.localizations)) {
-        const name = `${content.resource}.${content.name}`
+        const name = `${content.object}.${content.type}.${content.name}`
         content.localizations.forEach((l) => {
           const nodes = jp.nodes(content, '$..content'),
                 { path } = nodes[0]

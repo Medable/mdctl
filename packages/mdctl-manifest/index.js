@@ -6,7 +6,7 @@ const { templates } = require('@medable/mdctl-core-schemas'),
       add = async(input) => {
         const options = isSet(input) ? input : {},
               template = await templates.create(options.object, options.type, options.name),
-              outputDir = options.dir || process.cwd,
+              outputDir = options.dir || process.cwd(),
               manifestFile = options.manifest || `${outputDir}/manifest.${options.format || 'json'}`
 
         let manifest = {}

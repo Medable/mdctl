@@ -20,7 +20,7 @@ const _ = require('lodash'),
       } = require('@medable/mdctl-core/credentials/provider'),
       { Environment } = require('@medable/mdctl-api'),
       Task = require('../lib/task'),
-      Fault = require('@medable/mdctl-core'),
+      { Fault } = require('@medable/mdctl-core'),
       {
         askUserCredentials,
         question
@@ -32,6 +32,15 @@ const _ = require('lodash'),
 
 class Credentials extends Task {
 
+  constructor() {
+    super({
+      format: {
+        type: 'string',
+        default: 'text'
+      }
+    })
+  }
+
   static get taskNames() {
 
     return ['credentials', 'creds']
@@ -40,7 +49,7 @@ class Credentials extends Task {
 
   async run(cli) {
 
-    const arg1 = cli.args('1'),
+    const arg1 = this.args('1'),
           handler = `credentials@${arg1}`
 
     if (!isSet(arg1)) {
@@ -59,9 +68,9 @@ class Credentials extends Task {
     const options = (await cli.getAuthOptions()) || {}
 
     // load from input file?
-    if (rString(cli.args('file'))) {
+    if (rString(this.args('file'))) {
       // support adding a bunch at once.
-      const file = await loadJsonOrYaml(cli.args('file'))
+      const file = await loadJsonOrYaml(this.args('file'))
       if (Array.isArray(file)) {
         return Promise.all(file.map(input => cli.credentialsProvider.add(input, input)))
       }
@@ -86,7 +95,7 @@ class Credentials extends Task {
   async 'credentials@list'(cli) {
 
     const options = await cli.getAuthOptions(),
-          format = rString(cli.args('format'), 'text')
+          format = rString(this.args('format'), 'text')
 
     let list = await cli.credentialsProvider.list(options)
 
@@ -138,14 +147,14 @@ class Credentials extends Task {
           item = await cli.credentialsProvider.get(options)
 
     if (item) {
-      console.log(formatOutput(item, cli.args('format')))
+      console.log(formatOutput(item, this.args('format')))
     }
 
   }
 
   async 'credentials@default'(cli) {
 
-    const verb = cli.args('2')
+    const verb = this.args('2')
 
     let defaultCredentials
 
@@ -164,7 +173,7 @@ class Credentials extends Task {
     }
 
     if (defaultCredentials) {
-      console.log(formatOutput(defaultCredentials, cli.args('format')))
+      console.log(formatOutput(defaultCredentials, this.args('format')))
     }
 
   }
@@ -306,7 +315,7 @@ class Credentials extends Task {
     console.log(formatOutput({
       local: await cli.credentialsProvider.deleteCredentials('token', credentials.encoded),
       remote: await jwt.revoke({ client, token: jti })
-    }, cli.args('format')))
+    }, this.args('format')))
 
     if (await matchesDefaults(credentials)) {
       await writeDefaults({ defaultCredentials: null })
@@ -316,7 +325,7 @@ class Credentials extends Task {
 
   async 'credentials@jwt'(cli) {
 
-    const command = cli.args('2'),
+    const command = this.args('2'),
           client = await cli.getApiClient({ credentials: await cli.getAuthOptions() }),
           { environment, credentials } = client,
           { endpoint, env } = environment,
@@ -333,11 +342,11 @@ class Credentials extends Task {
 
         case 'revoke': {
 
-          if (!cli.args('3')) {
+          if (!this.args('3')) {
             throw Fault.create('kInvalidArgument', { reason: 'jti argument is mising.' })
           }
 
-          const jti = cli.args('3'),
+          const jti = this.args('3'),
                 secrets = await cli.credentialsProvider.list({ type: 'token' }),
                 secret = secrets.filter(v => jsonwebtoken.decode(v.token).jti === jti)[0],
                 local = Boolean(
@@ -426,7 +435,7 @@ class Credentials extends Task {
 
       }
 
-    })(), cli.args('format')))
+    })(), this.args('format')))
 
   }
 
@@ -456,7 +465,7 @@ class Credentials extends Task {
 
       if (fault) {
 
-        console.log(formatOutput(Fault.from(fault, true).toJSON(), cli.args('format')))
+        console.log(formatOutput(Fault.from(fault, true).toJSON(), this.args('format')))
 
       } else {
 
@@ -472,12 +481,12 @@ class Credentials extends Task {
           result.account = pathsTo(account, '_id', 'email', 'name.first', 'name.last', 'roles')
         }
 
-        console.log(formatOutput(result, cli.args('format')))
+        console.log(formatOutput(result, this.args('format')))
       }
 
     } catch (err) {
 
-      console.log(formatOutput(err.toJSON(), cli.args('format')))
+      console.log(formatOutput(err.toJSON(), this.args('format')))
     }
 
   }

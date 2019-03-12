@@ -32,9 +32,22 @@ const Task = require('../lib/task'),
 
 class Configure extends Task {
 
+  constructor(){
+    super({
+      clean: {
+        type: 'boolean',
+        default: false
+      },
+      quiet: {
+        type: 'boolean',
+        default: false
+      }
+    })
+  }
+
   async run(cli) {
 
-    const isClean = cli.args('clean'),
+    const isClean = this.args('clean'),
           keys = Object.keys(configureOptions),
           local = {},
           localCfg = createConfig() // attempt to re-read the config from the configure file.
