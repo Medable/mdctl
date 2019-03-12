@@ -9,13 +9,38 @@ const _ = require('lodash'),
 class Env extends Task {
 
   constructor() {
-    super()
+    super({
+      format: {
+        default: 'json',
+        type: 'string'
+      },
+      manifest: {
+        default: '',
+        type: 'string'
+      },
+      gzip: {
+        type: 'boolean',
+        default: false
+      },
+      clear: {
+        type: 'boolean',
+        default: true
+      },
+      preferUrls: {
+        type: 'boolean',
+        default: false
+      },
+      silent: {
+        type: 'boolean',
+        default: true
+      }
+    })
     this.optionKeys = ['manifest', 'format', 'gzip', 'clear', 'dir', 'preferUrls', 'silent']
   }
 
   async run(cli) {
 
-    const arg1 = cli.args('1'),
+    const arg1 = this.args('1'),
           handler = `env@${arg1}`
 
     if (!isSet(arg1)) {
@@ -49,9 +74,9 @@ class Env extends Task {
   async 'env@add'(cli) {
     const params = await cli.getArguments(this.optionKeys),
           options = Object.assign(params, {
-            object: cli.args('2'),
-            type: cli.args('3'),
-            name: cli.args('4')
+            object: this.args('2'),
+            type: this.args('3'),
+            name: this.args('4')
           })
     await add(options)
     console.log('Resource added...!')

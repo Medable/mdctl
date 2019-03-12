@@ -2,7 +2,7 @@
 
 const isPlainObject = require('lodash.isplainobject'),
       { privatesAccessor } = require('@medable/mdctl-core-utils/privates'),
-      Fault = require('@medable/mdctl-core/fault'),
+      { Fault } = require('@medable/mdctl-core'),
       { isCustomName, rString } = require('@medable/mdctl-core-utils/values'),
       singleton = privatesAccessor({}),
       Template = require('./template'),

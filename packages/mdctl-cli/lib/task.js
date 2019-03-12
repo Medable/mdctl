@@ -3,9 +3,33 @@
 
 const _ = require('lodash'),
       sh = require('shelljs'),
-      { throwIfNot } = require('@medable/mdctl-core-utils')
+      yargs = require('yargs'),
+      { throwIfNot } = require('@medable/mdctl-core-utils'),
+      { privatesAccessor } = require('@medable/mdctl-core-utils/privates'),
+      { createConfig } = require('./config')
+
 
 class Task {
+
+  constructor(args) {
+    Object.assign(privatesAccessor(this), {
+      // store cli arguments
+      args: createConfig(Object.assign(
+        {
+          strictSSL: {
+            type: 'boolean',
+            default: true
+          },
+          preferUrls: {
+            type: 'boolean',
+            default: false
+          }
+        },
+        yargs.options(args || {}).help('').version('').argv,
+        process.argv.slice(2)
+      )),
+    })
+  }
 
   static get synopsis() {
     return ''
@@ -17,6 +41,10 @@ class Task {
 
   static get taskNames() {
     return [this.name.toLowerCase()]
+  }
+
+  get args() {
+    return privatesAccessor(this).args
   }
 
   run() {

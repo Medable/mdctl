@@ -9,7 +9,7 @@ class Help extends Task {
 
   async run(cli) {
 
-    let taskName = (cli.args('1') || '').toLowerCase()
+    let taskName = (this.args('1') || '').toLowerCase()
     if (taskName.indexOf('--') === 0) {
       taskName = ''
     }

@@ -23,20 +23,20 @@ class Sandbox extends Task {
             client: await cli.getApiClient({ credentials: await cli.getAuthOptions() }),
             stats: true
           },
-          format = cli.args('format'),
+          format = this.args('format'),
           response = {}
 
-    if (rString(cli.args('file'))) {
-      const file = await loadJsonOrYaml(cli.args('file'))
+    if (rString(this.args('file'))) {
+      const file = await loadJsonOrYaml(this.args('file'))
       Object.assign(options, _.pick(file, 'body', 'arguments', 'strictSSL', 'optimize'))
     }
 
-    options.script = fs.readFileSync(cli.args('1'), 'utf8')
+    options.script = fs.readFileSync(this.args('1'), 'utf8')
 
-    Sandbox.mergeJsonArgIf(cli, options, 'body')
-    Sandbox.mergeJsonArgIf(cli, options, 'arguments')
-    Sandbox.applyArgIf(cli, options, 'strictSSL')
-    Sandbox.applyArgIf(cli, options, 'optimize')
+    this.mergeJsonArgIf(options, 'body')
+    this.mergeJsonArgIf(options, 'arguments')
+    this.applyArgIf(options, 'strictSSL')
+    this.applyArgIf(options, 'optimize')
 
     if (isSet(options.strictSSL)) {
       options.client.setRequestOption('strictSSL', stringToBoolean(options.strictSSL))
@@ -48,7 +48,7 @@ class Sandbox extends Task {
       response.err = e.toJSON()
     }
 
-    if (cli.args('verbose')) {
+    if (this.args('verbose')) {
       console.log(Sandbox.formatOutput(options.client.response.toJSON(), format))
     } else if (response.err) {
       console.error(Sandbox.formatOutput(response.err, format))
@@ -60,17 +60,17 @@ class Sandbox extends Task {
 
   }
 
-  static mergeJsonArgIf(cli, options, arg) {
+  mergeJsonArgIf(options, arg) {
 
-    const value = cli.args(arg)
+    const value = this.args(arg)
     if (rString(value)) {
       const parsed = JSON.parse(value)
       options[arg] = _.merge(options[arg], parsed) // eslint-disable-line no-param-reassign
     }
   }
 
-  static applyArgIf(cli, options, arg) {
-    const value = cli.args(arg)
+  applyArgIf(options, arg) {
+    const value = this.args(arg)
     if (isSet(value)) {
       options[arg] = value // eslint-disable-line no-param-reassign
     }
