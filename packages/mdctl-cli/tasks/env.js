@@ -24,7 +24,7 @@ class Env extends Task {
       },
       clear: {
         type: 'boolean',
-        default: true
+        default: false
       },
       preferUrls: {
         type: 'boolean',
