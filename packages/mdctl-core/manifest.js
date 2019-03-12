@@ -208,8 +208,10 @@ class Manifest extends ManifestStage {
 
   static get builtInSections() {
     return [
-      'env', 'configs', 'scripts', 'views', 'templates', 'apps', 'roles', 'serviceAccounts',
-      'policies', 'notifications', 'storageLocations']
+      'env',
+      'configs',
+      'scripts', 'views', 'templates',
+      'apps', 'roles', 'serviceAccounts', 'smsNumbers', 'policies', 'notifications', 'storageLocations']
   }
 
   accept(path) {
