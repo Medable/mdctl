@@ -1,9 +1,8 @@
 const { Writable } = require('stream'),
       fs = require('fs'),
-      rimraf = require('rimraf'),
       jp = require('jsonpath'),
       _ = require('lodash'),
-      pump = require('pump'),
+      globby = require('globby'),
       slugify = require('slugify'),
       request = require('request'),
       { Fault } = require('@medable/mdctl-core'),
@@ -13,9 +12,9 @@ const { Writable } = require('stream'),
       { ensureDir } = require('@medable/mdctl-core-utils/directory'),
       { privatesAccessor } = require('@medable/mdctl-core-utils/privates'),
       KNOWN_FILES = {
-        assets: 'env/**/*.{png,jpeg,jpg,gif,html,txt,bin}',
+        assets: 'env/**/*.{ico,png,jpeg,jpg,gif,html,txt,bin,js}',
         objects: 'env/**/*.{json,yaml}',
-        manifest: '{manifest,manifest-*}.{json,yaml}'
+        manifest: '{manifest,exports,dependencies}.{json,yaml}'
       }
 
 class ExportFileTreeAdapter extends Writable {
@@ -71,8 +70,6 @@ class ExportFileTreeAdapter extends Writable {
           'the location contains exported data in different layout, you will have duplicated information in different layout')
       }
     }
-
-    this.clearOutput()
   }
 
   loadMetadata() {
@@ -220,15 +217,26 @@ class ExportFileTreeAdapter extends Writable {
     }
   }
 
-  clearOutput() {
+  async clearOutput() {
     const { clearOutput } = privatesAccessor(this)
     if (clearOutput) {
-      rimraf.sync(`${this.output}/(${KNOWN_FILES.main}|${KNOWN_FILES.objects}|${KNOWN_FILES.assets})`, {
-        glob: {
-          ignore: '.cache.json, .gitignore, .git'
-        }
+      const paths = await globby([
+        `${this.output}/${KNOWN_FILES.manifest}`,
+        `${this.output}/${KNOWN_FILES.objects}`,
+        `${this.output}/${KNOWN_FILES.assets}`
+      ])
+      const promises = []
+      paths.forEach((p) => {
+        promises.push(new Promise((resolve, reject) => {
+          fs.unlink(p, err => {
+            if(err) return reject(err)
+            return resolve()
+          })
+        }))
       })
+      return Promise.all(promises)
     }
+    return Promise.resolve()
   }
 
   _write(chunk, enc, cb) {
@@ -236,8 +244,9 @@ class ExportFileTreeAdapter extends Writable {
     cb()
   }
 
-  _final(cb) {
-    this.writeAndUpdatePaths()
+  async _final(cb) {
+    await this.clearOutput()
+    await this.writeAndUpdatePaths()
     this.createCheckpointFile()
     cb()
   }
