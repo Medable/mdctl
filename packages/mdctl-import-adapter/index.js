@@ -7,11 +7,11 @@ const { Transform } = require('stream'),
       fs = require('fs'),
       _ = require('lodash'),
       { ImportSection } = require('@medable/mdctl-core/streams/section'),
-      { stringifyContent, parseString } = require('@medable/mdctl-core-utils/values'),
+      { parseString } = require('@medable/mdctl-core-utils/values'),
       { md5FileHash } = require('@medable/mdctl-core-utils/crypto'),
       { privatesAccessor } = require('@medable/mdctl-core-utils/privates'),
-      { OutputStream } = require('./chunk-stream'),
       { Fault } = require('@medable/mdctl-core'),
+      { OutputStream } = require('@medable/mdctl-core/streams/chunk-stream'),
       KNOWN_FILES = {
         data: 'data/**/*.{json,yaml}',
         objects: 'env/**/*.{json,yaml}',
@@ -78,10 +78,7 @@ class ImportFileTreeAdapter extends EventEmitter {
       ndjson: false,
       template: ef
     })
-    // outS.write(stringifyContent(ef))
-    outS.write(ef.data)
-    outS.end()
-    return outS
+    return ef.data.pipe(outS)
   }
 
   get iterator() {
@@ -93,32 +90,6 @@ class ImportFileTreeAdapter extends EventEmitter {
         }
       }
     }
-  }
-
-
-  get blobs() {
-    return privatesAccessor(this).blobs
-  }
-
-  async blobStream(blob) {
-    return new Promise((resolve, reject) => {
-      const data = []
-      ImportFileTreeAdapter.getAssetStream(blob).on('data', (d) => {
-        data.push(d)
-      }).on('end', () => {
-        resolve(data)
-      }).once('error', (e) => {
-        reject(e)
-      })
-    })
-  }
-
-  async getBlobData(blobs) {
-    const promises = []
-    blobs.forEach((b) => {
-      promises.push(this.blobStream(b))
-    })
-    return Promise.all(promises)
   }
 
   async loadFileContent(f) {
@@ -136,8 +107,10 @@ class ImportFileTreeAdapter extends EventEmitter {
         section.facets
       )
       if (section.extraFiles && section.extraFiles.length) {
-        const blobs = await this.getBlobData(section.extraFiles)
-        blobResults = _.concat(blobResults, blobs)
+        // const blobs = this.getBlobData(section.extraFiles)
+        blobResults = _.concat(blobResults, _.map(section.extraFiles, (ef) => {
+          return ImportFileTreeAdapter.getAssetStream(ef)
+        }))
       }
     }
     return { results, blobResults }
@@ -243,7 +216,7 @@ class ImportFileTreeAdapter extends EventEmitter {
             const resourceKey = uuid.v4(),
                   asset = {
                     streamId: resourceKey,
-                    data: fs.readFileSync(localFile),
+                    data: fs.createReadStream(localFile),
                     object: 'stream'
                   }
             facet.ETag = md5FileHash(localFile)
