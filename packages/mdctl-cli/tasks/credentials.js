@@ -595,14 +595,13 @@ class Credentials extends Task {
 function formatOutput(data, format = 'json') {
 
   switch (format) {
-    case 'json':
-      return JSON.stringify(data)
     case 'pretty':
       return JSON.stringify(data, null, 2)
     case 'yaml':
       return jsyaml.safeDump(data)
+    case 'json':
     default:
-      throw new RangeError('Invalid output format. Expected json, pretty or yaml')
+      return JSON.stringify(data)
   }
 
 }
