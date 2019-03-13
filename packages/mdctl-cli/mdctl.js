@@ -220,7 +220,7 @@ module.exports = class MdCtlCli {
             : await getDefaultClientAndCreds()
 
     if (_.isUndefined(client)) {
-      throw new Error("API client didn't start, try logging-in first or storing secrets to the keystore")
+      throw new Error("Couldn't find any matching credentials")
     }
 
     // is there an active login, attempt to resurrect it.
