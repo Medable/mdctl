@@ -58,7 +58,7 @@ const pump = require('pump'),
           if(options.debug) {
             console.log(`calling api ${url.pathname} with params ${JSON.stringify(requestOptions)}`)
           }
-          return client.call(url.pathname, Object.assign({ method: 'POST', body: streamChain }, requestOptions))
+          return client.call(url.pathname, Object.assign({ method: 'POST', body: streamChain }, {requestOptions}))
         }
 
         return new Promise((resolve, reject) => {
