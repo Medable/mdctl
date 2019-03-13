@@ -40,7 +40,7 @@ const pump = require('pump'),
         /* eslint-disable one-var */
         const streamChain = pump(...streamList)
 
-        streamChain.on('data', (d) => {
+        ndjsonStream.on('data', (d) => {
           if(options.debug) {
             console.debug(d)
           }
@@ -58,7 +58,7 @@ const pump = require('pump'),
           if(options.debug) {
             console.log(`calling api ${url.pathname} with params ${JSON.stringify(requestOptions)}`)
           }
-          return client.call(url.pathname, Object.assign({ method: 'POST', body: streamChain }, requestOptions))
+          return client.call(url.pathname, Object.assign({ method: 'POST', body: streamChain }, {requestOptions}))
         }
 
         return new Promise((resolve, reject) => {
