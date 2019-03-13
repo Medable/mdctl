@@ -110,7 +110,9 @@ describe('Manifest', () => {
         // implicit include *
         views: {},
         apps: {},
-        roles: {},
+        roles: {
+          includes: ['c_my_role']
+        },
         configs: {},
         serviceAccounts: {},
         policies: {},
@@ -150,7 +152,10 @@ describe('Manifest', () => {
         // custom objects and instance data
         { shouldAccept: true, path: 'c_awesome.c_cool_dude' },
         { shouldAccept: false, path: 'c_awesome.c_nerd_dude' },
-        { shouldAccept: false, path: 'c_awesome.c_random_dude' }
+        { shouldAccept: false, path: 'c_awesome.c_random_dude' },
+        // roles
+        { shouldAccept: true, path: 'roles.c_my_role' },
+        { shouldAccept: false, path: 'roles.c_not' },
       ]
     },
     {
