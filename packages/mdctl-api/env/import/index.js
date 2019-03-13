@@ -40,7 +40,7 @@ const pump = require('pump'),
         /* eslint-disable one-var */
         const streamChain = pump(...streamList)
 
-        ndjsonStream.on('data', (d) => {
+        streamChain.on('data', (d) => {
           if(options.debug) {
             console.debug(d)
           }
