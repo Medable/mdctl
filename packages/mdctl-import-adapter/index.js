@@ -154,8 +154,8 @@ class ImportFileTreeAdapter extends EventEmitter {
     const { format } = privatesAccessor(this),
           files = globby.sync([KNOWN_FILES.manifest, KNOWN_FILES.objects], { cwd: dir }),
           mappedFiles = _.map(files, f => `${dir}/${f}`),
-          existsManifest = _.find(files, f => f.indexOf(`manifest.${format}`))
-    if (!existsManifest) {
+          existsManifest = files.indexOf(`manifest.${format}`)
+    if (existsManifest === -1) {
       throw Fault.create({ code: 'KMissingManifest', reason: 'There is no manifest file present on folder' })
     }
     privatesAccessor(this, 'files', mappedFiles)
