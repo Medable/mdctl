@@ -1,6 +1,6 @@
 {
   "name": "@medable/mdctl-sandbox",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Medable Developer Tools :: Sandbox",
   "repository": {
     "type": "git",
@@ -16,9 +16,9 @@
   "author": "Medable, Inc. <mdctl@medable.com>",
   "license": "MIT",
   "dependencies": {
-    "@medable/mdctl-api": "^1.0.0",
-    "@medable/mdctl-core": "^1.0.0",
-    "@medable/mdctl-core-utils": "^1.0.0",
+    "@medable/mdctl-api": "^1.0.1",
+    "@medable/mdctl-core": "^1.0.1",
+    "@medable/mdctl-core-utils": "^1.0.1",
     "lodash": "^4.17.11",
     "request": "^2.88.0"
   },
