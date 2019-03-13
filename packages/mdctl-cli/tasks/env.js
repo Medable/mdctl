@@ -30,12 +30,12 @@ class Env extends Task {
         type: 'boolean',
         default: false
       },
-      silent: {
+      debug: {
         type: 'boolean',
-        default: true
+        default: false
       }
     })
-    this.optionKeys = ['manifest', 'format', 'gzip', 'clear', 'dir', 'preferUrls', 'silent']
+    this.optionKeys = ['manifest', 'format', 'gzip', 'clear', 'dir', 'debug', 'local']
   }
 
   async run(cli) {
@@ -67,8 +67,12 @@ class Env extends Task {
   async 'env@import'(cli) {
     const client = await cli.getApiClient({ credentials: await cli.getAuthOptions() }),
           params = await cli.getArguments(this.optionKeys)
-    const response = await Environment.import({ client, ...params })
-    console.log('Import finished...!', response)
+    try {
+      const response = await Environment.import({client, ...params})
+      console.log('Import finished...!', response)
+    } catch (e) {
+      throw e
+    }
   }
 
   async 'env@add'(cli) {

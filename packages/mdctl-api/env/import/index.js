@@ -32,12 +32,18 @@ const pump = require('pump'),
               ndjsonStream = ndjson.stringify(),
               streamList = [importStream, ndjsonStream]
         if (options.gzip) {
+          if(options.debug) {
+            console.log('Adding gzip stream transform')
+          }
           streamList.push(zlib.createGzip())
         }
         /* eslint-disable one-var */
         const streamChain = pump(...streamList)
 
         streamChain.on('data', (d) => {
+          if(options.debug) {
+            console.debug(d)
+          }
           progress(d)
         })
 
@@ -49,14 +55,23 @@ const pump = require('pump'),
             requestOptions.headers['Content-Encoding'] = 'gzip'
           }
           requestOptions.json = false
-          return client.post(url.pathname, streamChain, { requestOptions })
+          if(options.debug) {
+            console.log(`calling api ${url.pathname} with params ${JSON.stringify(requestOptions)}`)
+          }
+          return client.call(url.pathname, Object.assign({ method: 'POST', body: streamChain }, requestOptions))
         }
 
         return new Promise((resolve, reject) => {
           streamChain.on('error', (e) => {
+            if(options.debug) {
+              console.log(e)
+            }
             reject(e)
           })
           streamChain.on('end', () => {
+            if(options.debug) {
+              console.log('Ending stream')
+            }
             resolve()
           })
         })
