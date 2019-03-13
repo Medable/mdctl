@@ -40,6 +40,7 @@ class ImportStream extends Readable {
         this.push(item.value)
       }
     } else {
+      this.resume()
       this.push(null)
     }
   }
