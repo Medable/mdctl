@@ -78,7 +78,8 @@ class ImportFileTreeAdapter extends EventEmitter {
       ndjson: false,
       template: ef
     })
-    outS.write(stringifyContent(ef))
+    // outS.write(stringifyContent(ef))
+    outS.write(ef.data)
     outS.end()
     return outS
   }
