@@ -122,7 +122,7 @@ class ExportFileTreeAdapter extends Writable {
       }
       if (asset.stream && asset.stream.length) {
         /* eslint-disable no-param-reassign */
-        asset.data = asset.stream.join()
+        asset.data = Buffer.concat(asset.stream.filter(v => v !== null))
       }
     })
 
