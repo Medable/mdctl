@@ -38,6 +38,7 @@ const pump = require('pump'),
         const streamChain = pump(...streamList)
 
         streamChain.on('data', (d) => {
+          console.log(d)
           progress(d)
         })
 

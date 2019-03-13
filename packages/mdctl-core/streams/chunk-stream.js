@@ -4,7 +4,7 @@ const { Transform } = require('stream'),
       { rBool, rInt, rString } = require('@medable/mdctl-core-utils/values'),
       { sortKeys } = require('@medable/mdctl-core-utils'),
       { privatesAccessor } = require('@medable/mdctl-core-utils/privates'),
-      { Fault } = require('@medable/mdctl-core')
+      Fault = require('../fault')
 
 /**
  * outputs a binary stream from incoming stream of json objects

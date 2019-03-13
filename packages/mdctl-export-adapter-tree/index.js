@@ -3,9 +3,11 @@ const { Writable } = require('stream'),
       rimraf = require('rimraf'),
       jp = require('jsonpath'),
       _ = require('lodash'),
+      pump = require('pump'),
       slugify = require('slugify'),
       request = require('request'),
       { Fault } = require('@medable/mdctl-core'),
+      { InputStream } = require('@medable/mdctl-core/streams/chunk-stream'),
       { stringifyContent } = require('@medable/mdctl-core-utils/values'),
       { md5FileHash } = require('@medable/mdctl-core-utils/crypto'),
       { ensureDir } = require('@medable/mdctl-core-utils/directory'),
@@ -81,8 +83,10 @@ class ExportFileTreeAdapter extends Writable {
     }
   }
 
-  static downloadResources(url) {
-    return request(url)
+  static async downloadResources(url, fileWriter) {
+    return new Promise((resolve, reject) => {
+      request(url).pipe(fileWriter).on('finish', resolve).on('error', reject)
+    })
   }
 
   static fileNeedsUpdate(f, pathFile) {
@@ -104,7 +108,8 @@ class ExportFileTreeAdapter extends Writable {
           }),
           assets = _.filter(resources, res => res.sectionId)
 
-    _.forEach(assets, (asset) => {
+    /* eslint-disable no-restricted-syntax */
+    for (const asset of assets) {
       const dest = asset.dest || `${asset.name}.${asset.ext}`,
             section = _.find(sections, doc => doc.id === asset.sectionId || doc.name === `${asset.sectionName}`)
       if (section) {
@@ -124,25 +129,28 @@ class ExportFileTreeAdapter extends Writable {
         /* eslint-disable no-param-reassign */
         asset.data = Buffer.concat(asset.stream.filter(v => v !== null))
       }
-    })
+    }
 
-    _.forEach(sections, (s) => {
+    for (const s of sections) {
       ensureDir(s.folder)
       this.writeToFile(s.file, s.data, false)
-    })
-    _.forEach(assets, (r) => {
+    }
+
+    for (const r of assets) {
       ensureDir(r.folder)
       if (ExportFileTreeAdapter.fileNeedsUpdate(r, r.file)) {
         if (r.remoteLocation && r.url) {
           // download remote resource
-          fs.createWriteStream(r.file).pipe(ExportFileTreeAdapter.downloadResources(r.url))
+          const fileWriter = fs.createWriteStream(r.file)
+          /* eslint-disable no-await-in-loop */
+          await ExportFileTreeAdapter.downloadResources(r.url, fileWriter)
         } else if (r.base64) {
           this.writeToFile(r.file, Buffer.from(r.base64, 'base64'), true)
         } else {
           this.writeToFile(r.file, r.data, true)
         }
       }
-    })
+    }
   }
 
   async writeStreamAsset(chunk) {
@@ -235,6 +243,5 @@ class ExportFileTreeAdapter extends Writable {
   }
 
 }
-
 
 module.exports = ExportFileTreeAdapter
