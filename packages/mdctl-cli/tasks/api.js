@@ -4,9 +4,12 @@ const _ = require('lodash'),
       { URL } = require('url'),
       jsyaml = require('js-yaml'),
       ndjson = require('ndjson'),
+      jp = require('jsonpath'),
       fs = require('fs'),
+      { prompt } = require('inquirer'),
+      isPlainObject = require('lodash.isplainobject'),
       { rString, isSet } = require('@medable/mdctl-core-utils/values'),
-      { loadJsonOrYaml, pathTo, searchParamsToObject } = require('@medable/mdctl-core-utils'),
+      { loadJsonOrYaml, pathTo, searchParamsToObject, visit } = require('@medable/mdctl-core-utils'),
       { Fault } = require('@medable/mdctl-core'),
       Task = require('../lib/task'),
       methods = ['get', 'post', 'put', 'patch', 'delete']
@@ -38,6 +41,10 @@ class Api extends Task {
         default: ''
       },
       grep: {
+        type: 'boolean',
+        default: false
+      },
+      input: {
         type: 'boolean',
         default: false
       },
@@ -115,6 +122,31 @@ class Api extends Task {
       } else if (!grep || grep.test(formatted)) {
         console.log(formatted)
       }
+
+    }
+
+    if (this.args('input') && isPlainObject(options.body)) {
+
+      const tasks = []
+      visit(options.body, {
+        fnObj: (value, key, parent) => {
+          if (value && value.$input && Object.keys(value).length === 1) {
+            tasks.push((async() => {
+              const input = value.$input,
+                    result = await prompt([{
+                      name: 'input',
+                      message: input.message || key,
+                      type: input.type || 'input',
+                      default: input.default,
+                      choices: input.choices
+                    }])
+
+              parent[key] = result.input
+            })())
+          }
+        }
+      })
+      await Promise.all(tasks)
 
     }
 
@@ -235,6 +267,7 @@ class Api extends Task {
                 
       Options 
         
+        --input - ask for user input by scanning request body for "{$input: { type: 'input'}}" values.
         --body - payload
         --ndjson -- sends the "accept: application/x-ndjson" header and outputs as the stream is received                 
         --query - query arguments json. merges with path query arguments                                   
@@ -243,7 +276,22 @@ class Api extends Task {
         --stream - streams a local file directly to the request.                          
         --format - output format. defaults to pretty (json, pretty, yaml, raw)
         --grep - grep text in an ndjson stream and output matching objects
-        --verbose - outputs an object with request and response information                
+        --verbose - outputs an object with request and response information     
+        
+      Notes
+        
+        Using --input, you can create your own prompts. For example, an org refresh input body could look like:
+        {
+          "body": {
+            "accountPassword": {
+              "$input": {
+                "type": "password",
+                "message": "Enter your password."
+              }
+            },
+            "preserve": ["administrators", "tokens"]
+          }
+        }          
                                                                                 
     `
   }
