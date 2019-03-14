@@ -5,6 +5,7 @@ const pump = require('pump'),
       {
         isSet, pathTo, rFunction, rBool
       } = require('@medable/mdctl-core-utils/values'),
+      { Transform } = require('stream'),
       {
         searchParamsToObject
       } = require('@medable/mdctl-core-utils'),
@@ -32,20 +33,29 @@ const pump = require('pump'),
               ndjsonStream = ndjson.stringify(),
               streamList = [importStream, ndjsonStream]
         if (options.gzip) {
-          if(options.debug) {
+          if (options.debug) {
             console.log('Adding gzip stream transform')
           }
           streamList.push(zlib.createGzip())
         }
         /* eslint-disable one-var */
-        const streamChain = pump(...streamList)
+        const streamChain = pump(
+          ...streamList,
+          new Transform({
+            objectMode: true,
+            transform(data, encoding, callback) {
 
-        streamChain.on('data', (d) => {
-          if(options.debug) {
-            console.debug(d)
-          }
-          progress(d)
-        })
+              this.push(data)
+              callback()
+
+              if (options.debug) {
+                console.debug(data)
+              }
+              progress(data)
+
+            }
+          })
+        )
 
         if (!options.local) {
           pathTo(requestOptions, 'headers.accept', 'application/x-ndjson')
@@ -55,21 +65,21 @@ const pump = require('pump'),
             requestOptions.headers['Content-Encoding'] = 'gzip'
           }
           requestOptions.json = false
-          if(options.debug) {
+          if (options.debug) {
             console.log(`calling api ${url.pathname} with params ${JSON.stringify(requestOptions)}`)
           }
-          return client.call(url.pathname, Object.assign({ method: 'POST', body: streamChain }, {requestOptions}))
+          return client.call(url.pathname, { method: 'POST', body: streamChain, requestOptions })
         }
 
         return new Promise((resolve, reject) => {
           streamChain.on('error', (e) => {
-            if(options.debug) {
+            if (options.debug) {
               console.log(e)
             }
             reject(e)
           })
           streamChain.on('end', () => {
-            if(options.debug) {
+            if (options.debug) {
               console.log('Ending stream')
             }
             resolve()

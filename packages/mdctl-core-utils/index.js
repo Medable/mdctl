@@ -175,6 +175,64 @@ function guessEndpoint(options = {}) {
   return out
 }
 
+// ------------------------------------------------------------------------------------
+
+// return -1 to completely exit, -2 to prevent processing the current object's children
+function _visit(obj, options, currentKey, parentObject, parentIsArray, depth, fullPath, parentFullPath, walked) {
+
+  if (Array.isArray(obj)) {
+    if (!walked.has(obj)) {
+      walked.add(obj)
+      if (options.fnObj) {
+        let ret = options.fnObj(obj, currentKey, parentObject, parentIsArray, depth, fullPath, parentFullPath)
+        if (ret === -1) {
+          return -1
+        } else if (ret !== -2) {
+          for (let key = 0; key < obj.length; key++) {
+            if (_visit(obj[key], options, key, obj, true, depth, fullPath ? fullPath + '.' + key : key, fullPath, walked) === -1) {
+              return -1
+            }
+          }
+        }
+      }
+    }
+  } else if (options.fnTest ? (_.isObject(obj) && options.fnTest(obj, currentKey, parentObject, parentIsArray, depth, fullPath, parentFullPath)) : isPlainObject(obj)) {
+    if (!walked.has(obj)) {
+      walked.add(obj)
+      if (options.fnObj) {
+        let ret = options.fnObj(obj, currentKey, parentObject, parentIsArray, depth, fullPath, parentFullPath)
+        if (ret === -1) {
+          return -1
+        } else if (ret !== -2) {
+          for (let key in obj) {
+            if (obj.hasOwnProperty && obj.hasOwnProperty(key)) {
+              if (_visit(obj[key], options, key, obj, false, depth + 1, fullPath ? fullPath + '.' + key : key, fullPath, walked) === -1) {
+                return -1
+              }
+            }
+          }
+        }
+      }
+
+    }
+  } else if (options.fnVal) {
+    if (options.fnVal(obj, currentKey, parentObject, parentIsArray, depth, fullPath || '', parentFullPath || '') === -1) {
+      return -1
+    }
+  }
+
+}
+
+function visit(obj, options) {
+
+  options = options || options
+  if (options.fnObj && !_.isFunction(options.fnObj)) options.fnObj = null
+  if (options.fnVal && !_.isFunction(options.fnVal)) options.fnVal = null
+  if (options.fnTest && !_.isFunction(options.fnTest)) options.fnTest = null
+  return _visit(obj, options, '', null, false, 0, '', '', new Set())
+
+}
+
 module.exports = {
   loadJsonOrYaml,
   searchParamsToObject,
@@ -187,5 +245,6 @@ module.exports = {
   pathsTo,
   validateApiKey,
   validateApiSecret,
-  guessEndpoint
+  guessEndpoint,
+  visit
 }
