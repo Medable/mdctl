@@ -245,9 +245,12 @@ class ExportFileTreeAdapter extends Writable {
   }
 
   async _final(cb) {
-    await this.clearOutput()
-    await this.writeAndUpdatePaths()
-    this.createCheckpointFile()
+    const { resources } = privatesAccessor(this)
+    if(resources.length) {
+      await this.clearOutput()
+      await this.writeAndUpdatePaths()
+      this.createCheckpointFile()
+    }
     cb()
   }
 
