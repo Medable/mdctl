@@ -33,9 +33,13 @@ class Env extends Task {
       debug: {
         type: 'boolean',
         default: false
+      },
+      dryRun: {
+        type: 'boolean',
+        defeault: false
       }
     })
-    this.optionKeys = ['manifest', 'format', 'gzip', 'clear', 'dir', 'debug', 'local']
+    this.optionKeys = ['manifest', 'format', 'gzip', 'clear', 'dir', 'debug', 'dryRun']
   }
 
   async run(cli) {

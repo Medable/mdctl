@@ -7,7 +7,7 @@ const { Readable } = require('stream'),
 class ImportStream extends Readable {
 
   constructor(inputDir, format = 'json') {
-    super({ objectMode: true })
+    super({ objectMode: true, highWaterMark: 1 })
     Object.assign(privatesAccessor(this), {
       input: inputDir || process.cwd(),
       cache: `${inputDir || process.cwd()}/.cache.json`,
