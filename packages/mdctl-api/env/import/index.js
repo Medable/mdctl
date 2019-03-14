@@ -39,24 +39,23 @@ const pump = require('pump'),
           streamList.push(zlib.createGzip())
         }
         /* eslint-disable one-var */
-        const hrstart = process.hrtime()
+        let hrstart = process.hrtime()
         const streamChain = pump(
           ...streamList,
           new Transform({
             objectMode: true,
-            highWaterMark: 1,
             transform(data, encoding, callback) {
 
 
               this.push(data)
               callback()
               const hrend = process.hrtime(hrstart)
+              hrstart = process.hrtime()
               if (options.debug) {
                 console.info('Execution time (hr): %ds %dms', hrend[0], hrend[1] / 1000000)
                 console.debug(data)
               }
               progress(data)
-
             }
           })
         )
@@ -86,7 +85,7 @@ const pump = require('pump'),
             if (options.debug) {
               console.debug('Ending stream')
             }
-            resolve()
+            resolve('')
           })
           streamChain.resume()
         })

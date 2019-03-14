@@ -7,7 +7,7 @@ const { Transform } = require('stream'),
       fs = require('fs'),
       _ = require('lodash'),
       { ImportSection } = require('@medable/mdctl-core/streams/section'),
-      { parseString } = require('@medable/mdctl-core-utils/values'),
+      { parseString, rFunction } = require('@medable/mdctl-core-utils/values'),
       { md5FileHash } = require('@medable/mdctl-core-utils/crypto'),
       { privatesAccessor } = require('@medable/mdctl-core-utils/privates'),
       { Fault } = require('@medable/mdctl-core'),
@@ -75,6 +75,7 @@ class ImportFileTreeAdapter extends EventEmitter {
 
   static getAssetStream(ef) {
     const outS = new OutputStream({
+      chunkSize: 4096,
       ndjson: false,
       template: ef
     })
@@ -92,6 +93,20 @@ class ImportFileTreeAdapter extends EventEmitter {
     }
   }
 
+  async getBlobData(blob) {
+    return new Promise((resolve, reject) => {
+      const data = []
+      blob.on('data', (d) => {
+        data.push(d)
+      })
+      .on('error', (e) => {
+        reject(e)
+      }).on('end', () => {
+        resolve(data)
+      })
+    })
+  }
+
   async loadFileContent(f) {
     const section = await this.loadFile(f)
     await this.loadFacets(section)
@@ -107,10 +122,11 @@ class ImportFileTreeAdapter extends EventEmitter {
         section.facets
       )
       if (section.extraFiles && section.extraFiles.length) {
-        // const blobs = this.getBlobData(section.extraFiles)
-        blobResults = _.concat(blobResults, _.map(section.extraFiles, (ef) => {
-          return ImportFileTreeAdapter.getAssetStream(ef)
-        }))
+        const promises = []
+        for(const ef of section.extraFiles) {
+          promises.push(this.getBlobData(ImportFileTreeAdapter.getAssetStream(ef)))
+        }
+        blobResults = _.concat(blobResults, await Promise.all(promises))
       }
     }
     return { results, blobResults }
