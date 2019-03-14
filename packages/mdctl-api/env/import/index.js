@@ -34,7 +34,7 @@ const pump = require('pump'),
               streamList = [importStream, ndjsonStream]
         if (options.gzip) {
           if (options.debug) {
-            console.log('Adding gzip stream transform')
+            console.debug('Adding gzip stream transform')
           }
           streamList.push(zlib.createGzip())
         }
@@ -74,13 +74,13 @@ const pump = require('pump'),
         return new Promise((resolve, reject) => {
           streamChain.on('error', (e) => {
             if (options.debug) {
-              console.log(e)
+              console.debug(e)
             }
             reject(e)
           })
           streamChain.on('end', () => {
             if (options.debug) {
-              console.log('Ending stream')
+              console.debug('Ending stream')
             }
             resolve()
           })
