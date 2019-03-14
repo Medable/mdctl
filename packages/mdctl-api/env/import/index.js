@@ -47,12 +47,12 @@ const pump = require('pump'),
             highWaterMark: 1,
             transform(data, encoding, callback) {
 
-              const hrend = process.hrtime(hrstart)
-              console.info('Execution time (hr): %ds %dms', hrend[0], hrend[1] / 1000000)
+
               this.push(data)
               callback()
-
+              const hrend = process.hrtime(hrstart)
               if (options.debug) {
+                console.info('Execution time (hr): %ds %dms', hrend[0], hrend[1] / 1000000)
                 console.debug(data)
               }
               progress(data)
