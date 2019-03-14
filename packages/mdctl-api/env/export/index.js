@@ -8,7 +8,7 @@ const fs = require('fs'),
       {
         searchParamsToObject
       } = require('@medable/mdctl-core-utils'),
-      { Config } = require('@medable/mdctl-core'),
+      { Config, Fault } = require('@medable/mdctl-core'),
       ExportStream = require('./stream'),
       ExportFileTreeAdapter = require('@medable/mdctl-export-adapter-tree'),
       Client = require('../../client'),
@@ -41,7 +41,11 @@ const fs = require('fs'),
 
           let manifest = {}
           if (fs.existsSync(manifestFile)) {
-            manifest = parseString(fs.readFileSync(manifestFile), options.format)
+            try {
+              manifest = parseString(fs.readFileSync(manifestFile), options.format)
+            } catch (e) {
+              return Fault.create({reason: e.message})
+            }
           }
 
           pathTo(requestOptions, 'requestOptions.headers.accept', 'application/x-ndjson')
