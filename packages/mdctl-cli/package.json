@@ -1,6 +1,6 @@
 {
   "name": "@medable/mdctl-cli",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Medable Developer Tools :: Cli tool",
   "repository": {
     "type": "git",
@@ -19,13 +19,13 @@
     "mdctl": "./cli.js"
   },
   "dependencies": {
-    "@medable/mdctl-api": "^1.0.3",
-    "@medable/mdctl-core": "^1.0.1",
-    "@medable/mdctl-core-utils": "^1.0.1",
-    "@medable/mdctl-credentials-provider-keychain": "^1.0.1",
-    "@medable/mdctl-credentials-provider-pouchdb": "^1.0.1",
-    "@medable/mdctl-manifest": "^1.0.1",
-    "@medable/mdctl-sandbox": "^1.0.3",
+    "@medable/mdctl-api": "^1.0.4",
+    "@medable/mdctl-core": "^1.0.4",
+    "@medable/mdctl-core-utils": "^1.0.4",
+    "@medable/mdctl-credentials-provider-keychain": "^1.0.4",
+    "@medable/mdctl-credentials-provider-pouchdb": "^1.0.4",
+    "@medable/mdctl-manifest": "^1.0.4",
+    "@medable/mdctl-sandbox": "^1.0.4",
     "async": "^2.6.1",
     "cli-table": "^0.3.1",
     "clone": "^2.1.2",
