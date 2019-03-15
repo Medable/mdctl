@@ -33,9 +33,13 @@ class Env extends Task {
       debug: {
         type: 'boolean',
         default: false
+      },
+      dryRun: {
+        type: 'boolean',
+        defeault: false
       }
     })
-    this.optionKeys = ['manifest', 'format', 'gzip', 'clear', 'dir', 'debug', 'local']
+    this.optionKeys = ['manifest', 'format', 'gzip', 'clear', 'dir', 'debug', 'dryRun']
   }
 
   async run(cli) {
@@ -68,7 +72,7 @@ class Env extends Task {
     const client = await cli.getApiClient({ credentials: await cli.getAuthOptions() }),
           params = await cli.getArguments(this.optionKeys)
     try {
-      const response = await Environment.import({client, ...params})
+      const response = await Environment.import({ client, ...params })
       console.log('Import finished...!', response)
     } catch (e) {
       throw e
@@ -116,6 +120,7 @@ class Env extends Task {
           --clear - export will clear output dir before export default true
           --preferUrls - set to true to force the server to send urls instead of base64 encoded chunks 
           --silent - skip documents with mssing export keys instead of failing
+          --dry-run - (Import only) will skip calling api
                                   
     `
   }
