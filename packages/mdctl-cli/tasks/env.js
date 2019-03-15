@@ -1,10 +1,10 @@
 /* eslint-disable class-methods-use-this */
 
 const _ = require('lodash'),
-      { add } = require('@medable/mdctl-manifest'),
-      Environment = require('@medable/mdctl-api/env'),
-      { isSet } = require('@medable/mdctl-core-utils/values'),
-      Task = require('../lib/task')
+  { add } = require('@medable/mdctl-manifest'),
+  Environment = require('@medable/mdctl-api/env'),
+  { isSet } = require('@medable/mdctl-core-utils/values'),
+  Task = require('../lib/task')
 
 class Env extends Task {
 
@@ -33,15 +33,19 @@ class Env extends Task {
       debug: {
         type: 'boolean',
         default: false
+      },
+      dryRun: {
+        type: 'boolean',
+        defeault: false
       }
     })
-    this.optionKeys = ['manifest', 'format', 'gzip', 'clear', 'dir', 'debug', 'local']
+    this.optionKeys = ['manifest', 'format', 'gzip', 'clear', 'dir', 'debug', 'dryRun']
   }
 
   async run(cli) {
 
     const arg1 = this.args('1'),
-          handler = `env@${arg1}`
+      handler = `env@${arg1}`
 
     if (!isSet(arg1)) {
       return console.log(Env.help(cli))
@@ -55,7 +59,7 @@ class Env extends Task {
 
   async 'env@export'(cli) {
     const client = await cli.getApiClient({ credentials: await cli.getAuthOptions() }),
-          params = await cli.getArguments(this.optionKeys)
+      params = await cli.getArguments(this.optionKeys)
     try {
       await Environment.export({ client, ...params })
       console.log('Export finished...!')
@@ -66,7 +70,7 @@ class Env extends Task {
 
   async 'env@import'(cli) {
     const client = await cli.getApiClient({ credentials: await cli.getAuthOptions() }),
-          params = await cli.getArguments(this.optionKeys)
+      params = await cli.getArguments(this.optionKeys)
     try {
       const response = await Environment.import({client, ...params})
       console.log('Import finished...!', response)
@@ -77,11 +81,11 @@ class Env extends Task {
 
   async 'env@add'(cli) {
     const params = await cli.getArguments(this.optionKeys),
-          options = Object.assign(params, {
-            object: this.args('2'),
-            type: this.args('3'),
-            name: this.args('4')
-          })
+      options = Object.assign(params, {
+        object: this.args('2'),
+        type: this.args('3'),
+        name: this.args('4')
+      })
     await add(options)
     console.log('Resource added...!')
   }
@@ -116,6 +120,7 @@ class Env extends Task {
           --clear - export will clear output dir before export default true
           --preferUrls - set to true to force the server to send urls instead of base64 encoded chunks 
           --silent - skip documents with mssing export keys instead of failing
+          --dry-run - (Import only) will skip calling api
                                   
     `
   }
