@@ -39,25 +39,28 @@ const pump = require('pump'),
           streamList.push(zlib.createGzip())
         }
         /* eslint-disable one-var */
+        let hrstart = process.hrtime()
         const streamChain = pump(
           ...streamList,
           new Transform({
             objectMode: true,
             transform(data, encoding, callback) {
 
+
               this.push(data)
               callback()
-
+              const hrend = process.hrtime(hrstart)
+              hrstart = process.hrtime()
               if (options.debug) {
+                console.info('Execution time (hr): %ds %dms', hrend[0], hrend[1] / 1000000)
                 console.debug(data)
               }
               progress(data)
-
             }
           })
         )
 
-        if (!options.local) {
+        if (!options.dryRun) {
           pathTo(requestOptions, 'headers.accept', 'application/x-ndjson')
           requestOptions.headers['Content-Type'] = 'application/x-ndjson'
           if (options.gzip) {
@@ -82,8 +85,9 @@ const pump = require('pump'),
             if (options.debug) {
               console.debug('Ending stream')
             }
-            resolve()
+            resolve('')
           })
+          streamChain.resume()
         })
 
       }
