@@ -50,7 +50,7 @@ describe('Environment Import', () => {
         return Environment.import({
           client,
           gzip: true,
-          local: true,
+          dryRun: true,
           dir: tempDir,
           format: 'yaml',
           progress: (line) => {
