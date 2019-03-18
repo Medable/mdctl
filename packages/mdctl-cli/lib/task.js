@@ -25,7 +25,7 @@ class Task {
             default: false
           }
         },
-        yargs.options(args || {}).help('').version('').argv,
+        yargs.options(args || {}).argv,
         process.argv.slice(2)
       )),
     })
