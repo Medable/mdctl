@@ -4,9 +4,6 @@ const path = require('path'),
       _ = require('lodash'),
       yargs = require('yargs'),
       { privatesAccessor } = require('@medable/mdctl-core-utils/privates'),
-      { createTask } = require('./tasks'),
-      { Fault } = require('@medable/mdctl-core'),
-      { createConfig } = require('./lib/config'),
       { Config } = require('@medable/mdctl-core/config'),
       { Client } = require('@medable/mdctl-api'),
       KeytarCredentialsProvider = require('@medable/mdctl-credentials-provider-keychain'),
@@ -17,7 +14,10 @@ const path = require('path'),
       } = require('@medable/mdctl-core-utils/values'),
       {
         randomAlphaNumSym
-      } = require('@medable/mdctl-core-utils/crypto')
+      } = require('@medable/mdctl-core-utils/crypto'),
+      { Fault } = require('@medable/mdctl-core'),
+      { createTask } = require('./tasks'),
+      { createConfig } = require('./lib/config')
 
 async function readConfig(config, from) {
   let file = from
@@ -42,7 +42,7 @@ module.exports = class MdCtlCli {
       // store cli arguments
       args: createConfig(Object.assign(
         {},
-        yargs.options({}).help('').version('').argv,
+        yargs.options({}).argv,
         process.argv.slice(2)
       )),
 
@@ -88,7 +88,7 @@ module.exports = class MdCtlCli {
       // get cli arguments and options
       privates.args = createConfig(Object.assign(
         {},
-        yargs.help('').version('').argv,
+        yargs.argv,
         process.argv.slice(2)
       ))
 
