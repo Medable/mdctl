@@ -32,7 +32,7 @@ const Task = require('../lib/task'),
 
 class Configure extends Task {
 
-  constructor(){
+  constructor() {
     super({
       clean: {
         type: 'boolean',
