@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
-const MdCtlCli = require('./mdctl'),
-      { Fault } = require('@medable/mdctl-core'),
+const { Fault } = require('@medable/mdctl-core'),
+      MdCtlCli = require('./mdctl'),
       cli = new MdCtlCli()
 
 cli.run()
