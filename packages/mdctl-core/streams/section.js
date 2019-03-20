@@ -204,6 +204,11 @@ class ExportSection {
         const path = _.clone(n.path),
               namePath = this.getNameFromPath(path),
               items = [content.object, content.name || content.code]
+
+        // skip validators
+        if (namePath.indexOf('.validators.') > -1) {
+          return
+        }
         if (namePath.indexOf('.') > -1) {
           items.push(namePath)
         }
