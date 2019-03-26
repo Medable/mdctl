@@ -1,0 +1,11 @@
+{
+  "packages": [
+    "packages/*"
+  ],
+  "version": "1.0.9",
+  "npmClient": "npm",
+  "npmClientArgs": [
+    "--production",
+    "--no-optional"
+  ]
+}

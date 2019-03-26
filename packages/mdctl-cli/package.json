@@ -1,0 +1,57 @@
+{
+  "name": "@medable/mdctl-cli",
+  "version": "1.0.9",
+  "description": "Medable Developer Tools :: Cli tool",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Medable/mdctl.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Medable/mdctl/issues"
+  },
+  "engines": {
+    "node": ">=8",
+    "npm": ">=6"
+  },
+  "author": "Medable, Inc. <mdctl@medable.com>",
+  "license": "MIT",
+  "bin": {
+    "mdctl": "./cli.js"
+  },
+  "dependencies": {
+    "@medable/mdctl-api": "^1.0.9",
+    "@medable/mdctl-core": "^1.0.9",
+    "@medable/mdctl-core-utils": "^1.0.4",
+    "@medable/mdctl-credentials-provider-keychain": "^1.0.9",
+    "@medable/mdctl-credentials-provider-pouchdb": "^1.0.9",
+    "@medable/mdctl-manifest": "^1.0.9",
+    "@medable/mdctl-sandbox": "^1.0.9",
+    "async": "^2.6.1",
+    "cli-table": "^0.3.1",
+    "clone": "^2.1.2",
+    "inquirer": "^6.2.1",
+    "js-yaml": "^3.12.1",
+    "jsonpath": "^1.0.1",
+    "jsonwebtoken": "^8.4.0",
+    "lodash": "^4.17.11",
+    "lodash.isplainobject": "^4.0.6",
+    "ndjson": "^1.5.0",
+    "rimraf": "^2.6.3",
+    "shelljs": "^0.8.3",
+    "yargs": "^12.0.5"
+  },
+  "devDependencies": {
+    "chai": "^4.1.2",
+    "eslint": "^5.8.0",
+    "eslint-config-airbnb": "^17.1.0",
+    "eslint-config-standard": "^12.0.0",
+    "eslint-plugin-import": "^2.14.0",
+    "eslint-plugin-node": "^8.0.0",
+    "eslint-plugin-promise": "^4.0.1",
+    "eslint-plugin-standard": "^4.0.0",
+    "istanbul": "^1.0.0-alpha",
+    "mocha": "^5.0.0",
+    "sinon": "^7.2.2"
+  },
+  "gitHead": "4d50c0a1a7e84d29ac2490436643434205ce3f6d"
+}
