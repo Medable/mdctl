@@ -1,6 +1,6 @@
 {
   "name": "@medable/mdctl-core",
-  "version": "1.0.4",
+  "version": "1.0.9",
   "description": "Medable Developer Client Tools :: Core",
   "repository": {
     "type": "git",
