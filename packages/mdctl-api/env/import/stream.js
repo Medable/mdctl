@@ -31,18 +31,24 @@ class ImportStream extends Readable {
     if (!item.done) {
       if (item.value instanceof OutputStream) {
         this.pause()
-        item.value.on('data', (d) => {
-          this.push(d)
-        }).on('finish', () => {
-          this.resume()
+        return new Promise((resolve) => {
+          item.value.on('data', (d) => {
+            this.push(d)
+          }).on('finish', () => {
+            if (this.isPaused()) {
+              this.resume()
+              resolve()
+            }
+          })
         })
-      } else {
-        this.push(item.value)
       }
-    } else {
-      this.resume()
-      this.push(null)
+      return this.push(item.value)
     }
+    if (this.isPaused()) {
+      this.resume()
+    }
+    return this.push(null)
+
   }
 
 }

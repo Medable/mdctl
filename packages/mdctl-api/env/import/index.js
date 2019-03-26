@@ -36,7 +36,17 @@ const pump = require('pump'),
           if (options.debug) {
             console.debug('Adding gzip stream transform')
           }
-          streamList.push(zlib.createGzip())
+          const zip = zlib.createGzip()
+          zip.on('data', (d) => {
+            console.log(d)
+          })
+          ndjsonStream.on('data', (d) => {
+            zip.write(d)
+          }).on('end', () => {
+            zip.end()
+            console.log('finish ndjsonStream')
+          })
+          streamList.push(zip)
         }
         /* eslint-disable one-var */
         let hrstart = process.hrtime()
