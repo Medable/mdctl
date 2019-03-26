@@ -108,9 +108,10 @@ class ImportFileTreeAdapter extends EventEmitter {
       )
       if (section.extraFiles && section.extraFiles.length) {
         // const blobs = this.getBlobData(section.extraFiles)
-        blobResults = _.concat(blobResults, _.map(section.extraFiles, (ef) => {
-          return ImportFileTreeAdapter.getAssetStream(ef)
-        }))
+        blobResults = _.concat(
+          blobResults,
+          _.map(section.extraFiles, ef => ImportFileTreeAdapter.getAssetStream(ef))
+        )
       }
     }
     return { results, blobResults }
