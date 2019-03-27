@@ -11,7 +11,7 @@ class ImportStream extends Readable {
       cache: `${inputDir || process.cwd()}/.cache.json`,
       format,
       adapter: null,
-      docProcessed: false
+      chunks: []
     })
     this.loadAdapter()
   }
@@ -23,16 +23,12 @@ class ImportStream extends Readable {
   }
 
   async _read() {
-    const { adapter } = privatesAccessor(this),
+    const { adapter, chunks } = privatesAccessor(this),
           iter = adapter.iterator[Symbol.asyncIterator](),
           item = await iter.next()
     if (!item.done) {
-      const value = await Promise.resolve(item.value)
-      if (value instanceof Array) {
-        value.forEach(d => this.push(d))
-      } else {
-        this.push(value)
-      }
+      chunks.push(item.value)
+      this.push(item.value)
     } else {
       this.push(null)
     }
