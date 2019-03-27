@@ -1,30 +1,20 @@
 const pump = require('pump'),
       ndjson = require('ndjson'),
       zlib = require('zlib'),
-      {
-        URL
-      } = require('url'),
+      { URL } = require('url'),
       {
         isSet, pathTo, rFunction, rBool
       } = require('@medable/mdctl-core-utils/values'),
-      {
-        Transform
-      } = require('stream'),
-      {
-        searchParamsToObject
-      } = require('@medable/mdctl-core-utils'),
-      {
-        Config
-      } = require('@medable/mdctl-core'),
+      { Transform } = require('stream'),
+      { searchParamsToObject } = require('@medable/mdctl-core-utils'),
+      { Config } = require('@medable/mdctl-core'),
       ImportStream = require('./stream'),
       Client = require('../../client'),
 
       importEnv = async(input) => {
 
         const options = isSet(input) ? input : {},
-              client = options.client || new Client({
-                ...Config.global.client, ...options
-              }),
+              client = options.client || new Client({ ...Config.global.client, ...options }),
               inputDir = options.dir || process.cwd(),
               progress = rFunction(options.progress),
               url = new URL('/developer/environment/import', client.environment.url),
@@ -43,7 +33,6 @@ const pump = require('pump'),
         if (options.gzip) {
           if (options.debug) {
             console.debug('Adding gzip stream transform')
-            // ndjsonStream.on('data', d => console.log(d))
           }
           streamList.push(zlib.createGzip())
         }
@@ -73,12 +62,7 @@ const pump = require('pump'),
           }
           requestOptions.json = false
           if (options.debug) {
-            console.log(`calling api $ {
-                url.pathname
-            }
-            with params $ {
-                JSON.stringify(requestOptions)
-            }`)
+            console.log(`calling api ${url.pathname} with params ${JSON.stringify(requestOptions)}`)
           }
           return client.call(url.pathname, {
             method: 'POST',
