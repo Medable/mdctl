@@ -1,6 +1,7 @@
 const fs = require('fs'),
       pump = require('pump'),
       ndjson = require('ndjson'),
+      isPlainObject = require('lodash.isplainobject'),
       { URL } = require('url'),
       {
         isSet, parseString, pathTo, rBool
@@ -40,7 +41,7 @@ const fs = require('fs'),
         if (!options.stream) {
 
           let manifest = {}
-          if (!_.isObject(manifestFile) && fs.existsSync(manifestFile)) {
+          if (!isPlainObject(manifestFile) && fs.existsSync(manifestFile)) {
             try {
               manifest = parseString(fs.readFileSync(manifestFile), options.format)
             } catch (e) {
