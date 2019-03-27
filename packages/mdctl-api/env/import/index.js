@@ -43,27 +43,26 @@ const pump = require('pump'),
         if (options.gzip) {
           if (options.debug) {
             console.debug('Adding gzip stream transform')
+            // ndjsonStream.on('data', d => console.log(d))
           }
           streamList.push(zlib.createGzip())
         }
         /* eslint-disable one-var */
         let hrstart = process.hrtime()
-        const streamChain = pump(...streamList,
-          new Transform({
-            objectMode: true,
-            transform(data, encoding, callback) {
-
-              this.push(data)
-              callback()
-              const hrend = process.hrtime(hrstart)
-              hrstart = process.hrtime()
-              if (options.debug) {
-                console.info('Execution time (hr): %ds %dms', hrend[0], hrend[1] / 1000000)
-                console.debug(data)
-              }
-              progress(data)
+        const debuggerStream = new Transform({
+          transform(data, encoding, callback) {
+            const hrend = process.hrtime(hrstart)
+            hrstart = process.hrtime()
+            if (options.debug) {
+              console.info('Execution time (hr): %ds %dms', hrend[0], hrend[1] / 1000000)
+              console.debug(data.toString())
             }
-          }))
+            progress(data.toString())
+            this.push(data)
+            return callback()
+          }
+        })
+        streamList.push(debuggerStream)
 
         if (!options.dryRun) {
           pathTo(requestOptions, 'headers.accept', 'application/x-ndjson')
@@ -83,25 +82,25 @@ const pump = require('pump'),
           }
           return client.call(url.pathname, {
             method: 'POST',
-            body: streamChain,
+            body: pump(...streamList),
             requestOptions
           })
         }
 
         return new Promise((resolve, reject) => {
+          const items = [],
+                streamChain = pump(...streamList, () => {
+                  if (options.debug) {
+                    console.debug(`Ending stream, total chunks sent: ${items.length}`)
+                  }
+                  resolve(options.returnBlob ? Buffer.concat(items) : '')
+                })
+          streamChain.on('data', d => items.push(d))
           streamChain.on('error', (e) => {
-            if (options.debug
-            ) {
+            if (options.debug) {
               console.debug(e)
             }
             reject(e)
-          })
-          streamChain.on('end', () => {
-            if (options.debug
-            ) {
-              console.debug('Ending stream')
-            }
-            resolve('')
           })
           streamChain.resume()
         })
