@@ -8,8 +8,9 @@ const pump = require('pump'),
       { Transform } = require('stream'),
       { searchParamsToObject } = require('@medable/mdctl-core-utils'),
       { Config } = require('@medable/mdctl-core'),
-      ImportStream = require('./stream'),
-      Client = require('../../client'),
+      ImportStream = require('@medable/mdctl-core/streams/import_stream'),
+      ImportFileTreeAdapter = require('@medable/mdctl-import-adapter'),
+      { Client } = require('@medable/mdctl-api'),
 
       importEnv = async(input) => {
 
@@ -27,7 +28,8 @@ const pump = require('pump'),
                 },
                 method: 'post'
               },
-              importStream = new ImportStream(inputDir, options.format),
+              fileAdapter = new ImportFileTreeAdapter(inputDir, options.format),
+              importStream = new ImportStream(fileAdapter),
               ndjsonStream = ndjson.stringify(),
               streamList = [importStream, ndjsonStream]
         if (options.gzip) {
@@ -46,7 +48,7 @@ const pump = require('pump'),
               console.info('Execution time (hr): %ds %dms', hrend[0], hrend[1] / 1000000)
               console.debug(data.toString())
             }
-            progress(data.toString())
+            progress(data)
             this.push(data)
             return callback()
           }

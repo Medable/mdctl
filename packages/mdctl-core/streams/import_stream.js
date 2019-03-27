@@ -1,24 +1,17 @@
 const { Readable } = require('stream'),
       { privatesAccessor } = require('@medable/mdctl-core-utils/privates'),
-      ImportFileTreeAdapter = require('@medable/mdctl-import-adapter')
+      Fault = require('../fault')
 
 class ImportStream extends Readable {
 
-  constructor(inputDir, format = 'json') {
+  constructor(adapter) {
     super({ objectMode: true })
+    if (!adapter) {
+      throw Fault.from({ code: 'kMissingAdapter', reason: 'Missing import adapter' })
+    }
     Object.assign(privatesAccessor(this), {
-      input: inputDir || process.cwd(),
-      cache: `${inputDir || process.cwd()}/.cache.json`,
-      format,
-      adapter: null
+      adapter
     })
-    this.loadAdapter()
-  }
-
-  loadAdapter() {
-    const { input, cache, format } = privatesAccessor(this),
-          importAdapter = new ImportFileTreeAdapter(input, cache, format)
-    privatesAccessor(this, 'adapter', importAdapter)
   }
 
   async _read() {

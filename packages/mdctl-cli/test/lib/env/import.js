@@ -5,8 +5,9 @@ const { assert } = require('chai'),
       zlib = require('zlib'),
       rimraf = require('rimraf'),
       _ = require('lodash'),
-      { Client } = require('../../'),
-      Environment = require('../../env')
+      { Client } = require('@medable/mdctl-api'),
+      exportEnv = require('../../../lib/env/export'),
+      importEnv = require('../../../lib/env/import')
 
 describe('Environment Import', () => {
 
@@ -37,7 +38,7 @@ describe('Environment Import', () => {
             }
           })
     /* eslint-disable one-var */
-    return Environment.export({
+    return exportEnv({
       client,
       stream: blob,
       dir: tempDir,
@@ -47,7 +48,7 @@ describe('Environment Import', () => {
         const exportedFile = fs.createReadStream(`${__dirname}/data/medable.jpg`),
               items = []
         exportedFile.pipe(fs.createWriteStream(`${tempDir}/env/assets/env.logo.content.jpeg`))
-        return Environment.import({
+        return importEnv({
           client,
           gzip: true,
           dryRun: true,
