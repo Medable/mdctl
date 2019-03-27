@@ -49,7 +49,7 @@ class ImportFileTransformStream extends Transform {
 
 class ImportFileTreeAdapter extends EventEmitter {
 
-  constructor(inputDir, cache, format) {
+  constructor(inputDir, format, cache) {
     super()
     Object.assign(privatesAccessor(this), {
       files: [],
@@ -164,7 +164,7 @@ class ImportFileTreeAdapter extends EventEmitter {
           mappedFiles = _.map(files, f => `${dir}/${f}`),
           existsManifest = files.indexOf(`manifest.${format}`)
     if (existsManifest === -1) {
-      throw Fault.create({ code: 'KMissingManifest', reason: 'There is no manifest file present on folder' })
+      throw new Error('There is no manifest file present on folder')
     }
     privatesAccessor(this, 'files', mappedFiles)
   }

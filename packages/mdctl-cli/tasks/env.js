@@ -2,8 +2,9 @@
 
 const _ = require('lodash'),
       { add } = require('@medable/mdctl-manifest'),
-      Environment = require('@medable/mdctl-api/env'),
       { isSet } = require('@medable/mdctl-core-utils/values'),
+      exportEnv = require('../lib/env/export'),
+      importEnv = require('../lib/env/import'),
       Task = require('../lib/task')
 
 class Env extends Task {
@@ -61,7 +62,7 @@ class Env extends Task {
     const client = await cli.getApiClient({ credentials: await cli.getAuthOptions() }),
           params = await cli.getArguments(this.optionKeys)
     try {
-      await Environment.export({ client, ...params })
+      await exportEnv({ client, ...params })
       console.log('Export finished...!')
     } catch (e) {
       throw e
@@ -72,7 +73,7 @@ class Env extends Task {
     const client = await cli.getApiClient({ credentials: await cli.getAuthOptions() }),
           params = await cli.getArguments(this.optionKeys)
     try {
-      const response = await Environment.import({ client, ...params })
+      const response = await importEnv({ client, ...params })
       console.log('Import finished...!', response)
     } catch (e) {
       throw e

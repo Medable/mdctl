@@ -15,15 +15,6 @@
   },
   "author": "Medable, Inc. <mdctl@medable.com>",
   "license": "MIT",
-  "scripts": {
-    "test": "npm run lint && npm run cover",
-    "test:prod": "npm run test",
-    "test:only": "mocha --recursive",
-    "test:watch": "npm run test:only -- --watch",
-    "test:examples": "node examples/",
-    "cover": "istanbul cover ../../node_modules/mocha/bin/_mocha -- --recursive --timeout 10000",
-    "lint": "eslint *.js test"
-  },
   "dependencies": {
     "@medable/mdctl-core": "^1.0.9",
     "@medable/mdctl-core-utils": "^1.0.4",
@@ -35,7 +26,6 @@
     "create-hmac": "^1.1.7",
     "lodash": "^4.17.11",
     "ndjson": "^1.5.0",
-    "pump": "^3.0.0",
     "request": "^2.88.0",
     "rimraf": "^2.6.3"
   },
