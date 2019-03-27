@@ -1,8 +1,8 @@
 const { URL } = require('url'),
       { rString, isSet } = require('@medable/mdctl-core-utils/values'),
       {
-        Secret, PasswordSecret, TokenSecret, SignatureSecret
-      } = require('./secrets'),
+        Secret, createSecret
+      } = require('@medable/mdctl-secrets'),
       { normalizeEndpoint } = require('@medable/mdctl-core-utils'),
       Environment = require('./environment'),
       typeNames = ['password', 'signature', 'token']
@@ -24,8 +24,7 @@ function equalsStringOrRegex(test, input) {
 function detectAuthType(input) {
 
   const options = isSet(input) ? input : {},
-
-    type = rString(options.type, 'auto')
+        type = rString(options.type, 'auto')
 
   if (type === 'auto') {
     if (options.token) {
@@ -52,16 +51,21 @@ class CredentialsProvider {
           [, env, version, apiKey, username] = url.pathname.split('/'),
           environment = new Environment(`${url.protocol}//${url.host}/${env}/${version}`)
 
+    let args = {}
     switch (service) {
       case 'password':
-        return new PasswordSecret(environment, { username, apiKey, password: secret })
+        args = { username, apiKey, password: secret }
+        break
       case 'token':
-        return new TokenSecret(environment, { token: secret })
+        args = { token: secret }
+        break
       case 'signature':
-        return new SignatureSecret(environment, { apiKey, apiSecret: secret })
+        args = { apiKey, apiSecret: secret }
+        break
       default:
-        throw new TypeError('Unsupported credentials type. Expected password, token or signature.')
+        args = null
     }
+    return createSecret(service, environment, args)
 
   }
 
@@ -71,17 +75,7 @@ class CredentialsProvider {
           options = isSet(input) ? input : {},
           type = detectAuthType(options)
 
-    switch (type) {
-      case 'password':
-        return new PasswordSecret(env, options)
-      case 'token':
-        return new TokenSecret(env, options)
-      case 'signature':
-        return new SignatureSecret(env, options)
-      default:
-        throw new TypeError('Unsupported credentials type. Expected password, token or signature.')
-    }
-
+    return createSecret(type, env, options)
   }
 
   /**

@@ -49,7 +49,7 @@ class ImportFileTransformStream extends Transform {
 
 class ImportFileTreeAdapter extends EventEmitter {
 
-  constructor(inputDir, cache, format) {
+  constructor(inputDir, format, cache) {
     super()
     Object.assign(privatesAccessor(this), {
       files: [],
@@ -78,7 +78,13 @@ class ImportFileTreeAdapter extends EventEmitter {
       ndjson: false,
       template: ef
     })
-    return ef.data.pipe(outS)
+    return new Promise((resolve, reject) => {
+      const lines = []
+      ef.data.pipe(outS)
+        .on('data', d => lines.push(d))
+        .on('error', e => reject(e))
+        .on('end', () => resolve(lines))
+    })
   }
 
   get iterator() {
@@ -107,10 +113,12 @@ class ImportFileTreeAdapter extends EventEmitter {
         section.facets
       )
       if (section.extraFiles && section.extraFiles.length) {
-        // const blobs = this.getBlobData(section.extraFiles)
-        blobResults = _.concat(blobResults, _.map(section.extraFiles, (ef) => {
-          return ImportFileTreeAdapter.getAssetStream(ef)
-        }))
+        const blobs = []
+        /* eslint-disable no-restricted-syntax */
+        for (const ef of section.extraFiles) {
+          blobs.push(ImportFileTreeAdapter.getAssetStream(ef))
+        }
+        blobResults = _.concat(blobResults, _.flatten(await Promise.all(blobs)))
       }
     }
     return { results, blobResults }
@@ -156,7 +164,7 @@ class ImportFileTreeAdapter extends EventEmitter {
           mappedFiles = _.map(files, f => `${dir}/${f}`),
           existsManifest = files.indexOf(`manifest.${format}`)
     if (existsManifest === -1) {
-      throw Fault.create({ code: 'KMissingManifest', reason: 'There is no manifest file present on folder' })
+      throw new Error('There is no manifest file present on folder')
     }
     privatesAccessor(this, 'files', mappedFiles)
   }
