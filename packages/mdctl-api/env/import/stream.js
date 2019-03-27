@@ -10,8 +10,7 @@ class ImportStream extends Readable {
       input: inputDir || process.cwd(),
       cache: `${inputDir || process.cwd()}/.cache.json`,
       format,
-      adapter: null,
-      chunks: []
+      adapter: null
     })
     this.loadAdapter()
   }
@@ -23,11 +22,10 @@ class ImportStream extends Readable {
   }
 
   async _read() {
-    const { adapter, chunks } = privatesAccessor(this),
+    const { adapter } = privatesAccessor(this),
           iter = adapter.iterator[Symbol.asyncIterator](),
           item = await iter.next()
     if (!item.done) {
-      chunks.push(item.value)
       this.push(item.value)
     } else {
       this.push(null)
