@@ -78,7 +78,13 @@ class ImportFileTreeAdapter extends EventEmitter {
       ndjson: false,
       template: ef
     })
-    return ef.data.pipe(outS)
+    return new Promise((resolve, reject) => {
+      const lines = []
+      ef.data.pipe(outS)
+        .on('data', d => lines.push(d))
+        .on('error', e => reject(e))
+        .on('end', () => resolve(lines))
+    })
   }
 
   get iterator() {
