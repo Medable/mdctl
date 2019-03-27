@@ -1,8 +1,6 @@
 const { Readable } = require('stream'),
       { privatesAccessor } = require('@medable/mdctl-core-utils/privates'),
-      ImportFileTreeAdapter = require('@medable/mdctl-import-adapter'),
-      { OutputStream } = require('@medable/mdctl-core/streams/chunk-stream')
-
+      ImportFileTreeAdapter = require('@medable/mdctl-import-adapter')
 
 class ImportStream extends Readable {
 
@@ -29,26 +27,15 @@ class ImportStream extends Readable {
           iter = adapter.iterator[Symbol.asyncIterator](),
           item = await iter.next()
     if (!item.done) {
-      if (item.value instanceof OutputStream) {
-        this.pause()
-        return new Promise((resolve) => {
-          item.value.on('data', (d) => {
-            this.push(d)
-          }).on('finish', () => {
-            if (this.isPaused()) {
-              this.resume()
-              resolve()
-            }
-          })
-        })
+      const value = await Promise.resolve(item.value)
+      if (value instanceof Array) {
+        value.forEach(d => this.push(d))
+      } else {
+        this.push(value)
       }
-      return this.push(item.value)
+    } else {
+      this.push(null)
     }
-    if (this.isPaused()) {
-      this.resume()
-    }
-    return this.push(null)
-
   }
 
 }

@@ -1,22 +1,30 @@
 const pump = require('pump'),
       ndjson = require('ndjson'),
       zlib = require('zlib'),
-      { URL } = require('url'),
+      {
+        URL
+      } = require('url'),
       {
         isSet, pathTo, rFunction, rBool
       } = require('@medable/mdctl-core-utils/values'),
-      { Transform } = require('stream'),
+      {
+        Transform
+      } = require('stream'),
       {
         searchParamsToObject
       } = require('@medable/mdctl-core-utils'),
-      { Config } = require('@medable/mdctl-core'),
+      {
+        Config
+      } = require('@medable/mdctl-core'),
       ImportStream = require('./stream'),
       Client = require('../../client'),
 
       importEnv = async(input) => {
 
         const options = isSet(input) ? input : {},
-              client = options.client || new Client({ ...Config.global.client, ...options }),
+              client = options.client || new Client({
+                ...Config.global.client, ...options
+              }),
               inputDir = options.dir || process.cwd(),
               progress = rFunction(options.progress),
               url = new URL('/developer/environment/import', client.environment.url),
@@ -36,26 +44,14 @@ const pump = require('pump'),
           if (options.debug) {
             console.debug('Adding gzip stream transform')
           }
-          const zip = zlib.createGzip()
-          zip.on('data', (d) => {
-            console.log(d)
-          })
-          ndjsonStream.on('data', (d) => {
-            zip.write(d)
-          }).on('end', () => {
-            zip.end()
-            console.log('finish ndjsonStream')
-          })
-          streamList.push(zip)
+          streamList.push(zlib.createGzip())
         }
         /* eslint-disable one-var */
         let hrstart = process.hrtime()
-        const streamChain = pump(
-          ...streamList,
+        const streamChain = pump(...streamList,
           new Transform({
             objectMode: true,
             transform(data, encoding, callback) {
-
 
               this.push(data)
               callback()
@@ -67,8 +63,7 @@ const pump = require('pump'),
               }
               progress(data)
             }
-          })
-        )
+          }))
 
         if (!options.dryRun) {
           pathTo(requestOptions, 'headers.accept', 'application/x-ndjson')
@@ -79,20 +74,31 @@ const pump = require('pump'),
           }
           requestOptions.json = false
           if (options.debug) {
-            console.log(`calling api ${url.pathname} with params ${JSON.stringify(requestOptions)}`)
+            console.log(`calling api $ {
+                url.pathname
+            }
+            with params $ {
+                JSON.stringify(requestOptions)
+            }`)
           }
-          return client.call(url.pathname, { method: 'POST', body: streamChain, requestOptions })
+          return client.call(url.pathname, {
+            method: 'POST',
+            body: streamChain,
+            requestOptions
+          })
         }
 
         return new Promise((resolve, reject) => {
           streamChain.on('error', (e) => {
-            if (options.debug) {
+            if (options.debug
+            ) {
               console.debug(e)
             }
             reject(e)
           })
           streamChain.on('end', () => {
-            if (options.debug) {
+            if (options.debug
+            ) {
               console.debug('Ending stream')
             }
             resolve('')
