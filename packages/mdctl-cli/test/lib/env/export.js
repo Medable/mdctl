@@ -5,8 +5,8 @@ const { assert } = require('chai'),
       glob = require('glob'),
       rimraf = require('rimraf'),
       ExportConsoleAdapter = require('@medable/mdctl-export-adapter-console'),
-      { Client } = require('../../'),
-      Environment = require('../../env')
+      { Client } = require('@medable/mdctl-api'),
+      exportEnv = require('../../../lib/env/export')
 
 describe('Environment Export', () => {
 
@@ -38,7 +38,7 @@ describe('Environment Export', () => {
               password: 'password'
             }
           })
-    return Environment.export({
+    return exportEnv({
       client,
       stream: blob,
       dir: tempDir,
@@ -73,7 +73,7 @@ describe('Environment Export', () => {
               password: 'password'
             }
           })
-    return Environment.export({
+    return exportEnv({
       client,
       stream: streamedBlob,
       dir: tempDir,
@@ -110,7 +110,7 @@ describe('Environment Export', () => {
           }),
           adapter = new ExportConsoleAdapter({ print: false })
 
-    return Environment.export({
+    return exportEnv({
       client,
       adapter,
       stream: streamedBlob,
