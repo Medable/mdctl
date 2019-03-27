@@ -1,6 +1,6 @@
 {
   "name": "@medable/mdctl-cli",
-  "version": "1.0.10",
+  "version": "1.0.11",
   "description": "Medable Developer Tools :: Cli tool",
   "repository": {
     "type": "git",
