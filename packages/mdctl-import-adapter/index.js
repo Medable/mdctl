@@ -1,7 +1,5 @@
-const { Transform } = require('stream'),
-      EventEmitter = require('events'),
+const EventEmitter = require('events'),
       globby = require('globby'),
-      mime = require('mime-types'),
       uuid = require('uuid'),
       jp = require('jsonpath'),
       fs = require('fs'),
@@ -10,7 +8,6 @@ const { Transform } = require('stream'),
       { parseString } = require('@medable/mdctl-core-utils/values'),
       { md5FileHash } = require('@medable/mdctl-core-utils/crypto'),
       { privatesAccessor } = require('@medable/mdctl-core-utils/privates'),
-      { Fault } = require('@medable/mdctl-core'),
       { OutputStream } = require('@medable/mdctl-core/streams/chunk-stream'),
       KNOWN_FILES = {
         data: 'data/**/*.{json,yaml}',
@@ -18,34 +15,6 @@ const { Transform } = require('stream'),
         manifest: 'manifest.{json,yaml}'
       }
 
-class ImportFileTransformStream extends Transform {
-
-  constructor(metadata, file, basePath = process.cwd()) {
-    super({ objectMode: true })
-    Object.assign(privatesAccessor(this), {
-      metadata,
-      mime: mime.lookup(file),
-      file,
-      basePath
-    })
-  }
-
-  get metadata() {
-    return privatesAccessor(this).metadata
-  }
-
-  _transform(chunk, enc, callback) {
-    const { metadata, basePath, file } = privatesAccessor(this)
-    try {
-      const content = parseString(chunk, metadata.format)
-      this.push(new ImportSection(content, content.object, file, basePath))
-    } catch (e) {
-      console.log(e, chunk.toString())
-    }
-    callback()
-  }
-
-}
 
 class ImportFileTreeAdapter extends EventEmitter {
 
@@ -175,7 +144,7 @@ class ImportFileTreeAdapter extends EventEmitter {
     } = privatesAccessor(this)
     return new Promise((resolve, reject) => {
       const contents = []
-      fs.createReadStream(file).pipe(new ImportFileTransformStream(metadata, file, input))
+      fs.createReadStream(file)
         .on('data', (chunk) => {
           contents.push(chunk)
         })
@@ -183,7 +152,8 @@ class ImportFileTreeAdapter extends EventEmitter {
           reject(e)
         })
         .on('end', () => {
-          resolve(contents[0])
+          const content = parseString(Buffer.concat(contents), metadata.format)
+          resolve(new ImportSection(content, content.object, file, input))
         })
     })
   }
