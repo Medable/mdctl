@@ -1,6 +1,6 @@
 {
   "name": "@medable/mdctl-cli",
-  "version": "1.0.11",
+  "version": "1.0.12",
   "description": "Medable Developer Tools :: Cli tool",
   "repository": {
     "type": "git",
@@ -28,16 +28,16 @@
     "lint": "eslint *.js test"
   },
   "dependencies": {
-    "@medable/mdctl-api": "^1.0.10",
-    "@medable/mdctl-core": "^1.0.10",
+    "@medable/mdctl-api": "^1.0.12",
+    "@medable/mdctl-core": "^1.0.12",
     "@medable/mdctl-core-utils": "^1.0.10",
-    "@medable/mdctl-credentials-provider-keychain": "^1.0.10",
-    "@medable/mdctl-credentials-provider-pouchdb": "^1.0.10",
+    "@medable/mdctl-credentials-provider-keychain": "^1.0.12",
+    "@medable/mdctl-credentials-provider-pouchdb": "^1.0.12",
     "@medable/mdctl-export-adapter-console": "^1.0.10",
-    "@medable/mdctl-export-adapter-tree": "^1.0.10",
-    "@medable/mdctl-import-adapter": "^1.0.10",
-    "@medable/mdctl-manifest": "^1.0.10",
-    "@medable/mdctl-sandbox": "^1.0.10",
+    "@medable/mdctl-export-adapter-tree": "^1.0.12",
+    "@medable/mdctl-import-adapter": "^1.0.12",
+    "@medable/mdctl-manifest": "^1.0.12",
+    "@medable/mdctl-sandbox": "^1.0.12",
     "async": "^2.6.1",
     "cli-table": "^0.3.1",
     "clone": "^2.1.2",
