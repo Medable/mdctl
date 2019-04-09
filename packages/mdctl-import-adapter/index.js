@@ -69,6 +69,12 @@ class ImportFileTreeAdapter extends EventEmitter {
     }
   }
 
+  async loadManifestFromObject() {
+    const { manifest, input, format } = privatesAccessor(this),
+          section = new ImportSection(manifest, 'manifest', `manifest.${format}`, input)
+    return { results: [section.content], blobResults: [] }
+  }
+
   async loadFileContent(f) {
     const section = await this.loadFile(f)
     await this.loadFacets(section)
@@ -96,10 +102,13 @@ class ImportFileTreeAdapter extends EventEmitter {
   }
 
   async prepareChunks() {
-    const { files, preparedChunks } = privatesAccessor(this),
+    const { files, manifest, preparedChunks } = privatesAccessor(this),
           promises = []
     if (preparedChunks.length) {
       return Promise.resolve(preparedChunks)
+    }
+    if (manifest) {
+      promises.push(this.loadManifestFromObject())
     }
     files.forEach((f) => {
       promises.push(this.loadFileContent(f))
@@ -130,19 +139,20 @@ class ImportFileTreeAdapter extends EventEmitter {
   }
 
   readManifest() {
-    const { manifest, input } = privatesAccessor(this)
+    const { manifest, input } = privatesAccessor(this),
+          paths = []
     let manifestData = manifest
     if (!manifestData) {
       const location = globby.sync([KNOWN_FILES.manifest], { cwd: input })
       if (location.length > 0 && fs.existsSync(`${input}/${location[0]}`)) {
         manifestData = JSON.parse(fs.readFileSync(`${input}/${location[0]}`))
+        paths.push(KNOWN_FILES.manifest)
       } else {
         throw Fault.from({ code: 'kManifestNotFound', reason: 'There is no manifest defined neither found in directory' })
       }
     }
     /* eslint-disable one-var */
-    const keys = Object.keys(manifestData),
-          paths = [KNOWN_FILES.manifest]
+    const keys = Object.keys(manifestData)
     for (const k of keys) {
       const { includes } = manifestData[k]
       if (includes instanceof Array) {
