@@ -28,7 +28,15 @@ const pump = require('pump'),
                 },
                 method: 'post'
               },
-              fileAdapter = new ImportFileTreeAdapter(inputDir, options.format),
+              fileAdapter = new ImportFileTreeAdapter(inputDir, options.format, {
+                object: 'manifest',
+                apps: {
+                  includes: [
+                    'c_SignatureApp',
+                    'c_dev-app'
+                  ]
+                }
+              }),
               importStream = new ImportStream(fileAdapter),
               ndjsonStream = ndjson.stringify(),
               streamList = [importStream, ndjsonStream]
