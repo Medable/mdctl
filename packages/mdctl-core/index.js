@@ -1,4 +1,4 @@
-
+/**/
 const { Manifest, ARegex } = require('./manifest'),
       Fault = require('./fault')
 

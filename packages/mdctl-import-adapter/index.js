@@ -9,6 +9,7 @@ const EventEmitter = require('events'),
       { md5FileHash } = require('@medable/mdctl-core-utils/crypto'),
       { privatesAccessor } = require('@medable/mdctl-core-utils/privates'),
       { OutputStream } = require('@medable/mdctl-core/streams/chunk-stream'),
+      { Fault } = require('@medable/mdctl-core'),
       KNOWN_FILES = {
         data: 'data/**/*.{json,yaml}',
         objects: 'env/**/*.{json,yaml}',
@@ -31,7 +32,8 @@ class ImportFileTreeAdapter extends EventEmitter {
     })
 
     this.loadMetadata()
-    this.walkFiles(privatesAccessor(this).input)
+    // this.walkFiles(privatesAccessor(this).input)
+    this.readManifest()
   }
 
   get files() {
@@ -127,14 +129,38 @@ class ImportFileTreeAdapter extends EventEmitter {
     })
   }
 
-  walkFiles(dir) {
-    const { format } = privatesAccessor(this),
-          files = globby.sync([KNOWN_FILES.manifest, KNOWN_FILES.objects], { cwd: dir }),
-          mappedFiles = _.map(files, f => `${dir}/${f}`),
-          existsManifest = files.indexOf(`manifest.${format}`)
-    if (existsManifest === -1) {
-      throw new Error('There is no manifest file present on folder')
+  readManifest() {
+    const { manifest, input } = privatesAccessor(this)
+    let manifestData = manifest
+    if (!manifestData) {
+      const location = globby.sync([KNOWN_FILES.manifest], { cwd: input })
+      if (location.length > 0 && fs.existsSync(`${input}/${location[0]}`)) {
+        manifestData = JSON.parse(fs.readFileSync(`${input}/${location[0]}`))
+      } else {
+        throw Fault.from({ code: 'kManifestNotFound', reason: 'There is no manifest defined neither found in directory' })
+      }
     }
+    /* eslint-disable one-var */
+    const keys = Object.keys(manifestData),
+          paths = [KNOWN_FILES.manifest]
+    for (const k of keys) {
+      const { includes } = manifestData[k]
+      if (includes instanceof Array) {
+        if (includes[0] === '*' && k === 'env') {
+          paths.push(`env/${k}.{json,yaml}`)
+        } else {
+          includes.forEach((inc) => {
+            paths.push(`env/${k}/${inc}.{json,yaml}`)
+          })
+        }
+      }
+    }
+    this.walkFiles(input, paths)
+  }
+
+  walkFiles(dir, paths = [KNOWN_FILES.manifest, KNOWN_FILES.objects]) {
+    const files = globby.sync(paths, { cwd: dir }),
+          mappedFiles = _.map(files, f => `${dir}/${f}`)
     privatesAccessor(this, 'files', mappedFiles)
   }
 
@@ -184,7 +210,7 @@ class ImportFileTreeAdapter extends EventEmitter {
       content, facets, extraFiles, basePath
     } = privatesAccessor(chunk)
     return new Promise(async(success) => {
-      const nodes = jp.nodes(content, '$..resourceId')
+      const nodes = jp.nodes(content, '$..filePath')
       if (nodes.length) {
         _.forEach(nodes, (n) => {
           const parent = this.getParentFromPath(chunk, n.path),
