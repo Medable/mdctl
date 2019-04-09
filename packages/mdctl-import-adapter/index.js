@@ -19,20 +19,20 @@ const EventEmitter = require('events'),
 
 class ImportFileTreeAdapter extends EventEmitter {
 
-  constructor(inputDir, format, cache) {
+  constructor(inputDir, format = 'json', manifest = null, cache) {
     super()
     Object.assign(privatesAccessor(this), {
       files: [],
       input: inputDir || process.cwd(),
       cache: cache || `${inputDir || process.cwd()}/.cache.json`,
       format: format || 'json',
+      manifest,
       metadata: {},
       index: 0,
       preparedChunks: []
     })
 
     this.loadMetadata()
-    // this.walkFiles(privatesAccessor(this).input)
     this.readManifest()
   }
 
