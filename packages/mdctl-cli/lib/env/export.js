@@ -26,7 +26,8 @@ const fs = require('fs'),
                 query: {
                   ...searchParamsToObject(url.searchParams),
                   preferUrls: rBool(options.preferUrls, false),
-                  silent: rBool(options.silent, false)
+                  silent: rBool(options.silent, false),
+                  backup: rBool(options.backup, true)
                 },
                 method: 'post'
               },

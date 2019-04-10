@@ -206,7 +206,7 @@ class ExportFileTreeAdapter extends Writable {
             id: chunk.id,
             name: chunk.name,
             data: chunk.content,
-            dest: `${slugify(chunk.name, '_')}.${this.format}`
+            dest: `${chunk.name}.${this.format}`
           })
         }
       }
