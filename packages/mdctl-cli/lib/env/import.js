@@ -6,12 +6,11 @@ const pump = require('pump'),
         isSet, pathTo, rFunction, rBool
       } = require('@medable/mdctl-core-utils/values'),
       { Transform } = require('stream'),
-      {
-        searchParamsToObject
-      } = require('@medable/mdctl-core-utils'),
+      { searchParamsToObject } = require('@medable/mdctl-core-utils'),
       { Config } = require('@medable/mdctl-core'),
-      ImportStream = require('./stream'),
-      Client = require('../../client'),
+      ImportStream = require('@medable/mdctl-core/streams/import_stream'),
+      ImportFileTreeAdapter = require('@medable/mdctl-import-adapter'),
+      { Client } = require('@medable/mdctl-api'),
 
       importEnv = async(input) => {
 
@@ -29,7 +28,8 @@ const pump = require('pump'),
                 },
                 method: 'post'
               },
-              importStream = new ImportStream(inputDir, options.format),
+              fileAdapter = new ImportFileTreeAdapter(inputDir, options.format),
+              importStream = new ImportStream(fileAdapter),
               ndjsonStream = ndjson.stringify(),
               streamList = [importStream, ndjsonStream]
         if (options.gzip) {
@@ -40,25 +40,20 @@ const pump = require('pump'),
         }
         /* eslint-disable one-var */
         let hrstart = process.hrtime()
-        const streamChain = pump(
-          ...streamList,
-          new Transform({
-            objectMode: true,
-            transform(data, encoding, callback) {
-
-
-              this.push(data)
-              callback()
-              const hrend = process.hrtime(hrstart)
-              hrstart = process.hrtime()
-              if (options.debug) {
-                console.info('Execution time (hr): %ds %dms', hrend[0], hrend[1] / 1000000)
-                console.debug(data)
-              }
-              progress(data)
+        const debuggerStream = new Transform({
+          transform(data, encoding, callback) {
+            const hrend = process.hrtime(hrstart)
+            hrstart = process.hrtime()
+            if (options.debug) {
+              console.info('Execution time (hr): %ds %dms', hrend[0], hrend[1] / 1000000)
+              console.debug(data.toString())
             }
-          })
-        )
+            progress(data)
+            this.push(data)
+            return callback()
+          }
+        })
+        streamList.push(debuggerStream)
 
         if (!options.dryRun) {
           pathTo(requestOptions, 'headers.accept', 'application/x-ndjson')
@@ -71,21 +66,27 @@ const pump = require('pump'),
           if (options.debug) {
             console.log(`calling api ${url.pathname} with params ${JSON.stringify(requestOptions)}`)
           }
-          return client.call(url.pathname, { method: 'POST', body: streamChain, requestOptions })
+          return client.call(url.pathname, {
+            method: 'POST',
+            body: pump(...streamList),
+            requestOptions
+          })
         }
 
         return new Promise((resolve, reject) => {
+          const items = [],
+                streamChain = pump(...streamList, () => {
+                  if (options.debug) {
+                    console.debug(`Ending stream, total chunks sent: ${items.length}`)
+                  }
+                  resolve(options.returnBlob ? Buffer.concat(items) : '')
+                })
+          streamChain.on('data', d => items.push(d))
           streamChain.on('error', (e) => {
             if (options.debug) {
               console.debug(e)
             }
             reject(e)
-          })
-          streamChain.on('end', () => {
-            if (options.debug) {
-              console.debug('Ending stream')
-            }
-            resolve('')
           })
           streamChain.resume()
         })

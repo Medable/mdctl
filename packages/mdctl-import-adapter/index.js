@@ -1,7 +1,5 @@
-const { Transform } = require('stream'),
-      EventEmitter = require('events'),
+const EventEmitter = require('events'),
       globby = require('globby'),
-      mime = require('mime-types'),
       uuid = require('uuid'),
       jp = require('jsonpath'),
       fs = require('fs'),
@@ -10,59 +8,32 @@ const { Transform } = require('stream'),
       { parseString } = require('@medable/mdctl-core-utils/values'),
       { md5FileHash } = require('@medable/mdctl-core-utils/crypto'),
       { privatesAccessor } = require('@medable/mdctl-core-utils/privates'),
-      { Fault } = require('@medable/mdctl-core'),
       { OutputStream } = require('@medable/mdctl-core/streams/chunk-stream'),
+      { Fault } = require('@medable/mdctl-core'),
       KNOWN_FILES = {
         data: 'data/**/*.{json,yaml}',
         objects: 'env/**/*.{json,yaml}',
         manifest: 'manifest.{json,yaml}'
       }
 
-class ImportFileTransformStream extends Transform {
-
-  constructor(metadata, file, basePath = process.cwd()) {
-    super({ objectMode: true })
-    Object.assign(privatesAccessor(this), {
-      metadata,
-      mime: mime.lookup(file),
-      file,
-      basePath
-    })
-  }
-
-  get metadata() {
-    return privatesAccessor(this).metadata
-  }
-
-  _transform(chunk, enc, callback) {
-    const { metadata, basePath, file } = privatesAccessor(this)
-    try {
-      const content = parseString(chunk, metadata.format)
-      this.push(new ImportSection(content, content.object, file, basePath))
-    } catch (e) {
-      console.log(e, chunk.toString())
-    }
-    callback()
-  }
-
-}
 
 class ImportFileTreeAdapter extends EventEmitter {
 
-  constructor(inputDir, cache, format) {
+  constructor(inputDir, format = 'json', manifest = null, cache) {
     super()
     Object.assign(privatesAccessor(this), {
       files: [],
       input: inputDir || process.cwd(),
       cache: cache || `${inputDir || process.cwd()}/.cache.json`,
       format: format || 'json',
+      manifest,
       metadata: {},
       index: 0,
       preparedChunks: []
     })
 
     this.loadMetadata()
-    this.walkFiles(privatesAccessor(this).input)
+    this.readManifest()
   }
 
   get files() {
@@ -78,7 +49,13 @@ class ImportFileTreeAdapter extends EventEmitter {
       ndjson: false,
       template: ef
     })
-    return ef.data.pipe(outS)
+    return new Promise((resolve, reject) => {
+      const lines = []
+      ef.data.pipe(outS)
+        .on('data', d => lines.push(d))
+        .on('error', e => reject(e))
+        .on('end', () => resolve(lines))
+    })
   }
 
   get iterator() {
@@ -90,6 +67,12 @@ class ImportFileTreeAdapter extends EventEmitter {
         }
       }
     }
+  }
+
+  async loadManifestFromObject() {
+    const { manifest, input, format } = privatesAccessor(this),
+          section = new ImportSection(manifest, 'manifest', `manifest.${format}`, input)
+    return { results: [section.content], blobResults: [] }
   }
 
   async loadFileContent(f) {
@@ -107,20 +90,25 @@ class ImportFileTreeAdapter extends EventEmitter {
         section.facets
       )
       if (section.extraFiles && section.extraFiles.length) {
-        // const blobs = this.getBlobData(section.extraFiles)
-        blobResults = _.concat(blobResults, _.map(section.extraFiles, (ef) => {
-          return ImportFileTreeAdapter.getAssetStream(ef)
-        }))
+        const blobs = []
+        /* eslint-disable no-restricted-syntax */
+        for (const ef of section.extraFiles) {
+          blobs.push(ImportFileTreeAdapter.getAssetStream(ef))
+        }
+        blobResults = _.concat(blobResults, _.flatten(await Promise.all(blobs)))
       }
     }
     return { results, blobResults }
   }
 
   async prepareChunks() {
-    const { files, preparedChunks } = privatesAccessor(this),
+    const { files, manifest, preparedChunks } = privatesAccessor(this),
           promises = []
     if (preparedChunks.length) {
       return Promise.resolve(preparedChunks)
+    }
+    if (manifest) {
+      promises.push(this.loadManifestFromObject())
     }
     files.forEach((f) => {
       promises.push(this.loadFileContent(f))
@@ -150,14 +138,39 @@ class ImportFileTreeAdapter extends EventEmitter {
     })
   }
 
-  walkFiles(dir) {
-    const { format } = privatesAccessor(this),
-          files = globby.sync([KNOWN_FILES.manifest, KNOWN_FILES.objects], { cwd: dir }),
-          mappedFiles = _.map(files, f => `${dir}/${f}`),
-          existsManifest = files.indexOf(`manifest.${format}`)
-    if (existsManifest === -1) {
-      throw Fault.create({ code: 'KMissingManifest', reason: 'There is no manifest file present on folder' })
+  readManifest() {
+    const { manifest, input } = privatesAccessor(this),
+          paths = []
+    let manifestData = manifest
+    if (!manifestData) {
+      const location = globby.sync([KNOWN_FILES.manifest], { cwd: input })
+      if (location.length > 0 && fs.existsSync(`${input}/${location[0]}`)) {
+        manifestData = JSON.parse(fs.readFileSync(`${input}/${location[0]}`))
+        paths.push(KNOWN_FILES.manifest)
+      } else {
+        throw Fault.from({ code: 'kManifestNotFound', reason: 'There is no manifest defined neither found in directory' })
+      }
     }
+    /* eslint-disable one-var */
+    const keys = Object.keys(manifestData)
+    for (const k of keys) {
+      const { includes } = manifestData[k]
+      if (includes instanceof Array) {
+        if (includes[0] === '*' && k === 'env') {
+          paths.push(`env/${k}.{json,yaml}`)
+        } else {
+          includes.forEach((inc) => {
+            paths.push(`env/${k}/${inc}.{json,yaml}`)
+          })
+        }
+      }
+    }
+    this.walkFiles(input, paths)
+  }
+
+  walkFiles(dir, paths = [KNOWN_FILES.manifest, KNOWN_FILES.objects]) {
+    const files = globby.sync(paths, { cwd: dir }),
+          mappedFiles = _.map(files, f => `${dir}/${f}`)
     privatesAccessor(this, 'files', mappedFiles)
   }
 
@@ -167,7 +180,7 @@ class ImportFileTreeAdapter extends EventEmitter {
     } = privatesAccessor(this)
     return new Promise((resolve, reject) => {
       const contents = []
-      fs.createReadStream(file).pipe(new ImportFileTransformStream(metadata, file, input))
+      fs.createReadStream(file)
         .on('data', (chunk) => {
           contents.push(chunk)
         })
@@ -175,7 +188,8 @@ class ImportFileTreeAdapter extends EventEmitter {
           reject(e)
         })
         .on('end', () => {
-          resolve(contents[0])
+          const content = parseString(Buffer.concat(contents), metadata.format)
+          resolve(new ImportSection(content, content.object, file, input))
         })
     })
   }
@@ -206,7 +220,7 @@ class ImportFileTreeAdapter extends EventEmitter {
       content, facets, extraFiles, basePath
     } = privatesAccessor(chunk)
     return new Promise(async(success) => {
-      const nodes = jp.nodes(content, '$..resourceId')
+      const nodes = jp.nodes(content, '$..filePath')
       if (nodes.length) {
         _.forEach(nodes, (n) => {
           const parent = this.getParentFromPath(chunk, n.path),

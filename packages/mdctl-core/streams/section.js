@@ -154,6 +154,15 @@ class ExportSection {
   }
 
 
+  cleanProps(sc, itemPath) {
+    itemPath.pop()
+    itemPath.push('resourceId')
+    const facetItem = jp.parent(sc.content, jp.stringify(itemPath))
+    if (facetItem) {
+      delete facetItem.resourceId
+    }
+  }
+
   extractAssets() {
     const facet = privatesAccessor(this).content
     let itemSource = null
@@ -172,6 +181,7 @@ class ExportSection {
           path: jp.stringify(item.path),
           pathETag: jp.stringify(ETagPathItem)
         }
+        this.cleanProps(sc, _.clone(item.path))
         break
       }
     }
@@ -179,6 +189,7 @@ class ExportSection {
       const {
         url, base64, streamId, path
       } = facet
+
       privatesAccessor(this).extraFiles.push({
         name: facet.resource,
         ext: mime.getExtension(facet.mime),
@@ -203,15 +214,23 @@ class ExportSection {
       if (!_.isObject(n.value)) {
         const path = _.clone(n.path),
               namePath = this.getNameFromPath(path),
-              items = [content.object, content.name || content.code]
-        if (namePath.indexOf('.') > -1) {
-          items.push(namePath)
+              items = []
+
+        // skip validators
+        if (namePath.indexOf('.validators.') > -1) {
+          return
         }
         if (content.object === 'script') {
           const parent = this.getParentFromPath(_.clone(n.path))
           if (parent && parent.type) {
             items.push(parent.type)
           }
+        } else {
+          items.push(content.object)
+        }
+        items.push(content.name || content.code)
+        if (namePath.indexOf('.') > -1) {
+          items.push(namePath)
         }
         privatesAccessor(this).scriptFiles.push({
           name: items.join('.'),

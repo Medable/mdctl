@@ -1,6 +1,6 @@
 {
   "name": "@medable/mdctl-cli",
-  "version": "1.0.9",
+  "version": "1.0.13",
   "description": "Medable Developer Tools :: Cli tool",
   "repository": {
     "type": "git",
@@ -18,14 +18,26 @@
   "bin": {
     "mdctl": "./cli.js"
   },
+  "scripts": {
+    "test": "npm run lint && npm run cover",
+    "test:prod": "npm run test",
+    "test:only": "mocha --recursive",
+    "test:watch": "npm run test:only -- --watch",
+    "test:examples": "node examples/",
+    "cover": "istanbul cover ../../node_modules/mocha/bin/_mocha -- --recursive --timeout 10000",
+    "lint": "eslint *.js test"
+  },
   "dependencies": {
-    "@medable/mdctl-api": "^1.0.9",
-    "@medable/mdctl-core": "^1.0.9",
-    "@medable/mdctl-core-utils": "^1.0.4",
-    "@medable/mdctl-credentials-provider-keychain": "^1.0.9",
-    "@medable/mdctl-credentials-provider-pouchdb": "^1.0.9",
-    "@medable/mdctl-manifest": "^1.0.9",
-    "@medable/mdctl-sandbox": "^1.0.9",
+    "@medable/mdctl-api": "^1.0.13",
+    "@medable/mdctl-core": "^1.0.13",
+    "@medable/mdctl-core-utils": "^1.0.10",
+    "@medable/mdctl-credentials-provider-keychain": "^1.0.13",
+    "@medable/mdctl-credentials-provider-pouchdb": "^1.0.13",
+    "@medable/mdctl-export-adapter-console": "^1.0.10",
+    "@medable/mdctl-export-adapter-tree": "^1.0.13",
+    "@medable/mdctl-import-adapter": "^1.0.13",
+    "@medable/mdctl-manifest": "^1.0.13",
+    "@medable/mdctl-sandbox": "^1.0.13",
     "async": "^2.6.1",
     "cli-table": "^0.3.1",
     "clone": "^2.1.2",
@@ -36,6 +48,7 @@
     "lodash": "^4.17.11",
     "lodash.isplainobject": "^4.0.6",
     "ndjson": "^1.5.0",
+    "pump": "^3.0.0",
     "rimraf": "^2.6.3",
     "shelljs": "^0.8.3",
     "yargs": "^12.0.5"

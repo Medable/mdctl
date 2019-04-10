@@ -315,7 +315,7 @@ module.exports = class MdCtlCli {
   getArguments(arrayOfKeys) {
     const args = _.reduce(arrayOfKeys,
       (sum, key) => _.extend(sum, { [key]: this.args(key) }), {})
-    return _.pickBy(args, _.identity)
+    return _.pickBy(args, v => !_.isUndefined(v) && v !== null && v !== '')
   }
 
 }
