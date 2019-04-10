@@ -184,7 +184,7 @@ class ImportFileTreeAdapter extends EventEmitter {
       content, facets, extraFiles, basePath
     } = privatesAccessor(chunk)
     return new Promise(async(success) => {
-      const nodes = jp.nodes(content, '$..resourceId')
+      const nodes = jp.nodes(content, '$..filePath')
       if (nodes.length) {
         _.forEach(nodes, (n) => {
           const parent = this.getParentFromPath(chunk, n.path),
