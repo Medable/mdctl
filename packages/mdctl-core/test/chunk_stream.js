@@ -4,7 +4,7 @@ const { assert } = require('chai'),
       { parse } = require('ndjson'),
       { createHash } = require('crypto'),
       { Transform } = require('stream'),
-      { InputStream, OutputStream } = require('../chunk-stream')
+      { InputStream, OutputStream } = require('../streams/chunk-stream')
 
 class MD5Stream extends Transform {
 
