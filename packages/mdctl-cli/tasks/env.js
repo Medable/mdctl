@@ -37,10 +37,14 @@ class Env extends Task {
       },
       dryRun: {
         type: 'boolean',
-        defeault: false
+        default: false
+      },
+      backup: {
+        type: 'boolean',
+        default: true
       }
     })
-    this.optionKeys = ['manifest', 'format', 'gzip', 'clear', 'dir', 'debug', 'dryRun']
+    this.optionKeys = ['manifest', 'format', 'gzip', 'clear', 'dir', 'debug', 'dryRun', 'backup', 'preferUrls']
   }
 
   async run(cli) {
