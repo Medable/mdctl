@@ -235,6 +235,7 @@ class ImportFileTreeAdapter extends EventEmitter {
                   }
             facet.ETag = md5FileHash(localFile)
             facet.streamId = resourceKey
+            facet.resourceId = resourceKey
             extraFiles.push(asset)
           }
           delete facet.filePath
