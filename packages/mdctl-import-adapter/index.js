@@ -163,6 +163,10 @@ class ImportFileTreeAdapter extends EventEmitter {
             paths.push(`env/${k}/${inc}.{json,yaml}`)
           })
         }
+      } else if (manifestData[k] instanceof Array) {
+        manifestData[k].forEach((o) => {
+          paths.push(`env/${k}/${o.name}.{json,yaml}`)
+        })
       }
     }
     this.walkFiles(input, paths)
