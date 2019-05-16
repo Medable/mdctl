@@ -7,8 +7,6 @@ const PouchDB = require('pouchdb-core')
         createCipheriv, createDecipheriv, listCiphers
       } = require('browserify-aes'),
       createHash = require('create-hash'),
-      fs = require('fs'),
-      path = require('path'),
       randomBytes = require('randombytes'),
       { privatesAccessor } = require('@medable/mdctl-core-utils/privates'),
       { isSet, rString, rPath } = require('@medable/mdctl-core-utils/values'),
@@ -136,10 +134,6 @@ class PouchDbCredentialsProvider extends CredentialsProvider {
       let err
 
       try {
-        const configDir = path.dirname(name)
-        if (!fs.existsSync(configDir)) {
-          fs.mkdirSync(configDir)
-        }
 
         db = new PouchDB(name, { adapter: 'websql', auto_compaction: true, revs_limit: 0 })
 
