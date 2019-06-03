@@ -118,10 +118,15 @@ module.exports = class MdCtlCli {
 
     const privates = privatesAccessor(this),
           config = createConfig(),
-          keyProvider = new KeytarCredentialsProvider('com.medable.mdctl')
+          keyProvider = new KeytarCredentialsProvider('com.medable.mdctl'),
+          configureDir = path.join(os.homedir(), '.medable')
 
     let encryptionKey = await keyProvider.getCustom('pouchKey', '*'),
         env = privates.args('env')
+
+    if (!fs.existsSync(configureDir)) {
+      fs.mkdirSync(configureDir, {recursive: true})
+    }
 
     if (!encryptionKey) {
       encryptionKey = randomAlphaNumSym(32)
@@ -129,7 +134,7 @@ module.exports = class MdCtlCli {
     }
 
     privates.credentialsProvider = new PouchDbCredentialsProvider({
-      name: path.join(os.homedir(), '.medable/mdctl.db'),
+      name: path.join(configureDir, 'mdctl.db'),
       key: encryptionKey
     })
 
@@ -137,7 +142,7 @@ module.exports = class MdCtlCli {
 
     // read program config, prefs, then local overrides
     await readConfig(config, path.join(__dirname, './.mdctl.yaml'))
-    await readConfig(config, path.join(os.homedir(), '.medable', 'mdctl.yaml'))
+    await readConfig(config, path.join(configureDir, 'mdctl.yaml'))
     await readConfig(config, path.join(__dirname, './.mdctl.local.yaml'))
 
     // ensure an environment is selected
@@ -149,7 +154,7 @@ module.exports = class MdCtlCli {
 
     // load environment defaults then reset overrides
     await readConfig(config, path.join(__dirname, 'environments', `${env}.yaml`))
-    await readConfig(config, path.join(os.homedir(), '.medable', 'mdctl.yaml'))
+    await readConfig(config, path.join(configureDir, 'mdctl.yaml'))
     await readConfig(config, path.join(__dirname, './mdctl.local.yaml'))
 
     // ensure correct env is still selected
