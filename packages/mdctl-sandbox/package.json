@@ -18,7 +18,7 @@
   "dependencies": {
     "@medable/mdctl-api": "^1.0.17",
     "@medable/mdctl-core": "^1.0.17",
-    "@medable/mdctl-core-utils": "^1.0.10",
+    "@medable/mdctl-core-utils": "^1.0.16",
     "lodash": "^4.17.11",
     "request": "^2.88.0"
   },
