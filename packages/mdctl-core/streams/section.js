@@ -20,14 +20,21 @@ const _ = require('lodash'),
         email: {
           html: 'html',
           plain: 'txt',
-          subject: 'txt'
+          subject: 'txt',
+          partial: 'html'
         },
         push: {
-          message: 'txt'
+          message: 'txt',
+          partial: 'txt'
         },
         sms: {
-          message: 'txt'
-        }
+          message: 'txt',
+          partial: 'txt'
+        },
+        html: {
+          content: 'html',
+          partial: 'html'
+        },
       },
       NON_WRITABLE_KEYS = ['facet'],
       SectionsCreated = [],
