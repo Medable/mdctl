@@ -30,7 +30,7 @@
   "dependencies": {
     "@medable/mdctl-api": "^1.0.17",
     "@medable/mdctl-core": "^1.0.17",
-    "@medable/mdctl-core-utils": "^1.0.10",
+    "@medable/mdctl-core-utils": "^1.0.16",
     "@medable/mdctl-credentials-provider-keychain": "^1.0.17",
     "@medable/mdctl-credentials-provider-pouchdb": "^1.0.17",
     "@medable/mdctl-export-adapter-console": "^1.0.10",
