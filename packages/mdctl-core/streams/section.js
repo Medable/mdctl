@@ -91,6 +91,9 @@ class ExportSection {
     if (key === 'role') {
       return code || name || object
     }
+    if (key === 'template') {
+      return `${content.type}.${name || object}`
+    }
     return name || object
   }
 
