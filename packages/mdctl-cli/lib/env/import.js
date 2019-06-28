@@ -19,15 +19,13 @@ const pump = require('pump'),
               inputDir = options.dir || process.cwd(),
               progress = rFunction(options.progress),
               url = new URL('/developer/environment/import', client.environment.url),
-              requestOptions = {
-                query: {
-                  ...searchParamsToObject(url.searchParams),
-                  preferUrls: rBool(options.preferUrls, false),
-                  silent: rBool(options.silent, false),
-                  backup: rBool(options.backup, true)
-                },
-                method: 'post'
+              query = {
+                ...searchParamsToObject(url.searchParams),
+                preferUrls: rBool(options.preferUrls, false),
+                silent: rBool(options.silent, false),
+                backup: rBool(options.backup, true)
               },
+              requestOptions = {},
               fileAdapter = new ImportFileTreeAdapter(inputDir, options.format),
               importStream = new ImportStream(fileAdapter),
               ndjsonStream = ndjson.stringify(),
@@ -69,6 +67,7 @@ const pump = require('pump'),
           return client.call(url.pathname, {
             method: 'POST',
             body: pump(...streamList),
+            query,
             requestOptions
           })
         }
