@@ -100,7 +100,7 @@ class ExportSection {
     if (key === 'template') {
       return `${content.type}.${name || object}`
     }
-    if (!name && resource && object) {
+    if (!name && resource && isCustomName(object)) {
       return resource.replace(`${object}.`, '')
     }
 
