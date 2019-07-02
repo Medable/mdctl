@@ -266,7 +266,7 @@ module.exports = class MdCtlCli {
 
   assignArgIf(options, arg) {
 
-    const value = this.args(arg)
+    const value = this.args(arg) || process.env[`MDCTL_CLI_ARG_${arg.toUpperCase()}`]
     if (rString(value)) {
       Object.assign(options, { [arg]: value })
     }
@@ -278,7 +278,7 @@ module.exports = class MdCtlCli {
 
     if (rString(this.args('file'))) {
       const file = await loadJsonOrYaml(this.args('file'))
-      Object.assign(options, _.pick(file, 'type', 'endpoint', 'env', 'username', 'apiKey'))
+      this.args.update(_.pick(file, 'type', 'endpoint', 'env', 'username', 'password', 'token', 'apiKey'))
     }
 
     this.assignArgIf(options, 'type')
@@ -286,6 +286,8 @@ module.exports = class MdCtlCli {
     this.assignArgIf(options, 'env')
     this.assignArgIf(options, 'username')
     this.assignArgIf(options, 'apiKey')
+    this.assignArgIf(options, 'password')
+    this.assignArgIf(options, 'token')
 
     Object.assign(
       options,
