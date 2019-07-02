@@ -20,14 +20,21 @@ const _ = require('lodash'),
         email: {
           html: 'html',
           plain: 'txt',
-          subject: 'txt'
+          subject: 'txt',
+          partial: 'html'
         },
         push: {
-          message: 'txt'
+          message: 'txt',
+          partial: 'txt'
         },
         sms: {
-          message: 'txt'
-        }
+          message: 'txt',
+          partial: 'txt'
+        },
+        html: {
+          content: 'html',
+          partial: 'html'
+        },
       },
       NON_WRITABLE_KEYS = ['facet'],
       SectionsCreated = [],
@@ -49,7 +56,6 @@ class ExportSection {
       Object.seal(this)
     }
     if (this.isWritable) {
-      delete this.content.resource
       SectionsCreated.push(this)
     }
   }
@@ -80,7 +86,7 @@ class ExportSection {
 
   get name() {
     const { content, key } = privatesAccessor(this),
-          { name, code, object } = content
+          { name, code, object, resource } = content
 
     if (key === 'env') {
       return key
@@ -91,6 +97,13 @@ class ExportSection {
     if (key === 'role') {
       return code || name || object
     }
+    if (key === 'template') {
+      return `${content.type}.${name || object}`
+    }
+    if (!name && resource && isCustomName(object)) {
+      return resource.replace(`${object}.`, '')
+    }
+
     return name || object
   }
 
