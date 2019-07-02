@@ -121,11 +121,11 @@ module.exports = class MdCtlCli {
           keyProvider = new KeytarCredentialsProvider('com.medable.mdctl'),
           configureDir = path.join(os.homedir(), '.medable')
 
-    let encryptionKey = await keyProvider.getCustom('pouchKey', '*'),
+    let encryptionKey = process.env.MDCTL_CLI_ENCRYPTION_KEY || await keyProvider.getCustom('pouchKey', '*'),
         env = privates.args('env')
 
     if (!fs.existsSync(configureDir)) {
-      fs.mkdirSync(configureDir, {recursive: true})
+      fs.mkdirSync(configureDir, { recursive: true })
     }
 
     if (!encryptionKey) {
