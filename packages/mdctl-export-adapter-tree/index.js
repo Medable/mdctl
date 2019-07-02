@@ -208,6 +208,8 @@ class ExportFileTreeAdapter extends Writable {
             data: chunk.content,
             dest: `${chunk.name}.${this.format}`
           })
+          // remove resource property on save
+          delete chunk.content.resource
         }
       }
       return true
