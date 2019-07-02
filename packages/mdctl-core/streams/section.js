@@ -56,7 +56,6 @@ class ExportSection {
       Object.seal(this)
     }
     if (this.isWritable) {
-      delete this.content.resource
       SectionsCreated.push(this)
     }
   }
@@ -87,7 +86,7 @@ class ExportSection {
 
   get name() {
     const { content, key } = privatesAccessor(this),
-          { name, code, object } = content
+          { name, code, object, resource } = content
 
     if (key === 'env') {
       return key
@@ -101,6 +100,10 @@ class ExportSection {
     if (key === 'template') {
       return `${content.type}.${name || object}`
     }
+    if (!name && resource && isCustomName(object)) {
+      return resource.replace(`${object}.`, '')
+    }
+
     return name || object
   }
 
