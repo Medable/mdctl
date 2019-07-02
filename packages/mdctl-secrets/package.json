@@ -1,6 +1,6 @@
 {
   "name": "@medable/mdctl-secrets",
-  "version": "1.0.16",
+  "version": "1.0.19",
   "description": "Medable Developer Tools :: Secrets",
   "repository": {
     "type": "git",
@@ -16,7 +16,7 @@
   "author": "Medable, Inc. <mdctl@medable.com>",
   "license": "MIT",
   "dependencies": {
-    "@medable/mdctl-core-utils": "^1.0.16",
+    "@medable/mdctl-core-utils": "^1.0.19",
     "create-hmac": "^1.1.7",
     "jsonwebtoken": "^8.4.0"
   },
