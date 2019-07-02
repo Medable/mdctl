@@ -74,15 +74,16 @@ class Credentials extends Task {
       if (Array.isArray(file)) {
         return Promise.all(file.map(input => cli.credentialsProvider.add(input, input)))
       }
+    } else {
+      // auto-detect type
+      options.type = detectAuthType(options)
+
+      Object.assign(
+        options,
+        await askUserCredentials(options)
+      )
+
     }
-    // auto-detect type
-    options.type = detectAuthType(options)
-
-    Object.assign(
-      options,
-      await askUserCredentials(options)
-    )
-
     await cli.credentialsProvider.add(
       new Environment(`${options.endpoint}/${options.env}`),
       options
