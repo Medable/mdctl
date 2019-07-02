@@ -67,22 +67,17 @@ class Credentials extends Task {
 
     const options = (await cli.getAuthOptions()) || {}
 
-    // load from input file?
-    if (rString(this.args('file'))) {
+    // it has an array of credentials loaded from file
+    if (options.credList) {
       // support adding a bunch at once.
-      const file = await loadJsonOrYaml(this.args('file'))
-      if (Array.isArray(file)) {
-        return Promise.all(file.map(input => cli.credentialsProvider.add(input, input)))
-      }
-    } else {
-      // auto-detect type
-      options.type = detectAuthType(options)
-
+      return Promise.all(options.credList.map(input => cli.credentialsProvider.add(input, input)))
+    }
+    // if not come from a file, ask for credential data
+    if (!rString(this.args('file'))) {
       Object.assign(
         options,
         await askUserCredentials(options)
       )
-
     }
     await cli.credentialsProvider.add(
       new Environment(`${options.endpoint}/${options.env}`),

@@ -278,7 +278,11 @@ module.exports = class MdCtlCli {
 
     if (rString(this.args('file'))) {
       const file = await loadJsonOrYaml(this.args('file'))
-      Object.assign(options, _.pick(file, 'type', 'endpoint', 'env', 'username', 'apiKey'))
+      if (Array.isArray(file)) {
+        Object.assign(options, { credList: file })
+      } else {
+        Object.assign(options, _.pick(file, 'type', 'endpoint', 'env', 'username', 'apiKey'))
+      }
     }
 
     this.assignArgIf(options, 'type')
