@@ -10,7 +10,7 @@ const path = require('path'),
       PouchDbCredentialsProvider = require('@medable/mdctl-credentials-provider-pouchdb'),
       { loadJsonOrYaml, guessEndpoint } = require('@medable/mdctl-core-utils'),
       {
-        stringToBoolean, rBool, rString
+        stringToBoolean, rBool, rString, rVal, isSet
       } = require('@medable/mdctl-core-utils/values'),
       {
         randomAlphaNumSym
@@ -274,20 +274,17 @@ module.exports = class MdCtlCli {
 
   async getAuthOptions() {
 
-    const options = {}
+    const args = ['type', 'endpoint', 'env', 'username', 'apiKey', 'token', 'password'],
+          options = {},
+          env = process.env || {},
+          file = (rString(this.args('file')) && await loadJsonOrYaml(this.args('file'))) || {}
 
-    if (rString(this.args('file'))) {
-      const file = await loadJsonOrYaml(this.args('file'))
-      this.args.update(_.pick(file, 'type', 'endpoint', 'env', 'username', 'password', 'token', 'apiKey'))
-    }
-
-    this.assignArgIf(options, 'type')
-    this.assignArgIf(options, 'endpoint')
-    this.assignArgIf(options, 'env')
-    this.assignArgIf(options, 'username')
-    this.assignArgIf(options, 'apiKey')
-    this.assignArgIf(options, 'password')
-    this.assignArgIf(options, 'token')
+    args.forEach((arg) => {
+      const value = rVal(this.args(arg), rVal(file[arg], env[`MDCTL_CLI_${arg.toUpperCase()}`]))
+      if (isSet(value)) {
+        Object.assign(options, { [arg]: value })
+      }
+    })
 
     Object.assign(
       options,
