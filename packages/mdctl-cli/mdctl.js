@@ -264,14 +264,6 @@ module.exports = class MdCtlCli {
     }
   }
 
-  assignArgIf(options, arg) {
-
-    const value = this.args(arg) || process.env[`MDCTL_CLI_ARG_${arg.toUpperCase()}`]
-    if (rString(value)) {
-      Object.assign(options, { [arg]: value })
-    }
-  }
-
   async getAuthOptions() {
 
     const args = ['type', 'endpoint', 'env', 'username', 'apiKey', 'token', 'password'],
