@@ -23,7 +23,8 @@ const pump = require('pump'),
                 ...searchParamsToObject(url.searchParams),
                 preferUrls: rBool(options.preferUrls, false),
                 silent: rBool(options.silent, false),
-                backup: rBool(options.backup, true)
+                backup: rBool(options.backup, true),
+                triggers: rBool(options.triggers, true)
               },
               requestOptions = {},
               fileAdapter = new ImportFileTreeAdapter(inputDir, options.format),
