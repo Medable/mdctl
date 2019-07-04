@@ -39,12 +39,12 @@ class Env extends Task {
         type: 'boolean',
         default: false
       },
-      backup: {
+      triggers: {
         type: 'boolean',
         default: true
       }
     })
-    this.optionKeys = ['manifest', 'format', 'gzip', 'clear', 'dir', 'debug', 'dryRun', 'backup', 'preferUrls']
+    this.optionKeys = ['manifest', 'format', 'gzip', 'clear', 'dir', 'debug', 'dryRun', 'backup', 'triggers', 'preferUrls']
   }
 
   async run(cli) {
@@ -124,7 +124,9 @@ class Env extends Task {
           --format - export format (json, yaml) defaults to json
           --clear - export will clear output dir before export default true
           --preferUrls - set to true to force the server to send urls instead of base64 encoded chunks 
-          --silent - skip documents with mssing export keys instead of failing
+          --silent - skip documents with missing export keys instead of failing
+          --backup - (Import only) default: true. set to false to disable the deployment backup/rollback mechanism
+          --triggers - (Import only) default: true. set to false to disable script triggers for imported resources
           --dry-run - (Import only) will skip calling api
                                   
     `
