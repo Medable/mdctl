@@ -1,6 +1,6 @@
 {
   "name": "@medable/mdctl-api",
-  "version": "1.0.20",
+  "version": "1.0.21",
   "description": "Medable Developer Client Tools :: API",
   "repository": {
     "type": "git",
@@ -16,11 +16,11 @@
   "author": "Medable, Inc. <mdctl@medable.com>",
   "license": "MIT",
   "dependencies": {
-    "@medable/mdctl-core": "^1.0.20",
-    "@medable/mdctl-core-utils": "^1.0.20",
-    "@medable/mdctl-export-adapter-console": "^1.0.20",
-    "@medable/mdctl-export-adapter-tree": "^1.0.20",
-    "@medable/mdctl-import-adapter": "^1.0.20",
+    "@medable/mdctl-core": "^1.0.21",
+    "@medable/mdctl-core-utils": "^1.0.21",
+    "@medable/mdctl-export-adapter-console": "^1.0.21",
+    "@medable/mdctl-export-adapter-tree": "^1.0.21",
+    "@medable/mdctl-import-adapter": "^1.0.21",
     "clone": "^2.1.2",
     "create-hash": "^1.2.0",
     "create-hmac": "^1.1.7",
