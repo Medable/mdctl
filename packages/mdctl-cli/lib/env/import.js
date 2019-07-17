@@ -24,6 +24,7 @@ const pump = require('pump'),
                 preferUrls: rBool(options.preferUrls, false),
                 silent: rBool(options.silent, false),
                 backup: rBool(options.backup, true),
+                production: rBool(options.production, false),
                 triggers: rBool(options.triggers, true)
               },
               requestOptions = {},
