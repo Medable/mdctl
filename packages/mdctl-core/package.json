@@ -29,7 +29,7 @@
     "@medable/mdctl-secrets": "^1.0.20",
     "create-hmac": "^1.1.7",
     "jsonpath": "^1.0.0",
-    "lodash": "^4.17.11",
+    "lodash": "^4.17.14",
     "lodash.isplainobject": "^4.0.6",
     "mime": "^2.4.0",
     "pluralize": "^7.0.0",
