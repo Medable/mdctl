@@ -45,7 +45,7 @@
     "js-yaml": "^3.12.1",
     "jsonpath": "^1.0.1",
     "jsonwebtoken": "^8.4.0",
-    "lodash": "^4.17.11",
+    "lodash": "^4.17.14",
     "lodash.isplainobject": "^4.0.6",
     "ndjson": "^1.5.0",
     "pump": "^3.0.0",
