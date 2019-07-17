@@ -42,9 +42,17 @@ class Env extends Task {
       triggers: {
         type: 'boolean',
         default: true
+      },
+      backup: {
+        type: 'boolean',
+        default: true
+      },
+      production: {
+        type: 'boolean',
+        default: false
       }
     })
-    this.optionKeys = ['manifest', 'format', 'gzip', 'clear', 'dir', 'debug', 'dryRun', 'backup', 'triggers', 'preferUrls']
+    this.optionKeys = ['manifest', 'format', 'gzip', 'clear', 'dir', 'debug', 'dryRun', 'backup', 'triggers', 'preferUrls', 'production']
   }
 
   async run(cli) {
@@ -126,6 +134,7 @@ class Env extends Task {
           --preferUrls - set to true to force the server to send urls instead of base64 encoded chunks 
           --silent - skip documents with missing export keys instead of failing
           --backup - (Import only) default: true. set to false to disable the deployment backup/rollback mechanism
+          --production - (Import only) default: false. To help prevent unintentional imports, the production flag must be set in production and only in production environments.
           --triggers - (Import only) default: true. set to false to disable script triggers for imported resources
           --dry-run - (Import only) will skip calling api
                                   
