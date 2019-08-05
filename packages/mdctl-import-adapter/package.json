@@ -24,7 +24,8 @@
     "lodash": "^4.17.14",
     "lodash.isplainobject": "^4.0.6",
     "mime-types": "^2.1.21",
-    "uuid": "^3.3.2"
+    "uuid": "^3.3.2",
+    "pluralize": "^7.0.0"
   },
   "devDependencies": {
     "chai": "^4.1.2",

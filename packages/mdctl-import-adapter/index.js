@@ -1,20 +1,21 @@
 const EventEmitter = require('events'),
-      globby = require('globby'),
-      uuid = require('uuid'),
-      jp = require('jsonpath'),
-      fs = require('fs'),
-      _ = require('lodash'),
-      { ImportSection } = require('@medable/mdctl-core/streams/section'),
-      { parseString } = require('@medable/mdctl-core-utils/values'),
-      { md5FileHash } = require('@medable/mdctl-core-utils/crypto'),
-      { privatesAccessor } = require('@medable/mdctl-core-utils/privates'),
-      { OutputStream } = require('@medable/mdctl-core/streams/chunk-stream'),
-      { Fault } = require('@medable/mdctl-core'),
-      KNOWN_FILES = {
-        data: 'data/**/*.{json,yaml}',
-        objects: 'env/**/*.{json,yaml}',
-        manifest: 'manifest.{json,yaml}'
-      }
+  globby = require('globby'),
+  uuid = require('uuid'),
+  jp = require('jsonpath'),
+  fs = require('fs'),
+  _ = require('lodash'),
+  pluralize = require('pluralize'),
+  { ImportSection } = require('@medable/mdctl-core/streams/section'),
+  { parseString, isCustomName } = require('@medable/mdctl-core-utils/values'),
+  { md5FileHash } = require('@medable/mdctl-core-utils/crypto'),
+  { privatesAccessor } = require('@medable/mdctl-core-utils/privates'),
+  { OutputStream } = require('@medable/mdctl-core/streams/chunk-stream'),
+  { Fault } = require('@medable/mdctl-core'),
+  KNOWN_FILES = {
+    data: 'data/**/*.{json,yaml}',
+    objects: 'env/**/*.{json,yaml}',
+    manifest: 'manifest.{json,yaml}'
+  }
 
 
 class ImportFileTreeAdapter extends EventEmitter {
@@ -52,9 +53,9 @@ class ImportFileTreeAdapter extends EventEmitter {
     return new Promise((resolve, reject) => {
       const lines = []
       ef.data.pipe(outS)
-        .on('data', d => lines.push(d))
-        .on('error', e => reject(e))
-        .on('end', () => resolve(lines))
+      .on('data', d => lines.push(d))
+      .on('error', e => reject(e))
+      .on('end', () => resolve(lines))
     })
   }
 
@@ -71,7 +72,7 @@ class ImportFileTreeAdapter extends EventEmitter {
 
   async loadManifestFromObject() {
     const { manifest, input, format } = privatesAccessor(this),
-          section = new ImportSection(manifest, 'manifest', `manifest.${format}`, input)
+      section = new ImportSection(manifest, 'manifest', `manifest.${format}`, input)
     return { results: [section.content], blobResults: [] }
   }
 
@@ -81,7 +82,7 @@ class ImportFileTreeAdapter extends EventEmitter {
     await this.loadScripts(section)
     await this.loadTemplates(section)
     let results = [],
-        blobResults = []
+      blobResults = []
     results.push(section.content)
 
     if (section && section.facets && section.facets.length) {
@@ -103,7 +104,7 @@ class ImportFileTreeAdapter extends EventEmitter {
 
   async prepareChunks() {
     const { files, manifest, preparedChunks } = privatesAccessor(this),
-          promises = []
+      promises = []
     if (preparedChunks.length) {
       return Promise.resolve(preparedChunks)
     }
@@ -115,8 +116,8 @@ class ImportFileTreeAdapter extends EventEmitter {
     })
     return Promise.all(promises).then((res) => {
       const results = _.flatten(_.map(res, 'results')),
-            blobs = _.flatten(_.flatten(_.map(res, 'blobResults'))),
-            data = _.concat(results, blobs)
+        blobs = _.flatten(_.flatten(_.map(res, 'blobResults'))),
+        data = _.concat(results, blobs)
       privatesAccessor(this, 'preparedChunks', data)
       return data
     })
@@ -124,7 +125,7 @@ class ImportFileTreeAdapter extends EventEmitter {
 
   async getChunks() {
     const { index } = privatesAccessor(this),
-          chunks = await this.prepareChunks()
+      chunks = await this.prepareChunks()
     if (chunks.length > index) {
       privatesAccessor(this, 'index', index + 1)
       return Promise.resolve({
@@ -140,7 +141,7 @@ class ImportFileTreeAdapter extends EventEmitter {
 
   readManifest() {
     const { manifest, input } = privatesAccessor(this),
-          paths = []
+      paths = []
     let manifestData = manifest
     if (!manifestData) {
       const location = globby.sync([KNOWN_FILES.manifest], { cwd: input })
@@ -158,6 +159,14 @@ class ImportFileTreeAdapter extends EventEmitter {
       if (includes instanceof Array) {
         if (includes[0] === '*' && k === 'env') {
           paths.push(`env/${k}.{json,yaml}`)
+        } else if (isCustomName(k)) {
+          if (includes[0] === '*') {
+            paths.push(`data/${pluralize(k)}/*.{json,yaml}`)
+          } else {
+            includes.forEach((inc) => {
+              paths.push(`data/${pluralize(k)}/${inc}.{json,yaml}`)
+            })
+          }
         } else {
           includes.forEach((inc) => {
             paths.push(`env/${k}/${inc}.{json,yaml}`)
@@ -172,9 +181,9 @@ class ImportFileTreeAdapter extends EventEmitter {
     this.walkFiles(input, paths)
   }
 
-  walkFiles(dir, paths = [KNOWN_FILES.manifest, KNOWN_FILES.objects]) {
+  walkFiles(dir, paths = [KNOWN_FILES.manifest, KNOWN_FILES.objects, KNOWN_FILES.data]) {
     const files = globby.sync(paths, { cwd: dir }),
-          mappedFiles = _.map(files, f => `${dir}/${f}`)
+      mappedFiles = _.map(files, f => `${dir}/${f}`)
     privatesAccessor(this, 'files', mappedFiles)
   }
 
@@ -185,16 +194,16 @@ class ImportFileTreeAdapter extends EventEmitter {
     return new Promise((resolve, reject) => {
       const contents = []
       fs.createReadStream(file)
-        .on('data', (chunk) => {
-          contents.push(chunk)
-        })
-        .on('error', (e) => {
-          reject(e)
-        })
-        .on('end', () => {
-          const content = parseString(Buffer.concat(contents), metadata.format)
-          resolve(new ImportSection(content, content.object, file, input))
-        })
+      .on('data', (chunk) => {
+        contents.push(chunk)
+      })
+      .on('error', (e) => {
+        reject(e)
+      })
+      .on('end', () => {
+        const content = parseString(Buffer.concat(contents), metadata.format)
+        resolve(new ImportSection(content, content.object, file, input))
+      })
     })
   }
 
@@ -202,7 +211,7 @@ class ImportFileTreeAdapter extends EventEmitter {
     const { cache, format } = privatesAccessor(this)
     if (fs.existsSync(cache)) {
       const content = fs.readFileSync(cache),
-            metadata = JSON.parse(content.toString())
+        metadata = JSON.parse(content.toString())
       metadata.format = format
       privatesAccessor(this, 'metadata', metadata)
     }
@@ -210,7 +219,7 @@ class ImportFileTreeAdapter extends EventEmitter {
 
   getParentFromPath(chunk, path) {
     const { content } = privatesAccessor(chunk),
-          parent = jp.parent(content, jp.stringify(path))
+      parent = jp.parent(content, jp.stringify(path))
     if (parent.code || parent.name || parent.label || parent.resource) {
       return parent
     }
@@ -228,15 +237,15 @@ class ImportFileTreeAdapter extends EventEmitter {
       if (nodes.length) {
         _.forEach(nodes, (n) => {
           const parent = this.getParentFromPath(chunk, n.path),
-                facet = Object.assign(parent, {}),
-                localFile = `${basePath}${facet.filePath}`
+            facet = Object.assign(parent, {}),
+            localFile = `${basePath}${facet.filePath}`
           if (facet.filePath) {
             const resourceKey = uuid.v4(),
-                  asset = {
-                    streamId: resourceKey,
-                    data: fs.createReadStream(localFile),
-                    object: 'stream'
-                  }
+              asset = {
+                streamId: resourceKey,
+                data: fs.createReadStream(localFile),
+                object: 'stream'
+              }
             facet.ETag = md5FileHash(localFile)
             facet.streamId = resourceKey
             facet.resourceId = resourceKey
@@ -255,7 +264,7 @@ class ImportFileTreeAdapter extends EventEmitter {
 
   async loadScripts(chunk) {
     const { content, basePath } = privatesAccessor(chunk),
-          nodes = jp.nodes(content, '$..script')
+      nodes = jp.nodes(content, '$..script')
     nodes.forEach((n) => {
       if (!_.isObject(n.value)) {
         if (n.value.indexOf('/env') === 0) {
