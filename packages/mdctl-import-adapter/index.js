@@ -4,8 +4,9 @@ const EventEmitter = require('events'),
       jp = require('jsonpath'),
       fs = require('fs'),
       _ = require('lodash'),
+      pluralize = require('pluralize'),
       { ImportSection } = require('@medable/mdctl-core/streams/section'),
-      { parseString } = require('@medable/mdctl-core-utils/values'),
+      { parseString, isCustomName } = require('@medable/mdctl-core-utils/values'),
       { md5FileHash } = require('@medable/mdctl-core-utils/crypto'),
       { privatesAccessor } = require('@medable/mdctl-core-utils/privates'),
       { OutputStream } = require('@medable/mdctl-core/streams/chunk-stream'),
@@ -158,6 +159,14 @@ class ImportFileTreeAdapter extends EventEmitter {
       if (includes instanceof Array) {
         if (includes[0] === '*' && k === 'env') {
           paths.push(`env/${k}.{json,yaml}`)
+        } else if (isCustomName(k)) {
+          if (includes[0] === '*') {
+            paths.push(`data/${pluralize(k)}/*.{json,yaml}`)
+          } else {
+            includes.forEach((inc) => {
+              paths.push(`data/${pluralize(k)}/${inc}.{json,yaml}`)
+            })
+          }
         } else {
           includes.forEach((inc) => {
             paths.push(`env/${k}/${inc}.{json,yaml}`)
@@ -172,7 +181,7 @@ class ImportFileTreeAdapter extends EventEmitter {
     this.walkFiles(input, paths)
   }
 
-  walkFiles(dir, paths = [KNOWN_FILES.manifest, KNOWN_FILES.objects]) {
+  walkFiles(dir, paths = [KNOWN_FILES.manifest, KNOWN_FILES.objects, KNOWN_FILES.data]) {
     const files = globby.sync(paths, { cwd: dir }),
           mappedFiles = _.map(files, f => `${dir}/${f}`)
     privatesAccessor(this, 'files', mappedFiles)
