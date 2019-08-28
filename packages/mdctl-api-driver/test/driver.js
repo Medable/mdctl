@@ -70,11 +70,13 @@ describe('Db Driver Tests', () => {
   })
 
   it('test using deleteOne method', async() => {
-    // TODO:
+    const result = await org.objects.c_geo_history.deleteOne({ _id: '5d557682f722f511204e57c0' }).execute()
+    assert(result === true, 'object should be deleted')
   })
 
   it('test using deleteMany method', async() => {
-    // TODO:
+    const result = await org.objects.c_geo_history.deleteMany({ _id: { $in: ['5d557682f722f511204e57c0', '5d557682f722f511204e34c7'] } }).execute()
+    assert(result === true, 'objects should be deleted')
   })
 
   it('test using readOne method', async() => {

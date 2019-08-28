@@ -70,6 +70,20 @@ const nock = require('nock'),
             const json = JSON.parse(fs.readFileSync(path.join(__dirname, '../data/c_geo_history.json')))
             return json.length
           })
+
+        nock(domain)
+          .defaultReplyHeaders({
+            'Content-Type': 'application/json',
+          })
+          .post('/dev/v2/c_geo_history/db/deleteOne')
+          .reply(200, () => true)
+
+        nock(domain)
+          .defaultReplyHeaders({
+            'Content-Type': 'application/json',
+          })
+          .post('/dev/v2/c_geo_history/db/deleteMany')
+          .reply(200, () => true)
       },
       restore = () => {
         nock.cleanAll()

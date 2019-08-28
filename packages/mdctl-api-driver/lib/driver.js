@@ -153,8 +153,8 @@ class Driver {
     return (await this.client()).post(this.buildUrl(objectName, 'push'), options, this.requestOptions)
   }
 
-  async delete(objectName, options = {}) {
-    return (await this.client()).post(this.buildUrl(objectName, 'delete'), options, this.requestOptions)
+  async deleteOne(objectName, options = {}) {
+    return (await this.client()).post(this.buildUrl(objectName, 'deleteOne'), options, this.requestOptions)
   }
 
   async deleteMany(objectName, options = {}) {
