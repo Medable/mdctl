@@ -20,7 +20,7 @@
     "@medable/mdctl-core-utils": "^1.0.22",
     "clone": "^2.1.2",
     "globby": "^9.1.0",
-    "jsonpath": "^1.0.0",
+    "jsonpath": "^1.0.2",
     "lodash": "^4.17.14",
     "lodash.isplainobject": "^4.0.6",
     "mime-types": "^2.1.21",
