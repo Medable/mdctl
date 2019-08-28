@@ -168,10 +168,8 @@ class ReadOneOperation extends Operation {
   }
 
   getOptions() {
-    const { where } = privatesAccessor(this)
     return compact({
-      where,
-      ...super.getOptions()
+      ...this.options()
     }, Undefined, null)
   }
 
