@@ -584,14 +584,14 @@ class DeleteOperation extends Operation {
   }
 
   execute() {
-    return this.cortexObject.driver.delete(this.cortexObject.name, this.getOptions())
+    return this.cortexObject.driver.deleteOne(this.cortexObject.name, this.getOptions())
   }
 
   getOptions() {
     const { match } = privatesAccessor(this)
     return compact({
       match,
-      ...super.getOptions()
+      ...this.options()
     }, Undefined, null)
   }
 
