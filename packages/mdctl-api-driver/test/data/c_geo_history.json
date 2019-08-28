@@ -1,0 +1,77 @@
+[{
+  "_id": "5d52d176bb652c661e96d9df",
+  "object": "c_geo_history",
+  "created": "2019-08-13T15:04:22.928Z",
+  "creator": {
+    "_id": "5c238e72d8f1254623525f37",
+    "object": "account",
+    "path": "/accounts/5c238e72d8f1254623525f37"
+  },
+  "owner": {
+    "_id": "5c238e72d8f1254623525f37",
+    "object": "account",
+    "path": "/accounts/5c238e72d8f1254623525f37"
+  },
+  "updated": "2019-08-13T15:04:22.976Z",
+  "updater": {
+    "_id": "5c238e72d8f1254623525f37",
+    "object": "account",
+    "path": "/accounts/5c238e72d8f1254623525f37"
+  },
+  "access": 7,
+  "accessRoles": [
+    "000000000000000000000004",
+    "000000000000000000000007",
+    "000000000000000000000006"
+  ],
+  "favorite": false,
+  "idx": {
+    "v": 0
+  },
+  "c_prop1": {
+    "type": "Point",
+    "coordinates": [
+      -10,
+      10
+    ]
+  },
+  "shared": false
+},{
+  "_id": "5d52d176bb652c661e96d9dg",
+  "object": "c_geo_history",
+  "created": "2019-08-13T15:04:22.928Z",
+  "creator": {
+    "_id": "5c238e72d8f1254623525f37",
+    "object": "account",
+    "path": "/accounts/5c238e72d8f1254623525f37"
+  },
+  "owner": {
+    "_id": "5c238e72d8f1254623525f37",
+    "object": "account",
+    "path": "/accounts/5c238e72d8f1254623525f37"
+  },
+  "updated": "2019-08-13T15:04:22.976Z",
+  "updater": {
+    "_id": "5c238e72d8f1254623525f37",
+    "object": "account",
+    "path": "/accounts/5c238e72d8f1254623525f37"
+  },
+  "access": 7,
+  "accessRoles": [
+    "000000000000000000000004",
+    "000000000000000000000007",
+    "000000000000000000000006"
+  ],
+  "favorite": false,
+  "idx": {
+    "v": 0
+  },
+  "c_prop1": {
+    "type": "Point",
+    "coordinates": [
+      -10,
+      10
+    ]
+  },
+  "shared": false
+}]
