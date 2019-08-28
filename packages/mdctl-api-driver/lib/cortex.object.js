@@ -110,7 +110,7 @@ class CortexObject {
   }
 
   readOne(where) {
-    return new ReadOneOperation(this, where).execute()
+    return new ReadOneOperation(this, where)
   }
 
   insertMany(docs = []) {

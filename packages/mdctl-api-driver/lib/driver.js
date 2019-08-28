@@ -169,6 +169,10 @@ class Driver {
     return (await this.client()).post(this.buildUrl(objectName, 'patch'), options, this.requestOptions)
   }
 
+  async readOne(objectName, options = {}) {
+    return (await this.client()).post(this.buildUrl(objectName, 'readOne'), options, this.requestOptions)
+  }
+
   async updateOne(objectName, options = {}) {
     return (await this.client()).post(this.buildUrl(objectName, 'updateOne'), options, this.requestOptions)
   }

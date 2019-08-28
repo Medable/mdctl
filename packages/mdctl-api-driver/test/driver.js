@@ -18,12 +18,12 @@ describe('Db Driver Tests', () => {
     const result = await org.objects.c_geo_history.aggregate([
       { $match: { _id: '5d52d176bb652c661e96d9dg' } }
     ]).toArray()
-    assert(result[0]._id === '5d52d176bb652c661e96d9dg', 'the object is not the right one')
+    assert(result[0]._id === '5d52d176bb652c661e96d9dg', 'the _id does not match')
   })
 
   it('test using count method', async() => {
     const result = await org.objects.c_geo_history.count()
-    assert(result === 2, 'the length should be 2')
+    assert(result === 2, 'total should be 2')
   })
 
   it('test using find method', async() => {
@@ -41,8 +41,8 @@ describe('Db Driver Tests', () => {
         ]
       }
     }).execute()
-    assert(result.c_prop1.coordinates[0] === 34, 'object result is not the proper one')
-    assert(result.c_prop1.coordinates[1] === -92, 'object result is not the proper one')
+    assert(result.c_prop1.coordinates[0] === 34, 'latitude does not matches')
+    assert(result.c_prop1.coordinates[1] === -92, 'longitude does not matches')
   })
 
   it('test using insertMany method', async() => {
@@ -63,10 +63,10 @@ describe('Db Driver Tests', () => {
         ]
       }
     }]).execute()
-    assert(result[0].c_prop1.coordinates[0] === 34, 'object result is not the proper one')
-    assert(result[0].c_prop1.coordinates[1] === -92, 'object result is not the proper one')
-    assert(result[1].c_prop1.coordinates[0] === 55, 'object result is not the proper one')
-    assert(result[1].c_prop1.coordinates[1] === -55, 'object result is not the proper one')
+    assert(result[0].c_prop1.coordinates[0] === 34, 'latitude for first object does not matches')
+    assert(result[0].c_prop1.coordinates[1] === -92, 'longitude for first object does not matches')
+    assert(result[1].c_prop1.coordinates[0] === 55, 'latitude for second object does not matches')
+    assert(result[1].c_prop1.coordinates[1] === -55, 'longitude for second object does not matches')
   })
 
   it('test using deleteOne method', async() => {
@@ -80,7 +80,8 @@ describe('Db Driver Tests', () => {
   })
 
   it('test using readOne method', async() => {
-    // TODO:
+    const result = await org.objects.c_geo_history.readOne({ _id: '5d52d176bb652c661e96d9df' }).execute()
+    assert(result._id === '5d52d176bb652c661e96d9df', 'objects id should be 5d52d176bb652c661e96d9df')
   })
 
   it('test using updateOne method', async() => {
