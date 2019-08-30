@@ -68,3 +68,4 @@ typings/
 output*/
 
 manifest.json
+.editorconfig
