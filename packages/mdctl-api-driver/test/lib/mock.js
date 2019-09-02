@@ -94,6 +94,21 @@ const nock = require('nock'),
             const json = JSON.parse(fs.readFileSync(path.join(__dirname, '../data/c_geo_history.json')))
             return JSON.stringify(_.find(json, j => j._id === bodyParams.where._id))
           })
+
+
+        nock(domain)
+          .defaultReplyHeaders({
+            'Content-Type': 'application/json',
+          })
+          .post('/dev/v2/c_geo_history/db/updateOne')
+          .reply(200, (uri, bodyParams) => bodyParams.match._id)
+
+        nock(domain)
+          .defaultReplyHeaders({
+            'Content-Type': 'application/json',
+          })
+          .post('/dev/v2/c_geo_history/db/updateMany')
+          .reply(200, () => JSON.stringify({ updatedIds: ['5d52d176bb652c661e96d9df', '5d52d176bb652c661e96d9dg'] }))
       },
       restore = () => {
         nock.cleanAll()
