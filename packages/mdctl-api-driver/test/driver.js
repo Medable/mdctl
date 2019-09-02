@@ -85,11 +85,23 @@ describe('Db Driver Tests', () => {
   })
 
   it('test using updateOne method', async() => {
-    // TODO:
+    const result = await org.objects.c_geo_history.updateOne({ _id: '5d52d176bb652c661e96d9df' }, {
+      $set: {
+        c_prop1: {
+          coordinates: [99, -100]
+        }
+      }
+    }).execute()
+    assert(result === '5d52d176bb652c661e96d9df', 'id of updated object should be returned')
   })
 
   it('test using updateMany method', async() => {
-    // TODO:
+    const result = await org.objects.c_geo_history.updateMany({ c_name: 'test' }, {
+      $set: {
+        c_name: 'test1'
+      }
+    }).execute()
+    assert(result.updatedIds.length === 2, 'the length of updated documents should match')
   })
 
   it('test using patchOne method', async() => {
