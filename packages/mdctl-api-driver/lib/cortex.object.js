@@ -143,13 +143,7 @@ class Org extends CortexObject {
 
   constructor() {
     super('org')
-    this.objects = new Proxy({
-      bulk(...ops) {
-        const bulkOp = new BulkOperation(this, ops)
-        ops.forEach(op => bulkOp.add(op))
-        return bulkOp
-      }
-    }, {
+    this.objects = new Proxy(this, {
       get(target, property) {
         if (property in target) {
           return target[property]
@@ -161,6 +155,10 @@ class Org extends CortexObject {
         return target[property]
       }
     })
+  }
+
+  bulk(...ops) {
+    return new BulkOperation(this, ops)
   }
 
 }
