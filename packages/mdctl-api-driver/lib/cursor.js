@@ -399,7 +399,7 @@ class QueryCursor extends Cursor {
   }
 
   execute() {
-    return this.cortexObject.driver.cursor(this, this.cortexObject.name, this.options())
+    return this.cortexObject.driver.cursor(this, this.cortexObject.name, this.getOptions())
   }
 
   async toArray() {
@@ -414,14 +414,14 @@ class QueryCursor extends Cursor {
 class AggregationCursor extends Cursor {
 
   constructor(cortexObject, pipeline) {
-    super(cortexObject, stream => this.cortexObject.driver.cursor(stream, this.options()))
+    super(cortexObject)
     Object.assign(privatesAccessor(this), {
       pipeline: Array.isArray(pipeline) ? pipeline : []
     })
   }
 
   execute() {
-    return this.cortexObject.driver.cursor(this, this.cortexObject.name, this.options())
+    return this.cortexObject.driver.cursor(this, this.cortexObject.name, this.getOptions())
   }
 
   group(v) {
