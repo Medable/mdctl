@@ -250,7 +250,7 @@ class InsertOperation extends WriteOneOperation {
     }, Undefined, null)
   }
 
-  get OpName() {
+  get opName() {
     return 'insertOne'
   }
 
@@ -290,7 +290,7 @@ class InsertManyOperation extends Operation {
     }, Undefined, null)
   }
 
-  get OpName() {
+  get opName() {
     return 'insertMany'
   }
 
@@ -726,7 +726,7 @@ class BulkOperation extends Operation {
   }
 
   execute() {
-    return this.cortexObject.driver.bulk(this.cortexObject.name, this.options())
+    return this.cortexObject.driver.bulk(this.cortexObject.name, this.getOptions())
   }
 
   options() {
