@@ -86,7 +86,7 @@ class Operation {
   getOptions() {
     const { cortexObject } = privatesAccessor(this)
     return compact({
-      object: cortexObject.objectName,
+      object: cortexObject.name,
       operation: this.opName,
       ...this.options()
     }, Undefined, null)
@@ -208,9 +208,12 @@ class WriteOneOperation extends Operation {
   }
 
   options() {
+    const { paths, include, lean } = privatesAccessor(this)
     return {
       ...super.options(),
-      ...privatesAccessor(this)
+      paths,
+      include,
+      lean
     }
   }
 
@@ -649,7 +652,7 @@ class BulkOperationWrapper {
   }
 
   name(v = '') {
-    privatesAccessor(this, 'bulkName', String(v))
+    privatesAccessor(this, 'name', String(v))
     return this
   }
 
@@ -704,7 +707,6 @@ class BulkOperationWrapper {
 class BulkOperation extends Operation {
 
   constructor(cortexObject) {
-    cortexObject.objectName = 'bulk'
     super(cortexObject)
     Object.assign(privatesAccessor(this), {
       ops: [],

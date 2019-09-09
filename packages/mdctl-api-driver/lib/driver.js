@@ -125,11 +125,11 @@ class Driver {
   async cursor(stream, objectName, options = {}) {
     const json = ndjson.parse(),
           reqOptions = Object.assign(_.clone(this.requestOptions), {
-            body: JSON.stringify(options),
+            body: options, //JSON.stringify(options),
             method: 'post',
             stream: json,
             requestOptions: {
-              json: false,
+              json: true,
               headers: { accept: 'application/x-ndjson' }
             }
           })
