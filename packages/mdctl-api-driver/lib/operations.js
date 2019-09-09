@@ -585,14 +585,14 @@ class DeleteOperation extends Operation {
   }
 
   execute() {
-    return this.cortexObject.driver.deleteOne(this.cortexObject.name, this.getOptions())
+    return this.cortexObject.driver.deleteOne(this.cortexObject.name, this.options())
   }
 
   getOptions() {
     const { match } = privatesAccessor(this)
     return compact({
       match,
-      ...this.options()
+      ...super.getOptions()
     }, Undefined, null)
   }
 
@@ -606,7 +606,9 @@ class DeleteManyOperation extends DeleteOperation {
 
   constructor(cortexObject, match) {
     super(cortexObject, match)
-    privatesAccessor(this, 'limit', null)
+    Object.assign(privatesAccessor(this), {
+      limit: null
+    })
   }
 
   limit(v) {
@@ -623,7 +625,7 @@ class DeleteManyOperation extends DeleteOperation {
   }
 
   execute() {
-    return this.cortexObject.driver.deleteMany(this.cortexObject.name, this.getOptions())
+    return this.cortexObject.driver.deleteMany(this.cortexObject.name, this.options())
   }
 
   get opName() {
