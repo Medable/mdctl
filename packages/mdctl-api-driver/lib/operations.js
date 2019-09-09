@@ -585,7 +585,7 @@ class DeleteOperation extends Operation {
   }
 
   execute() {
-    return this.cortexObject.driver.deleteOne(this.cortexObject.name, this.options())
+    return this.cortexObject.driver.deleteOne(this.cortexObject.name, this.getOptions())
   }
 
   getOptions() {
@@ -625,7 +625,7 @@ class DeleteManyOperation extends DeleteOperation {
   }
 
   execute() {
-    return this.cortexObject.driver.deleteMany(this.cortexObject.name, this.options())
+    return this.cortexObject.driver.deleteMany(this.cortexObject.name, this.getOptions())
   }
 
   get opName() {
