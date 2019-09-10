@@ -7,8 +7,6 @@ const https = require('https'),
       { privatesAccessor } = require('@medable/mdctl-core-utils/privates'),
       { Fault } = require('@medable/mdctl-core')
 
-axiosCookieJarSupport(axios)
-
 class Request {
 
   get request() {
@@ -34,6 +32,8 @@ class Request {
    * @returns {Promise<*>}
    */
   async run(input) {
+
+    axiosCookieJarSupport(axios)
 
     const privates = privatesAccessor(this),
 
@@ -64,7 +64,7 @@ class Request {
           }
 
     try {
-      const response = await axios(requestConfig)
+      const response = await axios.request(requestConfig)
 
       if (stream) {
         return response.data.pipe(stream)
