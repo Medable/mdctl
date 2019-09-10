@@ -21,13 +21,16 @@
     "@medable/mdctl-export-adapter-console": "^1.0.22",
     "@medable/mdctl-export-adapter-tree": "^1.0.22",
     "@medable/mdctl-import-adapter": "^1.0.22",
+    "axios": "^0.19.0",
+    "axios-cookiejar-support": "^0.5.0",
     "clone": "^2.1.2",
     "create-hash": "^1.2.0",
     "create-hmac": "^1.1.7",
     "lodash": "^4.17.14",
     "ndjson": "^1.5.0",
     "request": "^2.88.0",
-    "rimraf": "^2.6.3"
+    "rimraf": "^2.6.3",
+    "tough-cookie": "^3.0.1"
   },
   "devDependencies": {
     "chai": "^4.1.2",

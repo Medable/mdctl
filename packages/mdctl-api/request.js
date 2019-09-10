@@ -1,9 +1,13 @@
 
-const request = require('request'),
+const https = require('https'),
+      axios = require('axios'),
+      axiosCookieJarSupport = require('axios-cookiejar-support').default,
       { pathTo } = require('@medable/mdctl-core-utils'),
       { isSet, rBool } = require('@medable/mdctl-core-utils/values'),
       { privatesAccessor } = require('@medable/mdctl-core-utils/privates'),
       { Fault } = require('@medable/mdctl-core')
+
+axiosCookieJarSupport(axios)
 
 class Request {
 
@@ -45,28 +49,39 @@ class Request {
     options.json = rBool(input.json, true) // explicit default to json.
     delete options.stream
 
-    return new Promise((resolve, reject) => {
+    const headers = Object.assign({ 'content-type': 'application/json' }, options.headers),
+          requestConfig = {
+            url: options.uri,
+            data: options.body,
+            params: options.qs,
+            method: options.method,
+            headers,
+            withCredentials: true,
+            jar: options.jar,
+            responseType: stream ? 'stream' : options.json ? 'json' : 'arraybuffer',
+            httpsAgent: new https.Agent({ rejectUnauthorized: options.strictSSL }),
+            cancelToken: options.cancelRequest
+          }
 
-      const callback = stream ? () => {} : (error, response, data) => {
+    try {
+      const response = await axios(requestConfig)
 
-        const contentType = pathTo(response, 'headers.content-type')
+      if (stream) {
+        return response.data.pipe(stream)
+      } else {
+        const contentType = pathTo(response, 'headers.content-type'),
+              data = response.data
+        let result
 
-        let err,
-            result
-
-        if (error) {
-          err = Fault.from(error)
-        } else if (pathTo(data, 'object') === 'fault') {
-          err = Fault.from(data)
+        if (pathTo(data, 'object') === 'fault') {
+          throw Fault.from(data)
         } else if (options.json && pathTo(data, 'object') === 'result') {
           result = data.data
         } else if (contentType.indexOf('application/x-ndjson') === 0) {
-
           const array = data.split('\n').filter(v => v.trim()).map(v => JSON.parse(v)),
-                last = array[array.length - 1]
-
+            last = array[array.length - 1]
           if (pathTo(last, 'object') === 'fault') {
-            err = Fault.from(last)
+            throw Fault.from(last)
           } else {
             result = {
               object: 'list',
@@ -78,25 +93,17 @@ class Request {
           result = data
         }
 
+        privates.request = response.request
         privates.response = response
-        privates.error = err
         privates.result = result
 
-        if (err) {
-          reject(err)
-        } else {
-          resolve(result)
-        }
+        return result
 
       }
-
-      privates.request = request(options, callback)
-
-      if (stream) {
-        resolve(privates.request.pipe(stream))
-      }
-
-    })
+    } catch (e) {
+      privates.error = Fault.from(e)
+      return Promise.reject(privates.error)
+    }
 
   }
 
