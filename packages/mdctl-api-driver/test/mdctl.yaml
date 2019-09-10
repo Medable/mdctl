@@ -1,0 +1,11 @@
+defaultCredentials:
+  type: password
+  endpoint: 'https://api.local.medable.com'
+  env: dev
+  version: v2
+  username: gaston@medable.com
+  apiKey: w6rEEXNRujmNcPreoT3s8x
+defaultEndpoint: 'https://api.local.medable.com'
+defaultEnv: dev
+defaultAccount: gaston@medable.com
+strictSSL: false
