@@ -64,7 +64,7 @@ class Request {
           }
 
     try {
-      const response = await axios(requestConfig)
+      const response = await axios.request(requestConfig)
 
       if (stream) {
         return response.data.pipe(stream)
