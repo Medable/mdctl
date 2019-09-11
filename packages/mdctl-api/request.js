@@ -49,7 +49,7 @@ class Request {
     options.json = rBool(input.json, true) // explicit default to json.
     delete options.stream
 
-    const headers = Object.assign({ 'content-type': 'application/json' }, options.headers),
+    const headers = Object.assign({ 'Content-Type': 'application/json' }, options.headers),
           requestConfig = {
             url: options.uri,
             data: options.body,
@@ -78,7 +78,7 @@ class Request {
         } else if (options.json && pathTo(data, 'object') === 'result') {
           result = data.data
         } else if (contentType.indexOf('application/x-ndjson') === 0) {
-          const array = data.split('\n').filter(v => v.trim()).map(v => JSON.parse(v)),
+          const array = Buffer.from(data).toString().split('\n').filter(v => v.trim()).map(v => JSON.parse(v)),
             last = array[array.length - 1]
           if (pathTo(last, 'object') === 'fault') {
             throw Fault.from(last)
