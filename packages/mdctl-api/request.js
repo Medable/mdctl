@@ -78,7 +78,7 @@ class Request {
         } else if (options.json && pathTo(data, 'object') === 'result') {
           result = data.data
         } else if (contentType.indexOf('application/x-ndjson') === 0) {
-          const array = data.split('\n').filter(v => v.trim()).map(v => JSON.parse(v)),
+          const array = Buffer.from(data).toString().split('\n').filter(v => v.trim()).map(v => JSON.parse(v)),
             last = array[array.length - 1]
           if (pathTo(last, 'object') === 'fault') {
             throw Fault.from(last)
