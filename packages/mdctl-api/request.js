@@ -49,7 +49,7 @@ class Request {
     options.json = rBool(input.json, true) // explicit default to json.
     delete options.stream
 
-    const headers = Object.assign({ 'content-type': 'application/json' }, options.headers),
+    const headers = Object.assign({ 'Content-Type': 'application/json' }, options.headers),
           requestConfig = {
             url: options.uri,
             data: options.body,
