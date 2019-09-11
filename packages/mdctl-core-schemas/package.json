@@ -1,6 +1,6 @@
 {
   "name": "@medable/mdctl-core-schemas",
-  "version": "1.0.23",
+  "version": "1.0.24",
   "description": "Medable Developer Client Tools :: Schemas",
   "repository": {
     "type": "git",
@@ -16,8 +16,8 @@
   "author": "Medable, Inc. <mdctl@medable.com>",
   "license": "MIT",
   "dependencies": {
-    "@medable/mdctl-core": "^1.0.23",
-    "@medable/mdctl-core-utils": "^1.0.23",
+    "@medable/mdctl-core": "^1.0.24",
+    "@medable/mdctl-core-utils": "^1.0.24",
     "lodash": "^4.17.14",
     "lodash.isplainobject": "^4.0.6"
   },
