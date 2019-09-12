@@ -8,7 +8,7 @@ const { prompt } = require('inquirer'),
       Environment = require('@medable/mdctl-core/credentials/environment'),
       {
         rString, rInt, isSet
-      } = require('@medable/mdctl-core-utils/values')
+      } = require('@medable/mdctl-core-utils/values'),
 
       askUserCredentials = async(inputArgs) => {
 
