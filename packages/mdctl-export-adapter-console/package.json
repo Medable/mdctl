@@ -1,6 +1,6 @@
 {
   "name": "@medable/mdctl-export-adapter-console",
-  "version": "1.0.24",
+  "version": "1.0.27",
   "description": "Medable Developer Client Tools :: Export Console Adapter",
   "repository": {
     "type": "git",
@@ -16,7 +16,7 @@
   "author": "Medable, Inc. <mdctl@medable.com>",
   "license": "MIT",
   "dependencies": {
-    "@medable/mdctl-core-utils": "^1.0.24"
+    "@medable/mdctl-core-utils": "^1.0.27"
   },
   "devDependencies": {
     "chai": "^4.1.2",
