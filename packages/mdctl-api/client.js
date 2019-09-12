@@ -137,7 +137,7 @@ class Client {
    *  cookies - defaults to true. set to false to prevent sending cookies
    *  query - request uri query parameters
    *  cancelRequest - cancel request token
-   *  requestOptions - custom request options, passed directly to the request (https://github.com/axios)
+   *  requestOptions - custom request options, passed directly to the request (https://github.com/axios/axios)
    *    strictSSL: default to client strictSSL
    *  stream - pipes the req to the stream and returns (errors and results are not parsed)
    * @returns {Promise<*>}
