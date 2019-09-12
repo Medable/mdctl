@@ -3,7 +3,7 @@ const https = require('https'),
       axios = require('axios'),
       axiosCookieJarSupport = require('axios-cookiejar-support').default,
       { pathTo } = require('@medable/mdctl-core-utils'),
-      { isSet, rBool } = require('@medable/mdctl-core-utils/values'),
+      { isSet, rBool, rString } = require('@medable/mdctl-core-utils/values'),
       { privatesAccessor } = require('@medable/mdctl-core-utils/privates'),
       { Fault } = require('@medable/mdctl-core')
 
@@ -49,18 +49,13 @@ class Request {
     options.json = rBool(input.json, true) // explicit default to json.
     delete options.stream
 
-    const headers = Object.assign({ 'Content-Type': 'application/json' }, options.headers),
-          requestConfig = {
-            url: options.uri,
-            data: options.body,
-            params: options.qs,
-            method: options.method,
-            headers,
+    pathTo(options.headers, 'Content-Type', rString(options.headers['Content-Type'], 'application/json'))
+
+    const requestConfig = {
+            ...options,
             withCredentials: true,
-            jar: options.jar,
-            responseType: stream ? 'stream' : options.json ? 'json' : 'arraybuffer',
-            httpsAgent: new https.Agent({ rejectUnauthorized: options.strictSSL }),
-            cancelToken: options.cancelRequest
+            responseType: options.responseType || (stream ? 'stream' : options.json ? 'json' : 'arraybuffer'),
+            httpsAgent: new https.Agent({ rejectUnauthorized: options.strictSSL })
           }
 
     try {

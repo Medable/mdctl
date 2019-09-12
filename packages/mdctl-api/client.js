@@ -137,7 +137,7 @@ class Client {
    *  cookies - defaults to true. set to false to prevent sending cookies
    *  query - request uri query parameters
    *  cancelRequest - cancel request token
-   *  requestOptions - custom request options, passed directly to the request (https://github.com/request)
+   *  requestOptions - custom request options, passed directly to the request (https://github.com/axios)
    *    strictSSL: default to client strictSSL
    *  stream - pipes the req to the stream and returns (errors and results are not parsed)
    * @returns {Promise<*>}
@@ -148,8 +148,8 @@ class Client {
           options = Object.assign({}, isSet(input) ? input : {}),
           requestOptions = Object.assign(
             {
-              qs: options.query,
-              body: options.body,
+              params: options.query,
+              data: options.body,
               method: rString(options.method, 'GET').toUpperCase(),
               json: rBool(options.json, true),
               jar: rBool(options.cookies, true) && privates.cookieJar
@@ -157,7 +157,7 @@ class Client {
             privates.requestOptions,
             options.requestOptions,
             {
-              cancelRequest: options.cancelRequest,
+              cancelToken: options.cancelRequest,
               onDownloadProgress: privates.onDownloadProgress,
               onUploadProgress: privates.onUploadProgress
             }
@@ -168,7 +168,7 @@ class Client {
             ? privates.provider.create(privates.environment, options.credentials)
             : privates.credentials,
           { environment } = privates,
-          uri = environment.buildUrl(path),
+          url = environment.buildUrl(path),
           { stream } = options,
           isSession = privates.sessions && credentials.type === 'password' && requestOptions.jar
 
@@ -207,7 +207,7 @@ class Client {
     }
 
     return new Promise((resolve, reject) => {
-      req.run(Object.assign({ uri, stream }, requestOptions))
+      req.run(Object.assign({ url, stream }, requestOptions))
         .then(async(result) => {
 
           if (stream) {
