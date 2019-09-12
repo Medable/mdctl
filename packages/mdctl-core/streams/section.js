@@ -285,7 +285,6 @@ class ExportSection {
             })
           })
         })
-        console.log(privatesAccessor(this).templateFiles)
       }
     }
   }
