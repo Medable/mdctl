@@ -6,7 +6,6 @@ This module will provide a set of general utils to use among modules.
 
 #### Set of top utils `@medable/mdctl-core-utils`
 
-- loadJsonOrYaml,
 - searchParamsToObject,
 - tryCatch,
 - normalizeEndpoint,
@@ -53,11 +52,7 @@ This module will provide a set of general utils to use among modules.
 - secureRandomInt,
 - randomAlphaNum,
 - randomAlphaNumSym,
-- randomChars,
-- md5FileHash
-
-#### Utils for directories `@medable/mdctl-core-utils/directory`
-- ensureDir
+- randomChars
 
 #### Utils for encapsulation `@medable/mdctl-core-utils/privates`
 - privatesAccessor

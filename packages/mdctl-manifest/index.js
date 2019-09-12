@@ -1,7 +1,7 @@
 const { templates } = require('@medable/mdctl-core-schemas'),
       fs = require('fs'),
       { isSet, parseString } = require('@medable/mdctl-core-utils/values'),
-      { Manifest } = require('@medable/mdctl-core'),
+      { Manifest, ARegex } = require('./manifest'),
 
       add = async(input) => {
         const options = isSet(input) ? input : {},
@@ -23,5 +23,7 @@ const { templates } = require('@medable/mdctl-core-schemas'),
       }
 
 module.exports = {
-  add
+  add,
+  Manifest,
+  ARegex
 }

@@ -25,9 +25,7 @@
     "lint": "eslint *.js test"
   },
   "dependencies": {
-    "create-hash": "^1.2.0",
     "create-hmac": "^1.1.7",
-    "js-yaml": "^3.13.1",
     "lodash": "^4.17.14",
     "lodash.isplainobject": "^4.0.6",
     "randombytes": "^2.1.0",

@@ -4,9 +4,9 @@ const _ = require('lodash'),
       {
         rArray, rBool, isSet, isCustomName, removeFalsy, stringifyContent
       } = require('@medable/mdctl-core-utils/values'),
-      { ensureDir } = require('@medable/mdctl-core-utils/directory'),
+      { ensureDir } = require('@medable/mdctl-node-utils/directory'),
       { privatesAccessor } = require('@medable/mdctl-core-utils/privates'),
-      Fault = require('./fault')
+      { Fault } = require('@medable/mdctl-core')
 
 // Augmented regular expresions. Accepts strings, star
 class ARegex {

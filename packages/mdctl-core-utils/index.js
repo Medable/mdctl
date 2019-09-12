@@ -1,23 +1,11 @@
 const _ = require('lodash'),
-      fs = require('fs'),
       { URL } = require('url'),
-      jsyaml = require('js-yaml'),
-      path = require('path'),
       isPlainObject = require('lodash.isplainobject'),
       {
         isSet, rString, naturalCmp, pathTo, pathParts
       } = require('./values')
 
 let Undefined
-
-async function loadJsonOrYaml(file, multi) {
-  if (path.extname(file) === '.yaml') {
-    const docs = []
-    jsyaml.safeLoadAll(fs.readFileSync(file, 'utf8'), d => docs.push(d), { filename: file })
-    return multi ? docs : docs[0] || {}
-  }
-  return JSON.parse(fs.readFileSync(file, 'utf8'))
-}
 
 function searchParamsToObject(searchParams) {
   return Array.from(searchParams.entries()).reduce(
@@ -235,7 +223,6 @@ function visit(obj, options) {
 /* eslint-enable */
 
 module.exports = {
-  loadJsonOrYaml,
   searchParamsToObject,
   tryCatch,
   normalizeEndpoint,

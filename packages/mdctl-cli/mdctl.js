@@ -8,7 +8,8 @@ const path = require('path'),
       { Client } = require('@medable/mdctl-api'),
       KeytarCredentialsProvider = require('@medable/mdctl-credentials-provider-keychain'),
       PouchDbCredentialsProvider = require('@medable/mdctl-credentials-provider-pouchdb'),
-      { loadJsonOrYaml, guessEndpoint } = require('@medable/mdctl-core-utils'),
+      { guessEndpoint } = require('@medable/mdctl-core-utils'),
+      { loadJsonOrYaml } = require('@medable/mdctl-node-utils'),
       {
         stringToBoolean, rBool, rString, rVal, isSet
       } = require('@medable/mdctl-core-utils/values'),
