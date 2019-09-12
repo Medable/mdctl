@@ -262,23 +262,27 @@ class ExportSection {
     if (key === 'template') {
       if (_.isArray(content.localizations)) {
         const name = `${content.object}.${content.type}.${content.name}`
-        content.localizations.forEach((l) => {
-          const nodes = jp.nodes(content, '$..content'),
-                { path } = nodes[0]
-          nodes[0].value.forEach((cnt, i) => {
-            const objectPath = _.clone(path)
-            objectPath.push(i)
-            objectPath.push('data')
-            if (cnt.data) {
-              privatesAccessor(this).templateFiles.push({
-                name: `${name}.${l.locale}.${cnt.name}`,
-                ext: TEMPLATES_EXT[content.type][cnt.name],
-                data: cnt.data,
-                remoteLocation: false,
-                pathTo: jp.stringify(objectPath),
-                sectionId: this.id
-              })
-            }
+        content.localizations.forEach((l, locIdx) => {
+          const nodes = jp.nodes(l, '$..content')
+          nodes.forEach((n) => {
+            const parentPath = ['$', 'localizations', locIdx]
+            n.value.forEach((cnt, i) => {
+              const path = _.clone(n.path)
+              path.shift()
+              const objectPath = _.clone(_.concat(parentPath, path))
+              objectPath.push(i)
+              objectPath.push('data')
+              if (cnt.data) {
+                privatesAccessor(this).templateFiles.push({
+                  name: `${name}.${l.locale}.${cnt.name}`,
+                  ext: TEMPLATES_EXT[content.type][cnt.name],
+                  data: cnt.data,
+                  remoteLocation: false,
+                  pathTo: jp.stringify(objectPath),
+                  sectionId: this.id
+                })
+              }
+            })
           })
         })
       }
