@@ -281,7 +281,7 @@ class ImportFileTreeAdapter extends EventEmitter {
     if (key === 'template') {
       if (_.isArray(content.localizations)) {
         const nodes = jp.nodes(content.localizations, '$..content')
-        nodes.forEach(n => {
+        nodes.forEach((n) => {
           n.value.forEach((cnt) => {
             if (cnt.data.indexOf('/env') === 0) {
               /* eslint no-param-reassign: "error" */

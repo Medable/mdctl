@@ -4,6 +4,7 @@
 const _ = require('lodash'),
       sh = require('shelljs'),
       yargs = require('yargs'),
+      jsyaml = require('js-yaml'),
       { throwIfNot } = require('@medable/mdctl-core-utils'),
       { privatesAccessor } = require('@medable/mdctl-core-utils/privates'),
       { createConfig } = require('./config')
@@ -42,6 +43,23 @@ class Task {
   static get taskNames() {
     return [this.name.toLowerCase()]
   }
+
+  static formatOutput(data, format = 'pretty') {
+
+    switch (format) {
+      case 'json':
+        return JSON.stringify(data)
+      case 'pretty':
+        return JSON.stringify(data, null, 2)
+      case 'yaml':
+        return jsyaml.safeDump(data)
+      case 'text':
+        return data && _.isFunction(data.toString) ? data.toString() : String(data)
+      default:
+        throw new RangeError('Invalid output format. Expected json, pretty, text or yaml')
+    }
+  }
+
 
   get args() {
     return privatesAccessor(this).args

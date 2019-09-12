@@ -156,7 +156,9 @@ class ReadOneOperation extends Operation {
   }
 
   options() {
-    const { where, expand, paths, include, sort, path, throwNotFound, engine, explain, maxTimeMs } = privatesAccessor(this)
+    const {
+      where, expand, paths, include, sort, path, throwNotFound, engine, explain, maxTimeMs
+    } = privatesAccessor(this)
     return {
       ...super.options(),
       where,
