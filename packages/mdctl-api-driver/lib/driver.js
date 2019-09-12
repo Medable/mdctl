@@ -1,6 +1,6 @@
 const { privatesAccessor } = require('@medable/mdctl-core-utils/privates'),
       { randomAlphaNumSym } = require('@medable/mdctl-core-utils/crypto'),
-      { loadJsonOrYaml } = require('@medable/mdctl-core-utils'),
+      { loadJsonOrYaml } = require('@medable/mdctl-node-utils'),
       KeytarCredentialsProvider = require('@medable/mdctl-credentials-provider-keychain'),
       PouchDbCredentialsProvider = require('@medable/mdctl-credentials-provider-pouchdb'),
       { Client } = require('@medable/mdctl-api'),

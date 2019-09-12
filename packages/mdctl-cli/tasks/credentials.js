@@ -9,9 +9,8 @@ const _ = require('lodash'),
       jsyaml = require('js-yaml'),
       jsonwebtoken = require('jsonwebtoken'),
       { loadDefaults, writeDefaults } = require('../lib/config'),
-      {
-        loadJsonOrYaml, pathsTo
-      } = require('@medable/mdctl-core-utils'),
+      { pathsTo } = require('@medable/mdctl-core-utils'),
+      { loadJsonOrYaml } = require('@medable/mdctl-node-utils'),
       {
         rString, isSet
       } = require('@medable/mdctl-core-utils/values'),
