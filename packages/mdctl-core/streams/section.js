@@ -86,7 +86,9 @@ class ExportSection {
 
   get name() {
     const { content, key } = privatesAccessor(this),
-          { name, code, object, resource } = content
+          {
+            name, code, object, resource
+          } = content
 
     if (key === 'env') {
       return key
@@ -151,6 +153,7 @@ class ExportSection {
           pathAcc = []
     path.forEach((p) => {
       if (isInteger(p)) {
+
         const currentPath = _.clone(pathAcc)
         currentPath.push(p)
         const currentItem = jp.value(content, jp.stringify(currentPath))

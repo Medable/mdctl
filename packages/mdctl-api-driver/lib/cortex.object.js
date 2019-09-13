@@ -1,9 +1,6 @@
-/* eslint-disable no-param-reassign,
-no-multi-assign
-no-restricted-syntax, no-prototype-builtins, no-underscore-dangle */
+
 const { privatesAccessor } = require('@medable/mdctl-core-utils/privates'),
       { singularize, pluralize } = require('inflection'),
-      _ = require('lodash'),
       Driver = require('./driver'),
       {
         ReadOneOperation,
@@ -49,22 +46,23 @@ class CortexObject {
 
   /**
    * Create a CortexObject class from a name.
-   * @param name
+   * @param inputName
    * @returns {*}
    */
-  static as(name, driver) {
+  static as(inputName, driver) {
 
-    name = String(name).toLowerCase()
+    const name = String(inputName).toLowerCase()
 
     let singular = singularize(name),
-        plural = pluralize(name)
+        plural = pluralize(name),
+        regName
 
     if (name !== singular && name !== plural) {
       singular = name
       plural = name
     }
 
-    const regName = registeredAliases[singular]
+    regName = registeredAliases[singular] // eslint-disable-line prefer-const
 
     if (regName) {
       return registeredObjects[regName]
@@ -74,10 +72,12 @@ class CortexObject {
     // eg. HubObject.as('Namespace')
     // eslint-disable-next-line no-new-func
     privatesAccessor(this, 'driver', driver)
-    const cls = new CortexObject(singular, driver)
-    this.register_object(singular, cls, plural)
 
-    return cls
+    {
+      const cls = new CortexObject(singular, driver)
+      this.register_object(singular, cls, plural)
+      return cls
+    }
 
   }
 
@@ -156,7 +156,7 @@ class Org extends CortexObject {
         if (target[property]) {
           return target[property]
         }
-        target[property] = CortexObject.as(property, privatesAccessor(this, 'driver'))
+        target[property] = CortexObject.as(property, privatesAccessor(this, 'driver')) // eslint-disable-line no-param-reassign
         return target[property]
       }
     })

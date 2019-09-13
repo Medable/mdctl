@@ -52,49 +52,50 @@ class Request {
     pathTo(options.headers, 'Content-Type', rString(options.headers['Content-Type'], 'application/json'))
 
     const requestConfig = {
-            ...options,
-            withCredentials: true,
-            responseType: options.responseType || (stream ? 'stream' : options.json ? 'json' : 'arraybuffer'),
-            httpsAgent: new https.Agent({ rejectUnauthorized: options.strictSSL })
-          }
+      ...options,
+      withCredentials: true,
+      responseType: options.responseType || (stream ? 'stream' : options.json ? 'json' : 'arraybuffer'),
+      httpsAgent: new https.Agent({ rejectUnauthorized: options.strictSSL })
+    }
 
     try {
       const response = await axios.request(requestConfig)
 
       if (stream) {
         return response.data.pipe(stream)
-      } else {
-        const contentType = pathTo(response, 'headers.content-type'),
-              data = response.data
-        let result
-
-        if (pathTo(data, 'object') === 'fault') {
-          throw Fault.from(data)
-        } else if (options.json && pathTo(data, 'object') === 'result') {
-          result = data.data
-        } else if (contentType.indexOf('application/x-ndjson') === 0) {
-          const array = Buffer.from(data).toString().split('\n').filter(v => v.trim()).map(v => JSON.parse(v)),
-            last = array[array.length - 1]
-          if (pathTo(last, 'object') === 'fault') {
-            throw Fault.from(last)
-          } else {
-            result = {
-              object: 'list',
-              data: array,
-              hasMore: false
-            }
-          }
-        } else {
-          result = data
-        }
-
-        privates.request = response.request
-        privates.response = response
-        privates.result = result
-
-        return result
-
       }
+      const contentType = pathTo(response, 'headers.content-type'),
+            { data } = response
+      let result
+
+      if (pathTo(data, 'object') === 'fault') {
+        throw Fault.from(data)
+      } else if (options.json && pathTo(data, 'object') === 'result') {
+        result = data.data
+      } else if (contentType.indexOf('application/x-ndjson') === 0) {
+        const array = Buffer.from(data).toString().split('\n').filter(v => v.trim())
+                .map(v => JSON.parse(v)),
+              last = array[array.length - 1]
+        if (pathTo(last, 'object') === 'fault') {
+          throw Fault.from(last)
+        } else {
+          result = {
+            object: 'list',
+            data: array,
+            hasMore: false
+          }
+        }
+      } else {
+        result = data
+      }
+
+      privates.request = response.request
+      privates.response = response
+      privates.result = result
+
+      return result
+
+
     } catch (e) {
       privates.error = Fault.from(e)
       return Promise.reject(privates.error)

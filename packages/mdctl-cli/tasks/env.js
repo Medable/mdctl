@@ -1,8 +1,11 @@
 /* eslint-disable class-methods-use-this */
 
 const _ = require('lodash'),
+      ndjson = require('ndjson'),
       { add } = require('@medable/mdctl-manifest'),
       { isSet } = require('@medable/mdctl-core-utils/values'),
+      { pathTo } = require('@medable/mdctl-core-utils'),
+      { Fault } = require('@medable/mdctl-core'),
       exportEnv = require('../lib/env/export'),
       importEnv = require('../lib/env/import'),
       Task = require('../lib/task')
@@ -82,14 +85,49 @@ class Env extends Task {
   }
 
   async 'env@import'(cli) {
+
     const client = await cli.getApiClient({ credentials: await cli.getAuthOptions() }),
-          params = await cli.getArguments(this.optionKeys)
-    try {
-      const response = await importEnv({ client, ...params })
-      console.log('Import finished...!', response)
-    } catch (e) {
-      throw e
+          params = await cli.getArguments(this.optionKeys),
+          format = this.args('format')
+
+    function outputResult(data) {
+      const formatted = Task.formatOutput(data, format),
+            isError = data && data.object === 'fault'
+
+      if (isError) {
+        console.error(formatted)
+      } else {
+        console.log(formatted)
+      }
     }
+
+    return new Promise(async(resolve, reject) => {
+
+      const stream = await importEnv({ client, ...params, stream: ndjson.parse() })
+
+      stream.on('data', (data) => {
+        if (pathTo(data, 'object') === 'fault') {
+          outputResult(Fault.from(data).toJSON())
+        } else if (pathTo(data, 'object') === 'result') {
+          outputResult(data.data)
+        } else {
+          outputResult(data)
+        }
+      })
+
+      stream.on('error', (err) => {
+        outputResult(Fault.from(err).toJSON())
+        reject(err)
+      })
+
+      stream.on('end', () => {
+        resolve(true)
+      })
+
+    }).then(() => {
+      console.log('Import finished...!')
+    })
+
   }
 
   async 'env@add'(cli) {
@@ -130,6 +168,7 @@ class Env extends Task {
           --env sets the environment. eg. example                              
           --manifest - defaults to $cwd/manifest.json
           --format - export format (json, yaml) defaults to json
+          --debug - log messages and progress to stdout
           --clear - export will clear output dir before export default true
           --preferUrls - set to true to force the server to send urls instead of base64 encoded chunks 
           --silent - skip documents with missing export keys instead of failing
