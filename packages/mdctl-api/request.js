@@ -1,13 +1,18 @@
 
-const https = require('https'),
+const _ = require('lodash'),
+      https = require('https'),
       axios = require('axios'),
-      axiosCookieJarSupport = require('axios-cookiejar-support').default,
+      axiosCookieJarSupport = require('axios-cookiejar-support'),
       { pathTo } = require('@medable/mdctl-core-utils'),
       { isSet, rBool, rString } = require('@medable/mdctl-core-utils/values'),
       { privatesAccessor } = require('@medable/mdctl-core-utils/privates'),
       { Fault } = require('@medable/mdctl-core')
 
-axiosCookieJarSupport(axios)
+if(_.isFunction(axiosCookieJarSupport)) {
+  axiosCookieJarSupport(axios)
+} else if (_.isFunction(axiosCookieJarSupport.default)) {
+  axiosCookieJarSupport.default(axios)
+}
 
 class Request {
 
