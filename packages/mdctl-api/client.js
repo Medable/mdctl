@@ -38,7 +38,7 @@ class Client {
 
     const options = Object.assign({}, isSet(input) ? input : {}),
           privates = privatesAccessor(this),
-          provider = rVal(options.provider, Config.global.credentials.provider),
+          provider = options.provider || Config.global.credentials.provider,
           environment = (options.environment instanceof Environment)
             ? options.environment
             : new Environment(options.environment),
