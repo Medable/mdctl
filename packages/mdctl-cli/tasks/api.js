@@ -2,14 +2,14 @@
 
 const _ = require('lodash'),
       { URL } = require('url'),
-      jsyaml = require('js-yaml'),
       ndjson = require('ndjson'),
-      jp = require('jsonpath'),
       fs = require('fs'),
       { prompt } = require('inquirer'),
       isPlainObject = require('lodash.isplainobject'),
       { rString, isSet } = require('@medable/mdctl-core-utils/values'),
-      { loadJsonOrYaml, pathTo, searchParamsToObject, visit } = require('@medable/mdctl-core-utils'),
+      {
+        loadJsonOrYaml, pathTo, searchParamsToObject, visit
+      } = require('@medable/mdctl-core-utils'),
       { Fault } = require('@medable/mdctl-core'),
       Task = require('../lib/task'),
       methods = ['get', 'post', 'put', 'patch', 'delete']
@@ -133,7 +133,7 @@ class Api extends Task {
           if (value && value.$input && Object.keys(value).length === 1) {
             tasks.push((async() => {
               const input = value.$input,
-                    result = await prompt([{
+                    answer = await prompt([{
                       name: 'input',
                       message: input.message || key,
                       type: input.type || 'input',
@@ -141,7 +141,7 @@ class Api extends Task {
                       choices: input.choices
                     }])
 
-              parent[key] = result.input
+              parent[key] = answer.input // eslint-disable-line no-param-reassign
             })())
           }
         }
@@ -224,23 +224,6 @@ class Api extends Task {
     if (isSet(value)) {
       options[arg] = value // eslint-disable-line no-param-reassign
     }
-  }
-
-  static formatOutput(data, format = 'pretty') {
-
-    switch (format) {
-      case 'json':
-        return JSON.stringify(data)
-      case 'pretty':
-        return JSON.stringify(data, null, 2)
-      case 'yaml':
-        return jsyaml.safeDump(data)
-      case 'text':
-        return data && _.isFunction(data.toString) ? data.toString() : String(data)
-      default:
-        throw new RangeError('Invalid output format. Expected json, pretty, text or yaml')
-    }
-
   }
 
   // ----------------------------------------------------------------------------------------------

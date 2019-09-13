@@ -1,12 +1,12 @@
 /* eslint-disable class-methods-use-this */
 /* eslint-disable no-await-in-loop */
 
-const Task = require('../lib/task'),
+const { stringToBoolean, rVal, rString } = require('@medable/mdctl-core-utils/values'),
+      Task = require('../lib/task'),
       {
         clearDefaults, createConfig, loadDefaults, writeDefaults
       } = require('../lib/config'),
       { question } = require('../lib/questionnaires'),
-      { stringToBoolean, rVal, rString } = require('@medable/mdctl-core-utils/values'),
       configureOptions = {
         defaultEndpoint: {
           message: 'The default cortex endpoint',

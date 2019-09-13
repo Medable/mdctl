@@ -12,7 +12,7 @@ const Secret = require('./secrets/base'),
       createSecret = (type, environment, args) => {
         if (secretTypes[type]) {
           if (!args) {
-            throw TypeError('Unexpected empty arguments for secret')
+            throw new TypeError('Unexpected empty arguments for secret')
           }
           return new secretTypes[type](environment, args)
         }
