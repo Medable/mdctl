@@ -1,5 +1,5 @@
 const _ = require('lodash'),
-      { URL } = require('url'),
+      { URL } = require('universal-url'),
       isPlainObject = require('lodash.isplainobject'),
       {
         isSet, rString, naturalCmp, pathTo, pathParts
