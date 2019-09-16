@@ -16,7 +16,8 @@ const Secret = require('./secrets/base'),
           }
           return new secretTypes[type](environment, args)
         }
-        throw new TypeError('Unsupported credentials type. Expected password, token or signature.')
+        return new Secret(null, environment, null, args.apiKey)
+        //throw new TypeError('Unsupported credentials type. Expected password, token or signature.')
       }
 
 // ------------------------------------------------------------------------------------------------
