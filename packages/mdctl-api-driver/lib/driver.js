@@ -125,15 +125,15 @@ class Driver {
   async cursor(stream, objectName, options = {}) {
     const json = ndjson.parse(),
           reqOptions = Object.assign(_.clone(this.requestOptions), {
-            body: options, //JSON.stringify(options),
+            body: options, // JSON.stringify(options),
             method: 'post',
             stream: json,
             requestOptions: {
               json: true,
               headers: { accept: 'application/x-ndjson' }
             }
-          })
-    const result = await (await this.client()).call(this.buildUrl(objectName, 'cursor'), reqOptions)
+          }),
+          result = await (await this.client()).call(this.buildUrl(objectName, 'cursor'), reqOptions)
     return pump(result, stream)
   }
 
