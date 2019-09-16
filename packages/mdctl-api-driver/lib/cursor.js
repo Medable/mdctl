@@ -1,7 +1,7 @@
 /* eslint-disable no-param-reassign, max-len, no-restricted-syntax */
 const { Transform } = require('async-iter-stream'),
       pump = require('pump'),
-      StreamToIterator = require('stream-to-iterator'),
+      streamToIterator = require('stream-to-iterator'),
       _ = require('lodash'),
       { privatesAccessor } = require('@medable/mdctl-core-utils/privates'),
       {
@@ -20,7 +20,7 @@ class BaseCursor extends Transform {
     Object.assign(privatesAccessor(this), {
       cortexObject,
     })
-    this.on('end', (e) => {
+    this.on('end', () => {
       privatesAccessor(this, 'ended', true)
     })
   }
@@ -35,7 +35,7 @@ class BaseCursor extends Transform {
   }
 
   get iterator() {
-    return StreamToIterator(this)
+    return streamToIterator(this)
   }
 
   stream(options) {
@@ -105,7 +105,7 @@ class BaseCursor extends Transform {
                 }
                 cb()
               }
-            }).once('error', (e) => reject(e))
+            }).once('error', e => reject(e))
       pump(this, t, () => {
         resolve(out)
       })

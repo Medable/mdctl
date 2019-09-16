@@ -82,7 +82,7 @@ class Client {
 
   }
 
-  get cancelToken () {
+  get cancelToken() {
     return axios.CancelToken
   }
 

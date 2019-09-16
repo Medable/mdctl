@@ -221,15 +221,15 @@ class ExportFileTreeAdapter extends Writable {
     const { clearOutput } = privatesAccessor(this)
     if (clearOutput) {
       const paths = await globby([
-        `${this.output}/${KNOWN_FILES.manifest}`,
-        `${this.output}/${KNOWN_FILES.objects}`,
-        `${this.output}/${KNOWN_FILES.assets}`
-      ])
-      const promises = []
+              `${this.output}/${KNOWN_FILES.manifest}`,
+              `${this.output}/${KNOWN_FILES.objects}`,
+              `${this.output}/${KNOWN_FILES.assets}`
+            ]),
+            promises = []
       paths.forEach((p) => {
         promises.push(new Promise((resolve, reject) => {
-          fs.unlink(p, err => {
-            if(err) return reject(err)
+          fs.unlink(p, (err) => {
+            if (err) return reject(err)
             return resolve()
           })
         }))
@@ -246,7 +246,7 @@ class ExportFileTreeAdapter extends Writable {
 
   async _final(cb) {
     const { resources } = privatesAccessor(this)
-    if(resources.length) {
+    if (resources.length) {
       await this.clearOutput()
       await this.writeAndUpdatePaths()
       this.createCheckpointFile()
