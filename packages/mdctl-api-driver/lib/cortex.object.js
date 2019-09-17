@@ -171,5 +171,6 @@ Object.defineProperty(global, 'org', {
 
 
 module.exports = {
-  CortexObject
+  CortexObject,
+  Org
 }
