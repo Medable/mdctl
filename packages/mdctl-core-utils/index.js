@@ -220,6 +220,8 @@ function visit(obj, options) {
   return _visit(obj, options, '', null, false, 0, '', '', new Set())
 
 }
+
+function isNodejs() { return typeof "process" !== "undefined" && process && process.versions && process.versions.node; }
 /* eslint-enable */
 
 module.exports = {
@@ -234,5 +236,6 @@ module.exports = {
   validateApiKey,
   validateApiSecret,
   guessEndpoint,
-  visit
+  visit,
+  isNodejs
 }

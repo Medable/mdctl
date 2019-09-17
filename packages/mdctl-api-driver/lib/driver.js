@@ -1,13 +1,7 @@
 const { privatesAccessor } = require('@medable/mdctl-core-utils/privates'),
-      { randomAlphaNumSym } = require('@medable/mdctl-core-utils/crypto'),
-      { loadJsonOrYaml } = require('@medable/mdctl-node-utils'),
-      KeytarCredentialsProvider = require('@medable/mdctl-credentials-provider-keychain'),
-      PouchDbCredentialsProvider = require('@medable/mdctl-credentials-provider-pouchdb'),
+      { isNodejs } = require('@medable/mdctl-core-utils'),
       { Client } = require('@medable/mdctl-api'),
-      fs = require('fs'),
-      os = require('os'),
       _ = require('lodash'),
-      path = require('path'),
       ndjson = require('ndjson'),
       pump = require('pump')
 
@@ -21,101 +15,35 @@ class Driver {
     })
   }
 
-  static getDefaultDriver() {
-    return (async function() {
-      const drv = new Driver()
-      await drv.getDefaultClient()
-      return drv
-    }())
-  }
-
   get requestOptions() {
     return privatesAccessor(this, 'options')
   }
 
-  async getCredProvider() {
-    const keyProvider = new KeytarCredentialsProvider('com.medable.mdctl'),
-          configureDir = path.join(os.homedir(), '.medable')
-
-    let encryptionKey = process.env.MDCTL_CLI_ENCRYPTION_KEY || await keyProvider.getCustom('pouchKey', '*')
-
-    if (!fs.existsSync(configureDir)) {
-      fs.mkdirSync(configureDir, { recursive: true })
-    }
-
-    if (!encryptionKey) {
-      encryptionKey = randomAlphaNumSym(32)
-      await keyProvider.setCustom('pouchKey', '*', encryptionKey)
-    }
-
-    return new PouchDbCredentialsProvider({
-      name: path.join(configureDir, 'mdctl.db'),
-      key: encryptionKey
-    })
-  }
-
-  async loadDefaults() {
-
-    const configureDir = path.join(os.homedir(), '.medable'),
-          configureFile = path.join(configureDir, 'mdctl.yaml'),
-          localFile = path.join('./mdctl.yaml')
-
-    try {
-      let config = null
-      if (fs.existsSync(localFile)) {
-        config = (await loadJsonOrYaml(localFile))
-      }
-      if (!config) {
-        config = (await loadJsonOrYaml(configureFile))
-      }
-      return config
-    } catch (err) {
-      return {}
-    }
-
-  }
-
-  async getDefaultClient() {
-    const credentialsProvider = await this.getCredProvider(),
-          defaultCreds = await this.loadDefaults(),
-          defaultPasswordSecret = await credentialsProvider.get(defaultCreds.defaultCredentials),
-          activeLogin = await credentialsProvider.getCustom('login', '*'),
-          activeClientConfig = _.get(activeLogin, 'client'),
-          activeCredentials = activeLogin
-            ? {
-              username: activeLogin.client.credentials.username,
-              apiKey: activeLogin.client.credentials.apiKey,
-              password: activeLogin.password
-            }
-            : defaultPasswordSecret,
-          client = activeLogin
-            ? new Client(Object.assign(
-              activeClientConfig,
-              { provider: credentialsProvider, credentials: activeCredentials }
-            ))
-            : this.createNewClientBy(defaultPasswordSecret, credentialsProvider)
-
+  async loadDefaultClient() {
+      const { getDefaultClient } = require('@medable/mdctl-node-utils'),
+            { credentials, provider } = await getDefaultClient(),
+            client =  new Client({
+              environment: _.get(credentials, 'environment.url'),
+              credentials,
+              sessions: _.get(credentials, 'type') === 'password',
+              requestOptions: {
+                strictSSL: false
+              },
+              provider
+            })
     privatesAccessor(this, 'client', client)
-  }
-
-  createNewClientBy(credentials, credentialsProvider) {
-    return credentials ? new Client({
-      environment: _.get(credentials, 'environment.url'),
-      credentials,
-      sessions: _.get(credentials, 'type') === 'password',
-      requestOptions: {
-        strictSSL: false
-      },
-      provider: credentialsProvider
-    }) : undefined
   }
 
   async client() {
     const client = privatesAccessor(this, 'client')
-    if (!client) {
-      await this.getDefaultClient()
+    if (!client && isNodejs()) {
+      await this.loadDefaultClient()
     }
-    return client || privatesAccessor(this, 'client')
+    const cl = client || privatesAccessor(this, 'client')
+    if(!cl) {
+      throw new Error('There is no client set')
+    }
+    return cl
   }
 
   buildUrl(name, op) {
