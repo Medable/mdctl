@@ -141,8 +141,8 @@ class CortexObject {
 
 class Org extends CortexObject {
 
-  constructor() {
-    super('org')
+  constructor(driver) {
+    super('org', driver)
     const self = this
     this.objects = new Proxy({
       bulk(...ops) {
