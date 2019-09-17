@@ -20,17 +20,18 @@ class Driver {
   }
 
   async loadDefaultClient() {
-      const { getDefaultClient } = require('@medable/mdctl-node-utils'),
-            { credentials, provider } = await getDefaultClient(),
-            client =  new Client({
-              environment: _.get(credentials, 'environment.url'),
-              credentials,
-              sessions: _.get(credentials, 'type') === 'password',
-              requestOptions: {
-                strictSSL: false
-              },
-              provider
-            })
+    /* eslint-disable global-require */
+    const { getDefaultClient } = require('@medable/mdctl-node-utils'),
+          { credentials, provider } = await getDefaultClient(),
+          client = new Client({
+            environment: _.get(credentials, 'environment.url'),
+            credentials,
+            sessions: _.get(credentials, 'type') === 'password',
+            requestOptions: {
+              strictSSL: false
+            },
+            provider
+          })
     privatesAccessor(this, 'client', client)
   }
 
@@ -40,7 +41,7 @@ class Driver {
       await this.loadDefaultClient()
     }
     const cl = client || privatesAccessor(this, 'client')
-    if(!cl) {
+    if (!cl) {
       throw new Error('There is no client set')
     }
     return cl
