@@ -1,6 +1,7 @@
 const { privatesAccessor } = require('@medable/mdctl-core-utils/privates'),
       { isNodejs } = require('@medable/mdctl-core-utils'),
       { Client } = require('@medable/mdctl-api'),
+      { getDefaultClient } = require('@medable/mdctl-node-utils'),
       _ = require('lodash'),
       ndjson = require('ndjson'),
       pump = require('pump')
@@ -21,17 +22,8 @@ class Driver {
 
   async loadDefaultClient() {
     /* eslint-disable global-require */
-    const { getDefaultClient } = require('@medable/mdctl-node-utils'),
-          { credentials, provider } = await getDefaultClient(),
-          client = new Client({
-            environment: _.get(credentials, 'environment.url'),
-            credentials,
-            sessions: _.get(credentials, 'type') === 'password',
-            requestOptions: {
-              strictSSL: false
-            },
-            provider
-          })
+    const defaultClientData = await getDefaultClient(),
+          client = new Client(defaultClientData)
     privatesAccessor(this, 'client', client)
   }
 

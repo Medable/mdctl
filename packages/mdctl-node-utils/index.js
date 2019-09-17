@@ -59,25 +59,32 @@ async function loadDefaults() {
 
 }
 
+function doesClientMatchSecret(activeClientConfig, credentials) {
+  return !_.isUndefined(credentials) && !_.isUndefined(activeClientConfig)
+    && activeClientConfig.environment === credentials.environment.url
+    && activeClientConfig.credentials.apiKey === credentials.apiKey
+    && activeClientConfig.credentials.username === credentials.username
+    && activeClientConfig.credentials.type === credentials.type
+}
+
 async function getDefaultClient() {
   const credentialsProvider = await getCredProvider(),
         defaultCreds = await loadDefaults(),
         defaultPasswordSecret = await credentialsProvider.get(defaultCreds.defaultCredentials),
+        activeCredentials = await credentialsProvider.get(defaultPasswordSecret),
         activeLogin = await credentialsProvider.getCustom('login', '*'),
         activeClientConfig = _.get(activeLogin, 'client'),
-        activeCredentials = activeLogin
-          ? {
-            username: activeLogin.client.credentials.username,
-            apiKey: activeLogin.client.credentials.apiKey,
-            password: activeLogin.password
+        isActiveClientReusable = !_.isUndefined(activeLogin)
+          && doesClientMatchSecret(activeClientConfig, activeCredentials),
+        client = isActiveClientReusable
+          ? Object.assign({ credentialsProvider }, activeClientConfig)
+          : {
+            ...activeClientConfig,
+            environment: _.get(activeCredentials, 'environment.url'),
+            credentials: activeCredentials,
+            sessions: _.get(activeCredentials, 'type') === 'password',
+            provider: credentialsProvider
           }
-          : defaultPasswordSecret,
-        client = activeLogin
-          ? Object.assign(
-            activeClientConfig,
-            { provider: credentialsProvider, credentials: activeCredentials }
-          )
-          : { credentials: defaultPasswordSecret, provider: credentialsProvider }
 
   return client
 }
