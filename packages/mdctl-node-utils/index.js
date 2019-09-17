@@ -1,9 +1,12 @@
 const fs = require('fs'),
       jsyaml = require('js-yaml'),
       path = require('path'),
+      os = require('os'),
+      _ = require('lodash'),
+      { randomAlphaNumSym } = require('@medable/mdctl-core-utils/crypto'),
       KeytarCredentialsProvider = require('@medable/mdctl-credentials-provider-keychain'),
-      PouchDbCredentialsProvider = require('@medable/mdctl-credentials-provider-pouchdb'),
-      { randomAlphaNumSym } = require('./crypto')
+      PouchDbCredentialsProvider = require('@medable/mdctl-credentials-provider-pouchdb')
+
 
 async function loadJsonOrYaml(file, multi) {
   if (path.extname(file) === '.yaml') {
@@ -16,7 +19,7 @@ async function loadJsonOrYaml(file, multi) {
 
 async function getCredProvider() {
   const keyProvider = new KeytarCredentialsProvider('com.medable.mdctl'),
-    configureDir = path.join(os.homedir(), '.medable')
+        configureDir = path.join(os.homedir(), '.medable')
 
   let encryptionKey = process.env.MDCTL_CLI_ENCRYPTION_KEY || await keyProvider.getCustom('pouchKey', '*')
 
@@ -38,8 +41,8 @@ async function getCredProvider() {
 async function loadDefaults() {
 
   const configureDir = path.join(os.homedir(), '.medable'),
-    configureFile = path.join(configureDir, 'mdctl.yaml'),
-    localFile = path.join('./mdctl.yaml')
+        configureFile = path.join(configureDir, 'mdctl.yaml'),
+        localFile = path.join('./mdctl.yaml')
 
   try {
     let config = null
@@ -58,23 +61,23 @@ async function loadDefaults() {
 
 async function getDefaultClient() {
   const credentialsProvider = await getCredProvider(),
-    defaultCreds = await loadDefaults(),
-    defaultPasswordSecret = await credentialsProvider.get(defaultCreds.defaultCredentials),
-    activeLogin = await credentialsProvider.getCustom('login', '*'),
-    activeClientConfig = _.get(activeLogin, 'client'),
-    activeCredentials = activeLogin
-      ? {
-        username: activeLogin.client.credentials.username,
-        apiKey: activeLogin.client.credentials.apiKey,
-        password: activeLogin.password
-      }
-      : defaultPasswordSecret,
-    client = activeLogin
-      ? Object.assign(
-        activeClientConfig,
-        { provider: credentialsProvider, credentials: activeCredentials }
-      )
-      : { credentials: defaultPasswordSecret, provider: credentialsProvider}
+        defaultCreds = await loadDefaults(),
+        defaultPasswordSecret = await credentialsProvider.get(defaultCreds.defaultCredentials),
+        activeLogin = await credentialsProvider.getCustom('login', '*'),
+        activeClientConfig = _.get(activeLogin, 'client'),
+        activeCredentials = activeLogin
+          ? {
+            username: activeLogin.client.credentials.username,
+            apiKey: activeLogin.client.credentials.apiKey,
+            password: activeLogin.password
+          }
+          : defaultPasswordSecret,
+        client = activeLogin
+          ? Object.assign(
+            activeClientConfig,
+            { provider: credentialsProvider, credentials: activeCredentials }
+          )
+          : { credentials: defaultPasswordSecret, provider: credentialsProvider }
 
   return client
 }

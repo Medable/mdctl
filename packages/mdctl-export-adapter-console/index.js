@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 const { Writable } = require('stream'),
       { stringifyContent } = require('@medable/mdctl-core-utils/values'),
       { privatesAccessor } = require('@medable/mdctl-core-utils/privates')

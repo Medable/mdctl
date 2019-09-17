@@ -52,8 +52,6 @@ function randomAlphaNumSym(length) {
 
 }
 
-
-
 module.exports = {
   secureRandomInt,
   randomAlphaNum,

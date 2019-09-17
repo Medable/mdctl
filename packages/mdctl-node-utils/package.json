@@ -22,13 +22,15 @@
     "test:watch": "npm run test:only -- --watch",
     "test:examples": "node examples/",
     "cover": "istanbul cover ../../node_modules/mocha/bin/_mocha -- --recursive --timeout 10000",
-    "lint": "eslint *.js test"
+    "lint": "eslint *.js"
   },
   "dependencies": {
-    "js-yaml": "^3.13.1",
-    "create-hash": "^1.2.0",
     "@medable/mdctl-credentials-provider-keychain": "^1.0.28",
-    "@medable/mdctl-credentials-provider-pouchdb": "^1.0.28"
+    "@medable/mdctl-credentials-provider-pouchdb": "^1.0.28",
+    "@medable/mdctl-core-utils": "^1.0.28",
+    "create-hash": "^1.2.0",
+    "js-yaml": "^3.13.1",
+    "lodash": "^4.17.15"
   },
   "devDependencies": {
     "chai": "^4.1.2",
