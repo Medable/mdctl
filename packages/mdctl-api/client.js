@@ -1,5 +1,6 @@
 
-const request = require('request'),
+const tough = require('tough-cookie'),
+      axios = require('axios'),
       clone = require('clone'),
       { pathTo } = require('@medable/mdctl-core-utils'),
       {
@@ -25,6 +26,9 @@ class Client {
    *  provider: credentials provider || Config.global.credentials.provider
    *  sessions (boolean:false) automatically load and store fingerprints and
    *    session data in the keychain for a login session.
+   *  cancelRequest: Axios token to cancel a request
+   *  onDownloadProgress: function to capture download progress
+   *  onUploadProgress: function to capture upload progress
    */
   constructor(input) {
 
@@ -53,7 +57,7 @@ class Client {
       // for session-based requests
       sessions: rBool(options.sessions),
 
-      cookieJar: request.jar(),
+      cookieJar: new tough.CookieJar(),
 
       // environment endpoint
       environment,
@@ -68,11 +72,20 @@ class Client {
       requestOptions: isSet(options.requestOptions) ? clone(options.requestOptions) : {},
 
       // last response object
-      response: null
+      response: null,
+
+      cancelRequest: options.cancelRequest || (new axios.CancelToken(() => {})),
+      onDownloadProgress: options.onDownloadProgress || (() => {}),
+      onUploadProgress: options.onUploadProgress || (() => {}),
 
     })
 
   }
+
+  get cancelToken() {
+    return axios.CancelToken
+  }
+
 
   get provider() {
     return privatesAccessor(this).provider
@@ -123,7 +136,8 @@ class Client {
    *  json - defaults to true. if true, body must be an object.
    *  cookies - defaults to true. set to false to prevent sending cookies
    *  query - request uri query parameters
-   *  requestOptions - custom request options, passed directly to the request (https://github.com/request)
+   *  cancelRequest - cancel request token
+   *  requestOptions - custom request options, passed directly to the request (https://github.com/axios/axios)
    *    strictSSL: default to client strictSSL
    *  stream - pipes the req to the stream and returns (errors and results are not parsed)
    * @returns {Promise<*>}
@@ -134,14 +148,19 @@ class Client {
           options = Object.assign({}, isSet(input) ? input : {}),
           requestOptions = Object.assign(
             {
-              qs: options.query,
-              body: options.body,
+              params: options.query,
+              data: options.body,
               method: rString(options.method, 'GET').toUpperCase(),
               json: rBool(options.json, true),
               jar: rBool(options.cookies, true) && privates.cookieJar
             },
             privates.requestOptions,
-            options.requestOptions
+            options.requestOptions,
+            {
+              cancelToken: options.cancelRequest,
+              onDownloadProgress: privates.onDownloadProgress,
+              onUploadProgress: privates.onUploadProgress
+            }
           ),
           req = new Request(),
           basic = rBool(options.basic),
@@ -149,7 +168,7 @@ class Client {
             ? privates.provider.create(privates.environment, options.credentials)
             : privates.credentials,
           { environment } = privates,
-          uri = environment.buildUrl(path),
+          url = environment.buildUrl(path),
           { stream } = options,
           isSession = privates.sessions && credentials.type === 'password' && requestOptions.jar
 
@@ -160,7 +179,7 @@ class Client {
             session = await privates.provider.getCustom('session', environment.url)
 
       if (fingerprint) {
-        requestOptions.jar.setCookie(fingerprint, environment.endpoint)
+        requestOptions.jar.setCookieSync(fingerprint, environment.endpoint)
       }
 
       if (session) {
@@ -168,7 +187,7 @@ class Client {
           privates.csrfToken = session.csrf
         }
         if (session.sid) {
-          requestOptions.jar.setCookie(session.sid, environment.url)
+          requestOptions.jar.setCookieSync(session.sid, environment.url)
         }
       }
 
@@ -188,7 +207,7 @@ class Client {
     }
 
     return new Promise((resolve, reject) => {
-      req.run(Object.assign({ uri, stream }, requestOptions))
+      req.run(Object.assign({ url, stream }, requestOptions))
         .then(async(result) => {
 
           if (stream) {
@@ -207,7 +226,7 @@ class Client {
 
             // store the latest fingerprint in the keychain for this endpoint.
             try {
-              const fingerprint = requestOptions.jar.getCookies(environment.endpoint).filter(
+              const fingerprint = requestOptions.jar.getCookiesSync(environment.endpoint).filter(
                 cookie => cookie.key === 'md.fingerprint' && cookie.path === '/'
               )[0]
 
@@ -238,7 +257,7 @@ class Client {
             const existing = await privates.provider.getCustom('session', environment.url),
                   session = {
                     csrf: response.headers['medable-csrf-token'],
-                    sid: rVal(requestOptions.jar.getCookies(environment.url).filter(
+                    sid: rVal(requestOptions.jar.getCookiesSync(environment.url).filter(
                       cookie => cookie.key === 'md.sid' && cookie.path === `/${environment.env}`
                     )[0], '').toString()
                   }

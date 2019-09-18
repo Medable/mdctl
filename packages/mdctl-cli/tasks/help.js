@@ -1,9 +1,9 @@
 
 /* eslint-disable  class-methods-use-this */
 
-const Task = require('../lib/task'),
-      { getRegisteredTasks } = require('./index'),
-      { pad } = require('@medable/mdctl-core-utils/values')
+const { pad } = require('@medable/mdctl-core-utils/values'),
+      Task = require('../lib/task'),
+      { getRegisteredTasks } = require('./index')
 
 class Help extends Task {
 
