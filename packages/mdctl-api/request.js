@@ -92,13 +92,15 @@ class Request {
       privates.request = response.request
       privates.response = response
       privates.result = result
-
       return result
-
-
     } catch (e) {
-      privates.error = Fault.from(e)
-      return Promise.reject(privates.error)
+      privates.request = e.response.request
+      privates.response = e.response
+      if (!stream) {
+        privates.error = Fault.from(e.response.data)
+        return Promise.reject(privates.error)
+      }
+      return e.response.data.pipe(stream)
     }
 
   }
