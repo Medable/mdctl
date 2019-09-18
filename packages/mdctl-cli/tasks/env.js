@@ -102,10 +102,22 @@ class Env extends Task {
     }
 
     return new Promise(async(resolve, reject) => {
-
-      const stream = await importEnv({ client, ...params, stream: ndjson.parse() })
+      let stream
+      try {
+        stream = await importEnv({ client, ...params, stream: ndjson.parse() })
+      } catch (e) {
+        stream = e
+      }
 
       stream.on('data', (data) => {
+        if (data instanceof Buffer) {
+          /* eslint-disable no-param-reassign */
+          try {
+            data = JSON.parse(data.toString())
+          } catch (e) {
+            // do nothing
+          }
+        }
         if (pathTo(data, 'object') === 'fault') {
           reject(data)
         } else if (pathTo(data, 'object') === 'result') {
