@@ -98,11 +98,11 @@ class Request {
     } catch (e) {
       privates.response = e.response
       if (e.response && e.response.data) {
-        if (!stream) {
-          privates.error = Fault.from(e.response.data)
-          return Promise.reject(privates.error)
+        if (stream) {
+          return Promise.reject(e.response.data)
         }
-        return e.response.data.pipe(stream)
+        privates.error = Fault.from(e.response.data)
+        return Promise.reject(privates.error)
       }
       return Promise.reject(e)
     }
