@@ -221,7 +221,7 @@ function visit(obj, options) {
 
 }
 
-function isNodejs() { return typeof "process" !== "undefined" && process && process.versions && process.versions.node; }
+function isNodejs() { return typeof window === 'undefined' && typeof "process" !== "undefined" && process && process.versions && process.versions.node; }
 /* eslint-enable */
 
 module.exports = {
