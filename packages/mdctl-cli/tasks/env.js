@@ -102,12 +102,24 @@ class Env extends Task {
     }
 
     return new Promise(async(resolve, reject) => {
-
-      const stream = await importEnv({ client, ...params, stream: ndjson.parse() })
+      let stream
+      try {
+        stream = await importEnv({ client, ...params, stream: ndjson.parse() })
+      } catch (e) {
+        stream = e
+      }
 
       stream.on('data', (data) => {
+        if (data instanceof Buffer) {
+          /* eslint-disable no-param-reassign */
+          try {
+            data = JSON.parse(data.toString())
+          } catch (e) {
+            // do nothing
+          }
+        }
         if (pathTo(data, 'object') === 'fault') {
-          outputResult(Fault.from(data).toJSON())
+          reject(data)
         } else if (pathTo(data, 'object') === 'result') {
           outputResult(data.data)
         } else {
@@ -115,7 +127,7 @@ class Env extends Task {
         }
       })
 
-      stream.on('error', (err) => {
+      stream.once('error', (err) => {
         outputResult(Fault.from(err).toJSON())
         reject(err)
       })
@@ -126,7 +138,7 @@ class Env extends Task {
 
     }).then(() => {
       console.log('Import finished...!')
-    })
+    }).catch(e => outputResult(Fault.from(e).toJSON()))
 
   }
 

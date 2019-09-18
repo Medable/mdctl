@@ -60,7 +60,6 @@ class Request {
 
     try {
       const response = await axios.request(requestConfig)
-
       if (stream) {
         return response.data.pipe(stream)
       }
@@ -92,13 +91,17 @@ class Request {
       privates.request = response.request
       privates.response = response
       privates.result = result
-
       return result
-
-
     } catch (e) {
-      privates.error = Fault.from(e)
-      return Promise.reject(privates.error)
+      privates.response = e.response
+      if (e.response && e.response.data) {
+        if (stream) {
+          return Promise.reject(e.response.data)
+        }
+        privates.error = Fault.from(e.response.data)
+        return Promise.reject(privates.error)
+      }
+      return Promise.reject(e)
     }
 
   }
