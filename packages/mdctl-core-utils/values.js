@@ -297,6 +297,22 @@ function removeFalsy(obj, emptyArrays = false) {
   return newObj
 }
 
+function isObject(v) {
+  const type = typeof v
+  return type === 'function' || (type === 'object' && !!v)
+}
+
+function compact(object, ...values) {
+  if (isObject(object) && values.length) {
+    Object.keys(object).forEach((key) => {
+      if (values.includes((object[key]))) {
+        delete object[key] // eslint-disable-line no-param-reassign
+      }
+    })
+  }
+  return object
+}
+
 module.exports = {
   isPrimitive,
   isInt,
@@ -326,5 +342,7 @@ module.exports = {
   parseString,
   removeFalsy,
   pathTo,
-  pathParts
+  pathParts,
+  compact,
+  isObject
 }

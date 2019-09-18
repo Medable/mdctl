@@ -281,12 +281,14 @@ class ImportFileTreeAdapter extends EventEmitter {
     if (key === 'template') {
       if (_.isArray(content.localizations)) {
         const nodes = jp.nodes(content.localizations, '$..content')
-        nodes[0].value.forEach((cnt) => {
-          if (cnt.data.indexOf('/env') === 0) {
-            /* eslint no-param-reassign: "error" */
-            const tplFile = `${basePath}${cnt.data}`
-            cnt.data = fs.readFileSync(tplFile).toString()
-          }
+        nodes.forEach((n) => {
+          n.value.forEach((cnt) => {
+            if (cnt.data.indexOf('/env') === 0) {
+              /* eslint no-param-reassign: "error" */
+              const tplFile = `${basePath}${cnt.data}`
+              cnt.data = fs.readFileSync(tplFile).toString()
+            }
+          })
         })
       }
     }

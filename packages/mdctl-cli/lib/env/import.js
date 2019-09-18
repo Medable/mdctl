@@ -69,6 +69,7 @@ const pump = require('pump'),
           return client.call(url.pathname, {
             method: 'POST',
             body: pump(...streamList),
+            stream: options.stream,
             query,
             requestOptions
           })
