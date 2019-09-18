@@ -156,18 +156,13 @@ class Org extends CortexObject {
         if (target[property]) {
           return target[property]
         }
-        target[property] = CortexObject.as(property, privatesAccessor(this, 'driver')) // eslint-disable-line no-param-reassign
+        target[property] = CortexObject.as(property, driver) // eslint-disable-line no-param-reassign
         return target[property]
       }
     })
   }
 
 }
-
-Object.defineProperty(global, 'org', {
-  value: new Org(),
-  enumerable: true
-})
 
 
 module.exports = {
