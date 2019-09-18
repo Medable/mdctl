@@ -107,7 +107,7 @@ class Env extends Task {
 
       stream.on('data', (data) => {
         if (pathTo(data, 'object') === 'fault') {
-          outputResult(Fault.from(data).toJSON())
+          reject(data)
         } else if (pathTo(data, 'object') === 'result') {
           outputResult(data.data)
         } else {
@@ -115,7 +115,7 @@ class Env extends Task {
         }
       })
 
-      stream.on('error', (err) => {
+      stream.once('error', (err) => {
         outputResult(Fault.from(err).toJSON())
         reject(err)
       })
@@ -126,7 +126,7 @@ class Env extends Task {
 
     }).then(() => {
       console.log('Import finished...!')
-    })
+    }).catch(e => outputResult(Fault.from(e).toJSON()))
 
   }
 
