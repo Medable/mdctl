@@ -4,7 +4,7 @@ const _ = require('lodash'),
       jsyaml = require('js-yaml'),
       fs = require('fs'),
       { rString, isSet, stringToBoolean } = require('@medable/mdctl-core-utils/values'),
-      { loadJsonOrYaml } = require('@medable/mdctl-core-utils'),
+      { loadJsonOrYaml } = require('@medable/mdctl-node-utils'),
       sandbox = require('@medable/mdctl-sandbox'),
       Task = require('../lib/task')
 

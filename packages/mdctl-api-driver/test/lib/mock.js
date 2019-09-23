@@ -13,9 +13,8 @@ const nock = require('nock'),
           })
           .post('/dev/v2/c_geo_history/db/cursor', body => body.pipeline && body.pipeline.length)
           .reply(200, (uri, bodyRequest) => {
-            const body = JSON.parse(bodyRequest),
-                  json = JSON.parse(fs.readFileSync(path.join(__dirname, '../data/c_geo_history.json')))
-            return JSON.stringify(_.find(json, j => j._id === body.pipeline[0].$match._id))
+            const json = JSON.parse(fs.readFileSync(path.join(__dirname, '../data/c_geo_history.json')))
+            return JSON.stringify(_.find(json, j => j._id === bodyRequest.pipeline[0].$match._id))
           })
 
         nock(domain)
