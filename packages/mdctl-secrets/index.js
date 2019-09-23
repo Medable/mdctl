@@ -16,7 +16,11 @@ const Secret = require('./secrets/base'),
           }
           return new secretTypes[type](environment, args)
         }
-        throw new TypeError('Unsupported credentials type. Expected password, token or signature.')
+        // returns anonymous secret
+        if (!args.apiKey) {
+          throw new TypeError('Unexpected empty apiKey argument')
+        }
+        return new Secret(null, environment, null, args.apiKey)
       }
 
 // ------------------------------------------------------------------------------------------------

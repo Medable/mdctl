@@ -31,6 +31,7 @@
     "@medable/mdctl-api": "^1.0.28",
     "@medable/mdctl-core": "^1.0.28",
     "@medable/mdctl-core-utils": "^1.0.28",
+    "@medable/mdctl-node-utils": "^1.0.0",
     "@medable/mdctl-credentials-provider-keychain": "^1.0.28",
     "@medable/mdctl-credentials-provider-pouchdb": "^1.0.28",
     "@medable/mdctl-export-adapter-console": "^1.0.28",

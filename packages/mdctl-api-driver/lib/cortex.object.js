@@ -141,8 +141,8 @@ class CortexObject {
 
 class Org extends CortexObject {
 
-  constructor() {
-    super('org')
+  constructor(driver) {
+    super('org', driver)
     const self = this
     this.objects = new Proxy({
       bulk(...ops) {
@@ -156,7 +156,7 @@ class Org extends CortexObject {
         if (target[property]) {
           return target[property]
         }
-        target[property] = CortexObject.as(property, privatesAccessor(this, 'driver')) // eslint-disable-line no-param-reassign
+        target[property] = CortexObject.as(property, driver) // eslint-disable-line no-param-reassign
         return target[property]
       }
     })
@@ -164,12 +164,8 @@ class Org extends CortexObject {
 
 }
 
-Object.defineProperty(global, 'org', {
-  value: new Org(),
-  enumerable: true
-})
-
 
 module.exports = {
-  CortexObject
+  CortexObject,
+  Org
 }

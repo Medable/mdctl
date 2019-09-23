@@ -1,17 +1,31 @@
-/* global org */
 /* eslint-disable no-underscore-dangle */
-require('../index')
+const { Client } = require('@medable/mdctl-api')
+const MemoryCredentialsProvider = require('@medable/mdctl-core/credentials/memory_provider')
+const { Org, Driver } = require('../index')
 const { assert } = require('chai'),
       { setUp, restore } = require('./lib/mock')
+
+let org
 
 describe('Db Driver Tests', () => {
 
   before(() => {
+    org = new Org(new Driver(new Client({
+      provider: new MemoryCredentialsProvider(),
+      environment: {
+        endpoint: 'https://api.local.medable.com',
+        env: 'dev'
+      },
+      credentials: {
+        apiKey: 'w6rEEXNRujmNcPreoT3s8x'
+      }
+    })))
     setUp()
   })
 
   after(() => {
     restore()
+    org = null
   })
 
   it('test using aggregate method', async() => {
