@@ -14,6 +14,8 @@ if (_.isFunction(axiosCookieJarSupport)) {
   axiosCookieJarSupport.default(axios)
 }
 
+axios.defaults.validateStatus = () => true
+
 class Request {
 
   get request() {
