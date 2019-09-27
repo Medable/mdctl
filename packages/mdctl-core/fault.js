@@ -34,12 +34,12 @@ const isPlainObject = require('lodash.isplainobject'),
 
 class Fault extends Error {
 
-  constructor(code, message, statusCode, name, reason, path, index) {
+  constructor(code, message, statusCode, name, reason, path, index, resource) {
 
     super()
 
     const obj = Fault.normalizeOptions(
-      code, message, statusCode, name, reason, path, [], null, index
+      code, message, statusCode, name, reason, path, [], null, index, resource
     )
 
     this.faults = []
@@ -49,6 +49,7 @@ class Fault extends Error {
     this.name = obj.name
     this.reason = obj.reason
     this.path = obj.path
+    this.resource = obj.resource
     this.trace = obj.trace
     this.index = obj.index
     this.message = obj.message
@@ -75,7 +76,7 @@ class Fault extends Error {
     return this.reason || ''
   }
 
-  static normalizeOptions(input, msg, statusCode, name, reason, path, faults, trace, index) {
+  static normalizeOptions(input, msg, statusCode, name, reason, path, faults, trace, index, resource) {
 
     let obj,
         errCode,
@@ -94,7 +95,7 @@ class Fault extends Error {
         obj = { errCode, code, ...msg }
       } else {
         obj = {
-          errCode, code, msg, statusCode, name, reason, path, trace, index, faults
+          errCode, code, msg, statusCode, name, reason, path, resource, trace, index, faults
         }
       }
     }
@@ -145,7 +146,7 @@ class Fault extends Error {
     }
 
     if (err instanceof Error) {
-      return new Fault('kError', err.message, err.statusCode || err.status, err.name || 'error', err.path, err.index)
+      return new Fault('kError', err.message, err.statusCode || err.status, err.name || 'error', err.path, err.index, err.resource)
     }
 
     if (forceError) {
@@ -157,7 +158,7 @@ class Fault extends Error {
 
   }
 
-  static create(code, msg, statusCode, name, reason, path, childFaults, index) {
+  static create(code, msg, statusCode, name, reason, path, childFaults, index, resource) {
 
     const opts = isPlainObject(msg) ? msg : null,
           fault = new Fault(
@@ -167,7 +168,8 @@ class Fault extends Error {
             (opts ? opts.name : name) || 'fault',
             opts ? opts.reason : reason,
             opts ? opts.path : path,
-            opts ? opts.index : index
+            opts ? opts.index : index,
+            opts ? opts.resource : resource
           )
 
     rArray(opts ? opts.faults : childFaults).forEach((f) => {
@@ -200,6 +202,7 @@ Object.assign(Error.prototype, {
       status: this.statusCode || this.status,
       trace: this.trace,
       path: this.path,
+      resource: this.resource,
       reason: this.reason
     }
 
