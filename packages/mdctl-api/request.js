@@ -6,7 +6,8 @@ const _ = require('lodash'),
       { pathTo } = require('@medable/mdctl-core-utils'),
       { isSet, rBool, rString } = require('@medable/mdctl-core-utils/values'),
       { privatesAccessor } = require('@medable/mdctl-core-utils/privates'),
-      { Fault } = require('@medable/mdctl-core')
+      { Fault } = require('@medable/mdctl-core'),
+      adapter = require('./adapters')
 
 if (_.isFunction(axiosCookieJarSupport)) {
   axiosCookieJarSupport(axios)
@@ -60,7 +61,9 @@ class Request {
             ...options,
             withCredentials: true,
             responseType: options.responseType || responseType,
-            httpsAgent: new https.Agent({ rejectUnauthorized: options.strictSSL })
+            httpsAgent: new https.Agent({ rejectUnauthorized: options.strictSSL }),
+            // eslint-disable-next-line no-undef
+            adapter: config => adapter(config, window && stream, options.legacy)
           }
 
     try {
@@ -68,7 +71,7 @@ class Request {
             contentType = pathTo(response, 'headers.content-type'),
             { data } = response
       if (stream) {
-        return data.pipe(stream)
+        return typeof stream === 'boolean' ? data : data.pipe(stream)
       }
       let result
 
