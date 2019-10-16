@@ -124,12 +124,12 @@ const fetchData = (config) => {
 }
 
 module.exports = (config, isStream, isLegacy) => {
-  if (window && isStream && isLegacy) {
-    return XhrAdapter(config)
-  }
-  if (window && isStream && !isLegacy) {
+  if (window && isStream && !isLegacy && fetch) {
     // eslint-disable-next-line no-param-reassign
     return fetchData(config).then(response => readerToTransform(response))
+  }
+  if (window && isStream && isLegacy) {
+    return XhrAdapter(config)
   }
   // eslint-disable-next-line no-param-reassign
   delete config.adapter
