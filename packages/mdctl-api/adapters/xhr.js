@@ -1,4 +1,4 @@
-
+/* globals XMLHttpRequest, Promise */
 
 const utils = require('axios/lib/utils'),
       buildURL = require('axios/lib/helpers/buildURL'),
@@ -16,21 +16,17 @@ class TransformStream extends Transform {
 
 }
 
-
 function XhrAdapter(config) {
   return new Promise(((resolve, reject) => {
     const transform = new TransformStream()
     let requestData = config.data,
         // eslint-disable-next-line prefer-const
-        requestHeaders = config.headers
+        requestHeaders = config.headers,
+        request = new XMLHttpRequest()
 
     if (utils.isFormData(requestData)) {
       delete requestHeaders['Content-Type'] // Let the browser set it
     }
-
-    // eslint-disable-next-line no-undef
-    let request = new XMLHttpRequest()
-
     // HTTP basic authentication
     if (config.auth) {
       const username = config.auth.username || '',

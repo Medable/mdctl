@@ -1,3 +1,4 @@
+/* globals window */
 /* eslint-disable no-nested-ternary, one-var */
 const _ = require('lodash'),
       https = require('https'),
@@ -62,7 +63,6 @@ class Request {
             withCredentials: true,
             responseType: options.responseType || responseType,
             httpsAgent: new https.Agent({ rejectUnauthorized: options.strictSSL }),
-            // eslint-disable-next-line no-undef
             adapter: config => adapter(config, window && stream, options.legacy)
           }
 
