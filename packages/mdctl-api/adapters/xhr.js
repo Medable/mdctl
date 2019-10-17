@@ -1,4 +1,4 @@
-/* globals XMLHttpRequest, Promise */
+/* globals XMLHttpRequest */
 
 const utils = require('axios/lib/utils'),
       buildURL = require('axios/lib/helpers/buildURL'),
@@ -16,7 +16,7 @@ class TransformStream extends Transform {
 
 }
 
-function XhrAdapter(config) {
+function xhrAdapter(config) {
   return new Promise(((resolve, reject) => {
     const transform = new TransformStream()
     let requestData = config.data,
@@ -169,6 +169,6 @@ function XhrAdapter(config) {
 }
 
 module.exports = {
-  XhrAdapter,
+  xhrAdapter,
   TransformStream
 }
