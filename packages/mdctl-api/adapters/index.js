@@ -86,11 +86,11 @@ function readerToTransform(response) {
 }
 
 module.exports = (config, isStream, isLegacy) => {
-  if (window && isStream && !isLegacy && fetch) {
+  if (typeof window !== 'undefined' && isStream && !isLegacy && fetch) {
     // eslint-disable-next-line no-param-reassign
     return fetchData(config).then(response => readerToTransform(response))
   }
-  if (window && isStream && isLegacy) {
+  if (typeof window !== 'undefined' && isStream && isLegacy) {
     return xhrAdapter(config)
   }
   // eslint-disable-next-line no-param-reassign

@@ -63,7 +63,7 @@ class Request {
             withCredentials: true,
             responseType: options.responseType || responseType,
             httpsAgent: new https.Agent({ rejectUnauthorized: options.strictSSL }),
-            adapter: config => adapter(config, window && stream, options.legacy)
+            adapter: config => adapter(config, typeof window !== 'undefined' && stream, options.legacy)
           }
 
     try {
