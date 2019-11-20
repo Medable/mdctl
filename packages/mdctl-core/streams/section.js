@@ -226,6 +226,12 @@ class ExportSection {
   extractScripts() {
     const { content } = privatesAccessor(this),
           nodes = jp.nodes(content, '$..script')
+
+    // Exclude script extraction to all instance data.
+    if (isCustomName(content.object)) {
+      return
+    }
+
     nodes.forEach((n) => {
       if (!_.isObject(n.value)) {
         const path = _.clone(n.path),
