@@ -6,6 +6,7 @@ const PouchDB = require('pouchdb-core')
       {
         createCipheriv, createDecipheriv, listCiphers
       } = require('browserify-aes'),
+      cipherModes = require('browserify-aes/modes'),
       createHash = require('create-hash'),
       randomBytes = require('randombytes'),
       { privatesAccessor } = require('@medable/mdctl-core-utils/privates'),
@@ -27,7 +28,7 @@ class EncryptionTransformer {
     }
 
     if ((key.length * 8) !== 256) {
-      throw Fault.create('kInvalidArgument', { reason: `Invalid key length. Expected ${ciphers[cipher].key} but  got ${key.length * 8}` })
+      throw Fault.create('kInvalidArgument', { reason: `Invalid key length. Expected ${cipherModes[cipher].key} key but got ${key.length * 8}` })
     }
 
     Object.assign(
