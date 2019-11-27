@@ -128,7 +128,6 @@ class Env extends Task {
       })
 
       stream.once('error', (err) => {
-        outputResult(Fault.from(err).toJSON())
         reject(err)
       })
 
@@ -138,7 +137,7 @@ class Env extends Task {
 
     }).then(() => {
       console.log('Import finished...!')
-    }).catch(e => outputResult(Fault.from(e).toJSON()))
+    })
 
   }
 

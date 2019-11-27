@@ -106,7 +106,7 @@ class ExportFileTreeAdapter extends Writable {
     /* eslint-disable no-restricted-syntax */
     for (const asset of assets) {
       const dest = asset.dest || `${asset.name}.${asset.ext}`,
-            section = _.find(sections, doc => doc.id === asset.sectionId || doc.name === `${asset.sectionName}`)
+            section = _.find(sections, doc => doc.id === asset.sectionId)
       if (section) {
         /* eslint-disable no-param-reassign */
         asset.folder = `${section.folder}/${asset.type}`
