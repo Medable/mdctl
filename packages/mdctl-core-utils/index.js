@@ -65,6 +65,9 @@ function validateEndpoint(endpoint) {
 }
 
 function validateApiKey(apiKey) {
+  if (rString(apiKey).indexOf('c_') === 0) {
+    return true
+  }
   if (/^([0-9a-z-A-Z]){22}$/i.test(rString(apiKey))) {
     return true
   }
