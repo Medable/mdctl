@@ -77,7 +77,10 @@ function readerToTransform(response) {
 
           // do something with the current chunk
           const chunk = result.value
-          transform.write(chunk)
+
+          if (transform.writable === true) {
+            transform.write(chunk)
+          }
 
           return consume(responseReader)
         })
