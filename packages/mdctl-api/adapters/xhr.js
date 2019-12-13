@@ -43,14 +43,18 @@ function xhrAdapter(config) {
 
     // Listen for ready state
     request.onreadystatechange = function handleLoad() {
-      if (request.readyState > 2) {
-        const newData = request.response.substr(request.seenBytes)
-        transform.write(newData)
-        request.seenBytes = request.responseText.length
-      }
-      if (request.readyState === 4) {
-        transform.end()
-        request = null
+      if (!transform.writable) {
+        request.abort() // writable stream is destroyed or ended, so we abort the reading.
+      } else {
+        if (request.readyState > XMLHttpRequest.HEADERS_RECEIVED) {
+          const newData = request.response.substr(request.seenBytes)
+          transform.write(newData)
+          request.seenBytes = request.responseText.length
+        }
+        if (request.readyState === XMLHttpRequest.DONE) {
+          transform.end()
+          request = null
+        }
       }
     }
 
