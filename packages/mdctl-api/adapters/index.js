@@ -71,16 +71,16 @@ function promiseTimeout(msec) {
 function readerToTransform(response) {
   const transform = new TransformStream(),
         consume = responseReader => responseReader.read().then((result) => {
+          if (!transform.writable) {
+            return responseReader.cancel('writable stream destroyed or ended before reader finish.')
+          }
           if (result.done) {
             return transform.end()
           }
 
           // do something with the current chunk
           const chunk = result.value
-
-          if (transform.writable === true) {
-            transform.write(chunk)
-          }
+          transform.write(chunk)
 
           return consume(responseReader)
         })

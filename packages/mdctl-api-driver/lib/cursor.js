@@ -1,5 +1,5 @@
 /* eslint-disable no-param-reassign, max-len, no-restricted-syntax */
-const { Transform } = require('async-iter-stream'),
+const { Transform } = require('stream'),
       pump = require('pump'),
       streamToIterator = require('stream-to-iterator'),
       _ = require('lodash'),
@@ -25,6 +25,7 @@ class BaseCursor extends Transform {
     })
   }
 
+  // eslint-disable-next-line no-underscore-dangle
   _transform(chunk, enc, cb) {
     this.push(chunk)
     cb()
