@@ -12,7 +12,12 @@ class Template extends Base {
     return sortKeys(Object.assign(
       super.getBoilerplate(),
       {
-        script: ''
+        script: '',
+        language: 'javascript/es6',
+        name: this.exportKey,
+        optimized: false,
+        principal: null,
+        label: this.exportKey
       }
     ))
 
