@@ -6,10 +6,8 @@ const _ = require('lodash'),
       { add } = require('@medable/mdctl-manifest'),
       { isSet } = require('@medable/mdctl-core-utils/values'),
       { pathTo } = require('@medable/mdctl-core-utils'),
-      { Fault } = require('@medable/mdctl-core'),
       exportEnv = require('../lib/env/export'),
       importEnv = require('../lib/env/import'),
-      lockUnlock = require('../lib/env/lock_unlock'),
       Task = require('../lib/task')
 
 class Env extends Task {
@@ -158,22 +156,6 @@ class Env extends Task {
     console.log('Resource added...!')
   }
 
-  async 'env@lock'(cli) {
-    // eslint-disable-next-line max-len
-    const params = Object.assign(await cli.getAuthOptions() || {}, await cli.getArguments(this.optionKeys)),
-          client = await cli.getApiClient(),
-          { endpoint: defaultEndpoint, env: defaultEnv } = client.credentials.environment,
-          // eslint-disable-next-line max-len
-          { endpoint, env, dir } = Object.assign({ endpoint: defaultEndpoint, env: defaultEnv }, params)
-    await lockUnlock.lock(dir || process.cwd(), endpoint, env)
-  }
-
-  async 'env@unlock'(cli) {
-    const params = await cli.getArguments(this.optionKeys),
-          { dir } = params
-    await lockUnlock.unlock(dir || process.cwd())
-  }
-
   // ----------------------------------------------------------------------------------------------
 
   static get synopsis() {
@@ -194,9 +176,7 @@ class Env extends Task {
         command                      
           export - export from an endpoint environment        
           import - import to an endpoint environment   
-          add object [type] name - add a new resource
-          lock - will lock workspace to an specific endpoint/env location
-          unlock - will remove lock for an specific endpoint/env location    
+          add object [type] name - add a new resource    
                   
         options     
           --endpoint sets the endpoint. eg. api.dev.medable.com     

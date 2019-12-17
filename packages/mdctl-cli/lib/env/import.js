@@ -11,7 +11,7 @@ const pump = require('pump'),
       ImportStream = require('@medable/mdctl-core/streams/import_stream'),
       ImportFileTreeAdapter = require('@medable/mdctl-import-adapter'),
       { Client } = require('@medable/mdctl-api'),
-      LockUnlock = require('./lock_unlock'),
+      LockUnlock = require('../lock_unlock'),
 
       importEnv = async(input) => {
 
