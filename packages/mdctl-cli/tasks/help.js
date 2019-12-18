@@ -9,7 +9,7 @@ class Help extends Task {
 
   async run(cli) {
 
-    let taskName = (this.args('1') || '').toLowerCase()
+    let taskName = (cli.args('1') || '').toLowerCase()
     if (taskName.indexOf('--') === 0) {
       taskName = ''
     }
@@ -21,11 +21,17 @@ class Help extends Task {
 
     if (!taskName) {
 
+      const tasksHelps = taskNames.filter(t => t.indexOf('--') === -1).map(value => `${pad(padTo, value)} - ${tasks[value].synopsis}`)
       return console.log(`
-      Available commands: 
+      Available commands:
       
-        ${taskNames.map(value => `${pad(padTo, value)} - ${tasks[value].synopsis}`).join('\n        ')}
-        
+        ${tasksHelps.join('\n        ')}  
+      
+      Options:
+      
+        --version shows client version
+        --help shows help
+
       Type "mdctl help [task]" for command options.
       `)
 
@@ -33,8 +39,8 @@ class Help extends Task {
     if (!task) {
 
       return console.log(`
-      Command "${taskName}" does not exist.                
-        
+      Command "${taskName}" does not exist.
+
       Type "mdctl help" for a list of available commands.
       `)
 
@@ -44,19 +50,23 @@ class Help extends Task {
 
   }
 
+  static get taskNames() {
+    return ['help', '--help']
+  }
+
   static get synopsis() {
     return 'displays help'
   }
 
   static help() {
-    return `                             
-            /((((((\\\\\\\\ 
-   =======((((((((((\\\\\\\\\\ 
-         ((           \\\\\\\\\\\\\\ 
+    return `
+            /((((((\\\\\\\\
+   =======((((((((((\\\\\\\\\\
+         ((           \\\\\\\\\\\\\\
          ( (*    _/      \\\\\\\\\\\\\\
            \\    /  \\      \\\\\\\\\\\\
-            |  |   |                  
-            o_|   / 
+            |  |   |
+            o_|   /
     `
   }
 

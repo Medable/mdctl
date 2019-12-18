@@ -81,7 +81,7 @@ class Config {
     Object.assign(privatesAccessor(this), {
       credentials: new CredentialsConfig(),
       client: new ClientConfig(),
-      environment: new EnvironmentConfig({ endpoint: 'https://localhost', env: 'example', version: 'v2' })
+      environment: new EnvironmentConfig({ endpoint: 'https://api.local.medable.com', env: 'dev', version: 'v2' })
     })
 
   }

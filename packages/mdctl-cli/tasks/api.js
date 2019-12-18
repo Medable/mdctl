@@ -7,9 +7,8 @@ const _ = require('lodash'),
       { prompt } = require('inquirer'),
       isPlainObject = require('lodash.isplainobject'),
       { rString, isSet } = require('@medable/mdctl-core-utils/values'),
-      {
-        loadJsonOrYaml, pathTo, searchParamsToObject, visit
-      } = require('@medable/mdctl-core-utils'),
+      { pathTo, searchParamsToObject, visit } = require('@medable/mdctl-core-utils'),
+      { loadJsonOrYaml } = require('@medable/mdctl-node-utils'),
       { Fault } = require('@medable/mdctl-core'),
       Task = require('../lib/task'),
       methods = ['get', 'post', 'put', 'patch', 'delete']

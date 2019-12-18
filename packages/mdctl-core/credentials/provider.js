@@ -1,4 +1,4 @@
-const { URL } = require('url'),
+const { URL } = require('universal-url'),
       { rString, isSet } = require('@medable/mdctl-core-utils/values'),
       {
         Secret, createSecret

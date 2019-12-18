@@ -4,7 +4,7 @@ const _ = require('lodash'),
       jsyaml = require('js-yaml'),
       fs = require('fs'),
       { rString, isSet, stringToBoolean } = require('@medable/mdctl-core-utils/values'),
-      { loadJsonOrYaml } = require('@medable/mdctl-core-utils'),
+      { loadJsonOrYaml } = require('@medable/mdctl-node-utils'),
       sandbox = require('@medable/mdctl-sandbox'),
       Task = require('../lib/task')
 
@@ -49,7 +49,7 @@ class Sandbox extends Task {
     }
 
     if (this.args('verbose')) {
-      console.log(Sandbox.formatOutput(options.client.response.toJSON(), format))
+      console.log(Sandbox.formatOutput(response, format))
     } else if (response.err) {
       console.error(Sandbox.formatOutput(response.err, format))
     } else {

@@ -1,4 +1,4 @@
-/* eslint-disable import/no-extraneous-dependencies */
+/* eslint-disable import/no-extraneous-dependencies, no-underscore-dangle */
 const { assert } = require('chai'),
       fs = require('fs'),
       { parse } = require('ndjson'),
