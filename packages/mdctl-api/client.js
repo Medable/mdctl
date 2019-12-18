@@ -38,7 +38,7 @@ class Client {
 
     const options = Object.assign({}, isSet(input) ? input : {}),
           privates = privatesAccessor(this),
-          provider = rVal(options.provider, Config.global.credentials.provider),
+          provider = options.provider || Config.global.credentials.provider,
           environment = (options.environment instanceof Environment)
             ? options.environment
             : new Environment(options.environment),
@@ -74,9 +74,9 @@ class Client {
       // last response object
       response: null,
 
-      cancelRequest: options.cancelRequest || (new axios.CancelToken(() => {})),
-      onDownloadProgress: options.onDownloadProgress || (() => {}),
-      onUploadProgress: options.onUploadProgress || (() => {}),
+      cancelRequest: options.cancelRequest || axios.CancelToken.source(),
+      onDownloadProgress: options.onDownloadProgress,
+      onUploadProgress: options.onUploadProgress,
 
     })
 
@@ -84,6 +84,13 @@ class Client {
 
   get cancelToken() {
     return axios.CancelToken
+  }
+
+  cancelCurrentRequest() {
+    const { cancelRequest } = privatesAccessor(this)
+    if (cancelRequest.token) {
+      cancelRequest.cancel()
+    }
   }
 
 
@@ -157,7 +164,8 @@ class Client {
             privates.requestOptions,
             options.requestOptions,
             {
-              cancelToken: options.cancelRequest,
+              // eslint-disable-next-line max-len
+              cancelToken: options.cancelRequest ? options.cancelRequest.token : privates.cancelRequest.token,
               onDownloadProgress: privates.onDownloadProgress,
               onUploadProgress: privates.onUploadProgress
             }

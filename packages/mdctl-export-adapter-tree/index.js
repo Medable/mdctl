@@ -6,8 +6,8 @@ const { Writable } = require('stream'),
       request = require('request'),
       { Fault } = require('@medable/mdctl-core'),
       { stringifyContent } = require('@medable/mdctl-core-utils/values'),
-      { md5FileHash } = require('@medable/mdctl-core-utils/crypto'),
-      { ensureDir } = require('@medable/mdctl-core-utils/directory'),
+      { md5FileHash } = require('@medable/mdctl-node-utils/crypto'),
+      { ensureDir } = require('@medable/mdctl-node-utils/directory'),
       { privatesAccessor } = require('@medable/mdctl-core-utils/privates'),
       KNOWN_FILES = {
         assets: 'env/**/*.{ico,png,jpeg,jpg,gif,html,txt,bin,js}',
@@ -106,7 +106,7 @@ class ExportFileTreeAdapter extends Writable {
     /* eslint-disable no-restricted-syntax */
     for (const asset of assets) {
       const dest = asset.dest || `${asset.name}.${asset.ext}`,
-            section = _.find(sections, doc => doc.id === asset.sectionId || doc.name === `${asset.sectionName}`)
+            section = _.find(sections, doc => doc.id === asset.sectionId)
       if (section) {
         /* eslint-disable no-param-reassign */
         asset.folder = `${section.folder}/${asset.type}`

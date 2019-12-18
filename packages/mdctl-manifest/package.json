@@ -1,6 +1,6 @@
 {
   "name": "@medable/mdctl-manifest",
-  "version": "1.0.28",
+  "version": "1.0.38",
   "description": "Medable Developer Tools :: Manifest Manager",
   "repository": {
     "type": "git",
@@ -25,9 +25,12 @@
     "lint": "eslint *.js test"
   },
   "dependencies": {
-    "@medable/mdctl-core": "^1.0.28",
-    "@medable/mdctl-core-schemas": "^1.0.28",
-    "@medable/mdctl-core-utils": "^1.0.28"
+    "@medable/mdctl-core": "^1.0.38",
+    "@medable/mdctl-core-schemas": "^1.0.38",
+    "@medable/mdctl-core-utils": "^1.0.38",
+    "@medable/mdctl-node-utils": "^1.0.38",
+    "lodash": "^4.17.15",
+    "pluralize": "^8.0.0"
   },
   "devDependencies": {
     "chai": "^4.1.2",

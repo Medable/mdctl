@@ -1,13 +1,22 @@
-
-const https = require('https'),
+/* globals window */
+/* eslint-disable no-nested-ternary, one-var */
+const _ = require('lodash'),
+      https = require('https'),
       axios = require('axios'),
-      axiosCookieJarSupport = require('axios-cookiejar-support').default,
+      axiosCookieJarSupport = require('axios-cookiejar-support'),
       { pathTo } = require('@medable/mdctl-core-utils'),
       { isSet, rBool, rString } = require('@medable/mdctl-core-utils/values'),
       { privatesAccessor } = require('@medable/mdctl-core-utils/privates'),
-      { Fault } = require('@medable/mdctl-core')
+      { Fault } = require('@medable/mdctl-core'),
+      adapter = require('./adapters')
 
-axiosCookieJarSupport(axios)
+if (_.isFunction(axiosCookieJarSupport)) {
+  axiosCookieJarSupport(axios)
+} else if (_.isFunction(axiosCookieJarSupport.default)) {
+  axiosCookieJarSupport.default(axios)
+}
+
+axios.defaults.validateStatus = () => true
 
 class Request {
 
@@ -36,10 +45,8 @@ class Request {
   async run(input) {
 
     const privates = privatesAccessor(this),
-
           // don't fully clone in case of large payload
           options = Object.assign({}, isSet(input) ? input : {}),
-
           { stream } = options
 
     if (privates.request) {
@@ -50,22 +57,22 @@ class Request {
     delete options.stream
 
     pathTo(options.headers, 'Content-Type', rString(options.headers['Content-Type'], 'application/json'))
-
-    const requestConfig = {
-      ...options,
-      withCredentials: true,
-      responseType: options.responseType || (stream ? 'stream' : options.json ? 'json' : 'arraybuffer'),
-      httpsAgent: new https.Agent({ rejectUnauthorized: options.strictSSL })
-    }
+    const responseType = (stream ? 'stream' : options.json ? 'json' : 'arraybuffer'),
+          requestConfig = {
+            ...options,
+            withCredentials: true,
+            responseType: options.responseType || responseType,
+            httpsAgent: new https.Agent({ rejectUnauthorized: options.strictSSL }),
+            adapter: config => adapter(config, typeof window !== 'undefined' && stream, options.legacy)
+          }
 
     try {
-      const response = await axios.request(requestConfig)
-
-      if (stream) {
-        return response.data.pipe(stream)
-      }
-      const contentType = pathTo(response, 'headers.content-type'),
+      const response = await axios.request(requestConfig),
+            contentType = pathTo(response, 'headers.content-type'),
             { data } = response
+      if (stream) {
+        return typeof stream === 'boolean' ? data : data.pipe(stream)
+      }
       let result
 
       if (pathTo(data, 'object') === 'fault') {
@@ -92,13 +99,17 @@ class Request {
       privates.request = response.request
       privates.response = response
       privates.result = result
-
       return result
-
-
     } catch (e) {
-      privates.error = Fault.from(e)
-      return Promise.reject(privates.error)
+      privates.response = e.response
+      if (e.response && e.response.data) {
+        if (stream) {
+          return Promise.reject(e.response.data)
+        }
+        privates.error = Fault.from(e.response.data)
+        return Promise.reject(privates.error)
+      }
+      return Promise.reject(e)
     }
 
   }

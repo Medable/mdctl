@@ -10,4 +10,5 @@ cli.run()
   })
   .catch((err) => {
     console.log(Fault.from(err, true).toJSON())
+    process.exit(1)
   })

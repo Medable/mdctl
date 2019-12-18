@@ -2,7 +2,7 @@
 const _ = require('lodash'),
       {
         loadJsonOrYaml,
-      } = require('@medable/mdctl-core-utils'),
+      } = require('@medable/mdctl-node-utils'),
       Environment = require('@medable/mdctl-core/credentials/environment'),
       {
         askUserCredentials,

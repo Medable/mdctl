@@ -8,7 +8,8 @@ const path = require('path'),
       { Client } = require('@medable/mdctl-api'),
       KeytarCredentialsProvider = require('@medable/mdctl-credentials-provider-keychain'),
       PouchDbCredentialsProvider = require('@medable/mdctl-credentials-provider-pouchdb'),
-      { loadJsonOrYaml, guessEndpoint } = require('@medable/mdctl-core-utils'),
+      { guessEndpoint } = require('@medable/mdctl-core-utils'),
+      { loadJsonOrYaml } = require('@medable/mdctl-node-utils'),
       {
         stringToBoolean, rBool, rString, rVal, isSet
       } = require('@medable/mdctl-core-utils/values'),
@@ -42,7 +43,7 @@ module.exports = class MdCtlCli {
       // store cli arguments
       args: createConfig(Object.assign(
         {},
-        yargs.options({}).argv,
+        yargs.help(false).options({}).argv,
         process.argv.slice(2)
       )),
 
@@ -82,6 +83,14 @@ module.exports = class MdCtlCli {
 
     try {
 
+      let args = process.argv.slice(2)
+      if (args[1] === '--help') {
+        // force help if argument present
+        // eslint-disable-next-line no-param-reassign
+        taskName = 'help'
+        args = process.argv.slice(2).reverse()
+      }
+
       const privates = privatesAccessor(this),
             task = createTask(taskName)
 
@@ -89,7 +98,7 @@ module.exports = class MdCtlCli {
       privates.args = createConfig(Object.assign(
         {},
         yargs.argv,
-        process.argv.slice(2)
+        args
       ))
 
       await this.configure()

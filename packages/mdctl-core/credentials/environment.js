@@ -1,5 +1,5 @@
 
-const { URL } = require('url'),
+const { URL } = require('universal-url'),
       { rString, isSet } = require('@medable/mdctl-core-utils/values'),
       { privatesAccessor } = require('@medable/mdctl-core-utils/privates'),
       supportedProtocols = new Set(['http:', 'https:']),
