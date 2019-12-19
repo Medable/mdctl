@@ -1,11 +1,19 @@
 /* eslint-disable class-methods-use-this */
 
 const _ = require('lodash'),
+      { Fault } = require('@medable/mdctl-core'),
       { isSet } = require('@medable/mdctl-core-utils/values'),
-      lockUnlock = require('../lib/lock_unlock'),
+      Table = require('cli-table'),
+      LockUnlock = require('../lib/lock_unlock'),
+      { askWorkspaceLock } = require('../lib/questionnaires'),
       Task = require('../lib/task')
 
 class Workspace extends Task {
+
+  constructor() {
+    super()
+    this.optionKeys = ['dir', 'endpoint', 'env', 'actions']
+  }
 
   async run(cli) {
 
@@ -22,20 +30,53 @@ class Workspace extends Task {
     return this[handler](cli)
   }
 
-  async 'workspace@lock'(cli) {
-    // eslint-disable-next-line max-len
-    const params = Object.assign(await cli.getAuthOptions() || {}, await cli.getArguments(this.optionKeys)),
-          client = await cli.getApiClient(),
-          { endpoint: defaultEndpoint, env: defaultEnv } = client.credentials.environment,
-          // eslint-disable-next-line max-len
-          { endpoint, env, dir } = Object.assign({ endpoint: defaultEndpoint, env: defaultEnv }, params)
-    await lockUnlock.lock(dir || process.cwd(), endpoint, env)
+
+  static get taskNames() {
+    return ['workspace', 'ws']
   }
 
-  async 'workspace@unlock'(cli) {
-    const params = await cli.getArguments(this.optionKeys),
-          { dir } = params
-    await lockUnlock.unlock(dir || process.cwd())
+  async 'workspace@locks'(cli) {
+    // eslint-disable-next-line max-len
+    const params = Object.assign(await cli.getAuthOptions() || {}, { action: this.args('2'), dir: process.cwd() }, cli.getArguments(this.optionKeys)),
+          // eslint-disable-next-line max-len
+          result = await askWorkspaceLock(params),
+          client = await cli.getApiClient(),
+          { endpoint: defaultEndpoint, env: defaultEnv } = client.credentials.environment,
+          options = Object.assign({ endpoint: defaultEndpoint, env: defaultEnv }, result),
+          {
+            dir, endpoint, env, actions
+          } = options,
+          lockUnlock = new LockUnlock(dir, endpoint, env, actions)
+
+    let response = ''
+    switch (options.action) {
+      case 'add':
+        await lockUnlock.addLock()
+        break
+      case 'remove':
+        await lockUnlock.removeLock()
+        break
+      case 'list':
+        // eslint-disable-next-line no-case-declarations
+        const locks = lockUnlock.getCurrentLocks(),
+              table = new Table({
+                head: ['Endpoint', 'Env (Org Code)', 'Lock For', 'Url'],
+                colWidths: [20, 20, 20, 50]
+              })
+
+        // eslint-disable-next-line max-len
+        table.push(...locks.map(lock => [lock.endpoint, lock.env, lock.actions, lockUnlock.formatEndpoint(lock.endpoint)]))
+        response = table.toString()
+        break
+      case 'clear':
+        await lockUnlock.clearLocks()
+        break
+      default:
+        throw Fault.create('kNoAction', {
+          reason: 'No action defined for locks'
+        })
+    }
+    return console.log(response)
   }
 
   // ----------------------------------------------------------------------------------------------
@@ -51,14 +92,13 @@ class Workspace extends Task {
       
       Usage: 
         
-        mdctl workspace [command] [options]
+        mdctl workspace [command] [add|remove|clear] [options]
             
       Arguments:               
         
         command                      
-          lock - will lock workspace to an specific endpoint/env location
-          unlock - will remove lock for an specific endpoint/env location    
-                  
+          locks - will show the options if empty action 
+            
         options     
           --endpoint sets the endpoint. eg. api.dev.medable.com     
           --env sets the environment. eg. medable, it could also be [*] this will enable any environment.  
