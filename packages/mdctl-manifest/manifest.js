@@ -142,7 +142,7 @@ class ManifestFileAdapter {
       const filePath = `${out}/js/${template.exportKey}.js`
       ensureDir(`${out}/js`)
       fs.writeFileSync(filePath, 'return true;')
-      object.script = filePath.replace(out, '')
+      object.script = filePath.replace(output, '')
     }
     if (type === 'template') {
       /* eslint no-param-reassign: "error" */
@@ -159,7 +159,7 @@ class ManifestFileAdapter {
           }
           const file = `${out}/tpl/${template.exportKey}.${cnt.name}.${ext}`
           fs.writeFileSync(file, cnt.data)
-          cnt.data = file.replace(out, '')
+          cnt.data = file.replace(output, '')
         })
       })
     }
