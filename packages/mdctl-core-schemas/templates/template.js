@@ -50,8 +50,7 @@ class Template {
   getBoilerplate() {
 
     const object = {
-      object: this.object,
-      resource: this.resource
+      object: this.object
     }
     if (this.type) {
       object.type = this.type
