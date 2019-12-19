@@ -33,9 +33,10 @@ const pump = require('pump'),
               importStream = new ImportStream(fileAdapter),
               ndjsonStream = ndjson.stringify(),
               streamList = [importStream, ndjsonStream],
-              { endpoint, env } = client.credentials.environment
+              { endpoint, env } = client.credentials.environment,
+              lockUnlock = new LockUnlock(inputDir, endpoint, env)
 
-        if (!LockUnlock.allowed(inputDir, endpoint, env)) {
+        if (lockUnlock.checkLock(['import'])) {
           throw Fault.create('kWorkspaceLocked', {
             reason: `There is a lock in the workspace ${inputDir} for ${endpoint}/${env}`,
             path: inputDir

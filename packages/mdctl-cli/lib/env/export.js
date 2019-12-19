@@ -13,6 +13,7 @@ const fs = require('fs'),
       ExportStream = require('@medable/mdctl-core/streams/export_stream'),
       ExportFileTreeAdapter = require('@medable/mdctl-export-adapter-tree'),
       { Client } = require('@medable/mdctl-api'),
+      LockUnlock = require('../lock_unlock'),
 
       exportEnv = async(input) => {
 
@@ -36,7 +37,15 @@ const fs = require('fs'),
                 clearOutput: options.clear
               },
               streamTransform = new ExportStream(),
-              adapter = options.adapter || new ExportFileTreeAdapter(outputDir, streamOptions)
+              adapter = options.adapter || new ExportFileTreeAdapter(outputDir, streamOptions),
+              // eslint-disable-next-line max-len
+              lockUnlock = new LockUnlock(outputDir, client.environment.endpoint, client.environment.env)
+
+        if (lockUnlock.checkLock(['export'])) {
+          throw Fault.create('kWorkspaceLocked', {
+            reason: `There is a lock in the workspace ${outputDir} for ${client.environment.endpoint}/${client.environment.env}`
+          })
+        }
 
         let inputStream = ndjson.parse()
         if (!options.stream) {

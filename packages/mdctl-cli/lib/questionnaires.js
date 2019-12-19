@@ -148,6 +148,44 @@ const { prompt } = require('inquirer'),
         return result.credentialsIndex
       },
 
+      askWorkspaceLock = async(inputArgs) => {
+        const currentArgs = Object.assign(
+                _.clone(inputArgs),
+                guessEndpoint(inputArgs)
+              ),
+              result = await prompt([{
+                name: 'action',
+                message: 'What do you want to do with locks?',
+                type: 'list',
+                choices: ['add', 'remove', 'list', 'clear'],
+                when: () => !['add', 'remove', 'list', 'clear'].includes(_.get(currentArgs, 'action')) && !isSet(currentArgs.action)
+              }, {
+                name: 'endpoint',
+                message: 'The api endpoint (example: dev or edge)',
+                type: 'input',
+                when: hash => !isSet(currentArgs.endpoint) && ['clear', 'list'].indexOf((hash.action || currentArgs.action)) < 0,
+                validate: value => value !== '' || 'Invalid value for endpoint',
+                default: rString(_.get(currentArgs, 'endpoint'))
+              },
+              {
+                type: 'input',
+                name: 'env',
+                message: 'The env (org code, empty will match all)',
+                default: rString(_.get(currentArgs, 'env')),
+                when: hash => !isSet(currentArgs.env) && ['clear', 'list'].indexOf((hash.action || currentArgs.action)) < 0
+              },
+              {
+                type: 'checkbox',
+                name: 'actions',
+                message: 'Use this lock for',
+                choices: ['import', 'export'],
+                default: rString(_.get(currentArgs, 'actions'), 'import,export').split(','),
+                when: hash => !isSet(currentArgs.actions) && ['clear', 'list'].indexOf((hash.action || currentArgs.action)) < 0
+              }
+              ])
+        return _.extend(currentArgs, result)
+      },
+
       question = async(message, defaultValue, options = {}) => {
         const result = await prompt(Object.assign({
           type: 'input',
@@ -162,5 +200,6 @@ module.exports = {
   askUserCredentials,
   askUserToSaveCredentials,
   askUserToChooseCredentials,
+  askWorkspaceLock,
   question
 }
