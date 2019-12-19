@@ -2,10 +2,10 @@
 
 const _ = require('lodash'),
       ndjson = require('ndjson'),
+      Stream = require('stream'),
       { add } = require('@medable/mdctl-manifest'),
       { isSet } = require('@medable/mdctl-core-utils/values'),
       { pathTo } = require('@medable/mdctl-core-utils'),
-      { Fault } = require('@medable/mdctl-core'),
       exportEnv = require('../lib/env/export'),
       importEnv = require('../lib/env/import'),
       Task = require('../lib/task')
@@ -106,7 +106,11 @@ class Env extends Task {
       try {
         stream = await importEnv({ client, ...params, stream: ndjson.parse() })
       } catch (e) {
-        stream = e
+        if (e instanceof Stream) {
+          stream = e
+        } else {
+          return reject(e)
+        }
       }
 
       stream.on('data', (data) => {
@@ -172,7 +176,7 @@ class Env extends Task {
         command                      
           export - export from an endpoint environment        
           import - import to an endpoint environment   
-          add object [type] name - add a new resource      
+          add object [type] name - add a new resource    
                   
         options     
           --endpoint sets the endpoint. eg. api.dev.medable.com     

@@ -7,10 +7,11 @@ const pump = require('pump'),
       } = require('@medable/mdctl-core-utils/values'),
       { Transform } = require('stream'),
       { searchParamsToObject } = require('@medable/mdctl-core-utils'),
-      { Config } = require('@medable/mdctl-core'),
+      { Config, Fault } = require('@medable/mdctl-core'),
       ImportStream = require('@medable/mdctl-core/streams/import_stream'),
       ImportFileTreeAdapter = require('@medable/mdctl-import-adapter'),
       { Client } = require('@medable/mdctl-api'),
+      LockUnlock = require('../lock_unlock'),
 
       importEnv = async(input) => {
 
@@ -31,7 +32,18 @@ const pump = require('pump'),
               fileAdapter = new ImportFileTreeAdapter(inputDir, options.format),
               importStream = new ImportStream(fileAdapter),
               ndjsonStream = ndjson.stringify(),
-              streamList = [importStream, ndjsonStream]
+              streamList = [importStream, ndjsonStream],
+              { endpoint, env } = client.credentials.environment,
+              lockUnlock = new LockUnlock(inputDir, endpoint, env)
+
+        if (lockUnlock.checkLock(['import'])) {
+          throw Fault.create('kWorkspaceLocked', {
+            reason: `There is a lock in the workspace ${inputDir} for ${endpoint}/${env}`,
+            path: inputDir
+          })
+        }
+
+
         if (options.gzip) {
           if (options.debug) {
             console.debug('Adding gzip stream transform')
