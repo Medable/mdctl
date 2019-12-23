@@ -101,7 +101,8 @@ class Workspace extends Task {
             
         options     
           --endpoint sets the endpoint. eg. api.dev.medable.com     
-          --env sets the environment. eg. medable, it could also be [*] this will enable any environment.  
+          --env sets the environment. eg. medable, it could also be [*] this will enable any environment. 
+          --actions set the actions for the locks eg. import,export 
           --dir if you want to lock/unlock a different location workspace                                                 
     `
   }
