@@ -180,7 +180,7 @@ const { prompt } = require('inquirer'),
                 message: 'Use this lock for',
                 choices: ['import', 'export'],
                 default: rString(_.get(currentArgs, 'actions'), 'import,export').split(','),
-                when: hash => !isSet(currentArgs.actions) && ['clear', 'list'].indexOf((hash.action || currentArgs.action)) < 0
+                when: hash => !isSet(currentArgs.actions) && ['clear', 'list', 'remove'].indexOf((hash.action || currentArgs.action)) < 0
               }
               ])
         return _.extend(currentArgs, result)

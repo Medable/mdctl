@@ -220,9 +220,14 @@ class Env extends Task {
 
   if (config.get('experimental')) {
     Env.prototype['env@provision'] = async(cli) => {
-      const params = await cli.getArguments(['code', 'email', 'name', 'ephemeral']),
-            client = await cli.getApiClient({ credentials: await cli.getAuthOptions() }),
-            response = await provision({ client, params })
+      const params = await cli.getArguments(['code', 'email', 'fullName', 'ephemeral']),
+            client = await cli.getApiClient({ credentials: await cli.getAuthOptions() })
+      try {
+        const response = await provision({ client, params })
+        console.log(response)
+      } catch (e) {
+        console.log(e.toJSON())
+      }
 
     }
     Env.prototype['env@teardown'] = async(cli) => {
