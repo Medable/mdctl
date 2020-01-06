@@ -203,11 +203,10 @@ class Env extends Task {
           teardown - teardown an org
           
         experimental options
-          --code
-          --name
-          --email
-          --ephemeral
-                                  
+          --email sets the email of the admin user eg. admin@medable.com
+          --code sets the environment code (org code) is (optional), is (required) for teardown
+          --name sets the name of the organization (optional).
+          --full-name sets the full name of the admin user (optional)
     `
   }
 
