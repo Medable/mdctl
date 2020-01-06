@@ -207,6 +207,7 @@ class Env extends Task {
           --code sets the environment code (org code) is (optional), is (required) for teardown
           --name sets the name of the organization (optional).
           --full-name sets the full name of the admin user (optional)
+          --ttl-ms sets time to live for the org, cortex has a default value for it if not set.
     `
   }
 
@@ -222,7 +223,7 @@ class Env extends Task {
   if (config.get('experimental')) {
     // Provision
     Env.prototype['env@provision'] = async(cli) => {
-      const params = await cli.getArguments(['code', 'email', 'fullName']),
+      const params = await cli.getArguments(['code', 'name', 'email', 'fullName', 'ttlMs']),
             client = await cli.getApiClient({ credentials: await cli.getAuthOptions() })
       if (!params.email) {
         throw Fault.create('mdctl.invalidArgument.required', { reason: 'Email is required to provision an org.' })

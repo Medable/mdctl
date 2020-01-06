@@ -23,7 +23,7 @@ const { Client } = require('@medable/mdctl-api'),
 
           pathTo(body, 'org.code', params.code)
           pathTo(body, 'org.name', params.orgName)
-          pathTo(body, 'org.ttl', params.ttl)
+          pathTo(body, 'org.ttl', params.ttlMs)
           pathTo(body, 'account.email', params.email)
           pathTo(body, 'account.name', accountName)
 
