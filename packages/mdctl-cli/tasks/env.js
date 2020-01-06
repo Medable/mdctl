@@ -4,6 +4,7 @@ const _ = require('lodash'),
       ndjson = require('ndjson'),
       Stream = require('stream'),
       { add } = require('@medable/mdctl-manifest'),
+      { Fault } = require('@medable/mdctl-core'),
       { isSet } = require('@medable/mdctl-core-utils/values'),
       { pathTo } = require('@medable/mdctl-core-utils'),
       exportEnv = require('../lib/env/export'),
@@ -12,7 +13,7 @@ const _ = require('lodash'),
       {
         createConfig, loadDefaults
       } = require('../lib/config'),
-      provision = require('../lib/env/exp/provision')
+      { provision, teardown } = require('../lib/env/exp/ephemeral_orgs')
 
 class Env extends Task {
 
@@ -105,6 +106,7 @@ class Env extends Task {
       }
     }
 
+    // eslint-disable-next-line consistent-return
     return new Promise(async(resolve, reject) => {
       let stream
       try {
@@ -212,16 +214,20 @@ class Env extends Task {
 }
 
 // ----------------------------------------------------------------------------------------------
-// Experimentals
+// Experimental Features
 // ----------------------------------------------------------------------------------------------
 (async() => {
   const config = createConfig()
   config.update(await loadDefaults())
 
   if (config.get('experimental')) {
+    // Provision
     Env.prototype['env@provision'] = async(cli) => {
-      const params = await cli.getArguments(['code', 'email', 'fullName', 'ephemeral']),
+      const params = await cli.getArguments(['code', 'email', 'fullName']),
             client = await cli.getApiClient({ credentials: await cli.getAuthOptions() })
+      if (!params.email) {
+        throw Fault.create('mdctl.invalidArgument.required', { reason: 'Email is required to provision an org.' })
+      }
       try {
         const response = await provision({ client, params })
         console.log(response)
@@ -230,8 +236,20 @@ class Env extends Task {
       }
 
     }
+
+    // Teardown
     Env.prototype['env@teardown'] = async(cli) => {
-      console.log('teardown set')
+      const params = await cli.getArguments(['code']),
+            client = await cli.getApiClient({ credentials: await cli.getAuthOptions() })
+      try {
+        if (!params.code) {
+          throw Fault.create('mdctl.invalidArgument.required', { reason: 'To teardown an org code must be provided.' })
+        }
+        const response = await teardown({ client, params })
+        console.log(response)
+      } catch (e) {
+        console.log(e.toJSON())
+      }
     }
   }
 })()
