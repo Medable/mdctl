@@ -131,15 +131,8 @@ class LockUnlock {
     } else {
       let currentLock = this.readConfig()
       // eslint-disable-next-line max-len
-      const locksToKeep = _.filter(currentLock, cl => cl.endpoint !== this.endpoint && (this.env !== '' ? cl.env !== this.env : true))
-      if (locksToKeep.length) {
-        currentLock = locksToKeep
-        this.writeConfig(currentLock)
-      } else {
-        throw Fault.create('kNotFoundLock', {
-          reason: `There is no lock in current workspace: ${this.configFile}`
-        })
-      }
+      currentLock = _.filter(currentLock, cl => cl.endpoint !== this.endpoint && (this.env !== '' ? cl.env !== this.env : true))
+      this.writeConfig(currentLock)
     }
   }
 

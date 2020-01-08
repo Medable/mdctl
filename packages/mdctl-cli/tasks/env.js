@@ -4,11 +4,16 @@ const _ = require('lodash'),
       ndjson = require('ndjson'),
       Stream = require('stream'),
       { add } = require('@medable/mdctl-manifest'),
+      { Fault } = require('@medable/mdctl-core'),
       { isSet } = require('@medable/mdctl-core-utils/values'),
       { pathTo } = require('@medable/mdctl-core-utils'),
       exportEnv = require('../lib/env/export'),
       importEnv = require('../lib/env/import'),
-      Task = require('../lib/task')
+      Task = require('../lib/task'),
+      {
+        createConfig, loadDefaults
+      } = require('../lib/config'),
+      { provision, teardown } = require('../lib/env/exp/ephemeral_orgs')
 
 class Env extends Task {
 
@@ -101,6 +106,7 @@ class Env extends Task {
       }
     }
 
+    // eslint-disable-next-line consistent-return
     return new Promise(async(resolve, reject) => {
       let stream
       try {
@@ -176,7 +182,7 @@ class Env extends Task {
         command                      
           export - export from an endpoint environment        
           import - import to an endpoint environment   
-          add object [type] name - add a new resource    
+          add object [type] name - add a new resource  
                   
         options     
           --endpoint sets the endpoint. eg. api.dev.medable.com     
@@ -191,10 +197,61 @@ class Env extends Task {
           --production - (Import only) default: false. To help prevent unintentional imports, the production flag must be set in production and only in production environments.
           --triggers - (Import only) default: true. set to false to disable script triggers for imported resources
           --dry-run - (Import only) will skip calling api
-                                  
+          
+        experimental commands
+          provision - provision an org into an environment
+          teardown - teardown an org
+          
+        experimental options
+          --email sets the email of the admin user eg. admin@medable.com
+          --code sets the environment code (org code) is (optional), is (required) for teardown
+          --name sets the name of the organization (optional).
+          --full-name sets the full name of the admin user (optional)
+          --ttl-ms sets time to live for the org, cortex has a default value for it if not set.
     `
   }
 
 }
+
+// ----------------------------------------------------------------------------------------------
+// Experimental Features
+// ----------------------------------------------------------------------------------------------
+(async() => {
+  const config = createConfig()
+  config.update(await loadDefaults())
+
+  if (config.get('experimental')) {
+    // Provision
+    Env.prototype['env@provision'] = async(cli) => {
+      const params = await cli.getArguments(['code', 'name', 'email', 'fullName', 'ttlMs']),
+            client = await cli.getApiClient({ credentials: await cli.getAuthOptions() })
+      if (!params.email) {
+        throw Fault.create('mdctl.invalidArgument.required', { reason: 'Email is required to provision an org.' })
+      }
+      try {
+        const response = await provision({ client, params })
+        console.log(response)
+      } catch (e) {
+        console.log(e.toJSON())
+      }
+
+    }
+
+    // Teardown
+    Env.prototype['env@teardown'] = async(cli) => {
+      const params = await cli.getArguments(['code']),
+            client = await cli.getApiClient({ credentials: await cli.getAuthOptions() })
+      try {
+        if (!params.code) {
+          throw Fault.create('mdctl.invalidArgument.required', { reason: 'To teardown an org code must be provided.' })
+        }
+        const response = await teardown({ client, params })
+        console.log(response)
+      } catch (e) {
+        console.log(e.toJSON())
+      }
+    }
+  }
+})()
 
 module.exports = Env
