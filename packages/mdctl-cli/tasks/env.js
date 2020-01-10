@@ -206,6 +206,7 @@ class Env extends Task {
           --email sets the email of the admin user eg. admin@medable.com
           --code sets the environment code (org code) is (optional), is (required) for teardown
           --name sets the name of the organization (optional).
+          --password sets the password for the admin user (optional).
           --full-name sets the full name of the admin user (optional)
           --ttl-ms sets time to live for the org, cortex has a default value for it if not set.
     `
@@ -223,16 +224,16 @@ class Env extends Task {
   if (config.get('experimental')) {
     // Provision
     Env.prototype['env@provision'] = async(cli) => {
-      const params = await cli.getArguments(['code', 'name', 'email', 'fullName', 'ttlMs']),
+      const params = await cli.getArguments(['code', 'name', 'email', 'password', 'fullName', 'ttlMs']),
             client = await cli.getApiClient({ credentials: await cli.getAuthOptions() })
       if (!params.email) {
         throw Fault.create('mdctl.invalidArgument.required', { reason: 'Email is required to provision an org.' })
       }
       try {
         const response = await provision({ client, params })
-        console.log(response)
+        console.log(JSON.stringify(response, null, '  '))
       } catch (e) {
-        console.log(e.toJSON())
+        console.log(JSON.stringify(e.toJSON(), null, '  '))
       }
 
     }
@@ -246,9 +247,9 @@ class Env extends Task {
           throw Fault.create('mdctl.invalidArgument.required', { reason: 'To teardown an org code must be provided.' })
         }
         const response = await teardown({ client, params })
-        console.log(response)
+        console.log(JSON.stringify(response, null, '  '))
       } catch (e) {
-        console.log(e.toJSON())
+        console.log(JSON.stringify(e.toJSON(), null, '  '))
       }
     }
   }
