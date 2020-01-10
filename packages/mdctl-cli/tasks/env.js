@@ -224,32 +224,32 @@ class Env extends Task {
   if (config.get('experimental')) {
     // Provision
     Env.prototype['env@provision'] = async(cli) => {
-      const params = await cli.getArguments(['code', 'name', 'email', 'password', 'fullName', 'ttlMs']),
+      const params = await cli.getArguments(['code', 'name', 'email', 'password', 'fullName', 'ttlMs', 'format']),
             client = await cli.getApiClient({ credentials: await cli.getAuthOptions() })
       if (!params.email) {
         throw Fault.create('mdctl.invalidArgument.required', { reason: 'Email is required to provision an org.' })
       }
       try {
         const response = await provision({ client, params })
-        console.log(JSON.stringify(response, null, '  '))
+        console.log(Task.formatOutput(response, params.format))
       } catch (e) {
-        console.log(JSON.stringify(e.toJSON(), null, '  '))
+        console.log(Task.formatOutput(e.toJSON()))
       }
 
     }
 
     // Teardown
     Env.prototype['env@teardown'] = async(cli) => {
-      const params = await cli.getArguments(['code']),
+      const params = await cli.getArguments(['code', 'format']),
             client = await cli.getApiClient({ credentials: await cli.getAuthOptions() })
       try {
         if (!params.code) {
           throw Fault.create('mdctl.invalidArgument.required', { reason: 'To teardown an org code must be provided.' })
         }
         const response = await teardown({ client, params })
-        console.log(JSON.stringify(response, null, '  '))
+        console.log(Task.formatOutput(response, params.format))
       } catch (e) {
-        console.log(JSON.stringify(e.toJSON(), null, '  '))
+        console.log(Task.formatOutput(e.toJSON()))
       }
     }
   }
