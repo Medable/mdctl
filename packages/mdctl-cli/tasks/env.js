@@ -224,16 +224,16 @@ class Env extends Task {
   if (config.get('experimental')) {
     // Provision
     Env.prototype['env@provision'] = async(cli) => {
-      const params = await cli.getArguments(['code', 'name', 'email', 'password', 'fullName', 'ttlMs', 'json']),
+      const params = await cli.getArguments(['code', 'name', 'email', 'password', 'fullName', 'ttlMs']),
             client = await cli.getApiClient({ credentials: await cli.getAuthOptions() })
       if (!params.email) {
         throw Fault.create('mdctl.invalidArgument.required', { reason: 'Email is required to provision an org.' })
       }
       try {
         const response = await provision({ client, params })
-        console.log(params.json ? JSON.stringify(response) : response)
+        console.log(JSON.stringify(response, null, '  '))
       } catch (e) {
-        console.log(e.toJSON())
+        console.log(JSON.stringify(e.toJSON(), null, '  '))
       }
 
     }
@@ -247,9 +247,9 @@ class Env extends Task {
           throw Fault.create('mdctl.invalidArgument.required', { reason: 'To teardown an org code must be provided.' })
         }
         const response = await teardown({ client, params })
-        console.log(response)
+        console.log(JSON.stringify(response, null, '  '))
       } catch (e) {
-        console.log(e.toJSON())
+        console.log(JSON.stringify(e.toJSON(), null, '  '))
       }
     }
   }
