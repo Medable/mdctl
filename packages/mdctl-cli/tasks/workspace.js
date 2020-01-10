@@ -36,8 +36,9 @@ class Workspace extends Task {
   }
 
   async 'workspace@locks'(cli) {
-    // eslint-disable-next-line max-len
-    const params = Object.assign(await cli.getAuthOptions() || {}, { action: this.args('2'), dir: process.cwd() }, cli.getArguments(this.optionKeys)),
+    const action = ['add', 'remove', 'list', 'clear'].indexOf(this.args('2')) < 0 ? null : this.args('2'),
+          // eslint-disable-next-line max-len
+          params = Object.assign(await cli.getAuthOptions() || {}, { action, dir: process.cwd() }, cli.getArguments(this.optionKeys)),
           // eslint-disable-next-line max-len
           result = await askWorkspaceLock(params),
           client = await cli.getApiClient(),
