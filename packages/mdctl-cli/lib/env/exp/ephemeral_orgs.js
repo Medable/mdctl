@@ -26,6 +26,7 @@ const { Client } = require('@medable/mdctl-api'),
           pathTo(body, 'org.ttl', params.ttlMs)
           pathTo(body, 'account.email', params.email)
           pathTo(body, 'account.name', accountName)
+          pathTo(body, 'account.password', params.password)
 
           response = await client.post('/sys/env', body)
           return response
