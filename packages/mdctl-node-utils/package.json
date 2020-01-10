@@ -1,6 +1,6 @@
 {
   "name": "@medable/mdctl-node-utils",
-  "version": "1.0.42",
+  "version": "1.0.43",
   "description": "Medable Developer Node Tools :: Utils",
   "repository": {
     "type": "git",
@@ -25,9 +25,9 @@
     "lint": "eslint *.js"
   },
   "dependencies": {
-    "@medable/mdctl-core-utils": "^1.0.42",
-    "@medable/mdctl-credentials-provider-keychain": "^1.0.42",
-    "@medable/mdctl-credentials-provider-pouchdb": "^1.0.42",
+    "@medable/mdctl-core-utils": "^1.0.43",
+    "@medable/mdctl-credentials-provider-keychain": "^1.0.43",
+    "@medable/mdctl-credentials-provider-pouchdb": "^1.0.43",
     "create-hash": "^1.2.0",
     "js-yaml": "^3.13.1",
     "lodash": "^4.17.15"
