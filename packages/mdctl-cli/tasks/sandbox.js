@@ -4,8 +4,11 @@ const _ = require('lodash'),
       jsyaml = require('js-yaml'),
       fs = require('fs'),
       { rString, isSet, stringToBoolean } = require('@medable/mdctl-core-utils/values'),
+      ndjson = require('ndjson'),
+      { pathTo } = require('@medable/mdctl-core-utils'),
       { loadJsonOrYaml } = require('@medable/mdctl-node-utils'),
       sandbox = require('@medable/mdctl-sandbox'),
+      { Fault } = require('@medable/mdctl-core'),
       Task = require('../lib/task')
 
 
@@ -40,6 +43,49 @@ class Sandbox extends Task {
 
     if (isSet(options.strictSSL)) {
       options.client.setRequestOption('strictSSL', stringToBoolean(options.strictSSL))
+    }
+
+    if (this.args('ndjson')) {
+
+      pathTo(options, 'requestOptions.headers.accept', 'application/x-ndjson')
+      options.stream = ndjson.parse()
+
+      const outputResult = (data) => {
+              const formatted = Sandbox.formatOutput(data, format),
+                    isError = data && data.object === 'fault'
+
+              if (isError) {
+                console.error(formatted)
+              } else {
+                console.log(formatted)
+              }
+            },
+            stream = await sandbox.run(options)
+
+      return new Promise((resolve) => {
+
+        stream.on('data', (data) => {
+          if (pathTo(data, 'object') === 'fault') {
+            outputResult(Fault.from(data).toJSON())
+          } else if (pathTo(data, 'object') === 'result') {
+            outputResult(data.data)
+          } else {
+            outputResult(data)
+          }
+        })
+
+        stream.on('error', (error) => {
+          outputResult(Fault.from(error).toJSON())
+          resolve(true)
+        })
+
+        stream.on('end', () => {
+          resolve(true)
+        })
+
+      })
+
+
     }
 
     try {
@@ -116,7 +162,8 @@ class Sandbox extends Task {
                 
       Options 
         
-        --optimize - run through script optimizer to test pre-compiled bytecode    
+        --optimize - run through script optimizer to test pre-compiled bytecode
+        --ndjson -- sends the "accept: application/x-ndjson" header and outputs as the stream is received  
         --body - request.body
         --arguments - script.arguments                                                                                                      
         --file - reads body, arguments, optimize and strictSSL from a json/yaml file.                                                         
