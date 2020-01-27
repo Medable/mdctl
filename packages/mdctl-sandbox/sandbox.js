@@ -20,6 +20,7 @@ module.exports = {
    *  body: request.body replacement
    *  script: function or string. the script to run.
    *  stats: boolean false. if true, return { result, stats }
+   *  stream - pipes the req to the stream and returns (errors and results are not parsed)
    *  requestOptions
    *
    * @returns {Promise<*>}
@@ -44,11 +45,12 @@ module.exports = {
             )
           },
           runOptions = {
-            requestOptions: options.requestOptions
+            requestOptions: options.requestOptions,
+            stream: options.stream
           },
           result = await client.post('/sys/script_runner', payload, runOptions)
 
-    if (rBool(options.stats, false)) {
+    if (!options.stream && rBool(options.stats, false)) {
       try {
         stats = JSON.parse(client.response.headers['cortex-sandbox-stats'])
       } catch (e) {
