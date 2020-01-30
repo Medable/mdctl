@@ -18,7 +18,8 @@ const _ = require('lodash'),
 class Env extends Task {
 
   constructor() {
-    super({
+
+    const options = {
       format: {
         default: 'json',
         type: 'string'
@@ -55,12 +56,18 @@ class Env extends Task {
         type: 'boolean',
         default: true
       },
+      silent: {
+        type: 'boolean',
+        default: false
+      },
       production: {
         type: 'boolean',
         default: false
       }
-    })
-    this.optionKeys = ['manifest', 'format', 'gzip', 'clear', 'dir', 'debug', 'dryRun', 'backup', 'triggers', 'preferUrls', 'production']
+    }
+
+    super(options)
+    this.optionKeys = Object.keys(options)
   }
 
   async run(cli) {
