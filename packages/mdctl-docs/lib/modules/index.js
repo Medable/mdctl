@@ -1,5 +1,4 @@
-const env = require('./env')
-
 module.exports = {
-  env,
+  cortex: require('./cortex'),
+  sandbox: require('./sandbox'),
 }
