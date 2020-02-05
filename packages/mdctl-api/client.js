@@ -218,13 +218,13 @@ class Client {
       req.run(Object.assign({ url, stream }, requestOptions))
         .then(async(result) => {
 
-          if (stream) {
-            return resolve(result)
-          }
-
           const { response } = req
 
           privates.response = response
+
+          if (stream) {
+            return resolve(result)
+          }
 
           if (isSet(response.headers['medable-csrf-token'])) {
             privates.csrfToken = response.headers['medable-csrf-token']
