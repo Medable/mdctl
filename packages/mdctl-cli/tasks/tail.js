@@ -86,7 +86,11 @@ class Tail extends Task {
           finished = true
 
           if (response.status === 504) {
-            run()
+
+            run().catch(
+              err => void err
+            )
+
           } else {
             outputResult(Fault.from(error).toJSON())
             resolve(true)
@@ -102,7 +106,11 @@ class Tail extends Task {
           finished = true
 
           if (response.status === 200) {
-            run()
+
+            run().catch(
+              err => void err
+            )
+
           } else {
             resolve(true)
           }
