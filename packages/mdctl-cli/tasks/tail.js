@@ -33,8 +33,7 @@ class Tail extends Task {
             const options = {
               client: await cli.getApiClient({ credentials: await cli.getAuthOptions() }),
               stats: false,
-              script: `return sys.tail('${discernSource(this.args('1'))}')`,
-              stream: ndjson.parse()
+              script: `return sys.tail('${discernSource(this.args('1'))}')`
             }
 
             this.applyArgIf(options, 'strictSSL')
@@ -57,31 +56,70 @@ class Tail extends Task {
               console.log(formatted)
             }
           },
-          options = await createOptions(),
-          stream = await sandbox.run(options)
+          options = await createOptions()
 
-    return new Promise((resolve) => {
+    async function run() {
 
-      stream.on('data', (data) => {
-        if (pathTo(data, 'object') === 'fault') {
-          outputResult(Fault.from(data).toJSON())
-        } else if (pathTo(data, 'object') === 'result') {
-          outputResult(data.data)
-        } else {
-          outputResult(data)
-        }
+      let finished = false
+
+      const { client } = options,
+            stream = await sandbox.run({ ...options, stream: ndjson.parse() }),
+            { response } = client
+
+      return new Promise((resolve) => {
+
+        stream.on('data', (data) => {
+          if (pathTo(data, 'object') === 'fault') {
+            outputResult(Fault.from(data).toJSON())
+          } else if (pathTo(data, 'object') === 'result') {
+            outputResult(data.data)
+          } else {
+            outputResult(data)
+          }
+        })
+
+        stream.on('error', (error) => {
+
+          if (finished) {
+            return
+          }
+          finished = true
+
+          if (response.status === 504) {
+
+            run().catch(
+              err => void err
+            )
+
+          } else {
+            outputResult(Fault.from(error).toJSON())
+            resolve(true)
+          }
+
+        })
+
+        stream.on('end', () => {
+
+          if (finished) {
+            return
+          }
+          finished = true
+
+          if (response.status === 200) {
+
+            run().catch(
+              err => void err
+            )
+
+          } else {
+            resolve(true)
+          }
+        })
+
       })
+    }
 
-      stream.on('error', (error) => {
-        outputResult(Fault.from(error).toJSON())
-        resolve(true)
-      })
-
-      stream.on('end', () => {
-        resolve(true)
-      })
-
-    })
+    return run()
 
   }
 
