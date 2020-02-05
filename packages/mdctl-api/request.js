@@ -70,9 +70,14 @@ class Request {
       const response = await axios.request(requestConfig),
             contentType = pathTo(response, 'headers.content-type'),
             { data } = response
+
+      privates.request = response.request
+      privates.response = response
+
       if (stream) {
         return typeof stream === 'boolean' ? data : data.pipe(stream)
       }
+
       let result
 
       if (pathTo(data, 'object') === 'fault') {
@@ -96,8 +101,6 @@ class Request {
         result = data
       }
 
-      privates.request = response.request
-      privates.response = response
       privates.result = result
       return result
     } catch (e) {
