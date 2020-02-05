@@ -1,0 +1,6 @@
+* {{#if name}} `{{{name}}}`{{/if}}{{#if typeString}} { {{{escape_md typeString}}}{{#if default}} = {{{escape_md default}}}{{/if}} }{{/if}}{{#if description}} {{{escape_md description}}}{{/if}}
+{{#if children}}
+{{#each children}}
+  {{> value }}
+{{/each}}
+{{/if}}

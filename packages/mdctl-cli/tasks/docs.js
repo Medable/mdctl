@@ -8,66 +8,31 @@ class Docs extends Task {
 
   constructor() {
 
-    const options = {
-      debug: {
-        default: false,
-        type: 'boolean'
-      },
-      destination: {
-        default: '',
-        type: 'string'
-      },
-      module: {
-        default: '',
-        type: 'string'
-      },
-      source: {
-        default: '',
-        type: 'string'
-      },
-      verbose: {
-        default: false,
-        type: 'boolean'
-      }
-    }
-
-    super(options)
-    this.optionKeys = Object.keys(options)
+    super({})
 
   }
 
   async run(cli) {
-    const params = await cli.getArguments(this.optionKeys)
-    return MdctlDocs.generateDocumentation(params)
+    return MdctlDocs.generateDocumentation()
   }
 
   // ----------------------------------------------------------------------------------------------
 
   static get synopsis() {
 
-    return 'Medable documentation tool'
+    return 'Medable documentation generator'
 
   }
 
   static help() {
 
     return `
-    Medable documentation tool.
+    Medable documentation generator.
 
     Usage:
 
-      mdctl docs [options]
-
-    Arguments:
-
-      options
-        
-        --debug - tool debugging output (WIP)
-        --destination - output directory
-        --module - documentation module name
-        --source - source directory
-        --verbose - detailed output (WIP)
-`
+      mdctl docs
+    `
   }
 
 }

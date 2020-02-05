@@ -107,8 +107,14 @@ const MODULE = Object.freeze({
     }
   ],
   examples: [
-    '```javascript\nmodule.run()\n```',
-    '```javascript\nmodule.run(options)\n```'
+    {
+      name: 'Basic useage',
+      body: '```javascript\nmodule.run()\n```'
+    },
+    {
+      name: 'Advanced useage',
+      body: '```javascript\nmodule.run(options)\n```'
+    }
   ]
 })
 
