@@ -13,21 +13,21 @@ class Docs extends Task {
   }
 
   async run(cli) {
-    return MdctlDocs.generateDocumentation()
+    return MdctlDocs.generateDocumentation('')
   }
 
   // ----------------------------------------------------------------------------------------------
 
   static get synopsis() {
 
-    return 'Medable documentation generator'
+    return 'Medable documentation tool'
 
   }
 
   static help() {
 
     return `
-    Medable documentation generator.
+    Medable documentation tool.
 
     Usage:
 
