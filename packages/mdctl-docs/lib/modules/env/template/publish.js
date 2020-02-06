@@ -5,10 +5,9 @@ const {
 } = require('../../../handlebars')
 const Util = require('../../../util')
 
-function assembleFiles(taffyDb){
-
+function filterDoclets(taffyDb){
   // documented, non-package
-  const doclets = taffyDb({
+  return taffyDb({
     kind: {
       '!is':'package'
     },
@@ -16,22 +15,28 @@ function assembleFiles(taffyDb){
       isUndefined: true
     }
   }).get()
+}
 
-  const modules = {}
+function assembleFiles(doclets){
+
+  const module = {}
   for(const doclet of doclets){
-    console.log(doclet)
+    // assemble module
   }
 
-  const files = Object.values(modules).map(module => ({
-    content: compile(TEMPLATES.MODULE, module),
-    name: `${module.name.toLowerCase()}.md`,
-    path: NAME
-  }))
+  const files = [
+    {
+      content: compile(TEMPLATES.MODULE, module),
+      name: `${module.name.toLowerCase()}.md`,
+    }
+  ]
+
   return files
 }
 
 function publish(taffyDb, opts, tutorials){
-  const files = assembleFiles(taffyDb)
+  const doclets = filterDoclets(taffyDb)
+  const files = assembleFiles(doclets)
   Util.writeFiles(files, Path.normalize(opts.destination))
 }
 

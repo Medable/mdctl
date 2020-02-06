@@ -58,9 +58,9 @@ class Docs extends Task {
 
       options
         
-        --destination - documentation output directory
-        --module - specifies the documentation module (JSDoc plugin + template)
-        --source - directory to be documented
+        --destination - output directory
+        --module - JSDoc plugin and template module
+        --source - source directory
         --verbose - useful for debugging
     `
   }
