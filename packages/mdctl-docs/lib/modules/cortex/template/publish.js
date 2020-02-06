@@ -1,10 +1,9 @@
+const Path = require('path')
 const {
   compile,
   TEMPLATES,
-} = require('../handlebars')
-const Util = require('../util')
-
-const NAME = 'cortex'
+} = require('../../../handlebars')
+const Util = require('../../../util')
 
 function assembleFiles(taffyDb){
 
@@ -136,10 +135,11 @@ function assembleFiles(taffyDb){
   return files
 }
 
-const tags = []
+function publish(taffyDb, opts, tutorials){
+  const files = assembleFiles(taffyDb)
+  Util.writeFiles(files, Path.normalize(opts.destination))
+}
 
 module.exports = {
-  NAME,
-  assembleFiles,
-  tags,
+  publish, // required for JSDoc template
 }

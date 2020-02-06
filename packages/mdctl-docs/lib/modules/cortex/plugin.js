@@ -1,5 +1,3 @@
-const Modules = require('./modules')
-
 function defineTags(dictionary){
 
   /**
@@ -30,15 +28,6 @@ function defineTags(dictionary){
     mustHaveValue: true,
     canHaveType: true
   })
-
-  /**
-   * Module
-   */
-  for(module of Object.values(Modules)){
-    for(tag of module.tags){
-      dictionary.defineTag(tag.id, tag.options)
-    }
-  }
 }
 
 module.exports = {
