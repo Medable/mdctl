@@ -8,12 +8,33 @@ class Docs extends Task {
 
   constructor() {
 
-    super({})
+    const options = {
+      destination: {
+        default: '',
+        type: 'string'
+      },
+      module: {
+        default: '',
+        type: 'string'
+      },
+      source: {
+        default: '',
+        type: 'string'
+      },
+      verbose: {
+        default: false,
+        type: 'boolean'
+      }
+    }
+
+    super(options)
+    this.optionKeys = Object.keys(options)
 
   }
 
   async run(cli) {
-    return MdctlDocs.generateDocumentation('')
+    const params = await cli.getArguments(this.optionKeys)
+    return MdctlDocs.generateDocumentation(params)
   }
 
   // ----------------------------------------------------------------------------------------------
@@ -31,7 +52,16 @@ class Docs extends Task {
 
     Usage:
 
-      mdctl docs
+      mdctl docs [options]
+
+    Arguments:
+
+      options
+        
+        --destination - documentation output directory
+        --module - specifies the documentation module (JSDoc plugin + template)
+        --source - directory to be documented
+        --verbose - useful for debugging
     `
   }
 

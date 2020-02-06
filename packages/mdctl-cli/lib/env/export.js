@@ -1,6 +1,7 @@
 const fs = require('fs'),
       pump = require('pump'),
       ndjson = require('ndjson'),
+      path = require('path'),
       isPlainObject = require('lodash.isplainobject'),
       { URL } = require('url'),
       {
@@ -14,6 +15,7 @@ const fs = require('fs'),
       ExportFileTreeAdapter = require('@medable/mdctl-export-adapter-tree'),
       { Client } = require('@medable/mdctl-api'),
       LockUnlock = require('../lock_unlock'),
+      Docs = require('@medable/mdctl-docs'),
 
       exportEnv = async(input) => {
 
@@ -70,9 +72,18 @@ const fs = require('fs'),
         }
 
         return new Promise((resolve, reject) => {
+          console.log('Exporting env')
           const resultStream = pump(inputStream, streamTransform, adapter, (error) => {
             if (error) {
               return reject(error)
+            }
+
+            if (options.docs){
+              console.log('Documenting env')
+              Docs.generateDocumentation({
+                source: path.join(outputDir, 'env'),
+                module: 'env',
+              })
             }
             return resolve(resultStream)
           })
