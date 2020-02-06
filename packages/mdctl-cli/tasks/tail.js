@@ -5,11 +5,11 @@ const _ = require('lodash'),
         rString, isSet, stringToBoolean, isString
       } = require('@medable/mdctl-core-utils/values'),
       ndjson = require('ndjson'),
+      async = require('async'),
       { pathTo } = require('@medable/mdctl-core-utils'),
       sandbox = require('@medable/mdctl-sandbox'),
       { Fault } = require('@medable/mdctl-core'),
       Task = require('../lib/task')
-
 
 class Tail extends Task {
 
@@ -33,7 +33,8 @@ class Tail extends Task {
             const options = {
               client: await cli.getApiClient({ credentials: await cli.getAuthOptions() }),
               stats: false,
-              script: `return sys.tail('${discernSource(this.args('1'))}')`
+              script: `return sys.tail('${discernSource(this.args('1'))}')`,
+              stream: ndjson.parse()
             }
 
             this.applyArgIf(options, 'strictSSL')
@@ -55,68 +56,119 @@ class Tail extends Task {
             } else {
               console.log(formatted)
             }
-          },
-          options = await createOptions()
+          }
+
 
     async function run() {
 
-      let finished = false
+      let restart = true
 
-      const { client } = options,
-            stream = await sandbox.run({ ...options, stream: ndjson.parse() }),
-            { response } = client
+      async function tail() {
 
-      return new Promise((resolve) => {
+        let handled = false
 
-        stream.on('data', (data) => {
-          if (pathTo(data, 'object') === 'fault') {
-            outputResult(Fault.from(data).toJSON())
-          } else if (pathTo(data, 'object') === 'result') {
-            outputResult(data.data)
-          } else {
-            outputResult(data)
-          }
+        restart = false
+
+        const options = await createOptions(),
+              { client } = options,
+              stream = await sandbox.run(options),
+              { response } = client
+
+        return new Promise((resolve) => {
+
+          stream.on('data', (data) => {
+            if (pathTo(data, 'object') === 'fault') {
+              const err = Fault.from(data)
+              if (err.errCode === 'cortex.error.aborted') {
+                restart = true
+              } else {
+                outputResult(err.toJSON())
+              }
+            } else if (pathTo(data, 'object') === 'result') {
+              outputResult(data.data)
+            } else {
+              outputResult(data)
+            }
+          })
+
+          stream.on('error', (error) => {
+            if (handled) {
+              return
+            }
+            handled = true
+            if (response.status >= 500) {
+              restart = true
+            } else {
+              outputResult(Fault.from(error).toJSON())
+            }
+            resolve()
+
+          })
+
+          stream.on('end', () => {
+            if (handled) {
+              return
+            }
+            handled = true
+            if (response.status === 200) {
+              restart = true
+            }
+            resolve()
+          })
+
         })
+      }
 
-        stream.on('error', (error) => {
+      return new Promise((resolve, reject) => {
 
-          if (finished) {
-            return
+        let tries = 0
+
+        const maxTries = 20,
+              maxTimeout = 10000,
+              timeout = () => Math.min(maxTimeout, (50 * (2 ** tries)))
+
+        async.whilst(
+          () => restart,
+          (callback) => {
+
+            tail()
+              .then(() => {
+
+                if (restart) {
+                  tries = 0
+                }
+                callback()
+
+              })
+              .catch((err) => {
+
+                if (tries < maxTries && ['ECONNREFUSED', 'ECONNRESET', 'ETIMEDOUT'].includes(err.code)) {
+
+                  restart = true
+                  setTimeout(callback, timeout())
+                  tries += 1
+
+                } else {
+
+                  outputResult(Fault.from(err).toJSON())
+                  callback()
+
+                }
+
+              })
+
+          },
+          (err) => {
+            if (err) {
+              reject(err)
+            } else {
+              resolve(true)
+            }
           }
-          finished = true
-
-          if (response.status === 504) {
-
-            run().catch(
-              err => void err
-            )
-
-          } else {
-            outputResult(Fault.from(error).toJSON())
-            resolve(true)
-          }
-
-        })
-
-        stream.on('end', () => {
-
-          if (finished) {
-            return
-          }
-          finished = true
-
-          if (response.status === 200) {
-
-            run().catch(
-              err => void err
-            )
-
-          } else {
-            resolve(true)
-          }
-        })
+        )
 
       })
+
     }
 
     return run()
