@@ -15,6 +15,10 @@ function isInt(n) {
   return typeof n === 'number' && parseFloat(n) === parseInt(n, 10) && !Number.isNaN(n)
 }
 
+function isString(n) {
+  return typeof n === 'string'
+}
+
 function isNumeric(obj) {
   return !Array.isArray(obj) && (obj - (parseFloat(obj) + 1)) >= 0
 }
@@ -317,6 +321,7 @@ module.exports = {
   isPrimitive,
   isInt,
   isNumeric,
+  isString,
   isInteger,
   isValidDate,
   rFunction,
