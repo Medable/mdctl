@@ -8,7 +8,6 @@ const { pad } = require('@medable/mdctl-core-utils/values'),
 class Help extends Task {
 
   async run(cli) {
-    console.log(`Running help`)
 
     let taskName = (cli.args('1') || '').toLowerCase()
     if (taskName.indexOf('--') === 0) {

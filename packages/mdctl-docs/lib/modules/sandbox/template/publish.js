@@ -24,8 +24,7 @@ function assembleFiles(taffyDb){
 
   const files = Object.values(modules).map(module => ({
     content: compile(TEMPLATES.MODULE, module),
-    name: `${module.name.toLowerCase()}.md`,
-    path: NAME
+    name: `${module.name.toLowerCase()}.md`
   }))
   return files
 }

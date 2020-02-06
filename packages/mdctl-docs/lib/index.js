@@ -3,15 +3,9 @@ const Path = require('path')
 
 const jsdoc = Path.join(__dirname, '..', 'node_modules', '.bin', 'jsdoc')
 
-const OPTIONS_DEFAULT = Object.freeze({
-  destination: 'docs',
-  source: '.',
-  verbose: false,
-})
-
 function generateDocumentation(options){
 
-  options = Object.assign({}, OPTIONS_DEFAULT, options)
+  options = Object.assign({}, this.generateDocumentation.default, options)
 
   const params = [
     jsdoc,
@@ -26,11 +20,21 @@ function generateDocumentation(options){
     params.push('-c', config, '-t', template)
   }
 
+  if(options.verbose){
+    params.push('--verbose')
+  }
+
   const command = params.join(' ')
   const stdout = execSync(command)
   options.verbose && console.log(stdout.toString())
   return true
 }
+
+generateDocumentation.default = Object.assign({
+  destination: 'docs',
+  source: '.',
+  verbose: false,
+})
 
 module.exports = {
   generateDocumentation,
