@@ -8,7 +8,6 @@ const TEMPLATES = Object.freeze({
 })
 
 const PARTIALS = Object.freeze([
-  'example',
   'function',
   'object',
   'route',

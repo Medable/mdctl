@@ -61,8 +61,7 @@ class Docs extends Task {
         --destination - output directory
         --module - JSDoc plugin and template module
         --source - source directory
-        --verbose - useful for debugging
-    `
+        --verbose - useful for debugging`
   }
 
 }

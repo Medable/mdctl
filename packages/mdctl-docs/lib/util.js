@@ -9,6 +9,21 @@ function capitalizeFirstCharacter(s){
 }
 
 /**
+ * Object
+ */
+function ensureObjValue(obj, name){
+  if(!obj[name]){
+    obj[name] = {}
+  }
+}
+
+function ensureArrayValue(obj, name){
+  if(!obj[name]){
+    obj[name] = []
+  }
+}
+
+/**
  * Write
  */
 function writeFiles(files, location){
@@ -24,7 +39,7 @@ function writeFile(file, location){
     name,
     path,
   } = file
-  const filePath = Path.join(location, path)
+  const filePath = path ? Path.join(location, path) : location
   const fileLocation = Path.join(filePath, name)
   ensureDir(filePath)
   Fs.writeFileSync(fileLocation, content)
@@ -70,16 +85,20 @@ function addChild(paramList, param, uri){
   }
 }
 
-function reduceParams(params, schema){
-  return params.reduce((params, param) => {
+function reduceParams(params, schema, defaultType='arg'){
+  return params.length ? params.reduce((params, param) => {
     const parts = param.name.split('.')
-    const [
+    let [
       type,
       ...uri
     ] = parts
+    if(uri.length === 0){
+      type = defaultType
+      uri.push(parts[0])
+    }
     addChild(params[type], param, uri)
     return params
-  }, schema)
+  }, schema) : undefined
 }
 
 function reduceParamString(params){
@@ -90,9 +109,24 @@ function reduceParamString(params){
   }, []).join(', ')
 }
 
+function translateFunctionDoclets(doclets){
+  return doclets.map(doclet => ({
+    description: doclet.description,
+    name: doclet.name,
+    paramString: doclet.params && reduceParamString(doclet.params),
+    params: doclet.params && reduceParams(doclet.params, {
+      arg: [],
+      return: []
+    })
+  }))
+}
+
 module.exports = {
   capitalizeFirstCharacter,
+  ensureObjValue,
+  ensureArrayValue,
   reduceParams,
   reduceParamString,
+  translateFunctionDoclets,
   writeFiles,
 }
