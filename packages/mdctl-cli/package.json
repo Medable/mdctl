@@ -46,7 +46,6 @@
     "globby": "^9.1.0",
     "inquirer": "^6.5.2",
     "js-yaml": "^3.13.1",
-    "jsdoc": "^3.6.3",
     "jsonpath": "^1.0.2",
     "jsonwebtoken": "^8.4.0",
     "lodash": "^4.17.15",
