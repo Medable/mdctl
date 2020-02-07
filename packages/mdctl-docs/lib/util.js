@@ -47,6 +47,9 @@ function writeFile(file, location){
 
 function ensureDir(directory){
   const folders = directory.split('/')
+  if(directory.startsWith('/')){
+    folders[0] = '/'
+  }
   let path = ''
   while(folder = folders.shift()){
     path = Path.join(path, folder)
