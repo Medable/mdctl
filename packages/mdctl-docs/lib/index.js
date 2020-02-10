@@ -1,39 +1,40 @@
 const { execSync } = require('child_process')
-const Path = require('path')
+const Path = require('path'),
 
-const jsdoc = Path.join(__dirname, '..', 'node_modules', '.bin', 'jsdoc')
+      jsdoc = Path.join(__dirname, '..', 'node_modules', '.bin', 'jsdoc')
 
-function generateDocumentation(options){
+function generateDocumentation(opts) {
 
-  options = Object.assign({}, this.generateDocumentation.default, options)
+  const options = Object.assign({}, this.generateDocumentation.default, opts),
 
-  const {
-    destination,
-    module,
-    source,
-    verbose,
-  } = options
+        {
+          destination,
+          module,
+          source,
+          verbose,
+        } = options,
 
-  const params = [
-    jsdoc,
-    source,
-    '-r', // recursive
-    '-d', destination,
-  ]
+        params = [
+          jsdoc,
+          source,
+          '-r', // recursive
+          '-d', destination,
+        ]
 
-  if(module){
-    const config = Path.join(__dirname, 'modules', module, 'config.json')
-    const template = Path.join(__dirname, 'modules', module, 'template')
+  if (module) {
+    const config = Path.join(__dirname, 'modules', module, 'config.json'),
+          template = Path.join(__dirname, 'modules', module, 'template')
     params.push('-c', config, '-t', template)
   }
 
-  if(verbose){
+  if (verbose) {
     params.push('--verbose')
   }
 
-  const command = params.join(' ')
-  const stdout = execSync(command)
-  verbose && console.log(stdout.toString())
+  const stdout = execSync(params.join(' ')) // eslint-disable-line one-var
+  if (verbose) {
+    console.log(stdout.toString())
+  }
   return true
 }
 

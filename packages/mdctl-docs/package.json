@@ -17,7 +17,8 @@
   "license": "MIT",
   "scripts": {
     "docs": "./bin/docs.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "eslint lib"
   },
   "bin": {
     "docs": "./bin/docs.js"
@@ -25,5 +26,17 @@
   "dependencies": {
     "handlebars": "^4.7.2",
     "jsdoc": "^3.6.3"
+  },
+  "devDependencies": {
+    "chai": "^4.1.2",
+    "eslint": "^5.16.0",
+    "eslint-config-airbnb": "^17.1.1",
+    "eslint-config-standard": "^12.0.0",
+    "eslint-plugin-import": "^2.18.2",
+    "eslint-plugin-node": "^8.0.0",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-standard": "^4.0.1",
+    "mocha": "^5.0.0",
+    "sinon": "^7.4.2"
   }
 }
