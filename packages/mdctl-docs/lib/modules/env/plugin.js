@@ -1,7 +1,9 @@
-function defineTags(dictionary){
+function defineTags(dictionary) {
   dictionary.defineTag('script', {
     mustHaveValue: true,
-    onTagged: (doclet, tag) => doclet.script = tag.text,
+    onTagged(doclet, tag) {
+      doclet.script = tag.text // eslint-disable-line no-param-reassign
+    },
   })
 }
 

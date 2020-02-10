@@ -4,71 +4,67 @@ const Path = require('path')
 /**
  * String
  */
-function capitalizeFirstCharacter(s){
+function capitalizeFirstCharacter(s) {
   return `${s.charAt(0).toUpperCase()}${s.slice(1)}`
 }
 
 /**
- * Object
+ * Files
  */
-function ensureObjValue(obj, name){
-  if(!obj[name]){
-    obj[name] = {}
-  }
-}
-
-function ensureArrayValue(obj, name){
-  if(!obj[name]){
-    obj[name] = []
-  }
-}
-
-/**
- * Write
- */
-function writeFiles(files, location){
-  for(let i = 0; i < files.length; i++){
+function writeFiles(files, location) {
+  for (let i = 0; i < files.length; i += 1) {
     writeFile(files[i], location)
   }
   console.log(`finished generating documentation in ${location}`)
 }
 
-function writeFile(file, location){
+function writeFile(file, location) {
   const {
-    content,
-    name,
-    path,
-  } = file
-  const filePath = path ? Path.join(location, path) : location
-  const fileLocation = Path.join(filePath, name)
+          content,
+          name,
+          path,
+        } = file,
+        filePath = path ? Path.join(location, path) : location,
+        fileLocation = Path.join(filePath, name)
   ensureDir(filePath)
   Fs.writeFileSync(fileLocation, content)
 }
 
-function ensureDir(directory){
+function ensureDir(directory) {
   const folders = directory.split('/')
-  if(directory.startsWith('/')){
+  if (directory.startsWith('/')) {
     folders[0] = '/'
   }
-  let path = ''
-  while(folder = folders.shift()){
+  let path = '',
+      folder = folders.shift()
+  while (folder) {
     path = Path.join(path, folder)
-    if(!Fs.existsSync(path)){
+    if (!Fs.existsSync(path)) {
       Fs.mkdirSync(path)
     }
+    folder = folders.shift()
   }
+}
+
+function readJsonFile(path) {
+  return JSON.parse(Fs.readFileSync(path))
 }
 
 /**
  * Template
  */
-function addChild(paramList, param, uri){
+function findParam(params, name) {
+  return params.find(param => param.name === name)
+}
+
+function addChild(paramList, param, uri) {
 
   const uriCopy = uri.slice(0)
 
-  let params = paramList
-  while(name = uriCopy.shift()){
-    if(uriCopy.length === 0){
+  let params = paramList,
+      name = uriCopy.shift()
+  while (name) {
+    if (uriCopy.length === 0) {
       params.push({
         name,
         typeString: param.type
@@ -77,25 +73,23 @@ function addChild(paramList, param, uri){
         description: param.description,
         children: []
       })
-    }
-    else {
-      const target = params.find(param => param.name === name)
-      if(!target){
+    } else {
+      const target = findParam(params, name)
+      if (!target) {
         break
       }
       params = target.children
     }
+    name = uriCopy.shift()
   }
 }
 
-function reduceParams(params, schema, defaultType='arg'){
-  return params.length ? params.reduce((params, param) => {
-    const parts = param.name.split('.')
-    let [
-      type,
-      ...uri
-    ] = parts
-    if(uri.length === 0){
+function reduceParams(jsdocParams, schema, defaultType = 'arg') {
+  return jsdocParams.length ? jsdocParams.reduce((params, param) => {
+    const parts = param.name.split('.'),
+          uri = parts.slice(1, parts.length)
+    let type = parts[0]
+    if (uri.length === 0) {
       type = defaultType
       uri.push(parts[0])
     }
@@ -104,15 +98,17 @@ function reduceParams(params, schema, defaultType='arg'){
   }, schema) : undefined
 }
 
-function reduceParamString(params){
+function reduceParamString(params) {
   return params.filter(param => param.name.startsWith('arg')).reduce((paramNames, param) => {
     const name = param.name.split('.')[1]
-    !paramNames.includes(name) && paramNames.push(name)
+    if (!paramNames.includes(name)) {
+      paramNames.push(name)
+    }
     return paramNames
   }, []).join(', ')
 }
 
-function translateFunctionDoclets(doclets){
+function translateFunctionDoclets(doclets) {
   return doclets.map(doclet => ({
     description: doclet.description,
     name: doclet.name,
@@ -126,8 +122,7 @@ function translateFunctionDoclets(doclets){
 
 module.exports = {
   capitalizeFirstCharacter,
-  ensureObjValue,
-  ensureArrayValue,
+  readJsonFile,
   reduceParams,
   reduceParamString,
   translateFunctionDoclets,
