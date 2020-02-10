@@ -20,8 +20,9 @@ function filterDoclets(taffyDb){
 function assembleFiles(doclets, source){
 
   const home = Path.resolve(process.cwd(), source)
-  const manifest = require(Path.join(home, '..', 'manifest.json'))
-  const environment = require(Path.join(home, 'env.json'))
+  const homeEnv = Path.join(home, 'env')
+  const manifest = require(Path.join(home, 'manifest.json'))
+  const environment = require(Path.join(homeEnv, 'env.json'))
 
   const scripts = doclets
     .filter(doclet => doclet.meta.path.endsWith('scripts/js'))
@@ -44,7 +45,7 @@ function assembleFiles(doclets, source){
 
   const scriptModules = manifest.scripts.includes.map(scriptName => {
 
-    const meta = require(Path.join(home, 'scripts', `${scriptName}.json`))
+    const meta = require(Path.join(homeEnv, 'scripts', `${scriptName}.json`))
 
     const script = scripts[scriptName]
 

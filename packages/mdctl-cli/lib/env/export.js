@@ -80,8 +80,8 @@ const fs = require('fs'),
             if (options.docs){
               console.log('Documenting env')
               Docs.generateDocumentation({
-                destination: path.join(outputDir, 'env', 'docs'),
-                source: path.join(outputDir, 'env'),
+                destination: path.join(outputDir, 'docs'),
+                source: path.join(outputDir),
                 module: 'env',
               })
             }
