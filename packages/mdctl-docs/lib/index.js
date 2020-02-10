@@ -7,26 +7,33 @@ function generateDocumentation(options){
 
   options = Object.assign({}, this.generateDocumentation.default, options)
 
+  const {
+    destination,
+    module,
+    source,
+    verbose,
+  } = options
+
   const params = [
     jsdoc,
-    options.source,
+    source,
     '-r', // recursive
-    '-d', options.destination,
+    '-d', destination,
   ]
 
-  if(options.module){
-    const config = Path.join(__dirname, 'modules', options.module, 'config.json')
-    const template = Path.join(__dirname, 'modules', options.module, 'template')
+  if(module){
+    const config = Path.join(__dirname, 'modules', module, 'config.json')
+    const template = Path.join(__dirname, 'modules', module, 'template')
     params.push('-c', config, '-t', template)
   }
 
-  if(options.verbose){
+  if(verbose){
     params.push('--verbose')
   }
 
   const command = params.join(' ')
   const stdout = execSync(command)
-  options.verbose && console.log(stdout.toString())
+  verbose && console.log(stdout.toString())
   return true
 }
 
