@@ -7,7 +7,7 @@
 
 {% tabs %}
 {{#each tabs}}
-{{> tab }}
+{{> gitbook.tab }}
 {{/each}}
 {% endtabs %}
 {{/if}}
@@ -16,7 +16,7 @@
 _Path Params_
 
 {{#each params.path}}
-{{> value }}
+{{> md.value }}
 {{/each}}
 {{/if}}
 {{#if params.body}}
@@ -24,7 +24,7 @@ _Path Params_
 _Body Params_
 
 {{#each params.body}}
-{{> value }}
+{{> md.value }}
 {{/each}}
 {{/if}}
 {{#if params.query}}
@@ -32,7 +32,7 @@ _Body Params_
 _Query Params_
 
 {{#each params.query}}
-{{> value }}
+{{> md.value }}
 {{/each}}
 {{/if}}
 {{#if params.header}}
@@ -40,7 +40,7 @@ _Query Params_
 _Header Params_
 
 {{#each params.header}}
-{{> value }}
+{{> md.value }}
 {{/each}}
 {{/if}}
 {{#if params.response}}
@@ -48,6 +48,6 @@ _Header Params_
 _Response_
 
 {{#each params.response}}
-{{> value }}
+{{> md.value }}
 {{/each}}
 {{/if}}
