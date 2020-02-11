@@ -17,80 +17,241 @@ function filterDoclets(taffyDb) {
   }).get()
 }
 
+function loadEnvData(manifest, home, type){
+  return manifest[type] && manifest[type].includes.map(name => Util.readJsonFile(Path.join(home, 'env', type, `${name}.json`)))
+}
+
+function loadEnvObjects(manifest, home){
+  return manifest.objects && manifest.objects.map(obj => Util.readJsonFile(Path.join(home, 'env', 'objects', `${obj.name}.json`)))
+}
+
+function extract(manifest, home){
+  return {
+    apps: loadEnvData(manifest, home, 'apps'),
+    notifications: loadEnvData(manifest, home, 'notifications'),
+    roles: loadEnvData(manifest, home, 'roles'),
+    serviceAccounts: loadEnvData(manifest, home, 'serviceAccounts'),
+    policies: loadEnvData(manifest, home, 'policies'),
+    objects: loadEnvObjects(manifest, home),
+    scripts: loadEnvData(manifest, home, 'scripts'),
+  }
+}
+
+function buildSummary(data){
+  const contents = [
+    {
+      name: 'Introduction',
+      uri: 'README.md'
+    }
+  ]
+
+  if(data.apps){
+    contents.push({
+      name: 'Apps',
+      uri: 'env/apps.md'
+    })
+  }
+
+  if(data.notifications){
+    contents.push({
+      name: 'Notifications',
+      uri: 'env/notifications.md'
+    }) 
+  }
+
+  if(data.roles){
+    contents.push({
+      name: 'Roles',
+      uri: 'env/roles.md'
+    }) 
+  }
+
+  if(data.serviceAccounts){
+    contents.push({
+      name: 'Service Accounts',
+      uri: 'env/serviceAccounts.md'
+    }) 
+  }
+
+  if(data.policies){
+    contents.push({
+      name: 'Policies',
+      uri: 'env/policies.md'
+    }) 
+  }
+
+  if(data.runtime){
+    contents.push({
+      name: 'Runtime',
+      uri: 'env/runtime.md'
+    }) 
+  }
+
+  return TEMPLATES.GITBOOK.SUMMARY({
+    contents,
+    // objects: [],
+    // scripts: {
+    //   routes: [],
+    //   policies: [],
+    //   libraries: [],
+    //   jobs: [],
+    //   triggers: []
+    // },
+    // classes: [],
+    // releaseNotes: []
+  })
+}
+
+function buildApps(apps){
+  return TEMPLATES.MD.APPS(translateApps(apps))
+}
+
+function translateApps(apps){
+  return apps.map(app => {
+
+    let lists = [],
+        properties = []
+
+    for (let [key, value] of Object.entries(app)) {
+      if(Array.isArray(value)){
+        if(value.length > 0){
+          lists.push({ key, value })
+        }
+      }
+      else if(key !== 'label' && value !== null){
+        properties.push({ key, value })
+      }
+    }
+
+    return {
+      lists,
+      properties,
+      label: app.label
+    }
+  })
+}
+
 function assembleFiles(doclets, source) {
 
   const home = Path.resolve(process.cwd(), source),
-        homeEnv = Path.join(home, 'env'),
         manifest = Util.readJsonFile(Path.join(home, 'manifest.json')),
+        data = extract(manifest, home),
+        files = []
 
-        scripts = doclets
-          .filter(doclet => doclet.meta.path.endsWith('scripts/js'))
-          .reduce((scriptAcc, doclet) => {
+  files.push({
+    content: TEMPLATES.GITBOOK.INTRODUCTION({}),
+    name: 'README.md',
+  })
 
-            const scriptAccCopy = Object.assign({}, scriptAcc),
+  files.push({
+    content: buildSummary(data),
+    name: 'SUMMARY.md',
+  })
 
-                  name = doclet.meta.filename.split('.')[1]
+  // env
+  if(data.apps){
+    files.push({
+      content: buildApps(data.apps),
+      name: 'apps.md',
+      path: 'env'
+    })
+  }
 
-            if (!scriptAccCopy[name]) {
-              scriptAccCopy[name] = {}
-            }
+  // Extract data from env files and jsdoc
+  // - apps
+  // - notifications
+  // - roles
+  // - serviceAccounts
+  // - policies
+  // - *runtime
+  // - objects
+  // - scripts
+  //   - routes
+  //   - policies
+  //   - libraries
+  //   - jobs
+  //   - triggers
+  // - classes
+  // - releaseNotes
 
-            if (doclet.script) {
-              scriptAccCopy[name].header = doclet
-            } else if (doclet.kind === 'function') {
+  // Translate data into Handlebar template data objects & compile
 
-              if (!scriptAccCopy[name].functions) {
-                scriptAccCopy[name].functions = []
-              }
+  // Output compiled Handlebar templates
 
-              scriptAccCopy[name].functions.push(doclet)
-            }
 
-            return scriptAccCopy
-          }, {}),
 
-        scriptModules = manifest.scripts.includes.map((scriptName) => {
+  // const home = Path.resolve(process.cwd(), source),
+  //       homeEnv = Path.join(home, 'env'),
+  //       manifest = Util.readJsonFile(Path.join(home, 'manifest.json')),
 
-          const meta = Util.readJsonFile(Path.join(homeEnv, 'scripts', `${scriptName}.json`)),
+  //       scripts = doclets
+  //         .filter(doclet => doclet.meta.path.endsWith('scripts/js'))
+  //         .reduce((scriptAcc, doclet) => {
 
-                script = scripts[scriptName],
+  //           const scriptAccCopy = Object.assign({}, scriptAcc),
 
-                name = (script && script.header)
-                  ? script.header.script
-                  : meta.label || scriptName,
+  //                 name = doclet.meta.filename.split('.')[1]
 
-                description = (script && script.header && script.header.description)
-                  ? script.header.description
-                  : meta.description,
+  //           if (!scriptAccCopy[name]) {
+  //             scriptAccCopy[name] = {}
+  //           }
 
-                // create object to hold script functions
-                objects = script && script.functions && [
-                  {
-                    name: 'default',
-                    type: 'methods',
-                    functions: Util.translateFunctionDoclets(script.functions)
-                  }
-                ],
+  //           if (doclet.script) {
+  //             scriptAccCopy[name].header = doclet
+  //           } else if (doclet.kind === 'function') {
 
-                examples = script && script.header && script.header.examples,
+  //             if (!scriptAccCopy[name].functions) {
+  //               scriptAccCopy[name].functions = []
+  //             }
 
-                gitbookDescription = script && script.header && script.header.summary
+  //             scriptAccCopy[name].functions.push(doclet)
+  //           }
 
-          return {
-            description,
-            examples,
-            gitbookDescription,
-            name,
-            objects,
-            file: scriptName
-          }
-        }),
+  //           return scriptAccCopy
+  //         }, {}),
 
-        files = scriptModules.map(module => ({
-          content: compile(TEMPLATES.MODULE, module),
-          name: `${module.file}.md`,
-          path: 'scripts'
-        }))
+  //       scriptModules = manifest.scripts.includes.map((scriptName) => {
+
+  //         const meta = Util.readJsonFile(Path.join(homeEnv, 'scripts', `${scriptName}.json`)),
+
+  //               script = scripts[scriptName],
+
+  //               name = (script && script.header)
+  //                 ? script.header.script
+  //                 : meta.label || scriptName,
+
+  //               description = (script && script.header && script.header.description)
+  //                 ? script.header.description
+  //                 : meta.description,
+
+  //               // create object to hold script functions
+  //               objects = script && script.functions && [
+  //                 {
+  //                   name: 'default',
+  //                   type: 'methods',
+  //                   functions: Util.translateFunctionDoclets(script.functions)
+  //                 }
+  //               ],
+
+  //               examples = script && script.header && script.header.examples,
+
+  //               gitbookDescription = script && script.header && script.header.summary
+
+  //         return {
+  //           description,
+  //           examples,
+  //           gitbookDescription,
+  //           name,
+  //           objects,
+  //           file: scriptName
+  //         }
+  //       }),
+
+  //       files = scriptModules.map(module => ({
+  //         content: compile(TEMPLATES.MODULE, module),
+  //         name: `${module.file}.md`,
+  //         path: 'scripts'
+  //       }))
   return files
 }
 

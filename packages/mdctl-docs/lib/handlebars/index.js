@@ -2,34 +2,31 @@ const Fs = require('fs')
 const Path = require('path')
 const Handlebars = require('handlebars'),
 
-      TEMPLATES = Object.freeze({
-        MODULE: 'MODULE'
-      }),
-
       PARTIALS = Object.freeze([
-        'function',
-        'object',
-        'route',
-        'tab',
-        'value',
+        'gitbook/route',
+        'gitbook/nav-item',
+        'gitbook/tab',
+        'md/app',
+        'md/function',
+        'md/key-value',
+        'md/list',
+        'md/object',
+        'md/value',
       ]),
 
-      COMPILED_TEMPLATES = Object.freeze({
-        [TEMPLATES.MODULE]: Handlebars.compile(load('module')),
+      TEMPLATES = Object.freeze({
+        GITBOOK: {
+          INTRODUCTION: Handlebars.compile(load('gitbook/introduction')),
+          MODULE: Handlebars.compile(load('gitbook/module')),
+          SUMMARY: Handlebars.compile(load('gitbook/summary')),
+        },
+        MD: {
+          APPS: Handlebars.compile(load('md/apps')),
+        }
       })
 
-function load(name) {
-  return Fs.readFileSync(Path.join(__dirname, 'partials', `${name}.hbs`), 'utf8')
-}
-
-function register(names) {
-  for (let i = 0; i < names.length; i += 1) {
-    Handlebars.registerPartial(names[i], load(names[i]))
-  }
-}
-
-function compile(template, data) {
-  return COMPILED_TEMPLATES[template](data)
+function load(component) {
+  return Fs.readFileSync(Path.join(__dirname, 'components', `${component}.hbs`), 'utf8')
 }
 
 /**
@@ -40,9 +37,10 @@ function compile(template, data) {
  */
 Handlebars.registerHelper('escape_md', s => (typeof s === 'string' ? s.replace(/(\\|\*|_|`|{|}|\(|\)|\[|\]|#)/g, '\\$1') : s))
 
-register(PARTIALS)
+Handlebars.registerHelper('cammel_to_sentence', s => (typeof s === 'string' ? s.replace(/([A-Z])/g, match => ` ${match}`).replace(/^./, match => match.toUpperCase()) : s))
+
+PARTIALS.forEach(partial => Handlebars.registerPartial(partial.replace(/\//g, '.'), load(partial)))
 
 module.exports = {
-  compile,
   TEMPLATES,
 }
