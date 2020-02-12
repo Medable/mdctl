@@ -9,8 +9,54 @@ function capitalizeFirstCharacter(s) {
 }
 
 /**
+ * Object
+ */
+
+function breakdownJSON(obj){
+  let sets = [],
+    objects = {},
+    properties = []
+  for (let [key, value] of Object.entries(obj)) {
+    if(value !== null){
+      if(typeof value === 'object'){
+        if(Array.isArray(value)){
+          // new object array
+          if(['[object Object]', '[object Array]'].includes(Object.prototype.toString.call(value[0]))){
+            objects[key] = value.map(breakdownJSON)
+          }
+          // key/set(primitives)
+          else if(!(value[0] == null)){
+            sets.push({ key, value })
+          }
+        }
+        // new object
+        else {
+          objects[key] = breakdownJSON(value)
+        }
+      }
+      // key/primitive
+      else if(key !== 'label') {
+        properties.push({ key, value })
+      }
+    }
+  }
+
+  const label = obj.label
+    || obj.name
+    || 'Item'
+
+  return {
+    sets,
+    properties,
+    label,
+    ...objects,
+  }
+}
+
+/**
  * Files
  */
+
 function writeFiles(files, location) {
   for (let i = 0; i < files.length; i += 1) {
     writeFile(files[i], location)
@@ -53,6 +99,7 @@ function readJsonFile(path) {
 /**
  * Template
  */
+
 function findParam(params, name) {
   return params.find(param => param.name === name)
 }
@@ -121,6 +168,7 @@ function translateFunctionDoclets(doclets) {
 }
 
 module.exports = {
+  breakdownJSON,
   capitalizeFirstCharacter,
   readJsonFile,
   reduceParams,

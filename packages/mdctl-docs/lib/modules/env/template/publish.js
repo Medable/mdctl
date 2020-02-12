@@ -102,32 +102,10 @@ function buildSummary(data){
   })
 }
 
-function buildApps(apps){
-  return TEMPLATES.MD.APPS(translateApps(apps))
-}
-
-function translateApps(apps){
-  return apps.map(app => {
-
-    let lists = [],
-        properties = []
-
-    for (let [key, value] of Object.entries(app)) {
-      if(Array.isArray(value)){
-        if(value.length > 0){
-          lists.push({ key, value })
-        }
-      }
-      else if(key !== 'label' && value !== null){
-        properties.push({ key, value })
-      }
-    }
-
-    return {
-      lists,
-      properties,
-      label: app.label
-    }
+function buildResources(name, resources){
+  return TEMPLATES.MD.RESOURCES({
+    name,
+    resources: resources.map(Util.breakdownJSON)
   })
 }
 
@@ -151,8 +129,40 @@ function assembleFiles(doclets, source) {
   // env
   if(data.apps){
     files.push({
-      content: buildApps(data.apps),
+      content: buildResources('Apps', data.apps),
       name: 'apps.md',
+      path: 'env'
+    })
+  }
+
+  if(data.notifications){
+    files.push({
+      content: buildResources('Notifications', data.notifications),
+      name: 'notifications.md',
+      path: 'env'
+    })
+  }
+
+  if(data.roles){
+    files.push({
+      content: buildResources('Roles', data.roles),
+      name: 'roles.md',
+      path: 'env'
+    })
+  }
+
+  if(data.serviceAccounts){
+    files.push({
+      content: buildResources('Service Accounts', data.serviceAccounts),
+      name: 'serviceAccounts.md',
+      path: 'env'
+    })
+  }
+
+  if(data.policies){
+    files.push({
+      content: buildResources('Policies', data.policies),
+      name: 'policies.md',
       path: 'env'
     })
   }
