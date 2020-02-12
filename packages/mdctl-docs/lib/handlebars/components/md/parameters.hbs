@@ -1,0 +1,11 @@
+{{#if properties}}
+
+{{#each properties}}
+{{> md.key-value }}
+{{/each}}
+{{/if}}
+{{#if sets}}
+{{#each sets}}
+{{> md.set }}
+{{/each}}
+{{/if}}

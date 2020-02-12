@@ -1,0 +1,10 @@
+{{{md_header (md_escape label) (new_level level levelDelta)}}}
+{{> md.parameters }}
+{{#if endpoints}}
+
+{{{md_header 'Endpoints' (new_level level 1)}}}
+{{#each endpoints}}
+
+{{> md.resource level=../level levelDelta=2}}
+{{/each}}
+{{/if}}
