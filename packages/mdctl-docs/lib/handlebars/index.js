@@ -3,26 +3,25 @@ const Path = require('path')
 const Handlebars = require('handlebars'),
 
       PARTIALS = Object.freeze([
-        'gitbook/route',
         'gitbook/nav-item',
         'gitbook/tab',
         'md/function',
         'md/key-value',
         'md/resource',
+        'md/route',
         'md/set',
         'md/object',
-        'md/parameters',
         'md/value'
       ]),
 
       TEMPLATES = Object.freeze({
         GITBOOK: {
-          INTRODUCTION: Handlebars.compile(load('gitbook/introduction')),
+          README: Handlebars.compile(load('gitbook/readme')),
           MODULE: Handlebars.compile(load('gitbook/module')),
           SUMMARY: Handlebars.compile(load('gitbook/summary'))
         },
         MD: {
-          RESOURCES: Handlebars.compile(load('md/resources'))
+          RESOURCE: Handlebars.compile(load('md/resource'))
         }
       })
 
@@ -42,7 +41,9 @@ Handlebars.registerHelper('md_escape', s => (typeof s === 'string' ? s.replace(/
 
 Handlebars.registerHelper('md_header', (s, level=1) => (typeof s === 'string' ? `${'#'.repeat(level)} ${s}` : s))
 
-Handlebars.registerHelper('new_level', (current=1, delta=0) => current + delta)
+Handlebars.registerHelper('next_n', (n=0) => n + 1)
+
+Handlebars.registerHelper('uppercase', s => (typeof s === 'string' ? s.toUpperCase() : s))
 
 PARTIALS.forEach(partial => Handlebars.registerPartial(partial.replace(/\//g, '.'), load(partial)))
 

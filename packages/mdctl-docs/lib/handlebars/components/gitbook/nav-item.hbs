@@ -1,1 +1,6 @@
 * [{{{name}}}]({{{uri}}})
+{{#if children}}
+{{#each children}}
+  {{> gitbook.nav-item }}
+{{/each}}
+{{/if}}

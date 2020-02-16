@@ -1,6 +1,18 @@
 # Table of contents
-{{#if contents}}
 {{#each contents}}
+{{> gitbook.nav-item }}
+{{/each}}
+{{#if objects}}
+
+## Objects
+{{#each objects}}
+{{> gitbook.nav-item }}
+{{/each}}
+{{/if}}
+{{#if scripts}}
+
+## Scripts
+{{#each scripts}}
 {{> gitbook.nav-item }}
 {{/each}}
 {{/if}}
