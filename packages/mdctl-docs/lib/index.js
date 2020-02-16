@@ -38,7 +38,7 @@ function generateDocumentation(opts) {
   return true
 }
 
-generateDocumentation.default = Object.assign({
+generateDocumentation.default = Object.freeze({
   destination: 'docs',
   source: '.',
   verbose: false,

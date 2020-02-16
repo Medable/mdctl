@@ -1,10 +1,38 @@
-{{{md_header (md_escape label) (new_level level levelDelta)}}}
-{{> md.parameters }}
-{{#if endpoints}}
+{{{md_header (md_escape label) level}}}
+{{#if description}}
 
-{{{md_header 'Endpoints' (new_level level 1)}}}
-{{#each endpoints}}
+{{{description}}}
+{{/if}}
+{{#if properties}}
 
-{{> md.resource level=../level levelDelta=2}}
+{{#each properties}}
+{{> md.key-value }}
+{{/each}}
+{{/if}}
+{{#if sets}}
+{{#each sets}}
+{{> md.set }}
+{{/each}}
+{{/if}}
+{{#if route}}
+
+{{{md_header 'Route' (next_n level)}}}
+{{#with route}}
+
+{{> md.route }}
+{{/with}}
+{{/if}}
+{{#if examples}}
+
+{{{md_header 'Examples' (next_n level)}}}
+{{#each examples}}
+
+{{{ this }}}
+{{/each}}
+{{/if}}
+{{#if resources}}
+{{#each resources}}
+
+{{> md.resource }}
 {{/each}}
 {{/if}}

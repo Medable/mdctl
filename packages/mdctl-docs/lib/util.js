@@ -11,18 +11,25 @@ function capitalizeFirstCharacter(s) {
 /**
  * Object
  */
+function clone(obj){
+  return JSON.parse(JSON.stringify(obj))
+}
 
-function breakdownJSON(obj){
+function breakdownResource(resource, level=1){
   let sets = [],
-    objects = {},
+    resources = [],
     properties = []
-  for (let [key, value] of Object.entries(obj)) {
+  for (let [key, value] of Object.entries(resource)) {
     if(value !== null){
       if(typeof value === 'object'){
         if(Array.isArray(value)){
           // new object array
           if(['[object Object]', '[object Array]'].includes(Object.prototype.toString.call(value[0]))){
-            objects[key] = value.map(breakdownJSON)
+            resources.push({
+              label: key,
+              level: level + 1,
+              resources: value.map(resource => breakdownResource(resource, level + 2))
+            })
           }
           // key/set(primitives)
           else if(!(value[0] == null)){
@@ -31,7 +38,11 @@ function breakdownJSON(obj){
         }
         // new object
         else {
-          objects[key] = breakdownJSON(value)
+          resources.push({
+            label: key,
+            level: level + 1,
+            resources: [breakdownResource(value, level + 2)]
+          })
         }
       }
       // key/primitive
@@ -41,15 +52,16 @@ function breakdownJSON(obj){
     }
   }
 
-  const label = obj.label
-    || obj.name
+  const label = resource.label
+    || resource.name
     || 'Item'
 
   return {
     sets,
     properties,
     label,
-    ...objects,
+    level,
+    resources,
   }
 }
 
@@ -99,80 +111,68 @@ function readJsonFile(path) {
 /**
  * Template
  */
+function compareParams(a, b){
+  const nameA = a.name.toLowerCase()
+  const nameB = b.name.toLowerCase()
+  if (nameA < nameB) {
+    return -1
+  }
+  if (nameA > nameB) {
+    return 1
+  }
+  return 0
+}
+
+function translateParams(params){
+  return params
+    .sort(compareParams)
+    .reduce((params, param) => {
+      const uri = param.name.split('.')
+
+      let list = params,
+          name = uri.shift()
+      while(name){
+        if(uri.length === 0){
+          list.push({
+            name,
+            typeString: param.type
+              ? param.type.names.join('|')
+              : undefined,
+            description: param.description,
+            children: []
+          })
+        }
+        else {
+          const target = findParam(list, name)
+          if (!target) {
+            break
+          }
+          list = target.children
+        }
+        name = uri.shift()
+      }
+      return params
+    }, [])
+}
 
 function findParam(params, name) {
   return params.find(param => param.name === name)
 }
 
-function addChild(paramList, param, uri) {
-
-  const uriCopy = uri.slice(0)
-
-  let params = paramList,
-      name = uriCopy.shift()
-  while (name) {
-    if (uriCopy.length === 0) {
-      params.push({
-        name,
-        typeString: param.type
-          ? param.type.names.join('|')
-          : undefined,
-        description: param.description,
-        children: []
-      })
-    } else {
-      const target = findParam(params, name)
-      if (!target) {
-        break
-      }
-      params = target.children
-    }
-    name = uriCopy.shift()
+function defineSection(label, resources=[], level=1){
+  return {
+    label,
+    level,
+    resources: resources.map(resource => breakdownResource(resource, level))
   }
 }
 
-function reduceParams(jsdocParams, schema, defaultType = 'arg') {
-  return jsdocParams.length ? jsdocParams.reduce((params, param) => {
-    const parts = param.name.split('.'),
-          uri = parts.slice(1, parts.length)
-    let type = parts[0]
-    if (uri.length === 0) {
-      type = defaultType
-      uri.push(parts[0])
-    }
-    addChild(params[type], param, uri)
-    return params
-  }, schema) : undefined
-}
-
-function reduceParamString(params) {
-  return params.filter(param => param.name.startsWith('arg')).reduce((paramNames, param) => {
-    const name = param.name.split('.')[1]
-    if (!paramNames.includes(name)) {
-      paramNames.push(name)
-    }
-    return paramNames
-  }, []).join(', ')
-}
-
-function translateFunctionDoclets(doclets) {
-  return doclets.map(doclet => ({
-    description: doclet.description,
-    name: doclet.name,
-    paramString: doclet.params && reduceParamString(doclet.params),
-    params: doclet.params && reduceParams(doclet.params, {
-      arg: [],
-      return: []
-    })
-  }))
-}
-
 module.exports = {
-  breakdownJSON,
+  breakdownResource,
   capitalizeFirstCharacter,
+  clone,
+  defineSection,
   readJsonFile,
-  reduceParams,
-  reduceParamString,
-  translateFunctionDoclets,
+  translateParams,
   writeFiles,
 }
