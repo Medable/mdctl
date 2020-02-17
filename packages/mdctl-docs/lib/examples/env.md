@@ -36,36 +36,3 @@
 
 ## Release Notes
 * [4.8.0](releases/4.8.0.md)
-
-
-
-/**
- * @file
- * @summary Utility functions used in Nucleus scripts
- * @version 1.0.0
- *
- * @author Fiachra Matthews
- *
- * @description
- * ```javascript
- * const script = require('script')
- * ```
- *
- * @example
- * ```javascript
- * const script = require('script')
- * script.run()
- * ```
- *
- * @example
- * ```javascript
- * const script = require('script')
- * script.run('another way')
- * ```
- *
- * @copyright
- *
- * (c)2016-2018 Medable, Inc.  All Rights Reserved.
- * Unauthorized use, modification, or reproduction is prohibited.
- * This is a component of Axon, Medable's SmartStudy(TM) system.
- */
