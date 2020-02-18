@@ -1,18 +1,11 @@
-# Table of contents
-{{#each contents}}
+# {{{md_escape label}}}
+{{#each links}}
 {{> gitbook.nav-item }}
 {{/each}}
-{{#if objects}}
+{{#each sections}}
 
-## Objects
-{{#each objects}}
+## {{{md_escape label}}}
+{{#each links}}
 {{> gitbook.nav-item }}
 {{/each}}
-{{/if}}
-{{#if scripts}}
-
-## Scripts
-{{#each scripts}}
-{{> gitbook.nav-item }}
 {{/each}}
-{{/if}}
