@@ -110,7 +110,8 @@ function extract(manifest, doclets, home){
 }
 
 function buildSummary(data){
-  const contents = [
+
+  const links = [
     {
       name: 'Introduction',
       uri: 'README.md'
@@ -118,122 +119,137 @@ function buildSummary(data){
   ]
 
   if(data.apps){
-    contents.push({
+    links.push({
       name: 'Apps',
       uri: 'env/apps.md'
     })
   }
 
   if(data.notifications){
-    contents.push({
+    links.push({
       name: 'Notifications',
       uri: 'env/notifications.md'
     }) 
   }
 
   if(data.roles){
-    contents.push({
+    links.push({
       name: 'Roles',
       uri: 'env/roles.md'
     }) 
   }
 
   if(data.serviceAccounts){
-    contents.push({
+    links.push({
       name: 'Service Accounts',
       uri: 'env/serviceAccounts.md'
     }) 
   }
 
   if(data.policies){
-    contents.push({
+    links.push({
       name: 'Policies',
       uri: 'env/policies.md'
     }) 
   }
 
   if(data.runtime){
-    contents.push({
+    links.push({
       name: 'Runtime',
       uri: 'env/runtime.md'
     }) 
   }
 
-  return TEMPLATES.GITBOOK.SUMMARY({
-    contents,
-    objects: data.objects && data.objects.map(object => ({
-      name: object.info.label || object.info.name,
-      uri: `objects/${object.info.name}.md`,
-      children: object.data.map(dataObj => ({
-        name: dataObj.name,
-        uri: `objects/${object.info.name}/${dataObj.name}.md`
+  const sections = []
+  if(data.objects){
+    sections.push({
+      label: 'Objects',
+      links: data.objects.map(object => ({
+        name: object.info.label || object.info.name,
+        uri: `objects/${object.info.name}.md`,
+        children: object.data.map(dataObj => ({
+          name: dataObj.name,
+          uri: `objects/${object.info.name}/${dataObj.name}.md`
+        }))
       }))
-    })),
-    scripts: data.scripts && data.scripts.reduce((scripts, script) => {
-      switch(script.info.type){
-        case 'route':
-          scripts[1].children.push({
-            name: `${script.info.name} - ${script.info.configuration.method.toUpperCase()} ${script.info.configuration.path}`,
-            uri: `scripts/routes/${script.info.name}.md`
-          })
-          break
-        case 'policy':
-          scripts[2].children.push({
-            name: script.info.label || script.info.name,
-            uri: `scripts/policies/${script.info.name}.md`
-          })
-          break
-        case 'library':
-          scripts[3].children.push({
-            name: script.info.label || script.info.name,
-            uri: `scripts/libraries/${script.info.name}.md`
-          })
-          break
-        case 'job':
-          scripts[4].children.push({
-            name: script.info.label || script.info.name,
-            uri: `scripts/jobs/${script.info.name}.md`
-          })
-          break
-        case 'trigger':
-          scripts[5].children.push({
-            name: script.info.label || script.info.name,
-            uri: `scripts/triggers/${script.info.name}.md`
-          })
-          break
-      }
-      return scripts
-    }, [
-      {
-        name: 'Introduction',
-        uri: 'scripts/README.md'
-      },
-      {
-        name: 'Routes',
-        uri: 'scripts/routes/README.md',
-        children: []
-      },
-      {
-        name: 'Policies',
-        uri: 'scripts/policies/README.md',
-        children: []
-      },
-      {
-        name: 'Libraries',
-        uri: 'scripts/libraries/README.md',
-        children: []
-      },
-      {
-        name: 'Jobs',
-        uri: 'scripts/jobs/README.md',
-        children: []
-      },
-      {
-        name: 'Triggers',
-        uri: 'scripts/triggers/README.md',
-        children: []
-      }
-    ])
+    })
+  }
+
+  if(data.scripts){
+    sections.push({
+      label: 'Scripts',
+      links: data.scripts.reduce((scripts, script) => {
+        switch(script.info.type){
+          case 'route':
+            scripts[1].children.push({
+              name: `${script.info.name} - ${script.info.configuration.method.toUpperCase()} ${script.info.configuration.path}`,
+              uri: `scripts/routes/${script.info.name}.md`
+            })
+            break
+          case 'policy':
+            scripts[2].children.push({
+              name: script.info.label || script.info.name,
+              uri: `scripts/policies/${script.info.name}.md`
+            })
+            break
+          case 'library':
+            scripts[3].children.push({
+              name: script.info.label || script.info.name,
+              uri: `scripts/libraries/${script.info.name}.md`
+            })
+            break
+          case 'job':
+            scripts[4].children.push({
+              name: script.info.label || script.info.name,
+              uri: `scripts/jobs/${script.info.name}.md`
+            })
+            break
+          case 'trigger':
+            scripts[5].children.push({
+              name: script.info.label || script.info.name,
+              uri: `scripts/triggers/${script.info.name}.md`
+            })
+            break
+        }
+        return scripts
+      }, [
+        {
+          name: 'Introduction',
+          uri: 'scripts/README.md'
+        },
+        {
+          name: 'Routes',
+          uri: 'scripts/routes/README.md',
+          children: []
+        },
+        {
+          name: 'Policies',
+          uri: 'scripts/policies/README.md',
+          children: []
+        },
+        {
+          name: 'Libraries',
+          uri: 'scripts/libraries/README.md',
+          children: []
+        },
+        {
+          name: 'Jobs',
+          uri: 'scripts/jobs/README.md',
+          children: []
+        },
+        {
+          name: 'Triggers',
+          uri: 'scripts/triggers/README.md',
+          children: []
+        }
+      ])
+    })
+  }
+
+  return TEMPLATES.GITBOOK.SUMMARY({
+    links,
+    sections,
+    label: 'Table of Contents'
   })
 }
 
