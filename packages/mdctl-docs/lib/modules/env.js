@@ -1,29 +1,48 @@
-const Path = require('path')
-const {
-  compile,
-  TEMPLATES,
-} = require('../../../handlebars')
-const Util = require('../../../util')
-const MANIFEST_KNOWN_KEYS = Object.freeze([
-  'apps',
-  'env',
-  'notifications',
-  'object',
-  'objects',
-  'policies',
-  'roles',
-  'scripts',
-  'smsNumbers',
-  'templates',
-  'views'
-])
-const SCRIPT_TYPE_DIR_MAP = Object.freeze({
-  job: 'jobs',
-  route: 'routes',
-  policy: 'policies',
-  library: 'libraries',
-  trigger: 'triggers',
-})
+const Path = require('path'),
+      Util = require('../util'),
+      { loadPartials } = require('../handlebars'),
+      TEMPLATES = loadPartials(),
+      MANIFEST_KNOWN_KEYS = Object.freeze([
+        'apps',
+        'env',
+        'notifications',
+        'object',
+        'objects',
+        'policies',
+        'roles',
+        'scripts',
+        'smsNumbers',
+        'templates',
+        'views'
+      ]),
+      PARAM_TAG_PROPERTIES = Object.freeze({
+        canHaveType: true,
+        canHaveName: true,
+        mustHaveValue: true,
+      }),
+      ROUTE = Object.freeze({
+        params: {
+          path: [],
+          body: [],
+          query: [],
+          header: [],
+          response: []
+        }
+      }),
+      SCRIPT_TYPES = Object.freeze({
+        JOB: 'job',
+        LIBRARY: 'library',
+        POLICY: 'policy',
+        ROUTE: 'route',
+        TRIGGER: 'trigger'
+      }),
+      SCRIPT_TYPE_DIR_MAP = Object.freeze({
+        job: 'jobs',
+        route: 'routes',
+        policy: 'policies',
+        library: 'libraries',
+        trigger: 'triggers',
+      })
 
 function filterDoclets(taffyDb) {
   // documented, non-package
@@ -37,56 +56,58 @@ function filterDoclets(taffyDb) {
   }).get()
 }
 
-function loadEnvData(manifest, home, type){
-  return manifest[type] && manifest[type].includes.map(name => Util.readJsonFile(Path.join(home, 'env', type, `${name}.json`)))
+function loadEnvData(manifest, home, type) {
+  return manifest[type] && manifest[type].includes.map(name => Util.readJson(Path.join(home, 'env', type, `${name}.json`)))
 }
 
-function loadEnvObjects(manifest, home){
+function loadEnvObjects(manifest, home) {
+
   const data = {}
-  for (let [objName, info] of Object.entries(manifest)) {
+
+  Object.entries(manifest).forEach(([objName, info]) => {
     // is data
-    if(!MANIFEST_KNOWN_KEYS.includes(objName)){
-      if(!data[objName]){
+    if (!MANIFEST_KNOWN_KEYS.includes(objName)) {
+      if (!data[objName]) {
         data[objName] = []
       }
-      for(name of info.includes){
-        data[objName].push({
-          name,
-          info: Util.readJsonFile(Path.join(home, 'env', 'data', `${name}.json`)),
-        })
-      }
+      info.includes.forEach(name => data[objName].push({
+        name,
+        info: Util.readJson(Path.join(home, 'env', 'data', `${name}.json`)),
+      }))
     }
-  }
+  })
+
   return manifest.objects && manifest.objects.map(obj => ({
     data: data[obj.name] || [],
-    info: Util.readJsonFile(Path.join(home, 'env', 'objects', `${obj.name}.json`)),
+    info: Util.readJson(Path.join(home, 'env', 'objects', `${obj.name}.json`)),
   }))
 }
 
-function loadEnvScripts(manifest, doclets, home){
-  const scriptDoclets = doclets.reduce((scriptDoclets, doclet) => {
-    const isScriptFile = doclet.kind === 'file' && doclet.meta.path.endsWith('scripts/js')
-    if(isScriptFile){
-      scriptDoclets[doclet.meta.filename.split('.')[1]] = doclet
+function loadEnvScripts(manifest, doclets, home) {
+  const scriptDoclets = {}
+  doclets.forEach((doclet) => {
+    const isScriptFile = doclet.kind === 'file' && doclet.meta.path.endsWith('scripts/js'),
+          name = doclet.meta.filename.split('.')[1]
+    if (isScriptFile && !scriptDoclets[name]) {
+      scriptDoclets[name] = doclet
     }
-    return scriptDoclets
-  }, {})
-  return manifest.scripts && manifest.scripts.includes.map(name => {
-    const doclet = scriptDoclets[name]
-    const info = Object.assign({}, Util.readJsonFile(Path.join(home, 'env', 'scripts', `${name}.json`)), doclet && {
-      author: doclet.author,
-      summary: doclet.summary,
-      version: doclet.version
-    })
-    const data = { ...(doclet || {}), info }
-    if(info.type === 'route'){
-      if(!data.route){
+  })
+  return manifest.scripts && manifest.scripts.includes.map((name) => {
+    const doclet = scriptDoclets[name],
+          info = Object.assign({}, Util.readJson(Path.join(home, 'env', 'scripts', `${name}.json`)), doclet && {
+            author: doclet.author,
+            summary: doclet.summary,
+            version: doclet.version
+          }),
+          data = { ...(doclet || {}), info }
+    if (info.type === SCRIPT_TYPES.ROUTE) {
+      if (!data.route) {
         data.route = {}
       }
       data.route.method = info.configuration.method
       data.route.path = info.configuration.path
     }
-    if(data.route && data.route.params){
+    if (data.route && data.route.params) {
       data.route.params.path = Util.translateParams(data.route.params.path)
       data.route.params.body = Util.translateParams(data.route.params.body)
       data.route.params.query = Util.translateParams(data.route.params.query)
@@ -97,7 +118,7 @@ function loadEnvScripts(manifest, doclets, home){
   })
 }
 
-function extract(manifest, doclets, home){
+function extract(manifest, doclets, home) {
   return {
     apps: loadEnvData(manifest, home, 'apps'),
     notifications: loadEnvData(manifest, home, 'notifications'),
@@ -105,63 +126,65 @@ function extract(manifest, doclets, home){
     serviceAccounts: loadEnvData(manifest, home, 'serviceAccounts'),
     policies: loadEnvData(manifest, home, 'policies'),
     objects: loadEnvObjects(manifest, home),
-    scripts: loadEnvScripts(manifest, doclets, home),
+    scripts: loadEnvScripts(manifest, doclets, home)
   }
 }
 
-function buildSummary(data){
+function buildSummary(data) {
 
   const links = [
-    {
-      name: 'Introduction',
-      uri: 'README.md'
-    }
-  ]
+          {
+            name: 'Introduction',
+            uri: 'README.md'
+          }
+        ],
 
-  if(data.apps){
+        sections = []
+
+  if (data.apps) {
     links.push({
       name: 'Apps',
       uri: 'env/apps.md'
     })
   }
 
-  if(data.notifications){
+  if (data.notifications) {
     links.push({
       name: 'Notifications',
       uri: 'env/notifications.md'
-    }) 
+    })
   }
 
-  if(data.roles){
+  if (data.roles) {
     links.push({
       name: 'Roles',
       uri: 'env/roles.md'
-    }) 
+    })
   }
 
-  if(data.serviceAccounts){
+  if (data.serviceAccounts) {
     links.push({
       name: 'Service Accounts',
       uri: 'env/serviceAccounts.md'
-    }) 
+    })
   }
 
-  if(data.policies){
+  if (data.policies) {
     links.push({
       name: 'Policies',
       uri: 'env/policies.md'
-    }) 
+    })
   }
 
-  if(data.runtime){
+  if (data.runtime) {
     links.push({
       name: 'Runtime',
       uri: 'env/runtime.md'
-    }) 
+    })
   }
 
-  const sections = []
-  if(data.objects){
+
+  if (data.objects) {
     sections.push({
       label: 'Objects',
       links: data.objects.map(object => ({
@@ -175,41 +198,43 @@ function buildSummary(data){
     })
   }
 
-  if(data.scripts){
+  if (data.scripts) {
     sections.push({
       label: 'Scripts',
       links: data.scripts.reduce((scripts, script) => {
-        switch(script.info.type){
-          case 'route':
+        switch (script.info.type) {
+          case SCRIPT_TYPES.ROUTE:
             scripts[1].children.push({
               name: `${script.info.name} - ${script.info.configuration.method.toUpperCase()} ${script.info.configuration.path}`,
               uri: `scripts/routes/${script.info.name}.md`
             })
             break
-          case 'policy':
+          case SCRIPT_TYPES.POLICY:
             scripts[2].children.push({
               name: script.info.label || script.info.name,
               uri: `scripts/policies/${script.info.name}.md`
             })
             break
-          case 'library':
+          case SCRIPT_TYPES.LIBRARY:
             scripts[3].children.push({
               name: script.info.label || script.info.name,
               uri: `scripts/libraries/${script.info.name}.md`
             })
             break
-          case 'job':
+          case SCRIPT_TYPES.JOB:
             scripts[4].children.push({
               name: script.info.label || script.info.name,
               uri: `scripts/jobs/${script.info.name}.md`
             })
             break
-          case 'trigger':
+          case SCRIPT_TYPES.TRIGGER:
             scripts[5].children.push({
               name: script.info.label || script.info.name,
               uri: `scripts/triggers/${script.info.name}.md`
             })
             break
+          default:
+            console.log(`Unknown script type ${script.info.name}:${script.info.type}`)
         }
         return scripts
       }, [
@@ -246,46 +271,40 @@ function buildSummary(data){
     })
   }
 
-  return TEMPLATES.GITBOOK.SUMMARY({
+  return TEMPLATES.GITBOOK_SUMMARY({
     links,
     sections,
     label: 'Table of Contents'
   })
 }
 
-function buildResource(opts){
-  const options = Object.assign({}, { level: 1, resources: [] }, opts)
-  return TEMPLATES.MD.RESOURCE({
+function buildResource(opts) {
+  const options = Object.assign({}, { level: 1, resources: [] }, opts),
+        resources = options.resources
+          .map(resource => Util.breakdownResource(resource, options.level + 1))
+  return TEMPLATES.MD_RESOURCE({
     ...options,
-    resources: options.resources.map(resource => Util.breakdownResource(resource, options.level + 1))
+    resources,
   })
 }
 
 function assembleFiles(doclets, source) {
 
   const home = Path.resolve(process.cwd(), source),
-        manifest = Util.readJsonFile(Path.join(home, 'manifest.json')),
+        manifest = Util.readJson(Path.join(home, 'manifest.json')),
         data = extract(manifest, doclets, home),
         files = []
 
   // READMEs
   files.push({
-    content: TEMPLATES.GITBOOK.README({
+    content: TEMPLATES.GITBOOK_README({
       label: 'Introduction'
     }),
     name: 'README.md'
   })
 
   files.push({
-    content: TEMPLATES.GITBOOK.README({
-      label: 'Scripts'
-    }),
-    name: 'README.md',
-    path: 'scripts'
-  })
-
-  files.push({
-    content: TEMPLATES.GITBOOK.README({
+    content: TEMPLATES.GITBOOK_README({
       label: 'Objects'
     }),
     name: 'README.md',
@@ -293,7 +312,7 @@ function assembleFiles(doclets, source) {
   })
 
   files.push({
-    content: TEMPLATES.GITBOOK.README({
+    content: TEMPLATES.GITBOOK_README({
       label: 'Scripts'
     }),
     name: 'README.md',
@@ -301,7 +320,7 @@ function assembleFiles(doclets, source) {
   })
 
   files.push({
-    content: TEMPLATES.GITBOOK.README({
+    content: TEMPLATES.GITBOOK_README({
       label: 'Routes'
     }),
     name: 'README.md',
@@ -309,7 +328,7 @@ function assembleFiles(doclets, source) {
   })
 
   files.push({
-    content: TEMPLATES.GITBOOK.README({
+    content: TEMPLATES.GITBOOK_README({
       label: 'Policies'
     }),
     name: 'README.md',
@@ -317,7 +336,7 @@ function assembleFiles(doclets, source) {
   })
 
   files.push({
-    content: TEMPLATES.GITBOOK.README({
+    content: TEMPLATES.GITBOOK_README({
       label: 'Libraries'
     }),
     name: 'README.md',
@@ -325,7 +344,7 @@ function assembleFiles(doclets, source) {
   })
 
   files.push({
-    content: TEMPLATES.GITBOOK.README({
+    content: TEMPLATES.GITBOOK_README({
       label: 'Jobs'
     }),
     name: 'README.md',
@@ -333,7 +352,7 @@ function assembleFiles(doclets, source) {
   })
 
   files.push({
-    content: TEMPLATES.GITBOOK.README({
+    content: TEMPLATES.GITBOOK_README({
       label: 'Triggers'
     }),
     name: 'README.md',
@@ -346,7 +365,7 @@ function assembleFiles(doclets, source) {
   })
 
   // env
-  if(data.apps){
+  if (data.apps) {
     files.push({
       content: buildResource({
         label: 'Apps',
@@ -357,7 +376,7 @@ function assembleFiles(doclets, source) {
     })
   }
 
-  if(data.notifications){
+  if (data.notifications) {
     files.push({
       content: buildResource({
         label: 'Notifications',
@@ -368,7 +387,7 @@ function assembleFiles(doclets, source) {
     })
   }
 
-  if(data.roles){
+  if (data.roles) {
     files.push({
       content: buildResource({
         label: 'Roles',
@@ -379,7 +398,7 @@ function assembleFiles(doclets, source) {
     })
   }
 
-  if(data.serviceAccounts){
+  if (data.serviceAccounts) {
     files.push({
       content: buildResource({
         label: 'Service Accounts',
@@ -390,7 +409,7 @@ function assembleFiles(doclets, source) {
     })
   }
 
-  if(data.policies){
+  if (data.policies) {
     files.push({
       content: buildResource({
         label: 'Policies',
@@ -402,31 +421,25 @@ function assembleFiles(doclets, source) {
   }
 
   // objects
-  if(data.objects){
-    files.push(...data.objects.reduce((files, object) => {
+  if (data.objects) {
+    data.objects.forEach((object) => {
       files.push({
-        content: buildResource({
-          label: object.info.label || object.info.name,
-          resources: [object.info]
-        }),
+        content: TEMPLATES.MD_RESOURCE({ ...Util.breakdownResource(object.info) }),
         name: `${object.info.name}.md`,
         path: 'objects'
-      }, ...object.data.map(data => ({
-        content: buildResource({
-          label: data.info.label || data.info.name || data.name,
-          resources: [data.info]
-        }),
-        name: `${data.name}.md`,
+      })
+      object.data.forEach(objData => files.push({
+        content: TEMPLATES.MD_RESOURCE({ ...Util.breakdownResource(objData.info) }),
+        name: `${objData.name}.md`,
         path: Path.join('objects', object.info.name)
-      })))
-      return files
-    }, []))
+      }))
+    })
   }
 
   // scripts
-  if(data.scripts){
+  if (data.scripts) {
     files.push(...data.scripts.map(script => ({
-      content: TEMPLATES.MD.RESOURCE({
+      content: TEMPLATES.MD_RESOURCE({
         ...Util.breakdownResource(script.info),
         copyright: script.copyright,
         description: script.description,
@@ -441,13 +454,62 @@ function assembleFiles(doclets, source) {
   return files
 }
 
-function publish(taffyDb, opts) {
-  const [source] = opts._,
-        doclets = filterDoclets(taffyDb),
-        files = assembleFiles(doclets, source)
-  Util.writeFiles(files, Path.normalize(opts.destination))
-}
-
 module.exports = {
-  publish, // required for JSDoc template
+  plugin: {
+    defineTags: function defineTags(dictionary) {
+      dictionary.defineTag('route-param-path', {
+        ...PARAM_TAG_PROPERTIES,
+        onTagged(doclet, tag) {
+          if (!doclet.route) {
+            doclet.route = Util.clone(ROUTE) // eslint-disable-line no-param-reassign
+          }
+          doclet.route.params.path.push(tag.value)
+        }
+      })
+      dictionary.defineTag('route-param-body', {
+        ...PARAM_TAG_PROPERTIES,
+        onTagged(doclet, tag) {
+          if (!doclet.route) {
+            doclet.route = Util.clone(ROUTE) // eslint-disable-line no-param-reassign
+          }
+          doclet.route.params.body.push(tag.value)
+        }
+      })
+      dictionary.defineTag('route-param-query', {
+        ...PARAM_TAG_PROPERTIES,
+        onTagged(doclet, tag) {
+          if (!doclet.route) {
+            doclet.route = Util.clone(ROUTE) // eslint-disable-line no-param-reassign
+          }
+          doclet.route.params.query.push(tag.value)
+        }
+      })
+      dictionary.defineTag('route-param-header', {
+        ...PARAM_TAG_PROPERTIES,
+        onTagged(doclet, tag) {
+          if (!doclet.route) {
+            doclet.route = Util.clone(ROUTE) // eslint-disable-line no-param-reassign
+          }
+          doclet.route.params.header.push(tag.value)
+        }
+      })
+      dictionary.defineTag('route-param-response', {
+        ...PARAM_TAG_PROPERTIES,
+        onTagged(doclet, tag) {
+          if (!doclet.route) {
+            doclet.route = Util.clone(ROUTE) // eslint-disable-line no-param-reassign
+          }
+          doclet.route.params.response.push(tag.value)
+        }
+      })
+    }
+  },
+  template: {
+    publish: function publish(taffyDb, opts) {
+      const [source] = opts._,
+            doclets = filterDoclets(taffyDb),
+            files = assembleFiles(doclets, source)
+      Util.writeFiles(files, Path.normalize(opts.destination))
+    }
+  }
 }

@@ -2,59 +2,85 @@ const Fs = require('fs')
 const Path = require('path')
 
 /**
+ * Function
+ */
+function noop() {
+
+}
+
+/**
  * String
  */
 function capitalizeFirstCharacter(s) {
   return `${s.charAt(0).toUpperCase()}${s.slice(1)}`
 }
 
+function removeExtention(s) {
+  return typeof s === 'string' ? s.replace(/\.[^/.]+$/, '') : s
+}
+
+function capitalize(s) {
+  return typeof s === 'string' ? s.toUpperCase() : s
+}
+
 /**
  * Object
  */
-function clone(obj){
+function clone(obj) {
   return JSON.parse(JSON.stringify(obj))
 }
 
-function breakdownResource(resource, level=1){
-  let sets = [],
-    resources = [],
-    properties = []
-  for (let [key, value] of Object.entries(resource)) {
-    if(value !== null){
-      if(typeof value === 'object'){
-        if(Array.isArray(value)){
-          // new object array
-          if(['[object Object]', '[object Array]'].includes(Object.prototype.toString.call(value[0]))){
+function array2Obj(array, opts) {
+  const {
+          key,
+          keyTransform,
+          valueTransform
+        } = Object.assign({}, {
+          key: 'id',
+          keyTransform: noop,
+          valueTransform: noop
+        }, opts),
+        obj = {}
+  array.forEach((item) => {
+    if (!(item[key] == null)) {
+      obj[keyTransform(item[key])] = valueTransform(item)
+    }
+  })
+  return obj
+}
+
+function breakdownResource(rawResource, level = 1) {
+  const sets = [],
+        resources = [],
+        properties = [],
+        label = rawResource.label
+          || rawResource.name
+          || 'Item'
+
+  Object.entries(rawResource).forEach(([key, value]) => {
+    if (value !== null) {
+      if (typeof value === 'object') {
+        if (Array.isArray(value)) {
+          if (['[object Object]', '[object Array]'].includes(Object.prototype.toString.call(value[0]))) {
             resources.push({
               label: key,
               level: level + 1,
-              resources: value.map(resource => breakdownResource(resource, level + 2))
+              resources: value.map(rawSubResource => breakdownResource(rawSubResource, level + 2))
             })
-          }
-          // key/set(primitives)
-          else if(!(value[0] == null)){
+          } else if (!(value[0] == null)) {
             sets.push({ key, value })
           }
-        }
-        // new object
-        else {
+        } else {
           resources.push({
-            label: key,
-            level: level + 1,
-            resources: [breakdownResource(value, level + 2)]
+            ...breakdownResource(value, level + 1),
+            label: key
           })
         }
-      }
-      // key/primitive
-      else if(key !== 'label') {
+      } else if (key !== 'label') {
         properties.push({ key, value })
       }
     }
-  }
-
-  const label = resource.label
-    || resource.name
-    || 'Item'
+  })
 
   return {
     sets,
@@ -68,6 +94,14 @@ function breakdownResource(resource, level=1){
 /**
  * Files
  */
+
+function read(file, encoding = 'utf8') {
+  return Fs.readFileSync(file, encoding)
+}
+
+function readJson(path) {
+  return JSON.parse(Fs.readFileSync(path))
+}
 
 function writeFiles(files, location) {
   for (let i = 0; i < files.length; i += 1) {
@@ -104,16 +138,13 @@ function ensureDir(directory) {
   }
 }
 
-function readJsonFile(path) {
-  return JSON.parse(Fs.readFileSync(path))
-}
 
 /**
  * Template
  */
-function compareParams(a, b){
-  const nameA = a.name.toLowerCase()
-  const nameB = b.name.toLowerCase()
+function compareParams(a, b) {
+  const nameA = a.name.toLowerCase(),
+        nameB = b.name.toLowerCase()
   if (nameA < nameB) {
     return -1
   }
@@ -123,16 +154,16 @@ function compareParams(a, b){
   return 0
 }
 
-function translateParams(params){
+function translateParams(params) {
   return params
     .sort(compareParams)
-    .reduce((params, param) => {
+    .reduce((formattedParams, param) => {
       const uri = param.name.split('.')
 
-      let list = params,
+      let list = formattedParams,
           name = uri.shift()
-      while(name){
-        if(uri.length === 0){
+      while (name) {
+        if (uri.length === 0) {
           list.push({
             name,
             typeString: param.type
@@ -141,8 +172,7 @@ function translateParams(params){
             description: param.description,
             children: []
           })
-        }
-        else {
+        } else {
           const target = findParam(list, name)
           if (!target) {
             break
@@ -151,7 +181,7 @@ function translateParams(params){
         }
         name = uri.shift()
       }
-      return params
+      return formattedParams
     }, [])
 }
 
@@ -159,20 +189,15 @@ function findParam(params, name) {
   return params.find(param => param.name === name)
 }
 
-function defineSection(label, resources=[], level=1){
-  return {
-    label,
-    level,
-    resources: resources.map(resource => breakdownResource(resource, level))
-  }
-}
-
 module.exports = {
+  array2Obj,
   breakdownResource,
+  capitalize,
   capitalizeFirstCharacter,
   clone,
-  defineSection,
-  readJsonFile,
+  read,
+  readJson,
+  removeExtention,
   translateParams,
   writeFiles,
 }

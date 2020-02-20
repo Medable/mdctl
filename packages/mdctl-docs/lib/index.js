@@ -1,6 +1,5 @@
 const { execSync } = require('child_process')
 const Path = require('path'),
-
       jsdoc = Path.join(__dirname, '..', 'node_modules', '.bin', 'jsdoc')
 
 function generateDocumentation(opts) {
@@ -19,22 +18,32 @@ function generateDocumentation(opts) {
           source,
           '-r', // recursive
           '-d', destination,
+          '-c', Path.join(__dirname, 'config.js')
         ]
 
   if (module) {
-    const config = Path.join(__dirname, 'modules', module, 'config.json'),
-          template = Path.join(__dirname, 'modules', module, 'template')
-    params.push('-c', config, '-t', template)
+    const parts = Path.parse(module),
+          modulePath = !parts.dir
+            ? Path.join(__dirname, 'modules', module) // is name
+            : module, // is path
+          // eslint-disable-next-line global-require, import/no-dynamic-require
+          moduleObj = require(modulePath)
+
+    if (moduleObj.template) {
+      params.push('-t', 'template')
+    }
+    if (moduleObj.plugin) {
+      params.push('-c', Path.join(__dirname, 'config.json'))
+    }
+
+    params.push('-q', `module=${modulePath}`)
   }
 
   if (verbose) {
     params.push('--verbose')
   }
 
-  const stdout = execSync(params.join(' ')) // eslint-disable-line one-var
-  if (verbose) {
-    console.log(stdout.toString())
-  }
+  console.log(execSync(params.join(' ')).toString())
   return true
 }
 
