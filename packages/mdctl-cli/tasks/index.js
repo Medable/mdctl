@@ -8,13 +8,21 @@ const fs = require('fs'),
 
 let knownTasks
 
-function createTask(task = 'help') {
+async function createTask(cli, task = 'help') {
 
   getRegisteredTasks()
 
-  const TaskClass = knownTasks[task.toLowerCase()]
+  let TaskClass = knownTasks[task.toLowerCase()]
   if (!TaskClass) {
-    throw new RangeError(`${task} task does not exist`)
+
+    const Plugin = knownTasks.plugin,
+          plugin = new Plugin()
+
+    TaskClass = await plugin.createTask(cli, task)
+
+    if (!TaskClass) {
+      throw new RangeError(`${task} task does not exist`)
+    }
   }
   return new TaskClass()
 
