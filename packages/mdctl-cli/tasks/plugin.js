@@ -64,7 +64,11 @@ class Plugin extends Task {
             const command = this.args(String(argOffset + 1)),
                   entry = remote.commands.find(v => v.name === command)
 
-            if (!entry) {
+            if (command === Undefined || command.indexOf('--') === 0) {
+
+              result = remote
+
+            } else if (!entry) {
 
               err = Fault.create('mdctl.notFound.command', { reason: 'Command not found.', resource: `${task}.${command}` })
 
