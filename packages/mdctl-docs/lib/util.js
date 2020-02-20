@@ -100,14 +100,19 @@ function read(file, encoding = 'utf8') {
 }
 
 function readJson(path) {
-  return JSON.parse(Fs.readFileSync(path))
+  try {
+    return JSON.parse(Fs.readFileSync(path))
+  }
+  catch(err){
+    console.warn(`Unable to read ${path}`)
+    return {}
+  }
 }
 
 function writeFiles(files, location) {
   for (let i = 0; i < files.length; i += 1) {
     writeFile(files[i], location)
   }
-  console.log(`finished generating documentation in ${location}`)
 }
 
 function writeFile(file, location) {

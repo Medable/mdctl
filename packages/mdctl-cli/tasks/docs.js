@@ -9,9 +9,21 @@ class Docs extends Task {
   constructor() {
 
     const options = {
+      debug: {
+        default: false,
+        type: 'boolean'
+      },
       destination: {
         default: '',
         type: 'string'
+      },
+      errors: {
+        default: false,
+        type: 'boolean'
+      },
+      log: {
+        default: false,
+        type: 'boolean'
       },
       module: {
         default: '',
@@ -58,10 +70,14 @@ class Docs extends Task {
 
       options
         
+        --debug - outputs JSDoc command debugging
         --destination - output directory
-        --module - JSDoc plugin and template module
+        --errors - outputs JSDoc command errors
+        --log - outputs JSDoc command results
+        --module - documentation module name or location
         --source - source directory
-        --verbose - useful for debugging`
+        --verbose - outputs detailed JSDoc command results
+`
   }
 
 }
