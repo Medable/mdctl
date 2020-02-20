@@ -1,32 +1,25 @@
-const Fs = require('fs')
-const Path = require('path')
-const Handlebars = require('handlebars'),
+const Fs = require('fs'),
+      Path = require('path'),
+      Handlebars = require('handlebars'),
+      Util = require('../util'),
+      partials = Fs.readdirSync(Path.join(__dirname, 'components'))
+        .filter(file => file.endsWith('.hbs'))
+        .map(file => ({
+          compile: Handlebars.compile(Util.read(Path.join(__dirname, 'components', file))),
+          file: Util.read(Path.join(__dirname, 'components', file)),
+          name: Util.removeExtention(file)
+        })),
+      TEMPLATE_OBJ_OPTS = Object.freeze({
+        key: 'name',
+        keyTransform: key => Util.capitalize(key).replace(/[.]|-/g, '_'),
+        valueTransform: value => value.compile
+      }),
+      TEMPLATES = Util.array2Obj(partials, TEMPLATE_OBJ_OPTS)
 
-      PARTIALS = Object.freeze([
-        'gitbook/nav-item',
-        'gitbook/tab',
-        'md/function',
-        'md/key-value',
-        'md/resource',
-        'md/route',
-        'md/set',
-        'md/object',
-        'md/value'
-      ]),
-
-      TEMPLATES = Object.freeze({
-        GITBOOK: {
-          README: Handlebars.compile(load('gitbook/readme')),
-          MODULE: Handlebars.compile(load('gitbook/module')),
-          SUMMARY: Handlebars.compile(load('gitbook/summary'))
-        },
-        MD: {
-          RESOURCE: Handlebars.compile(load('md/resource'))
-        }
-      })
-
-function load(component) {
-  return Fs.readFileSync(Path.join(__dirname, 'components', `${component}.hbs`), 'utf8')
+function loadPartials(partials=[]) {
+  partials.forEach(partial => Handlebars.registerPartial(partial.name, partial.file))
+  // returns new TEMPLATES object containing additional compiled partials
+  return Object.assign({}, TEMPLATES, Util.array2Obj(partials, TEMPLATE_OBJ_OPTS))
 }
 
 Handlebars.registerHelper('cammel_to_sentence', s => (typeof s === 'string' ? s.replace(/([A-Z])/g, match => ` ${match}`).replace(/^./, match => match.toUpperCase()) : s))
@@ -39,14 +32,15 @@ Handlebars.registerHelper('cammel_to_sentence', s => (typeof s === 'string' ? s.
  */
 Handlebars.registerHelper('md_escape', s => (typeof s === 'string' ? s.replace(/(\\|\*|_|`|{|}|\(|\)|\[|\]|#)/g, '\\$1') : s))
 
-Handlebars.registerHelper('md_header', (s, level=1) => (typeof s === 'string' ? `${'#'.repeat(level)} ${s}` : s))
+Handlebars.registerHelper('md_header', (s, level = 1) => (typeof s === 'string' ? `${'#'.repeat(level)} ${s}` : s))
 
-Handlebars.registerHelper('next_n', (n=0) => n + 1)
+Handlebars.registerHelper('next_n', (n = 0) => n + 1)
 
-Handlebars.registerHelper('uppercase', s => (typeof s === 'string' ? s.toUpperCase() : s))
+Handlebars.registerHelper('capitalize', Util.capitalize)
 
-PARTIALS.forEach(partial => Handlebars.registerPartial(partial.replace(/\//g, '.'), load(partial)))
+loadPartials(partials)
 
 module.exports = {
+  loadPartials,
   TEMPLATES,
 }
