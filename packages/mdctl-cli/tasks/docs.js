@@ -17,10 +17,6 @@ class Docs extends Task {
         default: '',
         type: 'string'
       },
-      errors: {
-        default: false,
-        type: 'boolean'
-      },
       log: {
         default: false,
         type: 'boolean'
@@ -70,9 +66,8 @@ class Docs extends Task {
 
       options
         
-        --debug - outputs JSDoc command debugging
+        --debug - outputs JSDoc command debugging and detailed command results
         --destination - output directory
-        --errors - outputs JSDoc command errors
         --log - outputs JSDoc command results
         --module - documentation module name or location
         --source - source directory

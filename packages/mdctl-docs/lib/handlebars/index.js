@@ -2,7 +2,7 @@ const Fs = require('fs'),
       Path = require('path'),
       Handlebars = require('handlebars'),
       Util = require('../util'),
-      partials = Fs.readdirSync(Path.join(__dirname, 'components'))
+      PARTIALS = Fs.readdirSync(Path.join(__dirname, 'components'))
         .filter(file => file.endsWith('.hbs'))
         .map(file => ({
           compile: Handlebars.compile(Util.read(Path.join(__dirname, 'components', file))),
@@ -14,9 +14,9 @@ const Fs = require('fs'),
         keyTransform: key => Util.capitalize(key).replace(/[.]|-/g, '_'),
         valueTransform: value => value.compile
       }),
-      TEMPLATES = Util.array2Obj(partials, TEMPLATE_OBJ_OPTS)
+      TEMPLATES = Util.array2Obj(PARTIALS, TEMPLATE_OBJ_OPTS)
 
-function loadPartials(partials=[]) {
+function loadPartials(partials = []) {
   partials.forEach(partial => Handlebars.registerPartial(partial.name, partial.file))
   // returns new TEMPLATES object containing additional compiled partials
   return Object.assign({}, TEMPLATES, Util.array2Obj(partials, TEMPLATE_OBJ_OPTS))
@@ -38,7 +38,7 @@ Handlebars.registerHelper('next_n', (n = 0) => n + 1)
 
 Handlebars.registerHelper('capitalize', Util.capitalize)
 
-loadPartials(partials)
+loadPartials(PARTIALS)
 
 module.exports = {
   loadPartials,
