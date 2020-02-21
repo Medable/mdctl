@@ -102,8 +102,7 @@ function read(file, encoding = 'utf8') {
 function readJson(path) {
   try {
     return JSON.parse(Fs.readFileSync(path))
-  }
-  catch(err){
+  } catch (err) {
     console.warn(`Unable to read ${path}`)
     return {}
   }

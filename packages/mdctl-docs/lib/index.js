@@ -1,6 +1,7 @@
 const { execSync } = require('child_process'),
       Path = require('path'),
       Util = require('./util'),
+      Handlebars = require('./handlebars'),
       jsdoc = Path.join(__dirname, '..', 'node_modules', '.bin', 'jsdoc')
 
 function generateDocumentation(opts) {
@@ -10,15 +11,17 @@ function generateDocumentation(opts) {
         {
           debug,
           destination,
-          errors,
           log,
           module,
           source,
           verbose,
         } = options,
 
-        projectConfig = Util.readJson('./config.json'),
-        projectConfigDocsModule = projectConfig && projectConfig.docs && projectConfig.docs.module,
+        projectConfig = Util.readJson(Path.join(process.cwd(), 'config.json')),
+        projectConfigDocsModule = projectConfig
+          && projectConfig.docs
+          && projectConfig.docs.module
+          && Path.join(process.cwd(), projectConfig.docs.module),
         resolvedModule = module || projectConfigDocsModule,
 
         params = [
@@ -26,7 +29,9 @@ function generateDocumentation(opts) {
           source,
           '--recurse',
           '--destination', destination,
-        ]
+        ],
+
+        execOpts = {}
 
   if (resolvedModule) {
     const parts = Path.parse(resolvedModule),
@@ -55,24 +60,17 @@ function generateDocumentation(opts) {
     params.push('--debug')
   }
 
-  const execOpts = {}
-  if (log || verbose || debug || errors) {
+  if (log || verbose || debug) {
     // send output to this process
     execOpts.stdio = 'inherit'
   }
 
-  if(!errors){
-    // jsdoc considers parsing errors as fatal which can confound the output
-    params.push('2>/dev/null')
-  }
-
   try {
+    // TODO: If JSDoc throws an error (syntax or runtime), it is still
+    //       being outputted to the console
     execSync(params.join(' '), execOpts)
-  }
-  catch(err){
-    if(!errors){
-      console.warn('JSDoc errors detected. To output the errors, please include the --errors flag')
-    }
+  } catch (err) {
+    console.warn('JSDoc errors detected')
   }
 
   console.log('finished generating documentation')
@@ -87,4 +85,6 @@ generateDocumentation.default = Object.freeze({
 
 module.exports = {
   generateDocumentation,
+  Handlebars,
+  Util
 }
