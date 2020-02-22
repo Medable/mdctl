@@ -29,10 +29,10 @@ First, Save a library script with the `c_example` export.
 ```javascript
 const { plugin, command } = require('c_mdctl')
  
-@plugin('echo', { acl: 'role.developer', environment: '*' })
+@plugin('example', { acl: 'role.developer', environment: '*' })
 class TestPlugin {
 
-  @command('test', { environment: 'development' })
+  @command('echo', { environment: 'development' })
   static echo(...args) {
     return args
   }
@@ -53,13 +53,13 @@ Arguments can come from a json document or be passed on the command line and  mu
 json.
 
 ```
-$ mdctl test echo \"string\" 
+$ mdctl example echo \"string\" 
 {"object":"list","data":["string"],"hasMore":false}`
 
-$ mdctl test multiply 2 3
+$ mdctl example multiply 2 3
 6
 
-$ mdctl plugin test multiply 2 3
+$ mdctl plugin example multiply 2 3
 6
 
 // args.json -->
@@ -70,6 +70,6 @@ $ mdctl plugin test multiply 2 3
 //   123
 // ]
 
-$ cat ./args.json | mdctl test echo 
+$ cat ./args.json | mdctl example echo 
 {"object":"list","data":[{"foo":"bar"},123],"hasMore":false}
 ```
