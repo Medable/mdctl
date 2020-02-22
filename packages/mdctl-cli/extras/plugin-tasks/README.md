@@ -22,9 +22,13 @@ exports where @plugin/@command usages are located (@plugin does not auto-registe
 To use, create a plugin class, expose some commands, add the library export in which it's contained to the
 `c_mdctl_plugins` config key and use the mdctl-cli to call it.
 
-### Example
- 
-First, Save a library script with the `c_example` export.
+### Setup
+
+Import the accompanying environment and skip to usage examples, or...
+
+Save a library script with the `c_mdctl` export with the contents of env/scripts/js/library.c_mdctl.js
+
+Save the library script below with the `c_example` export (or use env/scripts/js/library.c_example.js)
 
 ```javascript
 const { plugin, command } = require('c_mdctl')
@@ -44,7 +48,9 @@ class TestPlugin {
 }
 ```
 
-Second, create a config key called `c_mdctl_plugins` with `["c_example"]` as the value.
+Create a config key called `c_mdctl_plugins` with `["c_example"]` as the value.
+
+### Usage
 
 Now you should be able to call the plugin from mdtcl. If your tasks collide with built-in
 tasks, precede the plugin name with `plugin`
