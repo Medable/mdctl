@@ -37,7 +37,7 @@ function aclParts(entry) {
 class RegisteredCommand {
 
   constructor({
-    name: commandName, methodName, acl = ['role.administrator'], description = '', environment = '*', isStatic
+    name: commandName, methodName, acl = ['role.administrator'], description = '', params = [], environment = '*', isStatic
   } = {}) {
     this.name = commandName
     this.methodName = methodName
@@ -45,6 +45,7 @@ class RegisteredCommand {
       const [type, name] = aclParts(v)
       return { type, name }
     })
+    this.params = toArray(params, !!params).map((v) => String(v))
     this.description = description
     this.environment = environment
     this.isStatic = isStatic
@@ -68,10 +69,10 @@ class RegisteredCommand {
   toJSON(principal) {
     if (this.hasAccess(principal)) {
       const {
-        name, acl, description, environment
+        name, acl, description, params, environment
       } = this
       return {
-        name, acl, description, environment
+        name, acl, description, params, environment
       }
     }
     return null
