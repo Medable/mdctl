@@ -140,7 +140,12 @@ class Plugin extends Task {
                 if (value === Undefined || value.indexOf('--') === 0) {
                   done = true
                 } else {
-                  args.push(JSON.parse(value))
+                  try {
+                    args.push(JSON.parse(value))
+                  } catch(err) {
+                    args.push(value) // forgiving, send as string
+                  }
+
                 }
               }
 
