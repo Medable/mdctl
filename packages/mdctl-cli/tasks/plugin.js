@@ -1,7 +1,7 @@
 /* eslint-disable class-methods-use-this */
 
 const {
-        isSet, stringToBoolean,
+        isSet, stringToBoolean, rArray
       } = require('@medable/mdctl-core-utils/values'),
       { Fault } = require('@medable/mdctl-core'),
       Task = require('../lib/task')
@@ -42,6 +42,40 @@ class Plugin extends Task {
           { client } = await createOptions()
 
     let remote
+
+    if (task === Undefined || task.indexOf('--') === 0) {
+
+      return class extends Task {
+
+        async run() {
+
+          let err,
+              result,
+              output
+
+          try {
+            result = await client.get('/routes/mdctl')
+          } catch (e) {
+
+            err = e
+          }
+
+          if (err) {
+            output = err.toJSON()
+          } else {
+            output = result
+          }
+          if (output !== Undefined) {
+            outputResult(output)
+          }
+
+          return true
+
+        }
+
+      }
+
+    }
 
     try {
       remote = await client.get(`/routes/mdctl/${task}`)
@@ -93,7 +127,7 @@ class Plugin extends Task {
                     })
 
               if (input !== Undefined) {
-                args.push(JSON.parse(input))
+                args.push(...rArray(JSON.parse(input), true))
               }
 
               let index = argOffset + 2,

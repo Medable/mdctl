@@ -1,0 +1,7 @@
+{
+  "name": "c_mdctl_plugins",
+  "object": "config",
+  "value": {
+    "axon": "c_example"
+  }
+}
