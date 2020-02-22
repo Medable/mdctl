@@ -69,10 +69,10 @@ class RegisteredCommand {
   toJSON(principal) {
     if (this.hasAccess(principal)) {
       const {
-        name, description, params, environment
+        name, description, params
       } = this
       return {
-        name, description, params, environment
+        name, description, params
       }
     }
     return null
@@ -123,7 +123,7 @@ class RegisteredPlugin {
 
     if (this.hasAccess(principal)) {
       const {
-              name, description, environment
+              name, description
             } = this,
             commands = Array.from(this.commands.values()).reduce(
               (list, command) => {
@@ -138,7 +138,7 @@ class RegisteredPlugin {
 
       if (commands.length) {
         return {
-          name, description, environment, commands
+          name, description, commands
         }
       }
     }
