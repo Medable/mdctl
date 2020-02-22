@@ -18,6 +18,8 @@ async function createTask(cli, task = 'help') {
     const Plugin = knownTasks.plugin,
           plugin = new Plugin()
 
+    await cli.configure()
+
     TaskClass = await plugin.createTask(cli, task)
 
     if (!TaskClass) {

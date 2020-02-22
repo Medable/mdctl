@@ -91,7 +91,8 @@ module.exports = class MdCtlCli {
         args = process.argv.slice(2).reverse()
       }
 
-      const privates = privatesAccessor(this)
+      const privates = privatesAccessor(this),
+            task = await createTask(this, taskName)
 
       // get cli arguments and options
       privates.args = createConfig(Object.assign(
@@ -102,9 +103,9 @@ module.exports = class MdCtlCli {
 
       await this.configure()
 
-      privates.task = await createTask(this, taskName)
+      privatesAccessor(this).task = task
 
-      result = await privates.task.run(this)
+      result = await task.run(this)
 
     } catch (e) {
       err = e
