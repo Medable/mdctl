@@ -1,5 +1,5 @@
 /**
- * MDCTL companying cortex plugin library.
+ * MDCTL companion cortex plugin library.
  *
  * @author James Sas <james@medable.com>
  *
