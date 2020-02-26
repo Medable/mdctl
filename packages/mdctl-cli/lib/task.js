@@ -7,6 +7,9 @@ const _ = require('lodash'),
       jsyaml = require('js-yaml'),
       { throwIfNot } = require('@medable/mdctl-core-utils'),
       { privatesAccessor } = require('@medable/mdctl-core-utils/privates'),
+      {
+        rString, isSet
+      } = require('@medable/mdctl-core-utils/values'),
       { createConfig } = require('./config')
 
 
@@ -94,6 +97,22 @@ class Task {
       }
       return !!command
     }, true))
+  }
+
+  mergeJsonArgIf(options, arg) {
+
+    const value = this.args(arg)
+    if (rString(value)) {
+      const parsed = JSON.parse(value)
+      options[arg] = _.merge(options[arg], parsed) // eslint-disable-line no-param-reassign
+    }
+  }
+
+  applyArgIf(options, arg) {
+    const value = this.args(arg)
+    if (isSet(value)) {
+      options[arg] = value // eslint-disable-line no-param-reassign
+    }
   }
 
 }
