@@ -24,15 +24,18 @@ mdctl docs --module env
 
 By default, documentation is generated in `${ENV_EXPORT_HOME}/docs`.
 
-To view detailed output logs, include the `--verbose` flag.
+To view output logs, include the `--log` flag. To view detailed output logs, include the `--verbose` flag. To view JSDoc debugging information, include the `--debug` flag.
 
 ```bash
+mdctl docs --module env --log
 mdctl docs --module env --verbose
+mdctl docs --module env --debug
 ```
 
 ### Routes
 
 To capture route parameters (path, body, query, header, and response) and additional information such as version, authors, and summary, please include a _[JSdoc](https://jsdoc.app/)_ styled comment to the top of the route script file. [JSdoc](https://jsdoc.app/) description and examples are rendered using markdown formatting.
+
 _Please note that including **@file** is required._
 
 ```javascript
