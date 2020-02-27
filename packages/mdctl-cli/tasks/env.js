@@ -63,6 +63,10 @@ class Env extends Task {
       production: {
         type: 'boolean',
         default: false
+      },
+      dir: {
+        type: 'string',
+        default: ''
       }
     }
 
