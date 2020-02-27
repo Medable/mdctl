@@ -1,0 +1,16 @@
+{
+  "active": true,
+  "configuration": {
+    "export": "c_mdctl"
+  },
+  "environment": "*",
+  "label": "c_mdctl",
+  "language": "javascript/es6",
+  "name": "c_mdctl",
+  "object": "script",
+  "optimized": false,
+  "principal": null,
+  "script": "/env/scripts/js/library.c_mdctl.js",
+  "type": "library",
+  "weight": 0
+}
