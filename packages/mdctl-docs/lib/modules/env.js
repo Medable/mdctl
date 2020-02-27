@@ -29,14 +29,14 @@ const Path = require('path'),
           response: []
         }
       }),
-      SCRIPT_TYPES = Object.freeze({
+      RESOURCE_TYPES = Object.freeze({
         JOB: 'job',
         LIBRARY: 'library',
         POLICY: 'policy',
         ROUTE: 'route',
         TRIGGER: 'trigger'
       }),
-      SCRIPT_TYPE_DIR_MAP = Object.freeze({
+      PLURAL_RESOURCES = Object.freeze({
         job: 'jobs',
         route: 'routes',
         policy: 'policies',
@@ -46,12 +46,24 @@ const Path = require('path'),
 
 function filterDoclets(taffyDb) {
   // documented, non-package
-  return taffyDb({
-    kind: {
-      '!is': 'package'
+  return taffyDb([
+    // script
+    {
+      kind: 'file'
     },
+    // route
+    {
+      route: {
+        isObject: true
+      }
+    }
+  ], {
     undocumented: {
       isUndefined: true
+    }
+  }, {
+    kind: {
+      '!is': 'package'
     }
   }).get()
 }
@@ -60,7 +72,13 @@ function loadEnvData(manifest, home, type) {
   return manifest[type] && manifest[type].includes.map(name => Util.readJson(Path.join(home, 'env', type, `${name}.json`)))
 }
 
-function loadEnvObjects(manifest, home) {
+function readManifestJsons(key, returnList=item=>item, manifest={}, home=process.cwd()){
+  return manifest[key]
+    ? returnList(manifest[key]).map(name => Util.readJson(Path.join(home, 'env', key, `${name}.json`)))
+    : []
+}
+
+function readManifestObjects(manifest, home) {
 
   const data = {}
 
@@ -83,50 +101,90 @@ function loadEnvObjects(manifest, home) {
   }))
 }
 
-function loadEnvScripts(manifest, doclets, home) {
-  const scriptDoclets = {}
+function getRouteId(path, method){
+  return `${path}${method}`
+}
+
+function readManifestScripts(manifest, doclets, home) {
+  const scripts = {},
+        resourceMap = {},
+        resources = Util.readJson(Path.join(home, 'resources.json'), [])
+
   doclets.forEach((doclet) => {
-    const isScriptFile = doclet.kind === 'file' && doclet.meta.path.endsWith('scripts/js'),
-          name = doclet.meta.filename.split('.')[1]
-    if (isScriptFile && !scriptDoclets[name]) {
-      scriptDoclets[name] = doclet
+    const name = doclet.meta.filename.split('.')[1]
+    if(!scripts[name]){
+      scripts[name] = {
+        routes: {}
+      }
+    }
+
+    if(doclet.kind === 'file'){
+      scripts[name].doclet = doclet
+    }
+
+    if(doclet.route && doclet.route.path && doclet.route.method){
+      scripts[name].routes[getRouteId(doclet.route.path, doclet.route.method)] = doclet.route
     }
   })
-  return manifest.scripts && manifest.scripts.includes.map((name) => {
-    const doclet = scriptDoclets[name],
-          info = Object.assign({}, Util.readJson(Path.join(home, 'env', 'scripts', `${name}.json`)), doclet && {
-            author: doclet.author,
-            summary: doclet.summary,
-            version: doclet.version
-          }),
-          data = { ...(doclet || {}), info }
-    if (info.type === SCRIPT_TYPES.ROUTE) {
-      if (!data.route) {
-        data.route = {}
+  resources.forEach(resource => {
+    if(resource.type !== RESOURCE_TYPES.LIBRARY){
+      const scriptName = resource.metadata.scriptExport
+      if (!resourceMap[scriptName]){
+        resourceMap[scriptName] = []
       }
-      data.route.method = info.configuration.method
-      data.route.path = info.configuration.path
+      resourceMap[scriptName].push(resource)
     }
-    if (data.route && data.route.params) {
-      data.route.params.path = Util.translateParams(data.route.params.path)
-      data.route.params.body = Util.translateParams(data.route.params.body)
-      data.route.params.query = Util.translateParams(data.route.params.query)
-      data.route.params.header = Util.translateParams(data.route.params.header)
-      data.route.params.response = Util.translateParams(data.route.params.response)
+  })
+
+  return manifest.scripts && manifest.scripts.includes.map((name) => {
+    const docletInfo = scripts[name],
+          info = Object.assign({}, Util.readJson(Path.join(home, 'env', 'scripts', `${name}.json`)), docletInfo && {
+            author: docletInfo.doclet.author,
+            summary: docletInfo.doclet.summary,
+            version: docletInfo.doclet.version
+          }),
+          data = { ...(docletInfo && docletInfo.doclet || {}), info }
+
+    if(resourceMap[name]){
+      resourceMap[name].forEach(resource => {
+        const {
+          configuration,
+          type
+        } = resource,
+        field = PLURAL_RESOURCES[type]
+
+        switch(type){
+          case RESOURCE_TYPES.ROUTE:
+            if(!data[field]){ data[field] = []}
+            data[field].push(Object.assign({}, {
+              method: configuration.method,
+              path: configuration.path
+            }, info.type === RESOURCE_TYPES.ROUTE
+              ? docletInfo && docletInfo.doclet && docletInfo.doclet.route
+              : docletInfo && docletInfo.routes[getRouteId(configuration.path, configuration.method)]
+            ))
+            break
+          default:
+            if(!info[field]){ info[field] = []}
+            info[field].push(resource)
+        }
+
+      })
     }
+
     return data
   })
 }
 
 function extract(manifest, doclets, home) {
   return {
-    apps: loadEnvData(manifest, home, 'apps'),
-    notifications: loadEnvData(manifest, home, 'notifications'),
-    roles: loadEnvData(manifest, home, 'roles'),
-    serviceAccounts: loadEnvData(manifest, home, 'serviceAccounts'),
-    policies: loadEnvData(manifest, home, 'policies'),
-    objects: loadEnvObjects(manifest, home),
-    scripts: loadEnvScripts(manifest, doclets, home)
+    apps: readManifestJsons('apps', item => item.includes, manifest, home),
+    notifications: readManifestJsons('notifications', item => item.includes, manifest, home),
+    roles: readManifestJsons('roles', item => item.includes, manifest, home),
+    serviceAccounts: readManifestJsons('serviceAccounts', item => item.includes, manifest, home),
+    policies: readManifestJsons('policies', item => item.includes, manifest, home),
+    objects: readManifestObjects(manifest, home),
+    scripts: readManifestScripts(manifest, doclets, home)
   }
 }
 
@@ -176,14 +234,6 @@ function buildSummary(data) {
     })
   }
 
-  if (data.runtime) {
-    links.push({
-      name: 'Runtime',
-      uri: 'env/runtime.md'
-    })
-  }
-
-
   if (data.objects) {
     sections.push({
       label: 'Objects',
@@ -203,31 +253,31 @@ function buildSummary(data) {
       label: 'Scripts',
       links: data.scripts.reduce((scripts, script) => {
         switch (script.info.type) {
-          case SCRIPT_TYPES.ROUTE:
+          case RESOURCE_TYPES.ROUTE:
             scripts[1].children.push({
               name: `${script.info.name} - ${script.info.configuration.method.toUpperCase()} ${script.info.configuration.path}`,
               uri: `scripts/routes/${script.info.name}.md`
             })
             break
-          case SCRIPT_TYPES.POLICY:
+          case RESOURCE_TYPES.POLICY:
             scripts[2].children.push({
               name: script.info.label || script.info.name,
               uri: `scripts/policies/${script.info.name}.md`
             })
             break
-          case SCRIPT_TYPES.LIBRARY:
+          case RESOURCE_TYPES.LIBRARY:
             scripts[3].children.push({
               name: script.info.label || script.info.name,
               uri: `scripts/libraries/${script.info.name}.md`
             })
             break
-          case SCRIPT_TYPES.JOB:
+          case RESOURCE_TYPES.JOB:
             scripts[4].children.push({
               name: script.info.label || script.info.name,
               uri: `scripts/jobs/${script.info.name}.md`
             })
             break
-          case SCRIPT_TYPES.TRIGGER:
+          case RESOURCE_TYPES.TRIGGER:
             scripts[5].children.push({
               name: script.info.label || script.info.name,
               uri: `scripts/triggers/${script.info.name}.md`
@@ -444,10 +494,10 @@ function assembleFiles(doclets, source) {
         copyright: script.copyright,
         description: script.description,
         examples: script.examples,
-        route: script.route
+        routes: script.routes
       }),
       name: `${script.info.name}.md`,
-      path: Path.join('scripts', SCRIPT_TYPE_DIR_MAP[script.info.type])
+      path: Path.join('scripts', PLURAL_RESOURCES[script.info.type])
     })))
   }
 
@@ -457,6 +507,27 @@ function assembleFiles(doclets, source) {
 module.exports = {
   plugin: {
     defineTags: function defineTags(dictionary) {
+      dictionary.defineTag('route', {
+        canHaveName: true,
+        mustHaveValue: true,
+        onTagged(doclet, tag) {
+          if (!doclet.route) {
+            doclet.route = Util.clone(ROUTE) // eslint-disable-line no-param-reassign
+          }
+          doclet.route.path = tag.value.name.toLowerCase()
+          doclet.route.method = (tag.value.description || 'get').toLowerCase()
+        }
+      })
+      dictionary.defineTag('route-path', {
+        mustHaveValue: true,
+        mustNotHaveDescription: true,
+        onTagged(doclet, tag) {
+          if (!doclet.route) {
+            doclet.route = Util.clone(ROUTE) // eslint-disable-line no-param-reassign
+          }
+          doclet.route.params.path.push(tag.value)
+        }
+      })
       dictionary.defineTag('route-param-path', {
         ...PARAM_TAG_PROPERTIES,
         onTagged(doclet, tag) {
@@ -502,6 +573,19 @@ module.exports = {
           doclet.route.params.response.push(tag.value)
         }
       })
+    },
+    handlers: {
+      parseComplete: function(event){
+        event.doclets.forEach(doclet => {
+          if(doclet.route){
+            doclet.route.params.path = Util.translateParams(doclet.route.params.path)
+            doclet.route.params.body = Util.translateParams(doclet.route.params.body)
+            doclet.route.params.query = Util.translateParams(doclet.route.params.query)
+            doclet.route.params.header = Util.translateParams(doclet.route.params.header)
+            doclet.route.params.response = Util.translateParams(doclet.route.params.response)
+          }
+        })
+      }
     }
   },
   template: {

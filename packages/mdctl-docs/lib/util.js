@@ -49,40 +49,57 @@ function array2Obj(array, opts) {
   return obj
 }
 
+function determineResourceLevel(rawResource, level = 1){
+  return rawResource.label || rawResource.name
+    ? level + 1
+    : level
+}
+
 function breakdownResource(rawResource, level = 1) {
-  const sets = [],
+  const scripts = [],
+        sets = [],
         resources = [],
         properties = [],
         label = rawResource.label
           || rawResource.name
-          || 'Item'
 
   Object.entries(rawResource).forEach(([key, value]) => {
     if (value !== null) {
       if (typeof value === 'object') {
+        const nextLevel = level + 1
         if (Array.isArray(value)) {
           if (['[object Object]', '[object Array]'].includes(Object.prototype.toString.call(value[0]))) {
             resources.push({
               label: key,
-              level: level + 1,
-              resources: value.map(rawSubResource => breakdownResource(rawSubResource, level + 2))
+              level: nextLevel,
+              resources: value.map(rawSubResource => breakdownResource(rawSubResource, determineResourceLevel(rawSubResource, nextLevel)))
             })
           } else if (!(value[0] == null)) {
             sets.push({ key, value })
           }
         } else {
           resources.push({
-            ...breakdownResource(value, level + 1),
+            ...breakdownResource(value, determineResourceLevel(value, nextLevel)),
             label: key
           })
         }
-      } else if (key !== 'label') {
+      }
+      else if (key === 'script') {
+        if(false){
+          scripts.push({
+            code: value,
+            language: 'javascript'
+          })
+        }
+      } 
+      else if (key !== 'label') {
         properties.push({ key, value })
       }
     }
   })
 
   return {
+    scripts,
     sets,
     properties,
     label,
@@ -99,12 +116,12 @@ function read(file, encoding = 'utf8') {
   return Fs.readFileSync(file, encoding)
 }
 
-function readJson(path) {
+function readJson(path, empty={}) {
   try {
     return JSON.parse(Fs.readFileSync(path))
   } catch (err) {
     console.warn(`Unable to read ${path}`)
-    return {}
+    return empty
   }
 }
 

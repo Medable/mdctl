@@ -36,7 +36,16 @@ Handlebars.registerHelper('md_header', (s, level = 1) => (typeof s === 'string' 
 
 Handlebars.registerHelper('next_n', (n = 0) => n + 1)
 
+Handlebars.registerHelper('if_or', function(...args) {
+  const options = args.pop()
+  return args.reduce((bool, arg) => bool || arg, false)
+    ? options.fn(this)
+    : options.inverse(this)
+})
+
 Handlebars.registerHelper('capitalize', Util.capitalize)
+
+Handlebars.registerHelper('capitalize_first', Util.capitalizeFirstCharacter)
 
 loadPartials(PARTIALS)
 
