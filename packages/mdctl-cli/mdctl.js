@@ -92,7 +92,7 @@ module.exports = class MdCtlCli {
       }
 
       const privates = privatesAccessor(this),
-            task = createTask(taskName)
+            task = await createTask(this, taskName)
 
       // get cli arguments and options
       privates.args = createConfig(Object.assign(
