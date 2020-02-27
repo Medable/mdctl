@@ -10,6 +10,7 @@ class ExportStream extends Transform {
     super(Object.assign({
       objectMode: true
     }, options))
+    this.runtimes = []
   }
 
   checkKeys(name) {
@@ -29,6 +30,8 @@ class ExportStream extends Transform {
       } else if (chunk.object === 'stream') {
         const section = new StreamChunk(chunk, chunk.object)
         this.push(section)
+      } else if (chunk.object === 'runtime-resource') {
+        this.runtimes.push(chunk)
       }
       // ignore unhandled chunks
       callback()
@@ -37,6 +40,10 @@ class ExportStream extends Transform {
   }
 
   _flush(done) {
+    if (this.runtimes.length) {
+      const section = new ExportSection(this.runtimes, 'resources')
+      this.push(section)
+    }
     done()
   }
 
