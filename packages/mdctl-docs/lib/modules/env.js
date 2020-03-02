@@ -2,6 +2,11 @@ const Path = require('path'),
       Util = require('../util'),
       { loadPartials } = require('../handlebars'),
       TEMPLATES = loadPartials(),
+      DOCLET_KINDS = Object.freeze([
+        'file',
+        'class',
+        'function',
+      ]),
       MANIFEST_KNOWN_KEYS = Object.freeze([
         'apps',
         'env',
@@ -36,6 +41,10 @@ const Path = require('path'),
         ROUTE: 'route',
         TRIGGER: 'trigger'
       }),
+      PARAMS = Object.freeze({
+        arg: [],
+        response: []
+      }),
       PLURAL_RESOURCES = Object.freeze({
         job: 'jobs',
         route: 'routes',
@@ -45,26 +54,18 @@ const Path = require('path'),
       })
 
 function filterDoclets(taffyDb) {
-  // documented, non-package
-  return taffyDb([
-    // script
-    {
-      kind: 'file'
-    },
-    // route
-    {
-      route: {
-        isObject: true
-      }
-    }
-  ], {
-    undocumented: {
-      isUndefined: true
-    }
-  }, {
-    kind: {
-      '!is': 'package'
-    }
+  return taffyDb(function filter(){
+    const isNotPackage = this.kind !== 'package',
+          isDocumented = !this.undocumented,
+          isInterestingKind = DOCLET_KINDS.includes(this.kind),
+          containsRoute = !!this.route,
+          isExports = this.meta
+            && this.meta.code
+            && this.meta.code.name
+            && typeof this.meta.code.name === 'string'
+            && this.meta.code.name.includes('exports.')
+
+    return isNotPackage && (isDocumented || (isInterestingKind && !isExports) || containsRoute)
   }).get()
 }
 
@@ -111,15 +112,32 @@ function readManifestScripts(manifest, doclets, home) {
         resources = Util.readJson(Path.join(home, 'resources.json'), [])
 
   doclets.forEach((doclet) => {
+    // console.log(JSON.stringify(doclet, null, 2))
     const name = doclet.meta.filename.split('.')[1]
     if(!scripts[name]){
       scripts[name] = {
+        classes: {},
         routes: {}
       }
     }
 
     if(doclet.kind === 'file'){
       scripts[name].doclet = doclet
+    }
+    else if(doclet.kind === 'class'){
+      scripts[name].classes[doclet.name] = {
+        type: 'Class',
+        description: doclet.description,
+        functions: []
+      }
+    }
+    else if(doclet.kind === 'function' && doclet.meta.code.type === 'MethodDefinition' && scripts[name].classes[doclet.memberof]){
+      scripts[name].classes[doclet.memberof].functions.push({
+        description: doclet.description,
+        name: doclet.name,
+        params: doclet._params,
+        paramString: 'Coming soon'
+      })
     }
 
     if(doclet.route && doclet.route.path && doclet.route.method){
@@ -138,12 +156,19 @@ function readManifestScripts(manifest, doclets, home) {
 
   return manifest.scripts && manifest.scripts.includes.map((name) => {
     const docletInfo = scripts[name],
-          info = Object.assign({}, Util.readJson(Path.join(home, 'env', 'scripts', `${name}.json`)), docletInfo && {
+          info = Object.assign({}, Util.readJson(Path.join(home, 'env', 'scripts', `${name}.json`)), docletInfo && docletInfo.doclet && {
             author: docletInfo.doclet.author,
             summary: docletInfo.doclet.summary,
             version: docletInfo.doclet.version
           }),
           data = { ...(docletInfo && docletInfo.doclet || {}), info }
+
+    if(docletInfo && docletInfo.classes){
+      data.classes = Object.entries(docletInfo.classes).map( ([key, value]) => ({
+        name: key,
+        ...value,
+      }))
+    }
 
     if(resourceMap[name]){
       resourceMap[name].forEach(resource => {
@@ -172,6 +197,7 @@ function readManifestScripts(manifest, doclets, home) {
       })
     }
 
+    // console.log(JSON.stringify(data, null, 2))
     return data
   })
 }
@@ -491,6 +517,7 @@ function assembleFiles(doclets, source) {
     files.push(...data.scripts.map(script => ({
       content: TEMPLATES.MD_RESOURCE({
         ...Util.breakdownResource(script.info),
+        classes: script.classes,
         copyright: script.copyright,
         description: script.description,
         examples: script.examples,
@@ -518,17 +545,16 @@ module.exports = {
           doclet.route.method = (tag.value.description || 'get').toLowerCase()
         }
       })
-      dictionary.defineTag('route-path', {
-        mustHaveValue: true,
-        mustNotHaveDescription: true,
+      dictionary.defineTag('param-response', {
+        ...PARAM_TAG_PROPERTIES,
         onTagged(doclet, tag) {
-          if (!doclet.route) {
-            doclet.route = Util.clone(ROUTE) // eslint-disable-line no-param-reassign
+          if (!doclet._params) {
+            doclet._params = Util.clone(PARAMS)
           }
-          doclet.route.params.path.push(tag.value)
+          doclet._params.response.push(tag.value)
         }
       })
-      dictionary.defineTag('route-param-path', {
+      dictionary.defineTag('param-route-path', {
         ...PARAM_TAG_PROPERTIES,
         onTagged(doclet, tag) {
           if (!doclet.route) {
@@ -537,7 +563,7 @@ module.exports = {
           doclet.route.params.path.push(tag.value)
         }
       })
-      dictionary.defineTag('route-param-body', {
+      dictionary.defineTag('param-route-body', {
         ...PARAM_TAG_PROPERTIES,
         onTagged(doclet, tag) {
           if (!doclet.route) {
@@ -546,7 +572,7 @@ module.exports = {
           doclet.route.params.body.push(tag.value)
         }
       })
-      dictionary.defineTag('route-param-query', {
+      dictionary.defineTag('param-route-query', {
         ...PARAM_TAG_PROPERTIES,
         onTagged(doclet, tag) {
           if (!doclet.route) {
@@ -555,7 +581,7 @@ module.exports = {
           doclet.route.params.query.push(tag.value)
         }
       })
-      dictionary.defineTag('route-param-header', {
+      dictionary.defineTag('param-route-header', {
         ...PARAM_TAG_PROPERTIES,
         onTagged(doclet, tag) {
           if (!doclet.route) {
@@ -564,7 +590,7 @@ module.exports = {
           doclet.route.params.header.push(tag.value)
         }
       })
-      dictionary.defineTag('route-param-response', {
+      dictionary.defineTag('param-route-response', {
         ...PARAM_TAG_PROPERTIES,
         onTagged(doclet, tag) {
           if (!doclet.route) {
@@ -577,6 +603,18 @@ module.exports = {
     handlers: {
       parseComplete: function(event){
         event.doclets.forEach(doclet => {
+          if(doclet.params){
+            if (!doclet._params) {
+              doclet._params = Util.clone(PARAMS)
+            }
+            doclet._params.arg.push(...doclet.params)
+          }
+
+          if(doclet._params){
+            doclet._params.arg = Util.translateParams(doclet._params.arg)
+            doclet._params.response = Util.translateParams(doclet._params.response)
+          }
+
           if(doclet.route){
             doclet.route.params.path = Util.translateParams(doclet.route.params.path)
             doclet.route.params.body = Util.translateParams(doclet.route.params.body)
