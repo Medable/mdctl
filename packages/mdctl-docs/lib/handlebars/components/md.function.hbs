@@ -3,7 +3,7 @@
 
 {{{description}}}
 {{/if}}
-{{#if params}}
+{{#if params.arg}}
 
 _Arguments_
 
@@ -11,11 +11,11 @@ _Arguments_
 {{> md.value }}
 {{/each}}
 {{/if}}
-{{#if params.return}}
+{{#if params.response}}
 
 _Returns_
 
-{{#each params.return}}
+{{#each params.response}}
 {{> md.value }}
 {{/each}}
 {{/if}}
