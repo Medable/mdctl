@@ -1,4 +1,4 @@
-{{{md_header 'Class' (delta level 1)}}} {{{md_escape name}}}{{#if extends}} extends {{{md_escape extends}}}{{/if}}
+{{{md_header 'Class' (next_n level)}}} {{{md_escape name}}}{{#if extends}} extends {{{md_escape extends}}}{{/if}}
 {{#if description}}
 
 {{{description}}}
@@ -6,6 +6,6 @@
 {{#if functions}}
 {{#each functions}}
 
-{{> md.function level=../level}}
+{{> md.function }}
 {{/each}}
 {{/if}}
