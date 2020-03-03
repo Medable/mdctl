@@ -34,7 +34,7 @@ Handlebars.registerHelper('md_escape', s => (typeof s === 'string' ? s.replace(/
 
 Handlebars.registerHelper('md_header', (s, level = 1) => (typeof s === 'string' ? `${'#'.repeat(level)} ${s}` : s))
 
-Handlebars.registerHelper('next_n', (n = 0) => n + 1)
+Handlebars.registerHelper('delta', (n=0, delta=1) => n + delta)
 
 Handlebars.registerHelper('if_or', function(...args) {
   const options = args.pop()
