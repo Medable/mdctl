@@ -2,6 +2,11 @@ const Path = require('path'),
       Util = require('../util'),
       { loadPartials } = require('../handlebars'),
       TEMPLATES = loadPartials(),
+      CLASS_SCOPES = Object.freeze([
+        'inner',
+        'global',
+        'static',
+      ]),
       DOCLET_KINDS = Object.freeze([
         'file',
         'class',
@@ -58,6 +63,7 @@ function filterDoclets(taffyDb) {
     const isNotPackage = this.kind !== 'package',
           isDocumented = !this.undocumented,
           isInterestingKind = DOCLET_KINDS.includes(this.kind),
+          isClassConstructor = this.name === this.memberof && this.scope === 'instance',
           containsRoute = !!this.route,
           isExports = this.meta
             && this.meta.code
@@ -65,7 +71,7 @@ function filterDoclets(taffyDb) {
             && typeof this.meta.code.name === 'string'
             && this.meta.code.name.includes('exports.')
 
-    return isNotPackage && (isDocumented || (isInterestingKind && !isExports) || containsRoute)
+    return isNotPackage && (isDocumented || (isInterestingKind && (!isExports || isClassConstructor)) || containsRoute)
   }).get()
 }
 
@@ -106,14 +112,22 @@ function getRouteId(path, method){
   return `${path}${method}`
 }
 
+
+
+
+
 function readManifestScripts(manifest, doclets, home) {
   const scripts = {},
         resourceMap = {},
         resources = Util.readJson(Path.join(home, 'resources.json'), [])
 
   doclets.forEach((doclet) => {
-    // console.log(JSON.stringify(doclet, null, 2))
-    const name = doclet.meta.filename.split('.')[1]
+    const name = doclet.meta.filename.split('.')[1],
+          isClassDefinition = doclet.kind === 'class' && CLASS_SCOPES.includes(doclet.scope),
+          isClassMethod = doclet.kind === 'function' && doclet.meta.code.type === 'MethodDefinition',
+          isClassConstructor = doclet.name === doclet.memberof
+            && doclet.scope === 'instance'
+            && doclet.kind === 'class'
     if(!scripts[name]){
       scripts[name] = {
         classes: {},
@@ -124,19 +138,19 @@ function readManifestScripts(manifest, doclets, home) {
     if(doclet.kind === 'file'){
       scripts[name].doclet = doclet
     }
-    else if(doclet.kind === 'class'){
+    else if(isClassDefinition){
       scripts[name].classes[doclet.name] = {
         type: 'Class',
         description: doclet.description,
         functions: []
       }
     }
-    else if(doclet.kind === 'function' && doclet.meta.code.type === 'MethodDefinition' && scripts[name].classes[doclet.memberof]){
+    else if((isClassMethod || isClassConstructor) && scripts[name].classes[doclet.memberof]){
       scripts[name].classes[doclet.memberof].functions.push({
         description: doclet.description,
         name: doclet.name,
         params: doclet._params,
-        paramString: 'Coming soon'
+        paramString: doclet.meta.code.paramnames.join(', ')
       })
     }
 
@@ -197,7 +211,6 @@ function readManifestScripts(manifest, doclets, home) {
       })
     }
 
-    // console.log(JSON.stringify(data, null, 2))
     return data
   })
 }
