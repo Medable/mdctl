@@ -3,9 +3,14 @@ const _ = require('lodash'),
       naturalCmp = require('string-natural-compare'),
       TRUE = ['y', 'yes', 'true', '1'],
       FALSE = ['n', 'no', 'false', '0'],
-      isPrimitiveRegex = /^[sbn]/
+      isPrimitiveRegex = /^[sbn]/,
+      isAbsoluteURLRegex = /^(?:[a-z]+:)?\/\//
 
 let Undefined
+
+function isAbsoluteURL(value) {
+  return isAbsoluteURLRegex.test(value)
+}
 
 function isPrimitive(value = null) {
   return value === null || isPrimitiveRegex.test(typeof value)
@@ -318,6 +323,7 @@ function compact(object, ...values) {
 }
 
 module.exports = {
+  isAbsoluteURL,
   isPrimitive,
   isInt,
   isNumeric,
