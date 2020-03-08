@@ -1,13 +1,10 @@
 
 const { URL } = require('universal-url'),
-      { rString, isSet } = require('@medable/mdctl-core-utils/values'),
+      { isAbsoluteURL, isSet, rString } = require('@medable/mdctl-core-utils/values'),
       { privatesAccessor } = require('@medable/mdctl-core-utils/privates'),
+      path = require('path'),
       supportedProtocols = new Set(['http:', 'https:']),
       supportedVersions = new Set(['v2'])
-
-function fixPath(path) {
-  return rString(path, '').trim().replace(/\/{2,}/g, '/').replace(/^\/|\/$/g, '')
-}
 
 class Environment {
 
@@ -23,20 +20,20 @@ class Environment {
     if (!rString(input)) {
 
       const options = isSet(input) ? input : {},
-            endpoint = rString(options.endpoint, '').replace(/[/]+$/, ''),
-            env = rString(options.env, '').replace(/\//g, ''),
-            version = rString(options.version, 'v2').replace(/\//g, '')
+            endpoint = rString(options.endpoint, ''),
+            env = rString(options.env, ''),
+            version = rString(options.version, 'v2')
 
-      str = `${endpoint}/${env}/${version}`
+      str = path.join(endpoint, env, version)
     }
 
-    if (!str.includes('://')) { // be a little forgiving and assume https://
+    if (!isAbsoluteURL(str)) { // be a little forgiving and assume https://
       str = `https://${str}`
     }
 
     const privates = privatesAccessor(this),
           url = new URL('', str),
-          [, env,, version] = fixPath(url.pathname).match(/(^[^/]+)(\/(v[0-9]{1,}))?/) || []
+          [, env,, version] = path.normalize(url.pathname).match(/(^[^/]+)(\/(v[0-9]{1,}))?/) || []
 
 
     Object.assign(privates, {
@@ -94,11 +91,11 @@ class Environment {
   }
 
   get url() {
-    return `${this.protocol}//${this.host}/${this.env}/${this.version}`
+    return path.join(this.endpoint, this.env, this.version)
   }
 
-  buildUrl(path) {
-    return `${this.url}/${fixPath(path)}`
+  buildUrl(p) {
+    return path.join(this.url, p)
   }
 
 }
