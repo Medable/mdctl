@@ -4,7 +4,7 @@ const tough = require('tough-cookie'),
       clone = require('clone'),
       { pathTo } = require('@medable/mdctl-core-utils'),
       {
-        rVal, rBool, rString, isSet, rPath
+        isAbsoluteURL, isSet, rBool, rPath, rString, rVal
       } = require('@medable/mdctl-core-utils/values'),
       { privatesAccessor } = require('@medable/mdctl-core-utils/privates'),
       { CredentialsProvider } = require('@medable/mdctl-core/credentials/provider'),
@@ -176,7 +176,7 @@ class Client {
             ? privates.provider.create(privates.environment, options.credentials)
             : privates.credentials,
           { environment } = privates,
-          url = environment.buildUrl(path),
+          url = isAbsoluteURL(path) ? path : environment.buildUrl(path),
           { stream } = options,
           isSession = privates.sessions && credentials.type === 'password' && requestOptions.jar
 
