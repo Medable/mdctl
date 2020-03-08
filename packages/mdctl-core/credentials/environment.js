@@ -6,6 +6,10 @@ const { URL } = require('universal-url'),
       supportedProtocols = new Set(['http:', 'https:']),
       supportedVersions = new Set(['v2'])
 
+function fixPath(pathname) {
+  return path.normalize(pathname).replace(/^\/|\/$/g, '')
+}
+
 class Environment {
 
   /**
@@ -33,7 +37,7 @@ class Environment {
 
     const privates = privatesAccessor(this),
           url = new URL('', str),
-          [, env,, version] = path.normalize(url.pathname).match(/(^[^/]+)(\/(v[0-9]{1,}))?/) || []
+          [, env,, version] = fixPath(url.pathname).match(/(^[^/]+)(\/(v[0-9]{1,}))?/) || []
 
 
     Object.assign(privates, {
