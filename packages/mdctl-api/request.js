@@ -47,7 +47,7 @@ class Request {
     const privates = privatesAccessor(this),
           // don't fully clone in case of large payload
           options = Object.assign({}, isSet(input) ? input : {}),
-          { stream, withCredentials = true } = options // default withCredentials to true if not passed in
+          { stream, withCredentials = true } = options // default withCredentials to true if not set
 
     if (privates.request) {
       throw new RangeError('request already running.')
