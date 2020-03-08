@@ -47,7 +47,7 @@ class Request {
     const privates = privatesAccessor(this),
           // don't fully clone in case of large payload
           options = Object.assign({}, isSet(input) ? input : {}),
-          { stream } = options
+          { stream, withCredentials = true } = options // default withCredentials to true if not set
 
     if (privates.request) {
       throw new RangeError('request already running.')
@@ -60,7 +60,7 @@ class Request {
     const responseType = (stream ? 'stream' : options.json ? 'json' : 'arraybuffer'),
           requestConfig = {
             ...options,
-            withCredentials: true,
+            withCredentials,
             responseType: options.responseType || responseType,
             httpsAgent: new https.Agent({ rejectUnauthorized: options.strictSSL }),
             adapter: config => adapter(config, typeof window !== 'undefined' && stream, options.legacy)
