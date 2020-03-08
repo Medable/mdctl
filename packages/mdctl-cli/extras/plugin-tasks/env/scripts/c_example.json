@@ -1,0 +1,16 @@
+{
+  "active": true,
+  "configuration": {
+    "export": "c_example"
+  },
+  "environment": "*",
+  "label": "c_example",
+  "language": "javascript/es6",
+  "name": "c_example",
+  "object": "script",
+  "optimized": false,
+  "principal": null,
+  "script": "/env/scripts/js/library.c_example.js",
+  "type": "library",
+  "weight": 0
+}
