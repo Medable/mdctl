@@ -214,6 +214,8 @@ class PluginApi { // eslint-disable-line no-unused-vars
    */
   static load(pluginName = Undefined) {
 
+    let plugin = null
+
     const pluginConfig = config('c_mdctl_plugins') || {},
           exports = isSet(pluginName)
             ? [pluginConfig[pluginName]]
@@ -222,12 +224,14 @@ class PluginApi { // eslint-disable-line no-unused-vars
     exports.forEach((scriptExport) => {
       if (scriptExport) {
         try {
-          require(scriptExport) // eslint-disable-line global-require, import/no-dynamic-require
+          plugin = require(scriptExport) // eslint-disable-line global-require, import/no-dynamic-require
         } catch (err) {
           // noop
         }
       }
     })
+
+    return plugin
 
   }
 
@@ -336,5 +340,10 @@ function commandDecorator(...decoratorParams) {
 
 module.exports = {
   plugin: pluginDecorator,
-  command: commandDecorator
+  command: commandDecorator,
+  plugins: new Proxy({}, {
+    get(target, name) {
+      return PluginApi.load(name)
+    }
+  })
 }
