@@ -13,7 +13,7 @@ const _ = require('lodash'),
         folder: 'data'
       },
       MANIFEST_KEYS = {
-        keys: ['manifest', 'manifest-dependencies', 'manifest-exports'],
+        keys: ['manifest', 'manifest-dependencies', 'manifest-exports', 'resources'],
         folder: ''
       },
       TEMPLATES_EXT = {
