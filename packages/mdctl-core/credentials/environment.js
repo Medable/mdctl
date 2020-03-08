@@ -94,8 +94,8 @@ class Environment {
     return path.join(this.endpoint, this.env, this.version)
   }
 
-  buildUrl(p) {
-    return path.join(this.url, p)
+  buildUrl(pathname) {
+    return path.join(this.url, pathname)
   }
 
 }
