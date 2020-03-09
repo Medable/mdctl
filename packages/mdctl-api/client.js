@@ -74,6 +74,10 @@ class Client {
 
   }
 
+  get cancelToken() {
+    return axios.CancelToken
+  }
+
   get provider() {
     return privatesAccessor(this).provider
   }
