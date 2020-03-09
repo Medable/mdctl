@@ -5,12 +5,10 @@ const Path = require('path'),
       Modules = require('./modules')
 
 function extractAst(options, parser = 'jsdoc') {
-  switch (parser) {
-    case 'jsdoc':
-      return Parsers.jsdoc(options)
-    default:
-      throw new Error('Unknown parser')
+  if(Object.keys(Parsers).includes(parser)){
+    return Parsers[parser](options)
   }
+  throw new Error('Unknown parser')
 }
 
 function loadModule(module) {
