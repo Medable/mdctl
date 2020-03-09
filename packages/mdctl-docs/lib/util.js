@@ -49,7 +49,7 @@ function array2Obj(array, opts) {
   return obj
 }
 
-function determineResourceLevel(rawResource, level = 1){
+function determineResourceLevel(rawResource, level = 1) {
   return rawResource.label || rawResource.name
     ? level + 1
     : level
@@ -72,7 +72,10 @@ function breakdownResource(rawResource, level = 1) {
             resources.push({
               label: key,
               level: nextLevel,
-              resources: value.map(rawSubResource => breakdownResource(rawSubResource, determineResourceLevel(rawSubResource, nextLevel)))
+              resources: value.map(rawSubResource => breakdownResource(
+                rawSubResource,
+                determineResourceLevel(rawSubResource, nextLevel)
+              ))
             })
           } else if (!(value[0] == null)) {
             sets.push({ key, value })
@@ -83,16 +86,15 @@ function breakdownResource(rawResource, level = 1) {
             label: key
           })
         }
-      }
-      else if (key === 'script') {
-        if(false){
+      } else if (key === 'script') {
+        const isScriptText = false
+        if (isScriptText) {
           scripts.push({
             code: value,
             language: 'javascript'
           })
         }
-      } 
-      else if (key !== 'label') {
+      } else if (key !== 'label') {
         properties.push({ key, value })
       }
     }
@@ -116,7 +118,7 @@ function read(file, encoding = 'utf8') {
   return Fs.readFileSync(file, encoding)
 }
 
-function readJson(path, empty={}) {
+function readJson(path, empty = {}) {
   try {
     return JSON.parse(Fs.readFileSync(path))
   } catch (err) {

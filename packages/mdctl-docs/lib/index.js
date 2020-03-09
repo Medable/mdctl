@@ -1,80 +1,54 @@
-const { execSync } = require('child_process'),
-      Path = require('path'),
+const Path = require('path'),
       Util = require('./util'),
       Handlebars = require('./handlebars'),
-      jsdoc = Path.join(__dirname, '..', 'node_modules', '.bin', 'jsdoc')
+      Parsers = require('./parsers'),
+      Modules = require('./modules')
+
+function extractAst(options, parser = 'jsdoc') {
+  switch (parser) {
+    case 'jsdoc':
+      return Parsers.jsdoc(options)
+    default:
+      throw new Error('Unknown parser')
+  }
+}
+
+function loadModule(module) {
+  const isPath = !!Path.parse(module).dir
+  if (isPath) {
+    // eslint-disable-next-line global-require, import/no-dynamic-require
+    return require(module)
+  }
+  if (Object.keys(Modules).includes(module)) {
+    return Modules[module]
+  }
+
+  throw new Error('Unknown module')
+
+}
 
 function generateDocumentation(opts) {
 
   const options = Object.assign({}, this.generateDocumentation.default, opts),
 
-        {
-          debug,
-          destination,
-          log,
-          module,
-          source,
-          verbose,
-        } = options,
-
-        projectConfig = Util.readJson(Path.join(process.cwd(), 'config.json')),
-        projectConfigDocsModule = projectConfig
-          && projectConfig.docs
-          && projectConfig.docs.module
-          && Path.join(process.cwd(), projectConfig.docs.module),
-        resolvedModule = module || projectConfigDocsModule,
-
-        params = [
-          jsdoc,
-          source,
-          '--recurse',
-          '--destination', destination,
-        ],
-
-        execOpts = {}
+        config = Util.readJson(Path.join(process.cwd(), 'config.json')),
+        configModule = config
+          && config.docs
+          && config.docs.module
+          && Path.join(process.cwd(), config.docs.module),
+        resolvedModule = options.module || configModule
 
   if (resolvedModule) {
-    const parts = Path.parse(resolvedModule),
-          modulePath = !parts.dir
-            ? Path.join(__dirname, 'modules', resolvedModule) // is name
-            : resolvedModule, // is path
-          // eslint-disable-next-line global-require, import/no-dynamic-require
-          moduleObj = require(modulePath)
+    const moduleObj = loadModule(resolvedModule),
+          ast = extractAst(options, moduleObj.parser),
+          result = moduleObj.generate(ast, options)
 
-    if (moduleObj.template) {
-      params.push('--template', 'template')
-    }
-    if (moduleObj.plugin) {
-      params.push('--configure', Path.join(__dirname, 'config.json'))
-    }
-
-    params.push('--query', `module=${modulePath}`)
-    console.log(`Using module ${parts.name}`)
+    console.log('Finished generating documentation')
+    return result
   }
 
-  if (verbose) {
-    params.push('--verbose')
-  }
+  throw new Error('Module not specified')
 
-  if (debug) {
-    params.push('--debug')
-  }
-
-  if (log || verbose || debug) {
-    // send output to this process
-    execOpts.stdio = 'inherit'
-  }
-
-  try {
-    // TODO: If JSDoc throws an error (syntax or runtime), it is still
-    //       being outputted to the console
-    execSync(params.join(' '), execOpts)
-  } catch (err) {
-    console.warn('JSDoc errors detected')
-  }
-
-  console.log('finished generating documentation')
-  return true
 }
 
 generateDocumentation.default = Object.freeze({
