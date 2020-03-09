@@ -26,9 +26,6 @@ class Client {
    *  provider: credentials provider || Config.global.credentials.provider
    *  sessions (boolean:false) automatically load and store fingerprints and
    *    session data in the keychain for a login session.
-   *  cancelRequest: Axios token to cancel a request
-   *  onDownloadProgress: function to capture download progress
-   *  onUploadProgress: function to capture upload progress
    */
   constructor(input) {
 
@@ -72,27 +69,10 @@ class Client {
       requestOptions: isSet(options.requestOptions) ? clone(options.requestOptions) : {},
 
       // last response object
-      response: null,
-
-      cancelRequest: options.cancelRequest || axios.CancelToken.source(),
-      onDownloadProgress: options.onDownloadProgress,
-      onUploadProgress: options.onUploadProgress,
-
+      response: null
     })
 
   }
-
-  get cancelToken() {
-    return axios.CancelToken
-  }
-
-  cancelCurrentRequest() {
-    const { cancelRequest } = privatesAccessor(this)
-    if (cancelRequest.token) {
-      cancelRequest.cancel()
-    }
-  }
-
 
   get provider() {
     return privatesAccessor(this).provider
@@ -143,7 +123,6 @@ class Client {
    *  json - defaults to true. if true, body must be an object.
    *  cookies - defaults to true. set to false to prevent sending cookies
    *  query - request uri query parameters
-   *  cancelRequest - cancel request token
    *  requestOptions - custom request options, passed directly to the request (https://github.com/axios/axios)
    *    strictSSL: default to client strictSSL
    *  stream - pipes the req to the stream and returns (errors and results are not parsed)
@@ -162,13 +141,7 @@ class Client {
               jar: rBool(options.cookies, true) && privates.cookieJar
             },
             privates.requestOptions,
-            options.requestOptions,
-            {
-              // eslint-disable-next-line max-len
-              cancelToken: options.cancelRequest ? options.cancelRequest.token : privates.cancelRequest.token,
-              onDownloadProgress: privates.onDownloadProgress,
-              onUploadProgress: privates.onUploadProgress
-            }
+            options.requestOptions
           ),
           req = new Request(),
           basic = rBool(options.basic),
