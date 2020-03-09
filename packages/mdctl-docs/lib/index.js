@@ -5,7 +5,7 @@ const Path = require('path'),
       Modules = require('./modules')
 
 function extractAst(options, parser = 'jsdoc') {
-  if(Object.keys(Parsers).includes(parser)){
+  if (Object.keys(Parsers).includes(parser)) {
     return Parsers[parser](options)
   }
   throw new Error('Unknown parser')
