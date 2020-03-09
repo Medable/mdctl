@@ -1,6 +1,6 @@
 {
   "name": "@medable/mdctl-sandbox",
-  "version": "1.0.49",
+  "version": "1.0.50",
   "description": "Medable Developer Tools :: Sandbox",
   "repository": {
     "type": "git",
@@ -25,9 +25,9 @@
     "lint": "eslint *.js"
   },
   "dependencies": {
-    "@medable/mdctl-api": "^1.0.49",
-    "@medable/mdctl-core": "^1.0.49",
-    "@medable/mdctl-core-utils": "^1.0.49",
+    "@medable/mdctl-api": "^1.0.50",
+    "@medable/mdctl-core": "^1.0.50",
+    "@medable/mdctl-core-utils": "^1.0.50",
     "lodash": "^4.17.15",
     "request": "^2.88.0"
   },
