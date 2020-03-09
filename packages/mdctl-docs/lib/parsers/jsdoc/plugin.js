@@ -27,7 +27,7 @@ module.exports = {
       mustHaveValue: true,
       onTagged(doclet, tag) {
         if (!doclet.route) {
-          doclet.route = Util.clone(ROUTE) // eslint-disable-line no-param-reassign
+          doclet.route = Util.clone(ROUTE)
         }
         doclet.route.path = tag.value.name.toLowerCase()
         doclet.route.method = (tag.value.description || 'get').toLowerCase()
@@ -46,7 +46,7 @@ module.exports = {
       ...PARAM_TAG_PROPERTIES,
       onTagged(doclet, tag) {
         if (!doclet.route) {
-          doclet.route = Util.clone(ROUTE) // eslint-disable-line no-param-reassign
+          doclet.route = Util.clone(ROUTE)
         }
         doclet.route.params.path.push(tag.value)
       }
@@ -55,7 +55,7 @@ module.exports = {
       ...PARAM_TAG_PROPERTIES,
       onTagged(doclet, tag) {
         if (!doclet.route) {
-          doclet.route = Util.clone(ROUTE) // eslint-disable-line no-param-reassign
+          doclet.route = Util.clone(ROUTE)
         }
         doclet.route.params.body.push(tag.value)
       }
@@ -64,7 +64,7 @@ module.exports = {
       ...PARAM_TAG_PROPERTIES,
       onTagged(doclet, tag) {
         if (!doclet.route) {
-          doclet.route = Util.clone(ROUTE) // eslint-disable-line no-param-reassign
+          doclet.route = Util.clone(ROUTE)
         }
         doclet.route.params.query.push(tag.value)
       }
@@ -73,7 +73,7 @@ module.exports = {
       ...PARAM_TAG_PROPERTIES,
       onTagged(doclet, tag) {
         if (!doclet.route) {
-          doclet.route = Util.clone(ROUTE) // eslint-disable-line no-param-reassign
+          doclet.route = Util.clone(ROUTE)
         }
         doclet.route.params.header.push(tag.value)
       }
@@ -82,7 +82,7 @@ module.exports = {
       ...PARAM_TAG_PROPERTIES,
       onTagged(doclet, tag) {
         if (!doclet.route) {
-          doclet.route = Util.clone(ROUTE) // eslint-disable-line no-param-reassign
+          doclet.route = Util.clone(ROUTE)
         }
         doclet.route.params.response.push(tag.value)
       }
