@@ -10,7 +10,7 @@
     "url": "https://github.com/Medable/mdctl/issues"
   },
   "engines": {
-    "node": ">=8",
+    "node": ">=12 <13",
     "npm": ">=6"
   },
   "scripts": {
