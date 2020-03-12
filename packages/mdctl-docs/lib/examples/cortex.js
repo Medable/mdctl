@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 /**
  * Cortex class module
  * @module classModule
