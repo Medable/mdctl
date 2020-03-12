@@ -1,0 +1,54 @@
+{{#if label}}
+{{{md_header (md_escape (capitalize_first label)) level}}}
+{{/if}}
+{{#if description}}
+
+{{{description}}}
+{{/if}}
+{{#if_or properties sets sets}}
+
+{{/if_or}}
+{{#if properties}}
+{{#each properties}}
+{{> md.key-value }}
+{{/each}}
+{{/if}}
+{{#if sets}}
+{{#each sets}}
+{{> md.set }}
+{{/each}}
+{{/if}}
+{{#if scripts}}
+{{#each scripts}}
+
+{{> md.code }}
+{{/each}}
+{{/if}}
+{{#if routes}}
+
+{{{md_header 'Routes' (next_n level)}}}
+{{#each routes}}
+
+{{> md.route }}
+{{/each}}
+{{/if}}
+{{#if classes}}
+{{#each classes}}
+
+{{> md.class level=../level}}
+{{/each}}
+{{/if}}
+{{#if examples}}
+
+{{{md_header 'Examples' (next_n level)}}}
+{{#each examples}}
+
+{{{ this }}}
+{{/each}}
+{{/if}}
+{{#if resources}}
+{{#each resources}}
+
+{{> md.resource }}
+{{/each}}
+{{/if}}

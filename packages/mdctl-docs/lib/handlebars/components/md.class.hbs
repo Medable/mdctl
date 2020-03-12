@@ -1,0 +1,11 @@
+{{{md_header 'Class' (next_n level)}}} {{{md_escape name}}}{{#if extends}} extends {{{md_escape extends}}}{{/if}}
+{{#if description}}
+
+{{{description}}}
+{{/if}}
+{{#if functions}}
+{{#each functions}}
+
+{{> md.function }}
+{{/each}}
+{{/if}}

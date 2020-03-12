@@ -1,0 +1,11 @@
+# {{{md_escape label}}}
+{{#each links}}
+{{> gitbook.nav-item }}
+{{/each}}
+{{#each sections}}
+
+## {{{md_escape label}}}
+{{#each links}}
+{{> gitbook.nav-item }}
+{{/each}}
+{{/each}}

@@ -1,0 +1,45 @@
+**{{{md_escape path}}} {{{md_escape (capitalize method)}}}**
+{{#if description}}
+
+{{{description}}}
+{{/if}}
+{{#if params.path}}
+
+_Path Params_
+
+{{#each params.path}}
+{{> md.value }}
+{{/each}}
+{{/if}}
+{{#if params.body}}
+
+_Body Params_
+
+{{#each params.body}}
+{{> md.value }}
+{{/each}}
+{{/if}}
+{{#if params.query}}
+
+_Query Params_
+
+{{#each params.query}}
+{{> md.value }}
+{{/each}}
+{{/if}}
+{{#if params.header}}
+
+_Header Params_
+
+{{#each params.header}}
+{{> md.value }}
+{{/each}}
+{{/if}}
+{{#if params.response}}
+
+_Response_
+
+{{#each params.response}}
+{{> md.value }}
+{{/each}}
+{{/if}}
