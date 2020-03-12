@@ -142,7 +142,7 @@ class Plugin extends Task {
                 } else {
                   try {
                     args.push(JSON.parse(value))
-                  } catch(err) {
+                  } catch (e) {
                     args.push(value) // forgiving, send as string
                   }
 

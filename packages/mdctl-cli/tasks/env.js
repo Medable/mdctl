@@ -44,6 +44,10 @@ class Env extends Task {
         type: 'boolean',
         default: false
       },
+      docs: {
+        type: 'boolean',
+        default: false
+      },
       dryRun: {
         type: 'boolean',
         default: false
@@ -208,6 +212,7 @@ class Env extends Task {
           --production - (Import only) default: false. To help prevent unintentional imports, the production flag must be set in production and only in production environments.
           --triggers - (Import only) default: true. set to false to disable script triggers for imported resources
           --dry-run - (Import only) will skip calling api
+          --docs - (Export only) generates documentation for the environment
           
         experimental commands
           provision - provision an org into an environment
