@@ -7,6 +7,7 @@ const fs = require('fs'),
       {
         isSet, parseString, pathTo, rBool
       } = require('@medable/mdctl-core-utils/values'),
+      Docs = require('@medable/mdctl-docs'),
       {
         searchParamsToObject
       } = require('@medable/mdctl-core-utils'),
@@ -15,7 +16,6 @@ const fs = require('fs'),
       ExportFileTreeAdapter = require('@medable/mdctl-export-adapter-tree'),
       { Client } = require('@medable/mdctl-api'),
       LockUnlock = require('../lock_unlock'),
-      Docs = require('@medable/mdctl-docs'),
 
       exportEnv = async(input) => {
 
@@ -78,7 +78,7 @@ const fs = require('fs'),
               return reject(error)
             }
 
-            if (options.docs){
+            if (options.docs) {
               console.log('Documenting env')
               Docs.generateDocumentation({
                 source: path.join(outputDir, 'env'),
