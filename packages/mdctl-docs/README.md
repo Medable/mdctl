@@ -112,3 +112,5 @@ post({ req, res, body, next, runtime }) {
 
 * Upgrade to node v12.X (currently v8.16.2)
 * Additional tests for runtime resources
+* Sync with master branch
+
