@@ -72,7 +72,6 @@ const fs = require('fs'),
         }
 
         return new Promise((resolve, reject) => {
-          console.log('Exporting env')
           const resultStream = pump(inputStream, streamTransform, adapter, (error) => {
             if (error) {
               return reject(error)
@@ -81,7 +80,8 @@ const fs = require('fs'),
             if (options.docs) {
               console.log('Documenting env')
               Docs.generateDocumentation({
-                source: path.join(outputDir, 'env'),
+                destination: path.join(outputDir, 'docs'),
+                source: path.join(outputDir),
                 module: 'env',
               })
             }

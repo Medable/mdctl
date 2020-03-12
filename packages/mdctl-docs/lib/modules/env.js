@@ -2,6 +2,11 @@ const Path = require('path'),
       Util = require('../util'),
       { loadPartials } = require('../handlebars'),
       TEMPLATES = loadPartials(),
+      CLASS_SCOPES = Object.freeze([
+        'inner',
+        'global',
+        'static',
+      ]),
       DOCLET_KINDS = Object.freeze([
         'file',
         'class',
@@ -20,30 +25,12 @@ const Path = require('path'),
         'templates',
         'views'
       ]),
-      PARAM_TAG_PROPERTIES = Object.freeze({
-        canHaveType: true,
-        canHaveName: true,
-        mustHaveValue: true,
-      }),
-      ROUTE = Object.freeze({
-        params: {
-          path: [],
-          body: [],
-          query: [],
-          header: [],
-          response: []
-        }
-      }),
       RESOURCE_TYPES = Object.freeze({
         JOB: 'job',
         LIBRARY: 'library',
         POLICY: 'policy',
         ROUTE: 'route',
         TRIGGER: 'trigger'
-      }),
-      PARAMS = Object.freeze({
-        arg: [],
-        response: []
       }),
       PLURAL_RESOURCES = Object.freeze({
         job: 'jobs',
@@ -53,27 +40,7 @@ const Path = require('path'),
         trigger: 'triggers',
       })
 
-function filterDoclets(taffyDb) {
-  return taffyDb(function filter(){
-    const isNotPackage = this.kind !== 'package',
-          isDocumented = !this.undocumented,
-          isInterestingKind = DOCLET_KINDS.includes(this.kind),
-          containsRoute = !!this.route,
-          isExports = this.meta
-            && this.meta.code
-            && this.meta.code.name
-            && typeof this.meta.code.name === 'string'
-            && this.meta.code.name.includes('exports.')
-
-    return isNotPackage && (isDocumented || (isInterestingKind && !isExports) || containsRoute)
-  }).get()
-}
-
-function loadEnvData(manifest, home, type) {
-  return manifest[type] && manifest[type].includes.map(name => Util.readJson(Path.join(home, 'env', type, `${name}.json`)))
-}
-
-function readManifestJsons(key, returnList=item=>item, manifest={}, home=process.cwd()){
+function readManifestJsons(key, returnList = item => item, manifest = {}, home = process.cwd()) {
   return manifest[key]
     ? returnList(manifest[key]).map(name => Util.readJson(Path.join(home, 'env', key, `${name}.json`)))
     : []
@@ -102,7 +69,7 @@ function readManifestObjects(manifest, home) {
   }))
 }
 
-function getRouteId(path, method){
+function getRouteId(path, method) {
   return `${path}${method}`
 }
 
@@ -112,42 +79,44 @@ function readManifestScripts(manifest, doclets, home) {
         resources = Util.readJson(Path.join(home, 'resources.json'), [])
 
   doclets.forEach((doclet) => {
-    // console.log(JSON.stringify(doclet, null, 2))
-    const name = doclet.meta.filename.split('.')[1]
-    if(!scripts[name]){
+    const name = doclet.meta.filename.split('.')[1],
+          isClassDefinition = doclet.kind === 'class' && CLASS_SCOPES.includes(doclet.scope),
+          isClassMethod = doclet.kind === 'function' && doclet.meta.code.type === 'MethodDefinition',
+          isClassConstructor = doclet.name === doclet.memberof
+            && doclet.scope === 'instance'
+            && doclet.kind === 'class'
+    if (!scripts[name]) {
       scripts[name] = {
         classes: {},
         routes: {}
       }
     }
 
-    if(doclet.kind === 'file'){
+    if (doclet.kind === 'file') {
       scripts[name].doclet = doclet
-    }
-    else if(doclet.kind === 'class'){
+    } else if (isClassDefinition) {
       scripts[name].classes[doclet.name] = {
         type: 'Class',
         description: doclet.description,
         functions: []
       }
-    }
-    else if(doclet.kind === 'function' && doclet.meta.code.type === 'MethodDefinition' && scripts[name].classes[doclet.memberof]){
+    } else if ((isClassMethod || isClassConstructor) && scripts[name].classes[doclet.memberof]) {
       scripts[name].classes[doclet.memberof].functions.push({
         description: doclet.description,
         name: doclet.name,
-        params: doclet._params,
-        paramString: 'Coming soon'
+        params: doclet.paramsFormatted,
+        paramString: doclet.meta.code.paramnames.join(', ')
       })
     }
 
-    if(doclet.route && doclet.route.path && doclet.route.method){
+    if (doclet.route && doclet.route.path && doclet.route.method) {
       scripts[name].routes[getRouteId(doclet.route.path, doclet.route.method)] = doclet.route
     }
   })
-  resources.forEach(resource => {
-    if(resource.type !== RESOURCE_TYPES.LIBRARY){
+  resources.forEach((resource) => {
+    if (resource.type !== RESOURCE_TYPES.LIBRARY) {
       const scriptName = resource.metadata.scriptExport
-      if (!resourceMap[scriptName]){
+      if (!resourceMap[scriptName]) {
         resourceMap[scriptName] = []
       }
       resourceMap[scriptName].push(resource)
@@ -161,43 +130,44 @@ function readManifestScripts(manifest, doclets, home) {
             summary: docletInfo.doclet.summary,
             version: docletInfo.doclet.version
           }),
-          data = { ...(docletInfo && docletInfo.doclet || {}), info }
+          data = { ...((docletInfo && docletInfo.doclet) || {}), info }
 
-    if(docletInfo && docletInfo.classes){
-      data.classes = Object.entries(docletInfo.classes).map( ([key, value]) => ({
+    if (docletInfo && docletInfo.classes) {
+      data.classes = Object.entries(docletInfo.classes).map(([key, value]) => ({
         name: key,
         ...value,
       }))
     }
 
-    if(resourceMap[name]){
-      resourceMap[name].forEach(resource => {
+    if (resourceMap[name]) {
+      resourceMap[name].forEach((resource) => {
         const {
-          configuration,
-          type
-        } = resource,
-        field = PLURAL_RESOURCES[type]
+                configuration,
+                type
+              } = resource,
+              field = PLURAL_RESOURCES[type]
 
-        switch(type){
+        switch (type) {
           case RESOURCE_TYPES.ROUTE:
-            if(!data[field]){ data[field] = []}
+            if (!data[field]) { data[field] = [] }
             data[field].push(Object.assign({}, {
               method: configuration.method,
               path: configuration.path
             }, info.type === RESOURCE_TYPES.ROUTE
-              ? docletInfo && docletInfo.doclet && docletInfo.doclet.route
-              : docletInfo && docletInfo.routes[getRouteId(configuration.path, configuration.method)]
-            ))
+              ? docletInfo
+                && docletInfo.doclet
+                && docletInfo.doclet.route
+              : docletInfo
+                && docletInfo.routes[getRouteId(configuration.path, configuration.method)]))
             break
           default:
-            if(!info[field]){ info[field] = []}
+            if (!info[field]) { info[field] = [] }
             info[field].push(resource)
         }
 
       })
     }
 
-    // console.log(JSON.stringify(data, null, 2))
     return data
   })
 }
@@ -532,106 +502,33 @@ function assembleFiles(doclets, source) {
 }
 
 module.exports = {
-  plugin: {
-    defineTags: function defineTags(dictionary) {
-      dictionary.defineTag('route', {
-        canHaveName: true,
-        mustHaveValue: true,
-        onTagged(doclet, tag) {
-          if (!doclet.route) {
-            doclet.route = Util.clone(ROUTE) // eslint-disable-line no-param-reassign
-          }
-          doclet.route.path = tag.value.name.toLowerCase()
-          doclet.route.method = (tag.value.description || 'get').toLowerCase()
-        }
-      })
-      dictionary.defineTag('param-response', {
-        ...PARAM_TAG_PROPERTIES,
-        onTagged(doclet, tag) {
-          if (!doclet._params) {
-            doclet._params = Util.clone(PARAMS)
-          }
-          doclet._params.response.push(tag.value)
-        }
-      })
-      dictionary.defineTag('param-route-path', {
-        ...PARAM_TAG_PROPERTIES,
-        onTagged(doclet, tag) {
-          if (!doclet.route) {
-            doclet.route = Util.clone(ROUTE) // eslint-disable-line no-param-reassign
-          }
-          doclet.route.params.path.push(tag.value)
-        }
-      })
-      dictionary.defineTag('param-route-body', {
-        ...PARAM_TAG_PROPERTIES,
-        onTagged(doclet, tag) {
-          if (!doclet.route) {
-            doclet.route = Util.clone(ROUTE) // eslint-disable-line no-param-reassign
-          }
-          doclet.route.params.body.push(tag.value)
-        }
-      })
-      dictionary.defineTag('param-route-query', {
-        ...PARAM_TAG_PROPERTIES,
-        onTagged(doclet, tag) {
-          if (!doclet.route) {
-            doclet.route = Util.clone(ROUTE) // eslint-disable-line no-param-reassign
-          }
-          doclet.route.params.query.push(tag.value)
-        }
-      })
-      dictionary.defineTag('param-route-header', {
-        ...PARAM_TAG_PROPERTIES,
-        onTagged(doclet, tag) {
-          if (!doclet.route) {
-            doclet.route = Util.clone(ROUTE) // eslint-disable-line no-param-reassign
-          }
-          doclet.route.params.header.push(tag.value)
-        }
-      })
-      dictionary.defineTag('param-route-response', {
-        ...PARAM_TAG_PROPERTIES,
-        onTagged(doclet, tag) {
-          if (!doclet.route) {
-            doclet.route = Util.clone(ROUTE) // eslint-disable-line no-param-reassign
-          }
-          doclet.route.params.response.push(tag.value)
-        }
-      })
-    },
-    handlers: {
-      parseComplete: function(event){
-        event.doclets.forEach(doclet => {
-          if(doclet.params){
-            if (!doclet._params) {
-              doclet._params = Util.clone(PARAMS)
-            }
-            doclet._params.arg.push(...doclet.params)
-          }
+  parser: 'jsdoc',
+  generate: function generate(ast, options) {
+    const {
+            destination,
+            source
+          } = options,
 
-          if(doclet._params){
-            doclet._params.arg = Util.translateParams(doclet._params.arg)
-            doclet._params.response = Util.translateParams(doclet._params.response)
-          }
+          // identify only doclets we're interested in
+          doclets = ast.filter((doclet) => {
+            const isNotPackage = doclet.kind !== 'package',
+                  isDocumented = !doclet.undocumented,
+                  isInterestingKind = DOCLET_KINDS.includes(doclet.kind),
+                  isClassConstructor = doclet.name === doclet.memberof && doclet.scope === 'instance',
+                  containsRoute = !!doclet.route,
+                  isExports = doclet.meta
+              && doclet.meta.code
+              && doclet.meta.code.name
+              && typeof doclet.meta.code.name === 'string'
+              && doclet.meta.code.name.includes('exports.')
 
-          if(doclet.route){
-            doclet.route.params.path = Util.translateParams(doclet.route.params.path)
-            doclet.route.params.body = Util.translateParams(doclet.route.params.body)
-            doclet.route.params.query = Util.translateParams(doclet.route.params.query)
-            doclet.route.params.header = Util.translateParams(doclet.route.params.header)
-            doclet.route.params.response = Util.translateParams(doclet.route.params.response)
-          }
-        })
-      }
-    }
-  },
-  template: {
-    publish: function publish(taffyDb, opts) {
-      const [source] = opts._,
-            doclets = filterDoclets(taffyDb),
-            files = assembleFiles(doclets, source)
-      Util.writeFiles(files, Path.normalize(opts.destination))
-    }
+            return isNotPackage
+              && (isDocumented
+                || (isInterestingKind && (!isExports || isClassConstructor)) || containsRoute)
+          }),
+
+          files = assembleFiles(doclets, source)
+
+    Util.writeFiles(files, Path.normalize(destination))
   }
 }

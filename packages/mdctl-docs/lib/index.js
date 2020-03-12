@@ -1,37 +1,62 @@
-const { execSync } = require('child_process')
-const Path = require('path')
+const Path = require('path'),
+      Util = require('./util'),
+      Handlebars = require('./handlebars'),
+      Parsers = require('./parsers'),
+      Modules = require('./modules')
 
-const jsdoc = Path.join(__dirname, '..', 'node_modules', '.bin', 'jsdoc')
+function extractAst(options, parser = 'jsdoc') {
+  if (Object.keys(Parsers).includes(parser)) {
+    return Parsers[parser](options)
+  }
+  throw new Error('Unknown parser')
+}
 
-const OPTIONS_DEFAULT = Object.freeze({
+function loadModule(module) {
+  const isPath = !!Path.parse(module).dir
+  if (isPath) {
+    // eslint-disable-next-line global-require, import/no-dynamic-require
+    return require(module)
+  }
+  if (Object.keys(Modules).includes(module)) {
+    return Modules[module]
+  }
+
+  throw new Error('Unknown module')
+
+}
+
+function generateDocumentation(opts) {
+
+  const options = Object.assign({}, this.generateDocumentation.default, opts),
+
+        config = Util.readJson(Path.join(process.cwd(), 'config.json')),
+        configModule = config
+          && config.docs
+          && config.docs.module
+          && Path.join(process.cwd(), config.docs.module),
+        resolvedModule = options.module || configModule
+
+  if (resolvedModule) {
+    const moduleObj = loadModule(resolvedModule),
+          ast = extractAst(options, moduleObj.parser),
+          result = moduleObj.generate(ast, options)
+
+    console.log('Finished generating documentation')
+    return result
+  }
+
+  throw new Error('Module not specified')
+
+}
+
+generateDocumentation.default = Object.freeze({
   destination: 'docs',
   source: '.',
   verbose: false,
 })
 
-function generateDocumentation(options){
-
-  options = Object.assign({}, OPTIONS_DEFAULT, options)
-
-  const params = [
-    jsdoc,
-    options.source,
-    '-r', // recursive
-    '-d', options.destination,
-  ]
-
-  if(options.module){
-    const config = Path.join(__dirname, 'modules', options.module, 'config.json')
-    const template = Path.join(__dirname, 'modules', options.module, 'template')
-    params.push('-c', config, '-t', template)
-  }
-
-  const command = params.join(' ')
-  const stdout = execSync(command)
-  options.verbose && console.log(stdout.toString())
-  return true
-}
-
 module.exports = {
   generateDocumentation,
+  Handlebars,
+  Util
 }

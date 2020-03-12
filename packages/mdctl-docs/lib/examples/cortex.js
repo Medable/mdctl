@@ -9,6 +9,7 @@
  * @memberof classModule
  */
 class Class {
+
   /**
    * Creates a new Class instance
    *
@@ -18,7 +19,7 @@ class Class {
    * @param {Object} options - instance options
    * @returns {Class} a Class instance
    */
-  constructor(options){
+  constructor(options) {
     this.options = options
   }
 
@@ -28,7 +29,7 @@ class Class {
    * @param {number} [arg.arg2=2] - the second argument
    * @param {Array} return.args - an array containing both arguments
    */
-  static makeArray(arg1='1', arg2=2){
+  static makeArray(arg1 = '1', arg2 = 2) {
     return [arg1, arg2]
   }
 
@@ -38,9 +39,10 @@ class Class {
    * @param {number} [arg.arg2=2] - the second argument
    * @param {Object} return.obj - an object containing both arguments
    */
-  makeObject(arg1='1', arg2=2){
+  makeObject(arg1 = '1', arg2 = 2) {
     return { arg1, arg2 }
   }
+
 }
 
 /**
@@ -48,6 +50,7 @@ class Class {
  * @extends Class
  */
 class ExtendedClass extends Class {
+
   /**
    * Creates a new ExtendedClass instance
    *
@@ -57,7 +60,7 @@ class ExtendedClass extends Class {
    * @param {Object} options - instance options
    * @returns {ExtendedClass} an ExtendedClass instance
    */
-  constructor(options){
+  constructor(options) {
     super(options)
   }
 
@@ -67,7 +70,7 @@ class ExtendedClass extends Class {
    * @param {number} [arg.arg2=2] - the second argument
    * @param {Array} return.args - an array containing both arguments
    */
-  static makeArray(arg1='1', arg2=2){
+  static makeArray(arg1 = '1', arg2 = 2) {
     return [arg1, arg2]
   }
 
@@ -77,17 +80,18 @@ class ExtendedClass extends Class {
    * @param {number} [arg.arg2=2] - the second argument
    * @param {Object} return.obj - an object containing both arguments
    */
-  makeObject(arg1='1', arg2=2){
+  makeObject(arg1 = '1', arg2 = 2) {
     return { arg1, arg2 }
   }
+
 }
 
-const pass = (req, res, next) => next()
+const pass = (req, res, next) => next(),
 
-const middleware = Object.freeze({
-  first: pass,
-  second: pass,
-})
+      middleware = Object.freeze({
+        first: pass,
+        second: pass,
+      })
 
 /**
  * Cortex route module
