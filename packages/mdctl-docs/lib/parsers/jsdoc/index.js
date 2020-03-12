@@ -11,17 +11,18 @@ function getAst(options) {
     '--explain' // Dump all doclets to the console in JSON format, then exit.
   ]
 
-  if (options.verbose) {
-    params.push('--verbose')
-  }
-
-  if (options.debug) {
-    params.push('--debug')
-  }
+  // FIXME: These are currently not compatible with --explain
+  // if (options.verbose) {
+  //   params.push('--verbose')
+  // }
+  // if (options.debug) {
+  //   params.push('--debug')
+  // }
 
   try {
     return JSON.parse(execSync(params.join(' '), { encoding: 'utf8' }))
   } catch (err) {
+    console.log(err)
     throw new Error('JSDoc execution failed. Failed to obtain ast')
   }
 }

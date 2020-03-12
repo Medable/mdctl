@@ -62,11 +62,11 @@ class Docs extends Task {
 
       options
         
-        --debug - tool debugging output
+        --debug - tool debugging output (WIP)
         --destination - output directory
         --module - documentation module name
         --source - source directory
-        --verbose - detailed output
+        --verbose - detailed output (WIP)
 `
   }
 
