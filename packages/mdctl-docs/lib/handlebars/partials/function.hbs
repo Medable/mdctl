@@ -1,0 +1,21 @@
+### {{{escape_md name}}}({{{escape_md paramString}}})
+{{#if description}}
+
+{{{description}}}
+{{/if}}
+{{#if params}}
+
+_Arguments_
+
+{{#each params.arg}}
+{{> value }}
+{{/each}}
+{{/if}}
+{{#if params.return}}
+
+_Returns_
+
+{{#each params.return}}
+{{> value }}
+{{/each}}
+{{/if}}
