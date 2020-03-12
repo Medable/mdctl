@@ -1,8 +1,7 @@
 /* eslint-disable class-methods-use-this */
 
-const { Fault } = require('@medable/mdctl-core'),
-      Task = require('../lib/task'),
-      MdctlDocs = require('@medable/mdctl-docs')
+const MdctlDocs = require('@medable/mdctl-docs'),
+      Task = require('../lib/task')
 
 class Docs extends Task {
 
