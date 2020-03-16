@@ -4,7 +4,7 @@ const Path = require('path'),
       Parsers = require('./parsers'),
       Modules = require('./modules')
 
-function extractAst(options, parser = 'jsdoc') {
+async function extractAst(options, parser = 'jsdoc') {
   if (Object.keys(Parsers).includes(parser)) {
     return Parsers[parser](options)
   }
@@ -25,7 +25,7 @@ function loadModule(module) {
 
 }
 
-function generateDocumentation(opts) {
+async function generateDocumentation(opts) {
 
   const options = Object.assign({}, this.generateDocumentation.default, opts),
 
@@ -38,7 +38,7 @@ function generateDocumentation(opts) {
 
   if (resolvedModule) {
     const moduleObj = loadModule(resolvedModule),
-          ast = extractAst(options, moduleObj.parser),
+          ast = await extractAst(options, moduleObj.parser),
           result = moduleObj.generate(ast, options)
 
     console.log('Finished generating documentation')
