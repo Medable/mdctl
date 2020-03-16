@@ -38,7 +38,7 @@ class Docs extends Task {
 
   async run(cli) {
     const params = await cli.getArguments(this.optionKeys)
-    return MdctlDocs.generateDocumentation(params)
+    return await MdctlDocs.generateDocumentation(params)
   }
 
   // ----------------------------------------------------------------------------------------------

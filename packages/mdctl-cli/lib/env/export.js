@@ -83,9 +83,13 @@ const fs = require('fs'),
                 destination: path.join(outputDir, 'docs'),
                 source: path.join(outputDir),
                 module: 'env',
+              }).then(() => {
+                resolve(resultStream)
               })
             }
-            return resolve(resultStream)
+            else {
+              resolve(resultStream)
+            }
           })
         })
       }
