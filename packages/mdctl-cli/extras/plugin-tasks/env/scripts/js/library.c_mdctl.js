@@ -45,7 +45,7 @@ class RegisteredCommand {
       const [type, name] = aclParts(v)
       return { type, name }
     })
-    this.params = toArray(params, !!params).map((v) => String(v))
+    this.params = toArray(params, !!params).map(v => String(v))
     this.description = description
     this.environment = environment
     this.isStatic = isStatic
@@ -219,7 +219,7 @@ class PluginApi { // eslint-disable-line no-unused-vars
     const pluginConfig = config('c_mdctl_plugins') || {},
           exports = isSet(pluginName)
             ? [pluginConfig[pluginName]]
-            : Object.keys(pluginConfig).map((name) => pluginConfig[name])
+            : Object.keys(pluginConfig).map(name => pluginConfig[name])
 
     exports.forEach((scriptExport) => {
       if (scriptExport) {

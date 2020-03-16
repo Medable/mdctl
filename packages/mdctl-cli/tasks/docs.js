@@ -1,8 +1,7 @@
 /* eslint-disable class-methods-use-this */
 
-const { Fault } = require('@medable/mdctl-core'),
-      Task = require('../lib/task'),
-      MdctlDocs = require('@medable/mdctl-docs')
+const MdctlDocs = require('@medable/mdctl-docs'),
+      Task = require('../lib/task')
 
 class Docs extends Task {
 
@@ -38,7 +37,7 @@ class Docs extends Task {
 
   async run(cli) {
     const params = await cli.getArguments(this.optionKeys)
-    return await MdctlDocs.generateDocumentation(params)
+    return MdctlDocs.generateDocumentation(params)
   }
 
   // ----------------------------------------------------------------------------------------------

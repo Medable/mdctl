@@ -25,7 +25,7 @@
     "test:watch": "npm run test:only -- --watch",
     "test:examples": "node examples/",
     "cover": "istanbul cover ../../node_modules/mocha/bin/_mocha -- --recursive --timeout 10000",
-    "lint": "eslint *.js test"
+    "lint": "eslint . --ext .js"
   },
   "dependencies": {
     "@medable/mdctl-api": "^1.0.51",
@@ -57,6 +57,7 @@
     "yargs": "^12.0.5"
   },
   "devDependencies": {
+    "babel-eslint": "^10.1.0",
     "chai": "^4.1.2",
     "eslint": "^5.16.0",
     "eslint-config-airbnb": "^17.1.1",
