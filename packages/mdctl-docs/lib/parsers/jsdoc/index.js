@@ -16,7 +16,6 @@ function locateJsdoc() {
   }
 
   if (!jsdoc) {
-    console.log(__dirname)
     throw new Error('Unable to find JSDoc executable')
   }
 
