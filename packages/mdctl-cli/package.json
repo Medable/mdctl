@@ -33,7 +33,7 @@
     "@medable/mdctl-core-utils": "^1.0.51",
     "@medable/mdctl-credentials-provider-keychain": "^1.0.51",
     "@medable/mdctl-credentials-provider-pouchdb": "^1.0.51",
-    "@medable/mdctl-docs": "^1.0.0",
+    "@medable/mdctl-docs": "^1.0.1",
     "@medable/mdctl-export-adapter-console": "^1.0.51",
     "@medable/mdctl-export-adapter-tree": "^1.0.51",
     "@medable/mdctl-import-adapter": "^1.0.51",
