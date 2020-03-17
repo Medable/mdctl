@@ -1,6 +1,6 @@
 {
   "name": "@medable/mdctl-docs",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Medable Developer Client Tools :: Documentation",
   "repository": {
     "type": "git",
@@ -16,12 +16,8 @@
   "author": "Medable, Inc. <mdctl@medable.com>",
   "license": "MIT",
   "scripts": {
-    "docs": "./bin/docs.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "lint": "eslint lib"
-  },
-  "bin": {
-    "docs": "./bin/docs.js"
+    "lint": "eslint . --ext .js"
   },
   "dependencies": {
     "handlebars": "^4.7.2",

@@ -161,6 +161,14 @@ function ensureDir(directory) {
   }
 }
 
+function isExecutable(file) {
+  try {
+    Fs.accessSync(file, Fs.constants.X_OK)
+  } catch (err) {
+    return false
+  }
+  return true
+}
 
 /**
  * Template
@@ -218,6 +226,7 @@ module.exports = {
   capitalize,
   capitalizeFirstCharacter,
   clone,
+  isExecutable,
   read,
   readJson,
   removeExtention,
