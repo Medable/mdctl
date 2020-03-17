@@ -1,18 +1,18 @@
 const { spawn } = require('child_process'),
-      Path = require('path'),
-      Util = require('../../util')
+      path = require('path'),
+      util = require('../../util')
 
 function locateJsdoc() {
 
-  let path = __dirname,
+  let location = __dirname,
       jsdoc
 
-  while (path) {
-    const jsdocPathPotential = Path.join(path, 'node_modules', '.bin', 'jsdoc')
-    if (!jsdoc && Util.isExecutable(jsdocPathPotential)) {
+  while (location) {
+    const jsdocPathPotential = path.join(location, 'node_modules', '.bin', 'jsdoc')
+    if (!jsdoc && util.isExecutable(jsdocPathPotential)) {
       jsdoc = jsdocPathPotential
     }
-    path = path.substr(0, path.lastIndexOf('/'))
+    location = location.substr(0, location.lastIndexOf('/'))
   }
 
   if (!jsdoc) {
@@ -27,7 +27,7 @@ function getAst(options) {
     const params = [
             options.source,
             '--recurse',
-            '--configure', Path.join(__dirname, 'config.json'),
+            '--configure', path.join(__dirname, 'config.json'),
             '--explain' // Dump all doclets to the console in JSON format, then exit.
           ],
           jsdoc = locateJsdoc()

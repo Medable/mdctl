@@ -1,5 +1,5 @@
-const Path = require('path'),
-      Util = require('../util'),
+const path = require('path'),
+      util = require('../util'),
       { loadPartials } = require('../handlebars'),
       TEMPLATES = loadPartials(),
       CLASS_SCOPES = Object.freeze([
@@ -42,7 +42,7 @@ const Path = require('path'),
 
 function readManifestJsons(key, returnList = item => item, manifest = {}, home = process.cwd()) {
   return manifest[key]
-    ? returnList(manifest[key]).map(name => Util.readJson(Path.join(home, 'env', key, `${name}.json`)))
+    ? returnList(manifest[key]).map(name => util.readJson(path.join(home, 'env', key, `${name}.json`)))
     : []
 }
 
@@ -58,25 +58,25 @@ function readManifestObjects(manifest, home) {
       }
       info.includes.forEach(name => data[objName].push({
         name,
-        info: Util.readJson(Path.join(home, 'env', 'data', `${name}.json`)),
+        info: util.readJson(path.join(home, 'env', 'data', `${name}.json`)),
       }))
     }
   })
 
   return manifest.objects && manifest.objects.map(obj => ({
     data: data[obj.name] || [],
-    info: Util.readJson(Path.join(home, 'env', 'objects', `${obj.name}.json`)),
+    info: util.readJson(path.join(home, 'env', 'objects', `${obj.name}.json`)),
   }))
 }
 
-function getRouteId(path, method) {
-  return `${path}${method}`
+function getRouteId(location, method) {
+  return `${location}${method}`
 }
 
 function readManifestScripts(manifest, doclets, home) {
   const scripts = {},
         resourceMap = {},
-        resources = Util.readJson(Path.join(home, 'resources.json'), [])
+        resources = util.readJson(path.join(home, 'resources.json'), [])
 
   doclets.forEach((doclet) => {
     const name = doclet.meta.filename.split('.')[1],
@@ -125,7 +125,7 @@ function readManifestScripts(manifest, doclets, home) {
 
   return manifest.scripts && manifest.scripts.includes.map((name) => {
     const docletInfo = scripts[name],
-          info = Object.assign({}, Util.readJson(Path.join(home, 'env', 'scripts', `${name}.json`)), docletInfo && docletInfo.doclet && {
+          info = Object.assign({}, util.readJson(path.join(home, 'env', 'scripts', `${name}.json`)), docletInfo && docletInfo.doclet && {
             author: docletInfo.doclet.author,
             summary: docletInfo.doclet.summary,
             version: docletInfo.doclet.version
@@ -327,7 +327,7 @@ function buildSummary(data) {
 function buildResource(opts) {
   const options = Object.assign({}, { level: 1, resources: [] }, opts),
         resources = options.resources
-          .map(resource => Util.breakdownResource(resource, options.level + 1))
+          .map(resource => util.breakdownResource(resource, options.level + 1))
   return TEMPLATES.MD_RESOURCE({
     ...options,
     resources,
@@ -336,8 +336,8 @@ function buildResource(opts) {
 
 function assembleFiles(doclets, source) {
 
-  const home = Path.resolve(process.cwd(), source),
-        manifest = Util.readJson(Path.join(home, 'manifest.json')),
+  const home = path.resolve(process.cwd(), source),
+        manifest = util.readJson(path.join(home, 'manifest.json')),
         data = extract(manifest, doclets, home),
         files = []
 
@@ -470,14 +470,14 @@ function assembleFiles(doclets, source) {
   if (data.objects) {
     data.objects.forEach((object) => {
       files.push({
-        content: TEMPLATES.MD_RESOURCE({ ...Util.breakdownResource(object.info) }),
+        content: TEMPLATES.MD_RESOURCE({ ...util.breakdownResource(object.info) }),
         name: `${object.info.name}.md`,
         path: 'objects'
       })
       object.data.forEach(objData => files.push({
-        content: TEMPLATES.MD_RESOURCE({ ...Util.breakdownResource(objData.info) }),
+        content: TEMPLATES.MD_RESOURCE({ ...util.breakdownResource(objData.info) }),
         name: `${objData.name}.md`,
-        path: Path.join('objects', object.info.name)
+        path: path.join('objects', object.info.name)
       }))
     })
   }
@@ -486,7 +486,7 @@ function assembleFiles(doclets, source) {
   if (data.scripts) {
     files.push(...data.scripts.map(script => ({
       content: TEMPLATES.MD_RESOURCE({
-        ...Util.breakdownResource(script.info),
+        ...util.breakdownResource(script.info),
         classes: script.classes,
         copyright: script.copyright,
         description: script.description,
@@ -494,7 +494,7 @@ function assembleFiles(doclets, source) {
         routes: script.routes
       }),
       name: `${script.info.name}.md`,
-      path: Path.join('scripts', PLURAL_RESOURCES[script.info.type])
+      path: path.join('scripts', PLURAL_RESOURCES[script.info.type])
     })))
   }
 
@@ -529,6 +529,6 @@ module.exports = {
 
           files = assembleFiles(doclets, source)
 
-    Util.writeFiles(files, Path.normalize(destination))
+    util.writeFiles(files, path.normalize(destination))
   }
 }

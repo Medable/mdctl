@@ -1,5 +1,5 @@
-const Fs = require('fs')
-const Path = require('path')
+const fs = require('fs')
+const path = require('path')
 
 /**
  * Function
@@ -115,12 +115,12 @@ function breakdownResource(rawResource, level = 1) {
  */
 
 function read(file, encoding = 'utf8') {
-  return Fs.readFileSync(file, encoding)
+  return fs.readFileSync(file, encoding)
 }
 
 function readJson(path, empty = {}) {
   try {
-    return JSON.parse(Fs.readFileSync(path))
+    return JSON.parse(fs.readFileSync(path))
   } catch (err) {
     console.warn(`Unable to read ${path}`)
     return empty
@@ -134,15 +134,10 @@ function writeFiles(files, location) {
 }
 
 function writeFile(file, location) {
-  const {
-          content,
-          name,
-          path,
-        } = file,
-        filePath = path ? Path.join(location, path) : location,
-        fileLocation = Path.join(filePath, name)
+  const filePath = file.path ? path.join(location, file.path) : location,
+        fileLocation = path.join(filePath, file.name)
   ensureDir(filePath)
-  Fs.writeFileSync(fileLocation, content)
+  fs.writeFileSync(fileLocation, file.content)
 }
 
 function ensureDir(directory) {
@@ -150,12 +145,12 @@ function ensureDir(directory) {
   if (directory.startsWith('/')) {
     folders[0] = '/'
   }
-  let path = '',
+  let location = '',
       folder = folders.shift()
   while (folder) {
-    path = Path.join(path, folder)
-    if (!Fs.existsSync(path)) {
-      Fs.mkdirSync(path)
+    location = path.join(location, folder)
+    if (!fs.existsSync(location)) {
+      fs.mkdirSync(location)
     }
     folder = folders.shift()
   }
@@ -163,7 +158,7 @@ function ensureDir(directory) {
 
 function isExecutable(file) {
   try {
-    Fs.accessSync(file, Fs.constants.X_OK)
+    fs.accessSync(file, fs.constants.X_OK)
   } catch (err) {
     return false
   }
