@@ -1,24 +1,24 @@
-const Path = require('path'),
-      Util = require('./util'),
-      Handlebars = require('./handlebars'),
-      Parsers = require('./parsers'),
-      Modules = require('./modules')
+const path = require('path'),
+      util = require('./util'),
+      handlebars = require('./handlebars'),
+      parsers = require('./parsers'),
+      modules = require('./modules')
 
 async function extractAst(options, parser = 'jsdoc') {
-  if (Object.keys(Parsers).includes(parser)) {
-    return Parsers[parser](options)
+  if (Object.keys(parsers).includes(parser)) {
+    return parsers[parser](options)
   }
   throw new Error('Unknown parser')
 }
 
 function loadModule(module) {
-  const isPath = !!Path.parse(module).dir
+  const isPath = !!path.parse(module).dir
   if (isPath) {
     // eslint-disable-next-line global-require, import/no-dynamic-require
     return require(module)
   }
-  if (Object.keys(Modules).includes(module)) {
-    return Modules[module]
+  if (Object.keys(modules).includes(module)) {
+    return modules[module]
   }
 
   throw new Error('Unknown module')
@@ -29,11 +29,11 @@ async function generateDocumentation(opts) {
 
   const options = Object.assign({}, this.generateDocumentation.default, opts),
 
-        config = Util.readJson(Path.join(process.cwd(), 'config.json')),
+        config = util.readJson(path.join(process.cwd(), 'config.json')),
         configModule = config
           && config.docs
           && config.docs.module
-          && Path.join(process.cwd(), config.docs.module),
+          && path.join(process.cwd(), config.docs.module),
         resolvedModule = options.module || configModule
 
   if (resolvedModule) {
@@ -57,6 +57,6 @@ generateDocumentation.default = Object.freeze({
 
 module.exports = {
   generateDocumentation,
-  Handlebars,
-  Util
+  handlebars,
+  util
 }

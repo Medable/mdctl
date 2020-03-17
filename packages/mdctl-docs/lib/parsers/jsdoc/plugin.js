@@ -1,6 +1,6 @@
 /* eslint-disable no-param-reassign */
 
-const Util = require('../../util'),
+const util = require('../../util'),
       ROUTE = Object.freeze({
         params: {
           path: [],
@@ -27,7 +27,7 @@ module.exports = {
       mustHaveValue: true,
       onTagged(doclet, tag) {
         if (!doclet.route) {
-          doclet.route = Util.clone(ROUTE)
+          doclet.route = util.clone(ROUTE)
         }
         doclet.route.path = tag.value.name.toLowerCase()
         doclet.route.method = (tag.value.description || 'get').toLowerCase()
@@ -37,7 +37,7 @@ module.exports = {
       ...PARAM_TAG_PROPERTIES,
       onTagged(doclet, tag) {
         if (!doclet.paramsFormatted) {
-          doclet.paramsFormatted = Util.clone(PARAMS)
+          doclet.paramsFormatted = util.clone(PARAMS)
         }
         doclet.paramsFormatted.response.push(tag.value)
       }
@@ -46,7 +46,7 @@ module.exports = {
       ...PARAM_TAG_PROPERTIES,
       onTagged(doclet, tag) {
         if (!doclet.route) {
-          doclet.route = Util.clone(ROUTE)
+          doclet.route = util.clone(ROUTE)
         }
         doclet.route.params.path.push(tag.value)
       }
@@ -55,7 +55,7 @@ module.exports = {
       ...PARAM_TAG_PROPERTIES,
       onTagged(doclet, tag) {
         if (!doclet.route) {
-          doclet.route = Util.clone(ROUTE)
+          doclet.route = util.clone(ROUTE)
         }
         doclet.route.params.body.push(tag.value)
       }
@@ -64,7 +64,7 @@ module.exports = {
       ...PARAM_TAG_PROPERTIES,
       onTagged(doclet, tag) {
         if (!doclet.route) {
-          doclet.route = Util.clone(ROUTE)
+          doclet.route = util.clone(ROUTE)
         }
         doclet.route.params.query.push(tag.value)
       }
@@ -73,7 +73,7 @@ module.exports = {
       ...PARAM_TAG_PROPERTIES,
       onTagged(doclet, tag) {
         if (!doclet.route) {
-          doclet.route = Util.clone(ROUTE)
+          doclet.route = util.clone(ROUTE)
         }
         doclet.route.params.header.push(tag.value)
       }
@@ -82,7 +82,7 @@ module.exports = {
       ...PARAM_TAG_PROPERTIES,
       onTagged(doclet, tag) {
         if (!doclet.route) {
-          doclet.route = Util.clone(ROUTE)
+          doclet.route = util.clone(ROUTE)
         }
         doclet.route.params.response.push(tag.value)
       }
@@ -93,22 +93,22 @@ module.exports = {
       event.doclets.forEach((doclet) => {
         if (doclet.params) {
           if (!doclet.paramsFormatted) {
-            doclet.paramsFormatted = Util.clone(PARAMS)
+            doclet.paramsFormatted = util.clone(PARAMS)
           }
           doclet.paramsFormatted.arg.push(...doclet.params)
         }
 
         if (doclet.paramsFormatted) {
-          doclet.paramsFormatted.arg = Util.translateParams(doclet.paramsFormatted.arg)
-          doclet.paramsFormatted.response = Util.translateParams(doclet.paramsFormatted.response)
+          doclet.paramsFormatted.arg = util.translateParams(doclet.paramsFormatted.arg)
+          doclet.paramsFormatted.response = util.translateParams(doclet.paramsFormatted.response)
         }
 
         if (doclet.route) {
-          doclet.route.params.path = Util.translateParams(doclet.route.params.path)
-          doclet.route.params.body = Util.translateParams(doclet.route.params.body)
-          doclet.route.params.query = Util.translateParams(doclet.route.params.query)
-          doclet.route.params.header = Util.translateParams(doclet.route.params.header)
-          doclet.route.params.response = Util.translateParams(doclet.route.params.response)
+          doclet.route.params.path = util.translateParams(doclet.route.params.path)
+          doclet.route.params.body = util.translateParams(doclet.route.params.body)
+          doclet.route.params.query = util.translateParams(doclet.route.params.query)
+          doclet.route.params.header = util.translateParams(doclet.route.params.header)
+          doclet.route.params.response = util.translateParams(doclet.route.params.response)
         }
       })
     }
