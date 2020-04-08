@@ -25,7 +25,7 @@ const jsonwebtoken = require('jsonwebtoken'),
           retries: Infinity
         }
       },
-      reservedMessages = ['connect', 'open', 'fault', 'data', 'error', 'disconnect', 'end']
+      reservedMessages = ['connect', 'open', 'close', 'online', 'offline', 'fault', 'data', 'error', 'disconnect', 'end']
 
 class WsCredentials extends Secret {
 
@@ -180,12 +180,12 @@ class WsClient extends EventEmitter {
     return true
   }
 
-  connect() {
+  open() {
     this.socket.open()
     return this
   }
 
-  disconnect() {
+  close() {
 
     try {
       const { socket } = privatesAccessor(this)
@@ -201,10 +201,14 @@ class WsClient extends EventEmitter {
   // low-level socket access
   get socket() {
 
-    const privates = privatesAccessor(this)
-    let { socket, transport } = privates
+    const privates = privatesAccessor(this),
+          { transport } = privates
+
+    let { socket } = privates
 
     if (!socket) {
+
+      let first = true
 
       socket = new Socket(
         this.endpoint,
@@ -216,11 +220,26 @@ class WsClient extends EventEmitter {
       )
 
       socket.on('open', () => {
+        if (first) {
+          first = false
+          this.emit('open')
+        }
         this.emit('connect')
       })
+      socket.on('close', () => this.emit('disconnect'))
+      socket.on('online', () => this.emit('online'))
+      socket.on('offline', () => this.emit('offline'))
+      socket.on('error', err => {
 
-      socket.on('fault', (data) => {
-        this.emit('fault', Fault.from(data, true), !!pathTo(data, 'disconnect'))
+
+        void socket
+        this.emit('error', Fault.from(err))
+
+      })
+
+      socket.on('end', () => {
+        this.emit('close')
+        this.disconnect()
       })
 
       socket.on('data', (data) => {
@@ -231,20 +250,24 @@ class WsClient extends EventEmitter {
         this.emit('data', data)
       })
 
-      socket.on('error', (err) => {
-        this.emit('error', err)
-      })
-
-      socket.on('end', () => {
-        this.emit('disconnect')
-        this.disconnect()
-      })
-
       privates.socket = socket
-
     }
 
     return socket
+  }
+
+  publish(topic, message, callback = null) {
+
+    let ack
+
+    if (callback) {
+      ack = (err, result) => {
+        callback(Fault.from(err), result)
+      }
+    }
+
+    this.socket.send('publish', { topic, message }, ack)
+
   }
 
 }
