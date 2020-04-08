@@ -3,46 +3,42 @@ const { WsClient } = require('../index'),
         strictSSL: false,
         endpoint: 'https://api-ws-dev.medable.com',
         token: '...'
-      })
+      }),
+      simpleEvents = [
+        'close', 'end', 'timeout',
+        'online', 'offline',
+        'reconnect', 'reconnected', 'reconnect scheduled', 'reconnect timeout', 'reconnect failed'
+      ]
+
+simpleEvents.forEach((event) => {
+  client.on(event, () => {
+    console.log('EVENT', event)
+  })
+})
+
+let opened = false
 
 client
   .on('open', () => {
-    console.log('first opened')
-    setInterval(() => client.publish('t__opic.instance', 'from mdctl-client'),
-      5000)
-
-  })
-  .on('close', () => {
-    console.log('closed')
-    process.exit()
-  })
-  .on('connect', () => {
-    console.log('[re]connected')
-  })
-  .on('disconnect', () => {
-    console.log('disconnected')
+    if (!opened) {
+      opened = true
+      setInterval(() => client.publish('role.st__admin', 'from mdctl-client'), 5000)
+    }
+    console.log('EVENT: open')
   })
   .on('error', (err) => {
-    console.log('err', err)
-  })
-  .on('online', () => {
-    console.log('browser online')
-  })
-  .on('offline', () => {
-    console.log('browser offline')
-  })
-  .on('fault', (err, disconnecting) => {
-    console.log({disconnecting, err})
+    console.error('ERROR:', err)
   })
 
   // listen for topic message
   .on('publish', (message) => {
-    console.log('received topic message', message)
+    console.log('MESSAGE:', message)
   })
 
 client.open()
 
-// create a jwt that includes an expiration and scopes as ws[ .(*|publish|subscribe)[.namespaced[.namespaced|objectId]] ]
+// create a jwt that includes an expiration and scopes
+// as ws[ .(*|publish|subscribe)[.namespaced[.namespaced|objectId]] ]
 
 // {
 //   "aud": "https://api-ws-dev.medable.com/{env}/v2",

@@ -25,7 +25,12 @@ const jsonwebtoken = require('jsonwebtoken'),
           retries: Infinity
         }
       },
-      reservedMessages = ['connect', 'open', 'close', 'online', 'offline', 'fault', 'data', 'error', 'disconnect', 'end']
+      reservedMessages = [
+        'open', 'close', 'end', 'timeout',
+        'online', 'offline',
+        'data', 'error',
+        'reconnect', 'reconnected', 'reconnect scheduled', 'reconnect timeout', 'reconnect failed'
+      ]
 
 class WsCredentials extends Secret {
 
@@ -208,8 +213,6 @@ class WsClient extends EventEmitter {
 
     if (!socket) {
 
-      let first = true
-
       socket = new Socket(
         this.endpoint,
         {
@@ -219,36 +222,30 @@ class WsClient extends EventEmitter {
         }
       )
 
-      socket.on('open', () => {
-        if (first) {
-          first = false
-          this.emit('open')
-        }
-        this.emit('connect')
-      })
-      socket.on('close', () => this.emit('disconnect'))
+      socket.on('open', () => this.emit('open'))
+      socket.on('close', () => this.emit('close'))
+      socket.on('end', () => this.emit('end'))
+      socket.on('timeout', () => this.emit('timeout'))
       socket.on('online', () => this.emit('online'))
       socket.on('offline', () => this.emit('offline'))
-      socket.on('error', err => {
-
-
-        void socket
-        this.emit('error', Fault.from(err))
-
-      })
-
-      socket.on('end', () => {
-        this.emit('close')
-        this.disconnect()
-      })
 
       socket.on('data', (data) => {
         const fault = Fault.from(data)
         if (fault) {
-          this.emit('fault', fault, !!pathTo(data, 'disconnect'))
+          this.emit('error', fault, !!pathTo(data, 'disconnect'))
         }
         this.emit('data', data)
       })
+
+      socket.on('error', (err) => {
+        this.emit('error', Fault.from(err))
+      })
+
+      socket.on('reconnect', () => this.emit('reconnect'))
+      socket.on('reconnected', () => this.emit('reconnected'))
+      socket.on('reconnect scheduled', () => this.emit('reconnect scheduled'))
+      socket.on('reconnect timeout', () => this.emit('reconnect timeout'))
+      socket.on('reconnect failed', () => this.emit('reconnect failed'))
 
       privates.socket = socket
     }
