@@ -23,6 +23,7 @@ class TokenSecret extends Secret {
 
   toJSON() {
     return Object.assign(super.toJSON(), {
+      username: this.username,
       token: this.password
     })
   }
