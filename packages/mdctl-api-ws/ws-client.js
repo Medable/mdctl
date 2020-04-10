@@ -253,18 +253,14 @@ class WsClient extends EventEmitter {
     return socket
   }
 
-  publish(topic, message, callback = null) {
-
+  send(event, data, callback) {
     let ack
-
     if (callback) {
       ack = (err, result) => {
         callback(Fault.from(err), result)
       }
     }
-
-    this.socket.send('publish', { topic, message }, ack)
-
+    this.socket.send(event, data, ack)
   }
 
 }

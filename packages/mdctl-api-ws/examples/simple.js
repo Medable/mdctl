@@ -31,7 +31,7 @@ client
   })
 
   // listen for topic message
-  .on('publish', (message) => {
+  .on('topic.publish', (message) => {
     console.log('MESSAGE:', message)
   })
 
