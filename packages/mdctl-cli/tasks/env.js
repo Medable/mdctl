@@ -28,6 +28,10 @@ class Env extends Task {
         default: '',
         type: 'string'
       },
+      resource: {
+        default: '',
+        type: 'string'
+      },
       gzip: {
         type: 'boolean',
         default: false
@@ -203,6 +207,7 @@ class Env extends Task {
           --endpoint sets the endpoint. eg. api.dev.medable.com     
           --env sets the environment. eg. example                              
           --manifest - defaults to $cwd/manifest.json
+          --resource - import single resource, overriding manifest (eg. script.c_foo)
           --format - export format (json, yaml) defaults to json
           --debug - log messages and progress to stdout
           --clear - export will clear output dir before export default true
