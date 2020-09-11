@@ -86,6 +86,8 @@ const pump = require('pump'),
         })
         streamList.push(debuggerStream)
 
+        await (fileAdapter.preImport())()
+
         if (!options.dryRun) {
           pathTo(requestOptions, 'headers.accept', 'application/x-ndjson')
           requestOptions.headers['Content-Type'] = 'application/x-ndjson'
@@ -97,13 +99,14 @@ const pump = require('pump'),
           if (options.debug) {
             console.log(`calling api ${url.pathname} with params ${JSON.stringify(requestOptions)}`)
           }
-          return client.call(url.pathname, {
+          const response = await client.call(url.pathname, {
             method: 'POST',
             body: pump(...streamList),
             stream: options.stream,
             query,
             requestOptions
           })
+          return { response, postImport: fileAdapter.postImport() }
         }
 
         return new Promise((resolve, reject) => {
@@ -112,7 +115,7 @@ const pump = require('pump'),
                   if (options.debug) {
                     console.debug(`Ending stream, total chunks sent: ${items.length}`)
                   }
-                  resolve(options.returnBlob ? Buffer.concat(items) : '')
+                  resolve({ response: options.returnBlob ? Buffer.concat(items) : '', postImport: fileAdapter.postImport() })
                 })
           streamChain.on('data', d => items.push(d))
           streamChain.on('error', (e) => {

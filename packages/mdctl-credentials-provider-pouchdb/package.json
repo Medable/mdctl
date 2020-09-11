@@ -27,7 +27,7 @@
   "dependencies": {
     "@medable/mdctl-core": "^1.0.53",
     "@medable/mdctl-core-utils": "^1.0.53",
-    "async": "^2.6.1",
+    "async": "^2.6.3",
     "browserify-aes": "^1.2.0",
     "create-hash": "^1.2.0",
     "pouchdb-adapter-node-websql": "^7.0.0",
