@@ -288,9 +288,12 @@ The `includes` key in this case means include the properties of the object being
     "includes": [
       "*"
     ]
-  }
+  },
+  "dependencies": true
 }
 ```
+
+The key `dependencies` is used to check dependencies between objects and elements.
 
 In case you want to import object instances you must include them into the manfiest in SINGULAR.
 Instances are located inside `/data` folder.
