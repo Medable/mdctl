@@ -186,8 +186,8 @@ if you don't set `--dir` it will use current location and try to import from it.
 
 ### Package v1
 
-Package is used to run scripts before and after import/install and define manifest location.
-Manifest location and script location are relative to package location.
+Package is used to run scripts before and after import/install and define manifest file to use. 
+Manifest location and script location are relative to package location. Package.json should be at the same level of manifest file used.
 
 `preinstall` This will run before install on cortex side.
 `postinstall` This will run after install on cortex side.
