@@ -43,22 +43,20 @@ class ImportFileTreeAdapter extends EventEmitter {
     this.readManifest()
   }
 
-  preImport() {
+  async preImport() {
     const { preImport, input } = privatesAccessor(this)
     if (preImport) {
       // eslint-disable-next-line global-require,import/no-dynamic-require
-      return require(path.join(input, preImport))
+      await require(path.join(input, preImport))()
     }
-    return null
   }
 
-  postImport() {
+  async postImport() {
     const { postImport, input } = privatesAccessor(this)
     if (postImport) {
       // eslint-disable-next-line global-require,import/no-dynamic-require
-      return require(path.join(input, postImport))
+      await require(path.join(input, postImport))()
     }
-    return null
   }
 
   get files() {
