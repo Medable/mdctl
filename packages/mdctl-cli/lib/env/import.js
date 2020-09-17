@@ -86,7 +86,8 @@ const pump = require('pump'),
         })
         streamList.push(debuggerStream)
 
-        await fileAdapter.preImport()
+        const preImport = fileAdapter.preImport()
+        await preImport()
 
         if (!options.dryRun) {
           pathTo(requestOptions, 'headers.accept', 'application/x-ndjson')
