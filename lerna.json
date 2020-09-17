@@ -2,7 +2,7 @@
   "packages": [
     "packages/*"
   ],
-  "version": "1.0.55",
+  "version": "1.0.56",
   "npmClient": "npm",
   "npmClientArgs": [
     "--production",
