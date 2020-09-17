@@ -1,6 +1,6 @@
 {
   "name": "@medable/mdctl-cli",
-  "version": "1.0.56",
+  "version": "1.0.57",
   "description": "Medable Developer Tools :: Cli tool",
   "repository": {
     "type": "git",
@@ -36,7 +36,7 @@
     "@medable/mdctl-docs": "^1.0.55",
     "@medable/mdctl-export-adapter-console": "^1.0.55",
     "@medable/mdctl-export-adapter-tree": "^1.0.55",
-    "@medable/mdctl-import-adapter": "^1.0.56",
+    "@medable/mdctl-import-adapter": "^1.0.57",
     "@medable/mdctl-manifest": "^1.0.55",
     "@medable/mdctl-node-utils": "^1.0.55",
     "@medable/mdctl-sandbox": "^1.0.55",
