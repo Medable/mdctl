@@ -28,6 +28,10 @@ class Env extends Task {
         default: '',
         type: 'string'
       },
+      resource: {
+        default: '',
+        type: 'string'
+      },
       gzip: {
         type: 'boolean',
         default: false
@@ -41,6 +45,10 @@ class Env extends Task {
         default: false
       },
       debug: {
+        type: 'boolean',
+        default: false
+      },
+      docs: {
         type: 'boolean',
         default: false
       },
@@ -118,47 +126,61 @@ class Env extends Task {
     }
 
     // eslint-disable-next-line consistent-return
-    return new Promise(async(resolve, reject) => {
-      let stream
+    let stream,
+        postImportFn = () => {}
+    try {
       try {
-        stream = await importEnv({ client, ...params, stream: ndjson.parse() })
+        // eslint-disable-next-line max-len
+        const { response, postImport } = await importEnv({ client, ...params, stream: ndjson.parse() })
+        stream = response
+        postImportFn = postImport
       } catch (e) {
         if (e instanceof Stream) {
           stream = e
         } else {
-          return reject(e)
+          throw e
         }
       }
 
-      stream.on('data', (data) => {
-        if (data instanceof Buffer) {
-          /* eslint-disable no-param-reassign */
-          try {
-            data = JSON.parse(data.toString())
-          } catch (e) {
-            // do nothing
+      const result = await new Promise((resolve, reject) => {
+        let completed = false
+        stream.on('data', (data) => {
+          if (data instanceof Buffer) {
+            /* eslint-disable no-param-reassign */
+            try {
+              data = JSON.parse(data.toString())
+            } catch (e) {
+              // do nothing
+            }
           }
-        }
-        if (pathTo(data, 'object') === 'fault') {
-          reject(data)
-        } else if (pathTo(data, 'object') === 'result') {
-          outputResult(data.data)
-        } else {
-          outputResult(data)
-        }
-      })
+          if (pathTo(data, 'object') === 'fault') {
+            reject(data)
+          } else if (pathTo(data, 'object') === 'result') {
+            outputResult(data.data)
+          } else {
+            outputResult(data)
+            if (data.type === 'status' && data.stage === 'complete') {
+              completed = true
+            }
+          }
+        })
 
-      stream.once('error', (err) => {
-        reject(err)
-      })
+        stream.once('error', (err) => {
+          reject(err)
+        })
 
-      stream.on('end', () => {
-        resolve(true)
+        stream.on('end', () => {
+          resolve(completed)
+        })
       })
-
-    }).then(() => {
-      console.log('Import finished...!')
-    })
+      if (result) {
+        console.log('Import Finished!')
+      } else {
+        console.log('Import Finished with errors....!')
+      }
+    } finally {
+      await postImportFn()
+    }
 
   }
 
@@ -199,6 +221,7 @@ class Env extends Task {
           --endpoint sets the endpoint. eg. api.dev.medable.com     
           --env sets the environment. eg. example                              
           --manifest - defaults to $cwd/manifest.json
+          --resource - import single resource, overriding manifest (eg. script.c_foo)
           --format - export format (json, yaml) defaults to json
           --debug - log messages and progress to stdout
           --clear - export will clear output dir before export default true
@@ -208,6 +231,7 @@ class Env extends Task {
           --production - (Import only) default: false. To help prevent unintentional imports, the production flag must be set in production and only in production environments.
           --triggers - (Import only) default: true. set to false to disable script triggers for imported resources
           --dry-run - (Import only) will skip calling api
+          --docs - (Export only) generates documentation for the environment
           
         experimental commands
           provision - provision an org into an environment

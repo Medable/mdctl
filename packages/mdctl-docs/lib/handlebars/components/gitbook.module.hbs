@@ -1,0 +1,31 @@
+{{#if gitbookDescription}}
+---
+description: {{{escape_md gitbookDescription}}}
+---
+
+{{/if}}
+# {{{escape_md name}}}
+{{#if description}}
+
+{{{description}}}
+{{/if}}
+{{#if routes}}
+{{#each routes}}
+
+{{> md.route }}
+{{/each}}
+{{/if}}
+{{#if objects}}
+{{#each objects}}
+
+{{> md.object }}
+{{/each}}
+{{/if}}
+{{#if examples}}
+
+## Examples
+{{#each examples}}
+
+{{{ this }}}
+{{/each}}
+{{/if}}

@@ -1,11 +1,13 @@
 const fs = require('fs'),
       pump = require('pump'),
       ndjson = require('ndjson'),
+      path = require('path'),
       isPlainObject = require('lodash.isplainobject'),
       { URL } = require('url'),
       {
         isSet, parseString, pathTo, rBool
       } = require('@medable/mdctl-core-utils/values'),
+      Docs = require('@medable/mdctl-docs'),
       {
         searchParamsToObject
       } = require('@medable/mdctl-core-utils'),
@@ -74,7 +76,19 @@ const fs = require('fs'),
             if (error) {
               return reject(error)
             }
+
+            if (options.docs) {
+              console.log('Documenting env')
+              return Docs.generateDocumentation({
+                destination: path.join(outputDir, 'docs'),
+                source: path.join(outputDir),
+                module: 'env',
+              }).then(() => {
+                resolve(resultStream)
+              })
+            }
             return resolve(resultStream)
+
           })
         })
       }
