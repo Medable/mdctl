@@ -1,0 +1,21 @@
+{{{md_header (md_escape name) (delta level 2)}}}({{{md_escape paramString}}})
+{{#if description}}
+
+{{{description}}}
+{{/if}}
+{{#if params.arg}}
+
+_Arguments_
+
+{{#each params.arg}}
+{{> md.value }}
+{{/each}}
+{{/if}}
+{{#if params.response}}
+
+_Returns_
+
+{{#each params.response}}
+{{> md.value }}
+{{/each}}
+{{/if}}

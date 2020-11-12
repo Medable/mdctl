@@ -182,3 +182,144 @@ mdctl env export --env medable  --dir /User/my_user/exports/medable
 ```
 
 if you don't set `--dir` it will use current location and try to import from it.
+
+
+### Package v1
+
+Package is used to run scripts before and after import/install and define manifest location.
+Manifest location and script location are relative to package location.
+
+`preinstall` This will run before install on cortex side.
+`postinstall` This will run after install on cortex side.
+
+`preimport` This will run on client side before import.
+`postimport` This will run on client side after import.
+
+```json
+{
+    "name": "test_package",
+    "version": "1.0.0",
+    "description": "Testing package json",
+    "manifest": "manifest.json",
+    "object": "package",
+    "scripts": {
+        "preinstall": "hooks/install.before.js",
+        "postinstall": "hooks/install.after.js",
+        "preimport": "hooks/import.before.js",
+        "postimport": "hooks/import.after.js"
+    },
+    "author": "gaston@medable.com"
+}
+```
+
+### Manifest
+
+Manifest defines what kind of resources are going to be send to cortex.
+
+All keys but objects allow the following format
+
+```json
+"configs": {
+    "includes": [
+      "name_of_config",
+    ]
+  }
+``` 
+The `includes` key can be `*` to include all items, or list the names of items to include.
+
+In the case of `objects`, is an array of objects with the following format
+```json
+{
+      "includes": [
+        "*"
+      ],
+      "name": "account"
+    }
+```
+The `includes` key in this case means include the properties of the object being `*` for all properties or the list of property names to include.
+
+```json
+{
+  "apps": {
+    "includes": [
+      "*"
+    ]
+  },
+  "configs": {
+    "includes": [
+      "name_of_config",
+    ]
+  },
+  "notifications": {
+    "includes": [
+      "*"
+    ]
+  },
+  "object": "manifest",
+  "objects": [
+    {
+      "includes": [
+        "*"
+      ],
+      "name": "account"
+    }
+  ],
+  "roles": {
+    "includes": [
+      "*"
+    ]
+  },
+  "scripts": {
+    "includes": [
+      "*"
+    ]
+  },
+  "serviceAccounts": {
+    "includes": [
+      "*"
+    ]
+  },
+  "templates": {
+    "includes": [
+      "*"
+    ]
+  },
+  "views": {
+    "includes": [
+      "*"
+    ]
+  },
+  "dependencies": true
+}
+```
+
+The key `dependencies` is used to check dependencies between objects and elements.
+
+In case you want to import object instances you must include them into the manfiest in SINGULAR.
+Instances are located inside `/data` folder.
+
+```json
+{
+  "object": "manifest",
+  "apps": { ... },
+  "c_fault": {
+    "includes": [
+      "*"
+    ]
+  }
+}
+```
+
+The `includes` key in this case can also accept `*` to include all objects, and you must put a uniq key to include a particular object.
+
+```json
+{
+  "object": "manifest",
+  "apps": { ... },
+  "c_fault": {
+    "includes": [
+      "00b838c9-2a66-4cda-9fa2-5a8b4970085f"
+    ]
+  }
+}
+```

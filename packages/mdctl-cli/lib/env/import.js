@@ -3,9 +3,10 @@ const pump = require('pump'),
       zlib = require('zlib'),
       { URL } = require('url'),
       {
-        isSet, pathTo, rFunction, rBool
+        isSet, pathTo, rFunction, rBool, rString
       } = require('@medable/mdctl-core-utils/values'),
       { Transform } = require('stream'),
+      { pluralize } = require('inflection'),
       { searchParamsToObject } = require('@medable/mdctl-core-utils'),
       { Config, Fault } = require('@medable/mdctl-core'),
       ImportStream = require('@medable/mdctl-core/streams/import_stream'),
@@ -14,6 +15,24 @@ const pump = require('pump'),
       LockUnlock = require('../lock_unlock'),
 
       importEnv = async(input) => {
+
+        let manifest = input && input.manifest
+
+        if (rString(input && input.resource)) {
+
+          const resource = rString(input && input.resource),
+                parts = resource.split('.'),
+                objectName = pluralize(parts[0]),
+                name = parts.length > 1 ? parts.slice(1).join('.') : '*'
+
+          manifest = { // eslint-disable-line no-param-reassign
+            object: 'manifest',
+            [objectName]: objectName === 'objects'
+              ? [{ name, includes: ['*'] }]
+              : { includes: [name] }
+          }
+        }
+
 
         const options = isSet(input) ? input : {},
               client = options.client || new Client({ ...Config.global.client, ...options }),
@@ -29,7 +48,7 @@ const pump = require('pump'),
                 triggers: rBool(options.triggers, true)
               },
               requestOptions = {},
-              fileAdapter = new ImportFileTreeAdapter(inputDir, options.format),
+              fileAdapter = new ImportFileTreeAdapter(inputDir, options.format, manifest),
               importStream = new ImportStream(fileAdapter),
               ndjsonStream = ndjson.stringify(),
               streamList = [importStream, ndjsonStream],
@@ -67,6 +86,9 @@ const pump = require('pump'),
         })
         streamList.push(debuggerStream)
 
+        const preImport = fileAdapter.preImport()
+        await preImport()
+
         if (!options.dryRun) {
           pathTo(requestOptions, 'headers.accept', 'application/x-ndjson')
           requestOptions.headers['Content-Type'] = 'application/x-ndjson'
@@ -78,13 +100,14 @@ const pump = require('pump'),
           if (options.debug) {
             console.log(`calling api ${url.pathname} with params ${JSON.stringify(requestOptions)}`)
           }
-          return client.call(url.pathname, {
+          const response = await client.call(url.pathname, {
             method: 'POST',
             body: pump(...streamList),
             stream: options.stream,
             query,
             requestOptions
           })
+          return { response, postImport: fileAdapter.postImport() }
         }
 
         return new Promise((resolve, reject) => {
@@ -93,7 +116,7 @@ const pump = require('pump'),
                   if (options.debug) {
                     console.debug(`Ending stream, total chunks sent: ${items.length}`)
                   }
-                  resolve(options.returnBlob ? Buffer.concat(items) : '')
+                  resolve({ response: options.returnBlob ? Buffer.concat(items) : '', postImport: fileAdapter.postImport() })
                 })
           streamChain.on('data', d => items.push(d))
           streamChain.on('error', (e) => {
