@@ -264,13 +264,14 @@ class Credentials extends Task {
         }
       }
 
+      tokenOptions = await jwt.create({ client })
+
       try {
-        await client.post('/accounts/logout')
+        await client.post('/accounts/me/logout')
       } catch (err) {
         // eslint-disable-line no-empty
       }
 
-      tokenOptions = await jwt.create({ client })
       tokenSecret = await cli.credentialsProvider.get(tokenOptions)
       tokenClient = await cli.getApiClient({ credentials: tokenSecret })
       client = null
