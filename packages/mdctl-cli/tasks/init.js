@@ -1,6 +1,6 @@
 const fs = require('fs'),
       {
-        rString, isSet, stringToBoolean, isString
+        rString
       } = require('@medable/mdctl-core-utils/values'),
       Task = require('../lib/task'),
       defaultTpl = require('../extras/templates/default.json')
@@ -13,9 +13,13 @@ class Init extends Task {
 
   }
 
-  createFiles(parent, files = []) {
+  createFiles(parent = '.', files = []) {
 
     files.forEach(({ type, name, content }) => {
+
+      if(!type) return
+
+      if(!name) return
 
       if (!content || content.length === 0) return
 
@@ -56,7 +60,7 @@ class Init extends Task {
     const isManifest = fs.existsSync(`${defaultPath}`) && fs.existsSync(`${defaultPath}/manifest.json`)
 
     if (isManifest) {
-      throw new Error('Project already initialized in the current directory')
+      throw new Error(`Project already initialized in the current directory (${defaultPath})`)
     }
 
     return this.createFiles(defaultPath, files)
