@@ -113,7 +113,7 @@ const { prompt } = require('inquirer'),
             name: 'saveCredentials',
             message: 'Do you want to save these credentials?',
             validate: value => (value.toLowerCase() === 'y' || value.toLowerCase() === 'n') || 'Only valid values are: y-Y/n-N',
-            default: 'n',
+            default: 'n'
           }
         ])
 
@@ -128,7 +128,8 @@ const { prompt } = require('inquirer'),
               credentialsInRowFormat = _(listOfSecrets)
               // This is a hack but the object comes in a way that prop can't be read
                 .map(s => JSON.parse(JSON.stringify(s)))
-                .map(({ url, email, apiKey }, idx) => [idx, url, email, apiKey]).value()
+                .map(({ url, email, apiKey }, idx) => [idx, url, email, apiKey])
+                .value()
 
         table.push(...credentialsInRowFormat)
 
@@ -141,7 +142,7 @@ const { prompt } = require('inquirer'),
             message: 'Select the index of credential or -1 if none',
             validate: value => _.inRange(_.parseInt(value), -1, listOfSecrets.length) || `Must select between -1...${(listOfSecrets.length - 1)}`,
             transform: value => rInt(value, -1),
-            default: -1,
+            default: -1
           }
         ])
 
@@ -179,11 +180,31 @@ const { prompt } = require('inquirer'),
                 name: 'actions',
                 message: 'Use this lock for',
                 choices: ['import', 'export'],
-                default: rString(_.get(currentArgs, 'actions'), 'import,export').split(','),
+                default: rString(_.get(currentArgs, 'actions'), 'import,export')
+                  .split(','),
                 when: hash => !isSet(currentArgs.actions) && ['clear', 'list', 'remove'].indexOf((hash.action || currentArgs.action)) < 0
               }
               ])
         return _.extend(currentArgs, result)
+      },
+
+      initProjectQuestions = async(inputArgs = {}) => {
+
+        const result = await prompt([
+          {
+            name: 'name',
+            message: 'package name',
+            type: 'input',
+            default: inputArgs.prefix || 'new-org-config'
+          },
+          {
+            name: 'description',
+            message: 'description',
+            type: 'input'
+          }
+        ])
+
+        return { ...inputArgs, ...result }
       },
 
       question = async(message, defaultValue, options = {}) => {
@@ -201,5 +222,6 @@ module.exports = {
   askUserToSaveCredentials,
   askUserToChooseCredentials,
   askWorkspaceLock,
-  question
+  question,
+  initProjectQuestions
 }

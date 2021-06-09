@@ -1,0 +1,13 @@
+{
+  "name": "",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "preinstall": "hooks/install.before.js",
+    "postinstall": "hooks/install.after.js",
+    "preimport": "hooks/import.before.js",
+    "postimport": "hooks/import.after.js"
+  },
+  "manifest": "manifest.json",
+  "author": "Medable"
+}

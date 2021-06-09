@@ -1,0 +1,1 @@
+curl --request POST 'https://api-int-dev.medable.com/medable/v2/routes/mdctl/axon/enable' --header 'Medable-Client-Key: AYbzyVVw76qwEN23m9kLSL' --header 'Content-Type: application/json; charset=UTF-8' --header 'Authorization: Bearer '"$DEV_AXON_DEPLOYER"'' --header 'Content-Type: text/plain' --data-raw '["'"$TEMP_ORG_CODE"'"]'

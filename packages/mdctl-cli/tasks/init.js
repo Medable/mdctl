@@ -1,9 +1,13 @@
-const fs = require('fs'),
+const { existsSync, writeFileSync, mkdirSync } = require('fs'),
+      { execSync } = require('child_process'),
       {
         rString
       } = require('@medable/mdctl-core-utils/values'),
       Task = require('../lib/task'),
-      defaultTpl = require('../extras/templates/default.json')
+      {
+        initProjectQuestions
+      } = require('../lib/questionnaires'),
+      defaultPackage = require('../extras/templates/default/package.json')
 
 class Init extends Task {
 
@@ -13,57 +17,36 @@ class Init extends Task {
 
   }
 
-  createFiles(parent = '.', files = []) {
-
-    files.forEach(({ type, name, content }) => {
-
-      if(!type) return
-
-      if(!name) return
-
-      if (!content || content.length === 0) return
-
-      const path = `${parent}/${name}`
-
-      if (type === 'dir') {
-
-        if (!fs.existsSync(path)) {
-
-          fs.mkdirSync(path)
-
-          this.createFiles(path, content || [])
-
-        }
-
-      } else if (type === 'file') {
-
-        fs.writeFileSync(path, content.trim(), 'UTF-8')
-
-      }
-
-    })
-
-  }
-
   async run() {
 
-    const { files } = defaultTpl
-
-    const defaultPath = rString(this.args('prefix')) || '.'
-
-    const isDirectoryPresent = fs.existsSync(`${defaultPath}`)
-
-    if (!isDirectoryPresent) {
-      fs.mkdirSync(defaultPath, { recursive: true })
+    const options = {
+      prefix: rString(this.args('prefix'))
     }
 
-    const isManifest = fs.existsSync(`${defaultPath}`) && fs.existsSync(`${defaultPath}/manifest.json`)
+    const defaultPath = options.prefix || '.'
+
+    const isDirectoryPresent = existsSync(`${defaultPath}`)
+
+    if (!isDirectoryPresent) {
+      mkdirSync(defaultPath, { recursive: true })
+    }
+
+    const isManifest = existsSync(`${defaultPath}`) && existsSync(`${defaultPath}/manifest.json`)
 
     if (isManifest) {
       throw new Error(`Project already initialized in the current directory (${defaultPath})`)
     }
 
-    return this.createFiles(defaultPath, files)
+    const responses = await initProjectQuestions(options)
+
+    const updatedPackage = {
+      ...defaultPackage,
+      ...responses
+    }
+
+    execSync(`cp -R ${__dirname}/../extras/templates/default/ ${defaultPath}`)
+
+    writeFileSync(`${defaultPath}/package.json`, JSON.stringify(updatedPackage, null, ' '))
 
   }
 

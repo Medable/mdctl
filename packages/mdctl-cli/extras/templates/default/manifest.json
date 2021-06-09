@@ -1,0 +1,14 @@
+{
+	"object": "manifest",
+	"objects": [
+		{
+			"includes": ["*"],
+			"name": "c_example_object"
+		}
+	],
+	"scripts": {
+		"includes": [
+			"c_example_lib"
+		]
+	}
+}

@@ -1,0 +1,81 @@
+stages:
+  - build
+  - unit_tests
+
+image:
+  name: node:12
+
+before_script:
+  # install deps 
+  - apt-get update
+  - apt-get install -y libsecret-1-0 libsecret-1-dev jq curl openssh-client
+  - npm install --unsafe-perm -g @medable/mdctl-cli semver
+
+create_env:
+    stage: build
+    script:
+      # setup mdctl env vars
+      - export MDCTL_CLI_TOKEN=$DEV_ORG_PROVISIONER
+      - export MDCTL_CLI_TYPE=token 
+      - export MDCTL_CLI_ENV=int-dev.medable
+      - mdctl configure --experimental true
+      - mdctl creds add
+      - mdctl creds auth
+      - mdctl env provision --email 'fiachra@medable.com' --password 'qpal1010' --ttl-ms 7200000 > org.json
+      - export TEMP_ORG_ID=$(cat org.json | jq -r ".org._id") 
+      - export TEMP_TOKEN=$(cat org.json | jq -r ".token") 
+      - export TEMP_ORG_CODE=$(cat org.json | jq -r ".org.code")
+      - export TEMP_ENV=int-dev.$TEMP_ORG_CODE
+      - mdctl creds clear
+      - chmod +x ./ops/enableAxon.sh
+      - ./ops/enableAxon.sh
+      - export MDCTL_CLI_ENV=$TEMP_ENV
+      - export MDCTL_CLI_TOKEN=$TEMP_TOKEN
+      - mdctl creds add
+      - mdctl creds auth
+      - mdctl api put /orgs/$TEMP_ORG_ID --file ops/updateorg.json
+      - mdctl api post /orgs/$TEMP_ORG_ID/apps --file ops/appcreate.json > newApps.json
+      - mdctl api post /orgs/$TEMP_ORG_ID/apps --file ops/appcreatedmweb.json > /dev/null
+      - mdctl api post /cache/key/nucleus:publicIdentifierPattern --file ops/cachekey.json
+      - export TEMP_API_KEY=$(cat newApps.json | jq -r ".data[1].clients[0].key")
+      - cd configuration
+      - mdctl env import
+      - cd ../
+      - sed "s/%KEY%/$TEMP_API_KEY/g" ops/tokenScript.js > uTokenScript.js
+      - mdctl sb uTokenScript.js > newToken.json
+      - export JEST_TOKEN=$(cat newToken.json | jq -r ".token") 
+      - export JEST_API_KEY=$TEMP_API_KEY
+      - export JEST_ENV=$TEMP_ORG_CODE
+      - echo "export JEST_TOKEN=${JEST_TOKEN}" >> .env
+      - echo "export JEST_API_KEY=${JEST_API_KEY}" >> .env
+      - echo "export JEST_ENV=${JEST_ENV}" >> .env
+    except:
+      - tags
+    only:
+      - merge_request      
+    artifacts:
+      when: always
+      paths:
+        - .env
+      expire_in: 2 hrs
+
+unit_tests:
+  stage: unit_tests
+  script:
+    - source .env
+    - npm install
+    - npm test
+  except:
+    - tags
+  only:
+    - merge_request
+  artifacts:
+    when: always
+    paths:
+      - unit-tests-report.html
+    reports:
+      junit:
+        - junit.xml
+    expire_in: 1 week
+  allow_failure: true
+    

@@ -67,4 +67,4 @@ typings/
 # Output from exporting default
 output*/
 
-manifest.json
+./manifest.json
