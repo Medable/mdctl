@@ -33,7 +33,7 @@
     "primus": "^7.3.4",
     "primus-emitter": "^3.1.1",
     "universal-url": "^2.0.0",
-    "ws": "^7.2.3"
+    "ws": "^7.4.6"
   },
   "devDependencies": {
     "chai": "^4.1.2",
