@@ -1,13 +1,11 @@
 #!/bin/bash
 
-mkdir /root/.cache
 export $(dbus-launch)
 dbus-launch
 gnome-keyring-daemon --start --daemonize --components=secrets
 echo '<RANDOM-PASSPHRASE>' | gnome-keyring-daemon -r -d --unlock
 export DEV_AXON_DEPLOYER=$(cat tokens.json | jq -r ".axonDeployer")
 export DEV_ORG_PROVISIONER=$(cat tokens.json | jq -r ".orgProvisioner")
-
 export MDCTL_CLI_TOKEN=$DEV_ORG_PROVISIONER
 export MDCTL_CLI_TYPE=token 
 export MDCTL_CLI_ENV=int-dev.medable
@@ -28,20 +26,22 @@ mdctl creds clear
 export MDCTL_CLI_ENV=$TEMP_ENV
 export MDCTL_CLI_TOKEN=$TEMP_TOKEN
 mdctl creds add
-mdctl creds list
 mdctl creds auth
-mdctl api put /orgs/$TEMP_ORG_ID --file tools/updateorg.json
-mdctl api post /orgs/$TEMP_ORG_ID/apps --file tools/appcreate.json > newApps.json
-mdctl api post /orgs/$TEMP_ORG_ID/apps --file tools/appcreatedmweb.json > /dev/null
-mdctl api post /cache/key/nucleus:publicIdentifierPattern --file tools/cachekey.json
+mdctl api put /orgs/$TEMP_ORG_ID --file ops/updateorg.json
+mdctl api post /orgs/$TEMP_ORG_ID/apps --file ops/appcreate.json > newApps.json
+mdctl api post /cache/key/nucleus:publicIdentifierPattern --file ops/cachekey.json
 export TEMP_API_KEY=$(cat newApps.json | jq -r ".data[1].clients[0].key")
 
-sed "s/%KEY%/$TEMP_API_KEY/g" tools/tokenScript.js > uTokenScript.js
+cd configuration
+mdctl env import
+cd ../
+
+sed "s/%KEY%/$TEMP_API_KEY/g" ops/tokenScript.js > uTokenScript.js
 mdctl sb uTokenScript.js > newToken.json
 export JEST_TOKEN=$(cat newToken.json | jq -r ".token") 
 export JEST_API_KEY=$TEMP_API_KEY
 export JEST_ENV=$TEMP_ORG_CODE
-echo ""
-echo "JEST_TOKEN: ${JEST_TOKEN}"
-echo "JEST_API_KEY: ${JEST_API_KEY}"
-echo "JEST_ENV: ${JEST_ENV}"
+echo "export JEST_TOKEN=${JEST_TOKEN}" >> .env
+echo "export JEST_API_KEY=${JEST_API_KEY}" >> .env
+echo "export JEST_ENV=${JEST_ENV}" >> .env
+cat .env

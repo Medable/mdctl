@@ -12,7 +12,7 @@ provisioned-data.json
 .envrc
 test-report.html
 permissionsTestResults.xlsx
-containers/*/tokens.json
+ops/tokens.json
 build
 unit-tests-report.html
 junit.xml

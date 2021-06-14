@@ -1,6 +1,7 @@
 import { Client } from '@medable/mdctl-api'
 import _ from 'lodash'
 import { addDeletionPath } from '../helpers'
+
 const queryString = require('query-string')
 
 class ApiError extends Error {
@@ -27,15 +28,13 @@ const Api = (config) => {
           return queryString.stringify(query)
         },
 
-        _withWait = (res, timeout) => {
-          return new Promise((resolve) => {
-            setTimeout(() => {
-              resolve(res)
-            }, _.isNumber(timeout) ? timeout : 2500)
-          })
-        },
+        _withWait = (res, timeout) => new Promise((resolve) => {
+          setTimeout(() => {
+            resolve(res)
+          }, _.isNumber(timeout) ? timeout : 2500)
+        }),
 
-        _clientWrapper = (mdctlClient) => async(verb, urlPath, body, options) => {
+        _clientWrapper = mdctlClient => async(verb, urlPath, body, options) => {
           try {
             const clientOpts = (verb.toLowerCase()
               .trim() === 'get' && options)
@@ -75,9 +74,7 @@ const Api = (config) => {
       }
       return Api(newConfig)
     },
-    login: () => {
-      return client('post', '/accounts/login', { email: config.credentials.username, password: config.credentials.password })
-    },
+    login: () => client('post', '/accounts/login', { email: config.credentials.username, password: config.credentials.password }),
     get(urlPath, query, options) {
       return client('get', `${urlPath}${query ? `?${_stringifyQuery(query)}` : ''}`, {}, options)
     },

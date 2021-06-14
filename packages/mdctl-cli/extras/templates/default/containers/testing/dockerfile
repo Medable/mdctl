@@ -1,8 +1,0 @@
-FROM node:12
-WORKDIR /app
-COPY ./containers/testing/ /app
-COPY . /app
-RUN apt-get update
-RUN apt-get install -y libsecret-1-0 libsecret-1-dev dbus-x11 gnome-keyring nano jq
-RUN npm install --unsafe-perm -g @medable/mdctl-cli semver
-RUN chmod +x runtests.sh

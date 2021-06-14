@@ -10,7 +10,7 @@
 			"allowNameMapping": false,
 			"expires": null,
 			"sessions": true,
-			"csrf": true,
+			"csrf": false,
 			"allowUnsigned": false,
 			"expose": false,
 			"authDuration": 900,
@@ -18,7 +18,7 @@
 			"principalId": "000000000000000000000001",
 			"maxTokensPerPrincipal": 10,
 			"CORS": {
-				"origins": []
+				"origins": ["*"]
 			},
 			"rsa": {
 				"regenerate": true

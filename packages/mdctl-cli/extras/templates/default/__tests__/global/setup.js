@@ -14,7 +14,7 @@ global.__API__ = {
     }
   },
   environment: {
-    endpoint: 'api-int-dev.medable.com',
+    endpoint: process.env.JEST_ENDPOINT || 'api-int-dev.medable.com',
     env: process.env.JEST_ENV
   },
   credentials: {
