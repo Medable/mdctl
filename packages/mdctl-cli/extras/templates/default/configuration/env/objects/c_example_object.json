@@ -1,0 +1,65 @@
+{
+	"localized": true,
+	"allowConnections": true,
+	"auditing": {
+		"enabled": true
+	},
+	"canCascadeDelete": false,
+	"connectionOptions": {
+		"requireAccept": false,
+		"requiredAccess": 5,
+		"sendNotifications": false
+	},
+	"createAcl": [
+		"role.administrator"
+	],
+	"defaultAcl": [
+		"owner.delete",
+		"role.administrator.delete"
+	],
+	"favorite": false,
+	"hasETag": false,
+	"isDeletable": true,
+	"isUnmanaged": false,
+	"isVersioned": false,
+	"label": "Example Object",
+	"name": "c_example_object",
+	"description": "An example object",
+	"object": "object",
+	"objectTypes": [],
+	"properties": [
+		{
+			"acl": [],
+			"aclOverride": false,
+			"array": false,
+			"auditable": false,
+			"canPull": true,
+			"canPush": true,
+			"creatable": false,
+			"defaultValue": [],
+			"history": false,
+			"indexed": true,
+			"label": "Example string",
+			"maxItems": 100,
+			"maxShift": false,
+			"maxSize": 0,
+			"minItems": 0,
+			"name": "c_example_string",
+			"optional": false,
+			"readAccess": "read",
+			"readable": true,
+			"removable": false,
+			"serializeData": true,
+			"type": "String",
+			"validators": [],
+			"writable": true,
+			"writeAccess": "update",
+			"writeOnCreate": true
+		}
+	],
+	"shareChain": [
+		"share",
+		"read",
+		"connected"
+	]
+}

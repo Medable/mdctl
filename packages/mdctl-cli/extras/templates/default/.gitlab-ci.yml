@@ -1,0 +1,48 @@
+stages:
+  - build
+  - unit_tests
+
+image:
+  name: node:12
+
+before_script:
+  # install deps 
+  - apt-get update
+  - apt-get install -y libsecret-1-0 libsecret-1-dev jq curl openssh-client
+  - npm install --unsafe-perm -g @medable/mdctl-cli semver
+
+create_env:
+    stage: build
+    script:
+      # setup mdctl env vars
+      - ./ops/create_env.sh
+    except:
+      - tags
+    only:
+      - merge_request      
+    artifacts:
+      when: always
+      paths:
+        - .env
+      expire_in: 2 hrs
+
+unit_tests:
+  stage: unit_tests
+  script:
+    - source .env
+    - npm install
+    - npm test
+  except:
+    - tags
+  only:
+    - merge_request
+  artifacts:
+    when: always
+    paths:
+      - unit-tests-report.html
+    reports:
+      junit:
+        - junit.xml
+    expire_in: 1 week
+  allow_failure: true
+    

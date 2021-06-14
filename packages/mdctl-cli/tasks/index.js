@@ -79,10 +79,11 @@ function getTask(task) {
 function getRegisteredTasks() {
 
   if (!knownTasks) {
-    knownTasks = Object.entries(loadTaskNames()).reduce((tasks, [taskName, file]) => {
-      tasks[taskName] = require(path.join(__dirname, file)) // eslint-disable-line no-param-reassign
-      return tasks
-    }, {})
+    knownTasks = Object.entries(loadTaskNames())
+      .reduce((tasks, [taskName, file]) => {
+        tasks[taskName] = require(path.join(__dirname, file)) // eslint-disable-line no-param-reassign
+        return tasks
+      }, {})
   }
 
   return Object.assign({}, knownTasks)

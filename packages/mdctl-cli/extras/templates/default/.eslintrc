@@ -1,0 +1,40 @@
+{
+  "extends": ["standard"],
+  "parser": "babel-eslint",
+  "parserOptions": {
+    "ecmaVersion": 9,
+    "sourceType": "module",
+    "allowImportExportEverywhere": true,
+    "ecmaFeatures": {
+      "impliedStrict": true,
+      "globalReturn": true
+    }
+  },
+  "env": {
+    "es6": true,
+    "node": true,
+    "jest": true
+  },
+  "globals": {
+    "org": true,
+    "script": true,
+    "consts": true,
+    "Fault": true,
+    "__API__": true,
+    "faults": true
+  },
+  "rules": {
+    "camelcase": "off",
+    "one-var": "off",
+    "indent": ["warn", 2, { "VariableDeclarator": {"var": 2, "let": 2, "const": 3}, "SwitchCase": 1 }],
+    "keyword-spacing": "warn",
+    "new-cap": ["warn", {"properties": false}],
+    "no-control-regex": 0,
+    "no-unused-vars": "warn",
+    "padded-blocks": ["warn", {"classes":"always"}],
+    "semi": ["error", "never"],
+    "space-before-function-paren": ["error", "never"],
+    "eol-last": 0,
+    "newline-per-chained-call": ["error", { "ignoreChainWithDepth": 1 }]
+  }
+}
