@@ -1,6 +1,6 @@
 {
   "name": "@medable/mdctl-api",
-  "version": "1.0.55",
+  "version": "1.0.59",
   "description": "Medable Developer Client Tools :: API",
   "repository": {
     "type": "git",
@@ -25,8 +25,8 @@
   "author": "Medable, Inc. <mdctl@medable.com>",
   "license": "MIT",
   "dependencies": {
-    "@medable/mdctl-core": "^1.0.55",
-    "@medable/mdctl-core-utils": "^1.0.55",
+    "@medable/mdctl-core": "^1.0.59",
+    "@medable/mdctl-core-utils": "^1.0.59",
     "axios": "^0.19.0",
     "axios-cookiejar-support": "^0.5.0",
     "clone": "^2.1.2",
