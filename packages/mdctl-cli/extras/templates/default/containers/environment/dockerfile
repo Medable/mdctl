@@ -1,0 +1,21 @@
+FROM node:8-jessie
+WORKDIR /app
+COPY ./containers/environment /app
+COPY . /app
+RUN apt-get update && \
+    apt-get install -y \
+    libsecret-1-0 \
+    libsecret-1-dev \
+    dbus-x11 \
+    gnome-keyring \
+    nano \
+    jq &&\
+    npm install --unsafe-perm -g \
+    @medable/mdctl-cli \
+    semver
+RUN chmod +x create_env.sh
+
+ENV USERNAME 'fiachra@medable.com'
+ENV PASSWORD 'qpal1010'
+ENV TTL 3600000
+CMD ["/bin/bash", "-c", "/app/create_env.sh ${USERNAME} ${PASSWORD} ${TTL}"]

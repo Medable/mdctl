@@ -35,15 +35,15 @@ function loadTaskNames() {
 
   if (!knownTaskNames) {
 
-    const configureFile = path.join(os.homedir(), '.medable', 'mdctl.tasks.json')
-    try {
-      const { version: cachedVersion, knownTaskNames: cachedKnownTaskNames } = JSON.parse(fs.readFileSync(configureFile, 'utf8'))
-      if (cachedVersion === version) {
-        knownTaskNames = cachedKnownTaskNames
-      }
-    } catch (err) {
-      // noop
-    }
+    // const configureFile = path.join(os.homedir(), '.medable', 'mdctl.tasks.json')
+    // try {
+    //   const { version: cachedVersion, knownTaskNames: cachedKnownTaskNames } = JSON.parse(fs.readFileSync(configureFile, 'utf8'))
+    //   if (cachedVersion === version) {
+    //     knownTaskNames = cachedKnownTaskNames
+    //   }
+    // } catch (err) {
+    //   // noop
+    // }
 
     if (!knownTaskNames) {
 

@@ -195,7 +195,7 @@ const { prompt } = require('inquirer'),
             name: 'name',
             message: 'package name',
             type: 'input',
-            default: inputArgs.prefix || 'new-org-config'
+            default: 'new-org-config'
           },
           {
             name: 'description',

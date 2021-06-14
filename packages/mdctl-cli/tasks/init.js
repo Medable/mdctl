@@ -48,6 +48,8 @@ class Init extends Task {
 
     writeFileSync(`${defaultPath}/package.json`, JSON.stringify(updatedPackage, null, ' '))
 
+    execSync(`npm install --prefix ${defaultPath}`, { stdio: 'inherit' })
+
   }
 
   // ----------------------------------------------------------------------------------------------
