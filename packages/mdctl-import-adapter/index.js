@@ -192,16 +192,24 @@ class ImportFileTreeAdapter extends EventEmitter {
         if (packageData.scripts.postimport) {
           privatesAccessor(this, 'postImport', packageData.scripts.postimport)
         }
-        if (packageData.scripts.preinstall) {
-          const preInstall = path.join(input, packageData.scripts.preinstall)
-          if (fs.existsSync(preInstall)) {
-            packageData.scripts.preinstall = fs.readFileSync(preInstall).toString()
+        if (packageData.scripts.beforeimport || packageData.scripts.preinstall) {
+          const beforeImport = path.join(input, packageData.scripts.beforeimport || packageData.scripts.preinstall)
+          if (fs.existsSync(beforeImport)) {
+            packageData.scripts.beforeimport = fs.readFileSync(beforeImport).toString()
           }
         }
-        if (packageData.scripts.postinstall) {
-          const postInstall = path.join(input, packageData.scripts.postinstall)
-          if (fs.existsSync(postInstall)) {
-            packageData.scripts.postinstall = fs.readFileSync(postInstall).toString()
+        if (packageData.scripts.afterimport || packageData.scripts.postinstall) {
+          const afterImport = path.join(input, packageData.scripts.afterimport || packageData.scripts.postinstall)
+          if (fs.existsSync(afterImport)) {
+            packageData.scripts.afterimport = fs.readFileSync(afterImport).toString()
+          }
+        }
+      }
+      if (packageData.pipes) {
+        if (_.isString(packageData.pipes.ingest)) {
+          const ingestPipe = path.join(input, packageData.pipes.ingest)
+          if (fs.existsSync(ingestPipe)) {
+            packageData.pipes.ingest = fs.readFileSync(ingestPipe).toString()
           }
         }
       }
