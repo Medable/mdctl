@@ -189,11 +189,11 @@ if you don't set `--dir` it will use current location and try to import from it.
 Package is used to run scripts before and after import/install and define manifest location.
 Manifest location and script location are relative to package location.
 
-`preinstall` This will run before install on cortex side.
-`postinstall` This will run after install on cortex side.
+`beforeImport` This will run before install on cortex side.
+`afterImport` This will run after install on cortex side.
 
-`preimport` This will run on client side before import.
-`postimport` This will run on client side after import.
+`preImport` This will run on client side before import.
+`postImport` This will run on client side after import.
 
 ```json
 {
@@ -203,10 +203,10 @@ Manifest location and script location are relative to package location.
     "manifest": "manifest.json",
     "object": "package",
     "scripts": {
-        "preinstall": "hooks/install.before.js",
-        "postinstall": "hooks/install.after.js",
-        "preimport": "hooks/import.before.js",
-        "postimport": "hooks/import.after.js"
+        "beforeImport": "hooks/install.before.js",
+        "afterImport": "hooks/install.after.js",
+        "preImport": "hooks/import.before.js",
+        "postImport": "hooks/import.after.js"
     },
     "author": "gaston@medable.com"
 }
