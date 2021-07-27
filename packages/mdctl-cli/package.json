@@ -36,6 +36,7 @@
     "@medable/mdctl-docs": "^1.0.55",
     "@medable/mdctl-export-adapter-console": "^1.0.59",
     "@medable/mdctl-export-adapter-tree": "^1.0.59",
+    "@medable/mdctl-gitlab-packages": "^1.0.0",
     "@medable/mdctl-import-adapter": "^1.0.59",
     "@medable/mdctl-manifest": "^1.0.59",
     "@medable/mdctl-node-utils": "^1.0.59",
@@ -55,6 +56,7 @@
     "pump": "^3.0.0",
     "rimraf": "^2.7.1",
     "shelljs": "^0.8.3",
+    "unzip-stream": "^0.3.1",
     "yargs": "^12.0.5"
   },
   "devDependencies": {
