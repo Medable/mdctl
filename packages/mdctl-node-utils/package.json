@@ -30,7 +30,7 @@
     "@medable/mdctl-credentials-provider-pouchdb": "^1.0.59",
     "create-hash": "^1.2.0",
     "js-yaml": "^3.13.1",
-    "lodash": "^4.17.15"
+    "lodash": "^4.17.21"
   },
   "devDependencies": {
     "chai": "^4.1.2",
