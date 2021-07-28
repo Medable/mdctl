@@ -29,7 +29,7 @@
     "@medable/mdctl-core-schemas": "^1.0.59",
     "@medable/mdctl-core-utils": "^1.0.59",
     "@medable/mdctl-node-utils": "^1.0.59",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.21",
     "pluralize": "^8.0.0"
   },
   "devDependencies": {
