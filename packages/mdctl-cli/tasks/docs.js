@@ -17,7 +17,7 @@ class Docs extends Task {
         type: 'string'
       },
       module: {
-        default: '',
+        default: 'env',
         type: 'string'
       },
       source: {

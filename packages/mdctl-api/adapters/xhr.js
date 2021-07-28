@@ -48,6 +48,7 @@ function xhrAdapter(config) {
       } else {
         if (request.readyState > XMLHttpRequest.HEADERS_RECEIVED) {
           const newData = request.response.substr(request.seenBytes)
+          console.log('request.onreadystatechange', newData, transform)
           transform.write(newData)
           request.seenBytes = request.responseText.length
         }

@@ -80,6 +80,7 @@ function readerToTransform(response) {
 
           // do something with the current chunk
           const chunk = result.value
+          console.log('readerToTransform', result, transform)
           transform.write(chunk)
 
           return consume(responseReader)

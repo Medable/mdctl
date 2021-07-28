@@ -41,9 +41,30 @@ const path = require('path'),
       })
 
 function readManifestJsons(key, returnList = item => item, manifest = {}, home = process.cwd()) {
-  return manifest[key]
-    ? returnList(manifest[key]).map(name => util.readJson(path.join(home, 'env', key, `${name}.json`)))
-    : []
+
+  let resourceData = []
+
+  if(manifest[key]){
+
+    const includes = returnList(manifest[key])
+
+    // TODO: Handle additional wildcard types
+    if(includes.length === 1 && includes[0] === '*'){
+
+      resourceData = util
+        .listDir(path.join(home, 'env', key), true) // prepends directory to filenames
+        .map(file => util.readJson(file))
+
+    } else {
+
+      resourceData = includes.map(name => util.readJson(path.join(home, 'env', key, `${name}.json`)))
+
+    }
+
+  }
+
+  return resourceData
+
 }
 
 function readManifestObjects(manifest, home) {
@@ -74,17 +95,27 @@ function getRouteId(location, method) {
 }
 
 function readManifestScripts(manifest, doclets, home) {
+
   const scripts = {},
         resourceMap = {},
-        resources = util.readJson(path.join(home, 'resources.json'), [])
+        resources = util.readJson(path.join(home, 'resources.json'), []),
+        includes = manifest.scripts ? manifest.scripts.includes : [],
+        names = includes.length === 1 && includes[0] === '*'
+          ? util
+              .listDir(path.join(home, 'env/scripts'))
+              .map(filename => filename.replace('.json', ''))
+              .filter(name => name !== 'js')
+          : includes
 
   doclets.forEach((doclet) => {
+
     const name = doclet.meta.filename.split('.')[1],
           isClassDefinition = doclet.kind === 'class' && CLASS_SCOPES.includes(doclet.scope),
           isClassMethod = doclet.kind === 'function' && doclet.meta.code.type === 'MethodDefinition',
           isClassConstructor = doclet.name === doclet.memberof
             && doclet.scope === 'instance'
             && doclet.kind === 'class'
+
     if (!scripts[name]) {
       scripts[name] = {
         classes: {},
@@ -112,7 +143,9 @@ function readManifestScripts(manifest, doclets, home) {
     if (doclet.route && doclet.route.path && doclet.route.method) {
       scripts[name].routes[getRouteId(doclet.route.path, doclet.route.method)] = doclet.route
     }
+
   })
+
   resources.forEach((resource) => {
     if (resource.type !== RESOURCE_TYPES.LIBRARY) {
       const scriptName = resource.metadata.scriptExport
@@ -123,7 +156,8 @@ function readManifestScripts(manifest, doclets, home) {
     }
   })
 
-  return manifest.scripts && manifest.scripts.includes.map((name) => {
+  return names.map((name) => {
+
     const docletInfo = scripts[name],
           info = Object.assign({}, util.readJson(path.join(home, 'env', 'scripts', `${name}.json`)), docletInfo && docletInfo.doclet && {
             author: docletInfo.doclet.author,
@@ -140,7 +174,9 @@ function readManifestScripts(manifest, doclets, home) {
     }
 
     if (resourceMap[name]) {
+
       resourceMap[name].forEach((resource) => {
+
         const {
                 configuration,
                 type
@@ -148,6 +184,7 @@ function readManifestScripts(manifest, doclets, home) {
               field = PLURAL_RESOURCES[type]
 
         switch (type) {
+
           case RESOURCE_TYPES.ROUTE:
             if (!data[field]) { data[field] = [] }
             data[field].push(Object.assign({}, {
@@ -160,16 +197,21 @@ function readManifestScripts(manifest, doclets, home) {
               : docletInfo
                 && docletInfo.routes[getRouteId(configuration.path, configuration.method)]))
             break
+
           default:
             if (!info[field]) { info[field] = [] }
             info[field].push(resource)
+
         }
 
       })
+
     }
 
     return data
+
   })
+
 }
 
 function extract(manifest, doclets, home) {

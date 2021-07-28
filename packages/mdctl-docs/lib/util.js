@@ -114,6 +114,17 @@ function breakdownResource(rawResource, level = 1) {
  * Files
  */
 
+function listDir(dir, prependDir = false){
+  try {
+    return prependDir
+      ? fs.readdirSync(dir).map(filename => path.join(dir, filename))
+      : fs.readdirSync(dir)
+  } catch(err){
+    console.warn(err)
+    return []
+  }
+}
+
 function read(file, encoding = 'utf8') {
   return fs.readFileSync(file, encoding)
 }
@@ -222,6 +233,7 @@ module.exports = {
   capitalizeFirstCharacter,
   clone,
   isExecutable,
+  listDir,
   read,
   readJson,
   removeExtention,

@@ -56,3 +56,35 @@ lerna publish --no-git-tag-version --no-push --registry=http://localhost:4873
 [mdctl-manifest](packages/mdctl-manifest/README.md)
 
 [mdctl-sandbox](packages/mdctl-sandbox/README.md)
+
+## Local development
+
+1. Uninstall mdctl global npm package if it is installed
+
+```bash
+npm uninstall -g @medable/mdctl-cli
+```
+
+2. Install mdctl dependencies
+
+```bash
+npm install
+```
+
+3. Run lerna bootstrap
+
+```bash
+npm run lerna -- bootstrap --hoist
+```
+
+4. Link the mdctl-cli package locally
+
+```bash
+cd packages/mdctl-cli && npm link
+```
+
+To reflect local code changes made within the `mdctl` command-line tool, re-run lerna bootstrap
+
+```bash
+npm run lerna -- bootstrap --hoist
+```

@@ -27,6 +27,8 @@ function loadModule(module) {
 
 async function generateDocumentation(opts) {
 
+  console.log('generateDocumentation', opts)
+
   const options = Object.assign({}, this.generateDocumentation.default, opts),
 
         config = util.readJson(path.join(process.cwd(), 'config.json')),
