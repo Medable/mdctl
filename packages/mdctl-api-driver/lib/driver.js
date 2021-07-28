@@ -1,6 +1,7 @@
 const { privatesAccessor } = require('@medable/mdctl-core-utils/privates'),
       _ = require('lodash'),
       ndjson = require('ndjson'),
+      path = require('path'),
       pump = require('pump')
 
 
@@ -30,7 +31,7 @@ class Driver {
   }
 
   buildUrl(name, op) {
-    return `/${name}/db/${op}`
+    return path.join('/', name, 'db', op)
   }
 
   async cursor(stream, objectName, options = {}) {
