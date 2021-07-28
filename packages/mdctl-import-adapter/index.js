@@ -175,10 +175,21 @@ class ImportFileTreeAdapter extends EventEmitter {
   }
 
   readPackageFile() {
+
+    let packageData,
+        script
+
     const { input } = privatesAccessor(this),
           location = globby.sync([KNOWN_FILES.package], { cwd: input }),
-          paths = []
-    let packageData
+          paths = [],
+          getScript = (...params) => {
+            for (const param of params) {
+              if (packageData.scripts[param]) {
+                return packageData.scripts[param]
+              }
+            }
+            return null
+          }
 
     if (location.length > 0 && fs.existsSync(`${input}/${location[0]}`)) {
       packageData = parseString(fs.readFileSync(`${input}/${location[0]}`))
@@ -186,22 +197,34 @@ class ImportFileTreeAdapter extends EventEmitter {
     }
     if (packageData) {
       if (packageData.scripts) {
-        if (packageData.scripts.preimport) {
-          privatesAccessor(this, 'preImport', packageData.scripts.preimport)
+        script = getScript('preImport', 'preimport')
+        if (script) {
+          privatesAccessor(this, 'preImport', script)
         }
-        if (packageData.scripts.postimport) {
-          privatesAccessor(this, 'postImport', packageData.scripts.postimport)
+        script = getScript('postImport', 'postimport')
+        if (script) {
+          privatesAccessor(this, 'postImport', script)
         }
-        if (packageData.scripts.preinstall) {
-          const preInstall = path.join(input, packageData.scripts.preinstall)
-          if (fs.existsSync(preInstall)) {
-            packageData.scripts.preinstall = fs.readFileSync(preInstall).toString()
+        script = getScript('beforeimport', 'beforeImport', 'preinstall', 'preInstall')
+        if (script) {
+          const beforeImport = path.join(input, script)
+          if (fs.existsSync(beforeImport)) {
+            packageData.scripts.beforeImport = fs.readFileSync(beforeImport).toString()
           }
         }
-        if (packageData.scripts.postinstall) {
-          const postInstall = path.join(input, packageData.scripts.postinstall)
-          if (fs.existsSync(postInstall)) {
-            packageData.scripts.postinstall = fs.readFileSync(postInstall).toString()
+        script = getScript('afterimport', 'afterImport', 'postinstall', 'postInstall')
+        if (script) {
+          const afterImport = path.join(input, script)
+          if (fs.existsSync(afterImport)) {
+            packageData.scripts.afterImport = fs.readFileSync(afterImport).toString()
+          }
+        }
+      }
+      if (packageData.pipes) {
+        if (_.isString(packageData.pipes.ingest)) {
+          const ingestPipe = path.join(input, packageData.pipes.ingest)
+          if (fs.existsSync(ingestPipe)) {
+            packageData.pipes.ingest = fs.readFileSync(ingestPipe).toString()
           }
         }
       }
@@ -224,7 +247,7 @@ class ImportFileTreeAdapter extends EventEmitter {
         manifestData = JSON.parse(fs.readFileSync(`${input}/${location[0]}`))
         paths.push(KNOWN_FILES.manifest)
       } else {
-        throw Fault.from({ code: 'kManifestNotFound', reason: 'There is no manifest defined neither found in directory' })
+        throw Fault.create('mdctl.kManifestNotFound.error', { reason: 'There is no manifest set as parameter neither found in directory' })
       }
     }
     /* eslint-disable one-var */
@@ -293,15 +316,15 @@ class ImportFileTreeAdapter extends EventEmitter {
     }
   }
 
-  getParentFromPath(chunk, path) {
+  getParentFromPath(chunk, value) {
     const { content } = privatesAccessor(chunk),
-          parent = jp.parent(content, jp.stringify(path))
+          parent = jp.parent(content, jp.stringify(value))
     if (parent.code || parent.name || parent.label || parent.resource) {
       return parent
     }
-    path.pop()
+    value.pop()
 
-    return path.length > 1 ? this.getParentFromPath(chunk, path) : {}
+    return value.length > 1 ? this.getParentFromPath(chunk, value) : {}
   }
 
   async loadFacets(chunk) {
@@ -340,13 +363,15 @@ class ImportFileTreeAdapter extends EventEmitter {
 
   async loadScripts(chunk) {
     if (chunk.key === 'package') {
-      const { preInstall, postInstall } = chunk.content.scripts,
+      const { content: { scripts } } = chunk,
+            { preInstall, postInstall } = scripts,
             { input } = privatesAccessor(this)
+
       if (preInstall) {
-        chunk.content.scripts.preInstall = fs.readFileSync(path.join(input, preInstall)).toString()
+        scripts.preInstall = fs.readFileSync(path.join(input, preInstall)).toString()
       }
       if (postInstall) {
-        chunk.content.scripts.postInstall = fs.readFileSync(path.join(input, postInstall)).toString()
+        scripts.postInstall = fs.readFileSync(path.join(input, postInstall)).toString()
       }
     } else {
       const { content, basePath } = privatesAccessor(chunk),
