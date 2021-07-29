@@ -95,11 +95,13 @@ class Environment {
   }
 
   get url() {
-    return path.join(this.endpoint, this.env, this.version)
+    // restoring :// since path.join removes it
+    return path.join(this.endpoint, this.env, this.version).replace(':/', '://')
   }
 
   buildUrl(pathname) {
-    return path.join(this.url, pathname)
+    // restoring :// since path.join removes it
+    return path.join(this.url, pathname).replace(':/', '://')
   }
 
 }
