@@ -1,6 +1,6 @@
 {
   "name": "@medable/mdctl-credentials-provider-pouchdb",
-  "version": "1.0.61",
+  "version": "1.0.62",
   "description": "Medable Developer Client Tools :: PouchDB Creds Provider",
   "repository": {
     "type": "git",
@@ -25,7 +25,7 @@
     "lint": "eslint *.js"
   },
   "dependencies": {
-    "@medable/mdctl-core": "^1.0.61",
+    "@medable/mdctl-core": "^1.0.62",
     "@medable/mdctl-core-utils": "^1.0.60",
     "async": "^2.6.3",
     "browserify-aes": "^1.2.0",
