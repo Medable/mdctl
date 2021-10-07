@@ -44,7 +44,10 @@ const fs = require('fs'),
               lockUnlock = new LockUnlock(outputDir, client.environment.endpoint, client.environment.env)
 
         let manifestFile,
-            inputStream
+            inputStream,
+            preExport = () => {},
+            postExport = () => {},
+            memo = {}
 
         if (lockUnlock.checkLock(['export'])) {
           throw Fault.create('kWorkspaceLocked', {
@@ -55,45 +58,67 @@ const fs = require('fs'),
         inputStream = ndjson.parse()
         if (!options.stream) {
 
-          let pkg = {},
-              manifest = {}
+          let packageData,
+              script,
+              manifest = {},
+              getScript = (...params) => {
+                for (const param of params) {
+                  if (packageData.scripts[param]) {
+                    return packageData.scripts[param]
+                  }
+                }
+                return null
+              }
 
-          if (!isPlainObject(packageFile) && fs.existsSync(packageFile)) {
+          if (isPlainObject(packageFile)) {
+            packageData = packageFile
+          } else if (fs.existsSync(packageFile)) {
             try {
-              pkg = parseString(fs.readFileSync(packageFile), options.format)
+              packageData = parseString(fs.readFileSync(packageFile), options.format)
             } catch (e) {
               throw Fault.create({ reason: e.message })
             }
-            if (pkg.scripts) {
-              if (pkg.scripts.beforeexport) {
-                const beforeExport = path.join(outputDir, pkg.scripts.beforeexport)
+          }
+
+          if (packageData) {
+            if (packageData.scripts) {
+              script = getScript('preExport', 'preexport')
+              if (script) {
+                preExport = require(path.join(outputDir, script))
+              }
+              script = getScript('postExport', 'postexport')
+              if (script) {
+                postExport = require(path.join(outputDir, script))
+              }
+              script = getScript('beforeexport', 'beforeExport')
+              if (script) {
+                const beforeExport = path.join(outputDir, script)
                 if (fs.existsSync(beforeExport)) {
-                  pkg.scripts.beforeexport = fs.readFileSync(beforeExport).toString()
+                  packageData.scripts.beforeExport = fs.readFileSync(beforeExport).toString()
                 }
               }
-              if (pkg.scripts.afterexport) {
-                const afterExport = path.join(outputDir, pkg.scripts.afterexport)
+              script = getScript('afterexport', 'afterExport')
+              if (script) {
+                const afterExport = path.join(outputDir, script)
                 if (fs.existsSync(afterExport)) {
-                  pkg.scripts.afterexport = fs.readFileSync(afterExport).toString()
+                  packageData.scripts.afterExport = fs.readFileSync(afterExport).toString()
                 }
               }
             }
-            if (pkg.pipes) {
-              if (isString(pkg.pipes.export)) {
-                const ingestTransform = path.join(outputDir, pkg.pipes.export)
-                if (fs.existsSync(ingestTransform)) {
-                  pkg.pipes.export = fs.readFileSync(ingestTransform).toString()
+            if (packageData.pipes) {
+              if (_.isString(packageData.pipes.export)) {
+                const exportPipe = path.join(outputDir, packageData.pipes.export)
+                if (fs.existsSync(exportPipe)) {
+                  packageData.pipes.export = fs.readFileSync(exportPipe).toString()
                 }
               }
             }
-          } else {
-            pkg = packageFile
           }
 
           if (options.manifest) {
             manifest = options.manifest
-          } else if (pkg && pkg.manifest) {
-            manifestFile = `${outputDir}/${pkg.manifest}`
+          } else if (packageData && packageData.manifest) {
+            manifestFile = `${outputDir}/${packageData.manifest}`
           } else if (fs.existsSync(`${outputDir}/manifest.${options.format || 'json'}`)) {
             manifestFile = `${outputDir}/manifest.${options.format || 'json'}`
           }
@@ -106,18 +131,28 @@ const fs = require('fs'),
             }
           }
 
+          await preExport({ client, options, manifest, package: packageData, memo })
+
           pathTo(requestOptions, 'requestOptions.headers.accept', 'application/x-ndjson')
           await client.call(url.pathname, Object.assign(requestOptions, {
-            stream: inputStream, body: { manifest, package: pkg }
+            stream: inputStream, body: { manifest, package: packageData }
           }))
+
         } else {
           inputStream = options.stream.pipe(ndjson.parse())
         }
 
         return new Promise((resolve, reject) => {
-          const resultStream = pump(inputStream, streamTransform, adapter, (error) => {
-            if (error) {
-              return reject(error)
+          const resultStream = pump(inputStream, streamTransform, adapter, async (err) => {
+
+            try {
+              await postExport({ client, err, options, memo })
+            } catch(e) {
+              err = e
+            }
+
+            if (err) {
+              return reject(err)
             }
 
             if (options.docs) {
@@ -135,5 +170,7 @@ const fs = require('fs'),
           })
         })
       }
+const { privatesAccessor } = require('@medable/mdctl-core-utils/privates')
+const _ = require('lodash')
 
 module.exports = exportEnv

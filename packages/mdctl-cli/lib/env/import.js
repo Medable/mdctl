@@ -38,6 +38,7 @@ const pump = require('pump'),
               client = options.client || new Client({ ...Config.global.client, ...options }),
               inputDir = options.dir || process.cwd(),
               progress = rFunction(options.progress),
+              memo = {},
               url = new URL('/developer/environment/import', client.environment.url),
               query = {
                 ...searchParamsToObject(url.searchParams),
@@ -87,7 +88,9 @@ const pump = require('pump'),
         streamList.push(debuggerStream)
 
         const preImport = fileAdapter.preImport()
-        await preImport()
+        await preImport({
+          client, options, importStream, fileAdapter, memo
+        })
 
         if (!options.dryRun) {
           pathTo(requestOptions, 'headers.accept', 'application/x-ndjson')
@@ -107,7 +110,7 @@ const pump = require('pump'),
             query,
             requestOptions
           })
-          return { response, postImport: fileAdapter.postImport() }
+          return { response, postImport: fileAdapter.postImport(), memo }
         }
 
         return new Promise((resolve, reject) => {
@@ -116,7 +119,7 @@ const pump = require('pump'),
                   if (options.debug) {
                     console.debug(`Ending stream, total chunks sent: ${items.length}`)
                   }
-                  resolve({ response: options.returnBlob ? Buffer.concat(items) : '', postImport: fileAdapter.postImport() })
+                  resolve({ response: options.returnBlob ? Buffer.concat(items) : '', postImport: fileAdapter.postImport(), memo })
                 })
           streamChain.on('data', d => items.push(d))
           streamChain.on('error', (e) => {
