@@ -16,7 +16,7 @@ const { prompt } = require('inquirer'),
 
       askSelectConsentTemplates = async(inputArgs) => {
         // eslint-disable-next-line no-underscore-dangle
-        const choices = inputArgs.consents.map(v => ({ name: v.c_name, value: v._id })),
+        const choices = inputArgs.consents.map(v => ({ name: v.ec__title, value: v._id })),
               result = await prompt([{
                 type: 'checkbox',
                 name: 'selectedConsents',
@@ -24,7 +24,7 @@ const { prompt } = require('inquirer'),
                 choices
               }])
 
-        return result.selectedTasks
+        return result.selectedConsents
       }
 
 module.exports = {

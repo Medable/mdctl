@@ -2,10 +2,8 @@
 
 const _ = require('lodash'),
       jsyaml = require('js-yaml'),
-      fs = require('fs'),
-      { rString, isSet, stringToBoolean } = require('@medable/mdctl-core-utils/values'),
+      { rString, isSet } = require('@medable/mdctl-core-utils/values'),
       { StudyManifestTools } = require('@medable/mdctl-axon-tools'),
-      ndjson = require('ndjson'),
       { Fault } = require('@medable/mdctl-core'),
       exportEnv = require('../lib/env/export'),
       Task = require('../lib/task'),
@@ -13,7 +11,6 @@ const _ = require('lodash'),
         askSelectTasks,
         askSelectConsentTemplates
       } = require('../lib/studyQuestions')
-
 
 class Study extends Task {
 
@@ -76,24 +73,15 @@ class Study extends Task {
   async 'study@export'(cli) {
     const client = await cli.getApiClient({ credentials: await cli.getAuthOptions() }),
           params = await cli.getArguments(this.optionKeys),
-          studyTools = new StudyManifestTools(client, params),
-          outputDir = params.dir || process.cwd()
-
+          studyTools = new StudyManifestTools(client, params)
 
     try {
-      const { manifest, removedEntities } = await studyTools.getStudyManifest(),
-            issues = removedEntities.reduce((a, v) => {
-              a.push(...v.issues)
-              return a
-            }, [])
-
-      fs.writeFileSync(`${outputDir}/Report.json`, JSON.stringify(issues, null, 2))
-      fs.writeFileSync(`${outputDir}/DetailedReport.json`, JSON.stringify(removedEntities, null, 2))
-      fs.writeFileSync(`${outputDir}/manifest.json`, JSON.stringify(manifest, null, 2))
+      const { manifest } = await studyTools.getStudyManifest()
 
       if (!params.manifestOnly) {
         const options = {
           format: 'json',
+          manifest,
           ...params
         }
         console.log('Starting Study Export')
@@ -111,35 +99,69 @@ class Study extends Task {
   }
 
   async 'study@tasks'(cli) {
+
     const client = await cli.getApiClient({ credentials: await cli.getAuthOptions() }),
           params = await cli.getArguments(this.optionKeys),
           studyTools = new StudyManifestTools(client, params),
-          outputDir = params.dir || process.cwd()
+          action = this.args('2')
 
+    if (!action) {
+      throw Fault.create('kInvalidArgument', { reason: 'You must provide an action (import or export)' })
+    }
 
     try {
       const tasks = await studyTools.getTasks(),
             selectedTasks = await askSelectTasks({ tasks }),
-            { manifest, removedEntities } = await studyTools.getTasksManifest(selectedTasks),
-            issues = removedEntities.reduce((a, v) => {
-              a.push(...v.issues)
-              return a
-            }, [])
+            { manifest } = await studyTools.getTasksManifest(selectedTasks)
 
-      fs.writeFileSync(`${outputDir}/Report.json`, JSON.stringify(issues, null, 2))
-      fs.writeFileSync(`${outputDir}/DetailedReport.json`, JSON.stringify(removedEntities, null, 2))
-      fs.writeFileSync(`${outputDir}/manifest.json`, JSON.stringify(manifest, null, 2))
 
       if (!params.manifestOnly) {
         const options = {
           format: 'json',
+          manifest,
           ...params
         }
         console.log('Starting Study Data Export')
         await exportEnv({ client, ...options })
       }
 
-      console.log('Study Export finished...!')
+      console.log('Export finished...!')
+
+
+    } catch (e) {
+      throw e
+    }
+
+
+  }
+
+  async 'study@consent'(cli) {
+
+    const client = await cli.getApiClient({ credentials: await cli.getAuthOptions() }),
+          params = await cli.getArguments(this.optionKeys),
+          studyTools = new StudyManifestTools(client, params),
+          action = this.args('2')
+
+    if (!action) {
+      throw Fault.create('kInvalidArgument', { reason: 'You must provide an action (import or export)' })
+    }
+
+    try {
+      const consents = await studyTools.getConsentTemplates(),
+            selectedConsents = await askSelectConsentTemplates({ consents }),
+            { manifest } = await studyTools.getConsentsManifest(selectedConsents)
+
+      if (!params.manifestOnly) {
+        const options = {
+          format: 'json',
+          manifest,
+          ...params
+        }
+        console.log('Starting Study Data Export')
+        await exportEnv({ client, ...options })
+      }
+
+      console.log('Export finished...!')
 
 
     } catch (e) {
@@ -199,9 +221,10 @@ class Study extends Task {
           
     Arguments:               
       
-      Command 
-                                     
-        export - Exports the study from the current org                                                                                                                                    
+      Command                        
+        export - Exports the study from the current org      
+        task [action] - Allows the select of tasks to export from the current org  
+        consent [action] - Allows the select of consent templates to export from the current org                                                                                                                                   
     `
   }
 
