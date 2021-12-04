@@ -1,10 +1,11 @@
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable newline-per-chained-call */
-const fs = require('fs')
-const { privatesAccessor } = require('@medable/mdctl-core-utils/privates')
-const _ = require('lodash')
-const { Driver } = require('@medable/mdctl-api-driver')
-const { Org } = require('@medable/mdctl-api-driver/lib/cortex.object')
+const fs = require('fs'),
+      { privatesAccessor } = require('@medable/mdctl-core-utils/privates'),
+      { Driver } = require('@medable/mdctl-api-driver'),
+      { Org } = require('@medable/mdctl-api-driver/lib/cortex.object'),
+      path = require('path'),
+      packageFileDir = path.join(__dirname, '../packageScripts')
 
 class StudyManifestTools {
 
@@ -28,7 +29,7 @@ class StudyManifestTools {
           driver = new Driver(client),
           org = new Org(driver)
 
-    return org.objects.ec__document_templates.find().limit(false).paths('c_name').toArray()
+    return org.objects.ec__document_templates.find().limit(false).paths('ec__title').toArray()
   }
 
   async getOrgObjectInfo(org) {
@@ -74,23 +75,25 @@ class StudyManifestTools {
             return a
           }, {})
 
-    this.orgObjects = allObj.map(({ name, pluralName }) => ({ name, pluralName }))
+    Object.assign(privatesAccessor(this), {
+      orgObjects: allObj.map(({ name, pluralName, uniqueKey }) => ({ name, pluralName, uniqueKey }))
+    })
 
     return { orgReferenceProps }
 
   }
 
   mapObjectNameToPlural(name) {
-    return this.orgObjects.find(v => v.name === name).pluralName
+    return privatesAccessor(this).orgObjects.find(v => v.name === name).pluralName
   }
 
   mapObjectPluralToName(pluralName) {
-    return this.orgObjects.find(v => v.pluralName === pluralName).name
+    return privatesAccessor(this).orgObjects.find(v => v.pluralName === pluralName).name
   }
 
   async getStudyManifest() {
     console.log('Building Manifest')
-    const { client, options } = privatesAccessor(this),
+    const { client } = privatesAccessor(this),
           driver = new Driver(client),
           org = new Org(driver),
           // eslint-disable-next-line camelcase
@@ -102,13 +105,17 @@ class StudyManifestTools {
           { outputEntities, removedEntities } = this.validateReferences(allEntities, orgReferenceProps),
           manifest = this.createManifest(outputEntities)
 
+    this.writeIssues(removedEntities)
+    this.writePackage('study')
+
+
     return { manifest, removedEntities }
 
   }
 
   async getTasksManifest(taskIds) {
     console.log('Building Manifest')
-    const { client, options } = privatesAccessor(this),
+    const { client } = privatesAccessor(this),
           driver = new Driver(client),
           org = new Org(driver),
           { orgReferenceProps } = await this.getOrgObjectInfo(org),
@@ -116,25 +123,47 @@ class StudyManifestTools {
           { outputEntities, removedEntities } = this.validateReferences(allEntities, orgReferenceProps, ['c_tasks']),
           manifest = this.createManifest(outputEntities)
 
+    this.writeIssues(removedEntities)
+    this.writePackage('task')
+
+    return { manifest, removedEntities }
+
+  }
+
+  async getConsentsManifest(consentIds) {
+    console.log('Building Manifest')
+    const { client } = privatesAccessor(this),
+          driver = new Driver(client),
+          org = new Org(driver),
+          { orgReferenceProps } = await this.getOrgObjectInfo(org),
+          allEntities = await this.getConsentManifestEntities(org, consentIds, orgReferenceProps),
+          { outputEntities, removedEntities } = this.validateReferences(allEntities, orgReferenceProps, ['ec__document_templates']),
+          manifest = this.createManifest(outputEntities)
+
+    this.writeIssues(removedEntities)
+    this.writePackage('consent')
+
     return { manifest, removedEntities }
 
   }
 
   createManifest(entities) {
     const manifest = {
-      object: 'manifest',
-      dependencies: false,
-      exportOwner: false,
-      importOwner: false
-    }
+            object: 'manifest',
+            dependencies: false,
+            exportOwner: false,
+            importOwner: false
+          },
+          { orgObjects } = privatesAccessor(this)
 
     entities.forEach((entity) => {
+      const { uniqueKey } = orgObjects.find(v => v.name === entity.object)
       if (!manifest[entity.object]) {
         manifest[entity.object] = {
           includes: []
         }
       }
-      manifest[entity.object].includes.push(entity.c_key)
+      manifest[entity.object].includes.push(entity[uniqueKey])
 
     })
 
@@ -163,7 +192,6 @@ class StudyManifestTools {
       let valid = true
 
       references.forEach((ref) => {
-      // for (const ref of references) {
         if (entity[ref.name]) {
           const refEntityIds = []
 
@@ -184,14 +212,12 @@ class StudyManifestTools {
                 valid = false
                 const issue = `Entity not found in export for ${entity.object} ${entity._id} for reference ${ref.name} id ${refEntityId}`
                 issues.push(issue)
-                // console.log(issue)
               }
             })
           } else {
             valid = false
             const issue = `No entity id for ${entity.object} ${entity._id} for reference ${ref.name}`
             issues.push(issue)
-            // console.log(issue)
           }
         }
       })
@@ -209,12 +235,13 @@ class StudyManifestTools {
   }
 
   async getExportObjects(org, object, where, orgReferenceProps) {
-    console.log(`Getting ${object}`)
-    if (!this.orgObjects.find(v => v.pluralName === object)) return []
 
-    const paths = ['c_key', ...orgReferenceProps[object].map(v => v.name)],
+    if (!privatesAccessor(this).orgObjects.find(v => v.pluralName === object)) return []
+
+    const { orgObjects } = privatesAccessor(this),
+          { uniqueKey } = orgObjects.find(v => v.pluralName === object),
+          paths = [uniqueKey, ...orgReferenceProps[object].map(v => v.name)],
           expand = [...orgReferenceProps[object].filter(v => v.type === 'Reference').map(v => v.name)],
-
           cursor = org.objects[object].find(where)
             .paths(paths)
             .limit(false)
@@ -223,7 +250,14 @@ class StudyManifestTools {
       cursor.expand(expand)
     }
 
-    return cursor.toArray()
+    console.log(`Getting ${object}`)
+    // eslint-disable-next-line one-var
+    const data = await cursor.toArray()
+
+    if (data.length && data[0].object === 'fault') {
+      throw data[0]
+    }
+    return data
 
   }
 
@@ -242,12 +276,13 @@ class StudyManifestTools {
           patientFlags = await this.getExportObjects(org, 'c_patient_flags', null, orgReferenceProps),
 
           documentTemplates = await this.getExportObjects(org, 'ec__document_templates', { ec__study: study._id }, orgReferenceProps),
-          knowledgeChecks = await this.getExportObjects(org, 'ec__knowledge_ckecks', { ec__document_template: { $in: documentTemplates.map(v => v._id) } }, orgReferenceProps)
+          knowledgeChecks = await this.getExportObjects(org, 'ec__knowledge_checks', { ec__document_template: { $in: documentTemplates.map(v => v._id) } }, orgReferenceProps),
+          defaultDoc = await this.getExportObjects(org, 'ec__default_document_css', null, orgReferenceProps)
 
     return [...tasks, ...steps, ...branches,
       ...visitSchedules, ...visits, ...groups,
       ...groupTasks, ...taskAssignments, ...participantSchedules,
-      ...patientFlags, ...documentTemplates, ...knowledgeChecks]
+      ...patientFlags, ...documentTemplates, ...knowledgeChecks, ...defaultDoc]
   }
 
   async getTaskManifestEntities(org, taskIds, orgReferenceProps) {
@@ -261,10 +296,62 @@ class StudyManifestTools {
 
   async getConsentManifestEntities(org, consentId, orgReferenceProps) {
 
-    const documentTemplates = await this.getExportObjects(org, 'ec__document_templates', { _id: { $in: [consentId] } }, orgReferenceProps),
-          knowledgeChecks = await this.getExportObjects(org, 'ec__knowledge_ckecks', { ec__document_template: { $in: documentTemplates.map(v => v._id) } }, orgReferenceProps)
+    const documentTemplates = await this.getExportObjects(org, 'ec__document_templates', { _id: { $in: consentId } }, orgReferenceProps),
+          knowledgeChecks = await this.getExportObjects(org, 'ec__knowledge_checks', { ec__document_template: { $in: documentTemplates.map(v => v._id) } }, orgReferenceProps)
 
     return [...documentTemplates, ...knowledgeChecks]
+  }
+
+  writeIssues(removedEntities) {
+    const { options } = privatesAccessor(this),
+          outputDir = options.dir || process.cwd(),
+
+          issues = removedEntities.reduce((a, v) => {
+            a.push(...v.issues)
+            return a
+          }, [])
+
+    // write the issues files
+    if (issues.length) {
+      fs.writeFileSync(`${outputDir}/issuesReport.json`, JSON.stringify(issues, null, 2))
+      fs.writeFileSync(`${outputDir}/detailedIssuesReport.json`, JSON.stringify(removedEntities, null, 2))
+    }
+
+
+  }
+
+  writePackage(entity) {
+    const packageFile = JSON.parse(fs.readFileSync(path.join(packageFileDir, 'package.json'), 'UTF8')),
+          { options } = privatesAccessor(this),
+          outputDir = options.dir || process.cwd()
+
+
+    // eslint-disable-next-line default-case
+    switch (entity) {
+      case 'study': {
+        packageFile.name = 'Study export'
+        packageFile.description = 'An export of a study'
+        delete packageFile.pipes
+        break
+      }
+      case 'task': {
+        packageFile.name = 'Task export'
+        packageFile.description = 'An export of task or multiple tasks'
+        packageFile.pipes.ingest = 'taskIngestTransform.js'
+        fs.copyFileSync(path.join(packageFileDir, 'taskIngestTransform.js'), path.join(outputDir, 'taskIngestTransform.js'))
+        break
+      }
+      case 'consent': {
+        packageFile.name = 'Consent export'
+        packageFile.description = 'An export of task or multiple consent templates'
+        packageFile.pipes.ingest = 'consentIngestTransform.js'
+        fs.copyFileSync(path.join(packageFileDir, 'consentIngestTransform.js'), path.join(outputDir, 'consentIngestTransform.js'))
+
+        break
+      }
+    }
+
+    fs.writeFileSync(`${outputDir}/package.json`, JSON.stringify(packageFile, null, 2))
   }
 
 }
