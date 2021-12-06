@@ -1,29 +1,20 @@
 const { flatten, orderBy } = require('lodash'),
       { semver } = require('semver'),
       rm = require('rimraf'),
-      SemverResolver = require('semver-resolver'),
+      { SemverResolver } = require('semver-resolver'),
       { privatesAccessor } = require('@medable/mdctl-core-utils/privates'),
       { Fault } = require('@medable/mdctl-core'),
       { ensureDir } = require('@medable/mdctl-node-utils/directory'),
       { FactorySource } = require('./lib')
 
-class Package {
 
-  constructor(pkg, config) {
-    Object.assign(privatesAccessor(this), {
-      ...pkg,
-      config,
-      packagesDir: '_packages'
-    })
-    this.validatePackage()
-    ensureDir(privatesAccessor(this).packagesDir)
+class PackageResolver {
+  constructor(pkg) {
+    Object.assign(privatesAccessor(this), { package: pkg })
   }
 
-  validatePackage() {
-    const { engines, manifest } = privatesAccessor(this)
-    if (!engines.cortex || !manifest) {
-      throw Fault.create('mdctl.packages.error', { eason: 'Not a valid medable package' })
-    }
+  get currentPackage () {
+    return privatesAccessor(this).package
   }
 
   async sortVersions(versions, options = {}) {
@@ -55,29 +46,64 @@ class Package {
     return sortedVersions.map(([version]) => version)
   }
 
-  cleanUpPackages(pkg, packages) {
-    let selectedVersion
-    const { name, version } = pkg
-    if (!packages[name]) {
-      throw Fault.create('mdctl.error.packageNotFound', { reason: `Package ${name} not found in registry` })
-    }
-    if (!version || version === 'latest') {
-      // eslint-disable-next-line prefer-destructuring
-      selectedVersion = packages[name] && packages[name][0]
-    } else if (version.indexOf('^') === 0 || version.indexOf('~') === 0) {
-      selectedVersion = packages[name] && packages[name].find(v => semver.satisfies(v, version))
-    } else {
-      selectedVersion = packages[name] && packages[name].find(v => v === version)
-    }
-    if (!selectedVersion) {
-      throw Fault.create('mdctl.error.packageNotFound', { reason: `Package ${version} not found in registry` })
-    }
-    return { name, version: selectedVersion }
-  }
-
   async doChecks() {
     // TODO: check engine and already installed packages
   }
+
+  async getResolvedPackage(installedVersions = []) {
+
+    // check if current package is not already installed
+
+    const deps = this.currentPackage.dependencies
+
+     // if dependency is git+ or file://
+    // go check its .mpmrc file or package.json file to see if is a cortex package
+
+    // discard if already installed dependency
+
+    // if it has a version check with in registry
+    return {
+     deps
+    }
+  }
+}
+
+class Package {
+
+  constructor(pkg, options) {
+    Object.assign(privatesAccessor(this), {
+      ...pkg,
+      options,
+      packagesDir: '_packages',
+      packagesDependencies: []
+    })
+    this.resolver = new PackageResolver(this)
+    this.validatePackage()
+  }
+
+  async evaluate() {
+    const pkg = await this.resolver.getResolvedPackage()
+  }
+
+  get version() {
+    return privatesAccessor(this).version
+  }
+
+  get name() {
+    return privatesAccessor(this).name
+  }
+
+  get dependencies() {
+    return privatesAccessor(this).dependencies
+  }
+
+  validatePackage() {
+    const { engines, manifest } = privatesAccessor(this)
+    if (!engines.cortex || !manifest) {
+      throw Fault.create('mdctl.packages.error', { eason: 'Not a valid medable package' })
+    }
+  }
+
 
   async publish(name, version, data, dependencies) {
     const streams = [{
@@ -96,30 +122,11 @@ class Package {
     return compressed
   }
 
-  async package(name, version, level) {
-    const { config, packagesDir } = privatesAccessor(this),
-          pkgType = FactorySource(name, version, { config, packagesDir, level }),
+  async get(name, version, level) {
+    const { options, packagesDir } = privatesAccessor(this),
+          pkgType = FactorySource(name, version, { options, packagesDir, level }),
           pkgInfo = await pkgType.getPackageInfo()
     return pkgInfo
-  }
-
-  async processDependencies(dependencies, packages, level = 0) {
-    // eslint-disable-next-line no-restricted-syntax
-    for (const dep of Object.keys(dependencies)) {
-      // package item
-      // eslint-disable-next-line no-await-in-loop
-      const pkg = await this.package(dep, dependencies[dep], level)
-      if (pkg) {
-        packages.push(pkg)
-        if (pkg.properties.dependencies && Object.keys(pkg.properties.dependencies).length > 0) {
-          // TODO check if we already have that dependency loaded
-          // eslint-disable-next-line no-await-in-loop
-          await this.processDependencies(pkg.properties.dependencies, packages, level + 1)
-        }
-      } else {
-        throw Error(`Package ${dep} not found or not a valid package.`)
-      }
-    }
   }
 
   // mdctl pkg install - will read mpmrc to search for package.json and include source
@@ -160,26 +167,6 @@ class Package {
       throw ex
     }
   }
-
-  getAllDeps(packages) {
-    const deps = flatten(packages
-                  .filter(p => Object.keys(p.properties.dependencies).length > 0)
-                  .map(p => p.properties.dependencies))
-    // TODO: check if some of the dependencies are among the local packages.
-
-  }
-
-  resolveDependencies(packages) {
-    const pkgDependencies = this.getAllDeps(packages),
-          pkgs = packages.reduce((obj, p) => {
-            // eslint-disable-next-line no-param-reassign
-            obj[p.properties.name] = p.properties.version
-            return obj
-          }, {}),
-          cleaned = pkgDependencies.map(p => this.cleanUpPackages(p, pkgs))
-    console.log(pkgDependencies, pkgs, cleaned)
-  }
-
 
 }
 module.exports = Package

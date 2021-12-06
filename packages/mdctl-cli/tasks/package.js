@@ -5,7 +5,7 @@ const fs = require('fs'),
       pump = require('pump'),
       ndjson = require('ndjson'),
       { isSet, parseString, rString } = require('@medable/mdctl-core-utils/values'),
-      { GitLabClient } = require('packages/mdctl-packages'),
+      Packages = require('packages/mdctl-packages'),
       ImportStream = require('@medable/mdctl-core/streams/import_stream'),
       ImportFileTreeAdapter = require('@medable/mdctl-import-adapter'),
       {
@@ -53,11 +53,6 @@ class Package extends Task {
 
     const config = createConfig()
     config.update(await loadDefaults())
-    this.registryToken = config.get('registryToken')
-    this.registryProject = config.get('registryProject')
-
-    this.registry = new GitLabClient({ projectId: this.registryProject, token: this.registryToken })
-
     return this[handler](cli)
   }
 
@@ -66,14 +61,8 @@ class Package extends Task {
     console.log(result)
   }
 
-  async 'package@get'(cli) {
-    const pkg = this.args('2'),
-          [name, version] = pkg.split('@'),
-          result = await this.registry.getPackage({ name, version })
-    return result
-  }
-
   async 'package@publish'(cli) {
+    // this will build package artifact
     const params = await cli.getArguments(this.optionKeys),
           inputDir = params.dir || process.cwd(),
           packageJson = parseString(fs.readFileSync(`${inputDir}/package.json`)),
@@ -88,21 +77,7 @@ class Package extends Task {
   }
 
   async 'package@install'(cli) {
-    const pkgs = this.args.clone()._.slice(2),
-          // client = await cli.getApiClient({ credentials: await cli.getAuthOptions() }),
-          // url = new URL(rString('/org', '/'), client.environment.url),
-          // data = await client.call(url.pathname, {
-          //   query: {
-          //     paths: ['installedPackages']
-          //   }
-          // }),
-          // { installedPackages = {} } = data.data[0],
-
-          // TODO find if the installed packages already have
-          // that dependency to avoid downloading an re-install.
-          packagesToInstall = await this.registry.getInstallablePackages(pkgs),
-          pkgDir = './_pkg_dependencies',
-      result = await this.registry.installPackages(pkgDir, packagesToInstall)
+    // this will install a package in target organization
   }
 
   // ----------------------------------------------------------------------------------------------

@@ -2,7 +2,6 @@ const fs = require('fs'),
       path = require('path'),
       { parseString } = require('@medable/mdctl-core-utils/values'),
       { exec } = require('child_process'),
-      { privatesAccessor } = require('@medable/mdctl-core-utils/privates'),
       Source = require('./source'),
       asyncExec = command => new Promise((resolve, reject) => {
         exec(command, (error, stdout, stderr) => {
@@ -22,7 +21,7 @@ class GitSource extends Source {
           repoDir = `${packagesDir}/${name}_${new Date().getTime()}`,
           [gitPath, branch] = repoPath.split('#'),
           url = new URL(gitPath.replace('git+', '')),
-          repoUrl = `${url.protocol}//oauth2:${config.token}@${url.host}${url.pathname}`
+          repoUrl = config.token ? `${url.protocol}//oauth2:${config.token}@${url.host}${url.pathname}`: url
     await asyncExec(`git clone -n --depth 1 --branch ${branch || 'master'} ${repoUrl} ${repoDir}`)
     return { repoDir }
   }

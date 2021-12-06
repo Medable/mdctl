@@ -6,7 +6,6 @@ describe('CLI - Pkg - Install package', () => {
 
   it('test package', async() => {
     const pkg = new Package({
-
       name: 'my-study-1022992',
       version: '1.0.0-rc.1',
       engines: {
@@ -23,7 +22,7 @@ describe('CLI - Pkg - Install package', () => {
     }, {
       token: 'tijBHzajwYrpz4MBVw2G'
     })
-    await pkg.install()
+    await pkg.evaluate()
   })
 
 
