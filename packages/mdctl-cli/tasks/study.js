@@ -111,8 +111,10 @@ class Study extends Task {
 
     try {
       const tasks = await studyTools.getTasks(),
-            selectedTasks = await askSelectTasks({ tasks }),
-            { manifest } = await studyTools.getTasksManifest(selectedTasks)
+            selectedTasks = await askSelectTasks({ tasks })
+      if (!selectedTasks.length) throw Fault.create('kInvalidArgument', { reason: 'No Tasks selected' })
+      // eslint-disable-next-line one-var
+      const { manifest } = await studyTools.getTasksManifest(selectedTasks)
 
 
       if (!params.manifestOnly) {
@@ -148,8 +150,11 @@ class Study extends Task {
 
     try {
       const consents = await studyTools.getConsentTemplates(),
-            selectedConsents = await askSelectConsentTemplates({ consents }),
-            { manifest } = await studyTools.getConsentsManifest(selectedConsents)
+            selectedConsents = await askSelectConsentTemplates({ consents })
+      if (!selectedConsents.length) throw Fault.create('kInvalidArgument', { reason: 'No Consents selected' })
+
+      // eslint-disable-next-line one-var
+      const { manifest } = await studyTools.getConsentsManifest(selectedConsents)
 
       if (!params.manifestOnly) {
         const options = {
