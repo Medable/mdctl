@@ -1,13 +1,12 @@
 
 const { URL } = require('universal-url'),
-      { isAbsoluteURL, isSet, rString } = require('@medable/mdctl-core-utils/values'),
+      { rString, isSet } = require('@medable/mdctl-core-utils/values'),
       { privatesAccessor } = require('@medable/mdctl-core-utils/privates'),
-      path = require('path'),
       supportedProtocols = new Set(['http:', 'https:']),
       supportedVersions = new Set(['v2'])
 
-function fixPath(pathname) {
-  return path.normalize(pathname).replace(/^\/|\/$/g, '')
+function fixPath(path) {
+  return rString(path, '').trim().replace(/\/{2,}/g, '/').replace(/^\/|\/$/g, '')
 }
 
 class Environment {
@@ -24,14 +23,14 @@ class Environment {
     if (!rString(input)) {
 
       const options = isSet(input) ? input : {},
-            endpoint = rString(options.endpoint, ''),
-            env = rString(options.env, ''),
-            version = rString(options.version, 'v2')
+            endpoint = rString(options.endpoint, '').replace(/[/]+$/, ''),
+            env = rString(options.env, '').replace(/\//g, ''),
+            version = rString(options.version, 'v2').replace(/\//g, '')
 
-      str = path.join(endpoint, env, version)
+      str = `${endpoint}/${env}/${version}`
     }
 
-    if (!isAbsoluteURL(str)) { // be a little forgiving and assume https://
+    if (!str.includes('://')) { // be a little forgiving and assume https://
       str = `https://${str}`
     }
 
@@ -95,11 +94,11 @@ class Environment {
   }
 
   get url() {
-    return path.join(this.endpoint, this.env, this.version)
+    return `${this.protocol}//${this.host}/${this.env}/${this.version}`
   }
 
-  buildUrl(pathname) {
-    return path.join(this.url, pathname)
+  buildUrl(path) {
+    return `${this.url}/${fixPath(path)}`
   }
 
 }
