@@ -18,6 +18,8 @@ class RegistrySource extends Source {
   async getPackageInfo() {
     throw Error('Not Implemented')
   }
+
+  // TODO: implement some version resolution
 }
 
 module.exports = RegistrySource

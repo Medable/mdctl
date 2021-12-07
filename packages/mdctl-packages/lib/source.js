@@ -35,6 +35,10 @@ class Source {
     return this.constructor.name
   }
 
+  get package() {
+    return this.properties
+  }
+
   loadPackageJson(pkgPath) {
     if (fs.existsSync(path.join(pkgPath, 'package.json'))) {
       const packageInfo = parseString(fs.readFileSync(path.join(pkgPath, 'package.json')))

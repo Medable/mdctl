@@ -16,12 +16,12 @@ class GitSource extends Source {
 
   async cloneRepo() {
     const {
-            name, config, packagesDir, path: repoPath
+            name, options = {}, packagesDir, path: repoPath
           } = this.properties,
           repoDir = `${packagesDir}/${name}_${new Date().getTime()}`,
           [gitPath, branch] = repoPath.split('#'),
           url = new URL(gitPath.replace('git+', '')),
-          repoUrl = config.token ? `${url.protocol}//oauth2:${config.token}@${url.host}${url.pathname}`: url
+          repoUrl = options.token ? `${url.protocol}//oauth2:${options.token}@${url.host}${url.pathname}`: url
     await asyncExec(`git clone -n --depth 1 --branch ${branch || 'master'} ${repoUrl} ${repoDir}`)
     return { repoDir }
   }

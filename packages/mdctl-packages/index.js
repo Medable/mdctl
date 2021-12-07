@@ -50,20 +50,50 @@ class PackageResolver {
     // TODO: check engine and already installed packages
   }
 
-  async getResolvedPackage(installedVersions = []) {
+  async get(name, version, level) {
+    const { options, packagesDir } = privatesAccessor(this),
+      pkgType = FactorySource(name, version, { options, packagesDir, level }),
+      pkgInfo = await pkgType.getPackageInfo()
+    return pkgInfo
+  }
 
+  async getResolvedPackage(installedVersions = [], dependantPkgs = []) {
+    const { package: currentPackage } = privatesAccessor(this),
+          isAlreadyInstalled = installedVersions.find(p => p.name === currentPackage.name && p.version === currentPackage.version) ||
+            dependantPkgs.find(d => d.name === currentPackage.name && d.version === currentPackage.version)
+    if(isAlreadyInstalled) {
+      return;
+    }
     // check if current package is not already installed
+    const pkg = await this.get(currentPackage.name, '.', 0),
+          pkgInfo = await pkg.getPackageInfo(),
+          deps = this.currentPackage.dependencies
 
-    const deps = this.currentPackage.dependencies
+    for(const dependency of Object.keys(deps)) {
+      const pkgDep = await this.get(dependency, deps[dependency], 1),
+            installed = installedVersions.find(p => p.name === pkgDep.name && p.version === pkgDep.version) ||
+              dependantPkgs.find(d => d.name === pkgDep.name && d.version === pkgDep.version)
+      if(!installed) {
+        const pkgDepInfo = await pkgDep.getPackageInfo()
+        if(pkgDepInfo.properties.dependencies && Object.keys(pkgDepInfo.properties.dependencies).length) {
+          // discard if already installed or downloaded dependency
+          const { pkgInfo: info, dependantPkgs: dependencyPackages } = await (new Package(pkgDepInfo.properties)).evaluate(installedVersions, dependantPkgs)
+          for(const d of dependencyPackages) {
+            if(dependantPkgs.indexOf(d) < 0) {
+              dependantPkgs.push(d)
+            }
+          }
+        }
+        dependantPkgs.push(pkgDepInfo)
+      }
+    }
 
-     // if dependency is git+ or file://
-    // go check its .mpmrc file or package.json file to see if is a cortex package
 
-    // discard if already installed dependency
 
     // if it has a version check with in registry
     return {
-     deps
+      pkgInfo,
+      dependantPkgs
     }
   }
 }
@@ -82,7 +112,7 @@ class Package {
   }
 
   async evaluate() {
-    const pkg = await this.resolver.getResolvedPackage()
+    return this.resolver.getResolvedPackage()
   }
 
   get version() {
@@ -99,7 +129,7 @@ class Package {
 
   validatePackage() {
     const { engines, manifest } = privatesAccessor(this)
-    if (!engines.cortex || !manifest) {
+    if ((!engines && !engines.cortex) || !manifest) {
       throw Fault.create('mdctl.packages.error', { eason: 'Not a valid medable package' })
     }
   }
@@ -122,12 +152,7 @@ class Package {
     return compressed
   }
 
-  async get(name, version, level) {
-    const { options, packagesDir } = privatesAccessor(this),
-          pkgType = FactorySource(name, version, { options, packagesDir, level }),
-          pkgInfo = await pkgType.getPackageInfo()
-    return pkgInfo
-  }
+
 
   // mdctl pkg install - will read mpmrc to search for package.json and include source
   // mdctl pkg install . - will read mpmrc to search for package.json and include source
