@@ -169,6 +169,7 @@ class StudyManifestTools {
 
     if (manifest.c_study) {
       manifest.c_study.defer = [
+        'c_public_group',
         'c_default_subject_site',
         'c_default_subject_visit_schedule',
         'c_default_subject_group',
@@ -270,6 +271,8 @@ class StudyManifestTools {
           visits = await this.getExportObjects(org, 'c_visits', { c_visit_schedules: { $in: visitSchedules.map(v => v._id) } }, orgReferenceProps),
           groups = await this.getExportObjects(org, 'c_groups', { c_study: study._id }, orgReferenceProps),
           groupTasks = await this.getExportObjects(org, 'c_group_tasks', { c_group: { $in: groups.map(v => v._id) } }, orgReferenceProps),
+          faults = await this.getExportObjects(org, 'c_faults', null, orgReferenceProps),
+          reports = await this.getExportObjects(org, 'c_dmweb_reports', null, orgReferenceProps),
 
           taskAssignments = await this.getExportObjects(org, 'c_task_assignments', null, orgReferenceProps),
           participantSchedules = await this.getExportObjects(org, 'c_participant_schedules', null, orgReferenceProps),
@@ -280,7 +283,7 @@ class StudyManifestTools {
           defaultDoc = await this.getExportObjects(org, 'ec__default_document_css', null, orgReferenceProps)
 
     return [...tasks, ...steps, ...branches,
-      ...visitSchedules, ...visits, ...groups,
+      ...visitSchedules, ...visits, ...groups, ...faults, ...reports,
       ...groupTasks, ...taskAssignments, ...participantSchedules,
       ...patientFlags, ...documentTemplates, ...knowledgeChecks, ...defaultDoc]
   }
