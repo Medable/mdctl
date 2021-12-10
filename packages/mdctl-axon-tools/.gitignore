@@ -67,6 +67,5 @@ typings/
 # Output from exporting default
 output*/
 
-# iOS
-.DS_Store
-scratch
+manifest.json
+.editorconfig
