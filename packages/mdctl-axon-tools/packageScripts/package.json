@@ -1,0 +1,9 @@
+{
+  "object": "package",
+  "name": "s",
+  "version": "0.0.1",
+  "description": "",
+  "pipes": {
+    "ingest": "ingestTransform.js"
+  }
+}
