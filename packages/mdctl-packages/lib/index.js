@@ -1,10 +1,13 @@
 const Fault = require('@medable/mdctl-core/fault'),
-      FileSource = require('./file'),
-      GitSource = require('./git'),
-      RegistrySource = require('./registry'),
+      FileSource = require('./sources/file'),
+      GitSource = require('./sources/git'),
+      RegistrySource = require('./sources/registry'),
+      NdjsonSource = require('./sources/ndjson'),
+      ZipTree = require('./zip_tree'),
       sources = {
         file: FileSource,
         git: GitSource,
+        ndjson: NdjsonSource,
         registry: RegistrySource
       },
       resolveSource = (name, path, options) => {
@@ -12,7 +15,9 @@ const Fault = require('@medable/mdctl-core/fault'),
           throw Fault.create('mdctl.package.error', { reason: 'Missing pacakge name.' })
         }
         let sourceType = 'registry'
-        if (path.indexOf('file://') > -1 || path === '.') {
+        if(options.ndjsonStream) {
+          sourceType = 'ndjson'
+        } else if (path.indexOf('file://') > -1 || path === '.') {
           sourceType = 'file'
         } else if (path.indexOf('git+https://') > -1) {
           sourceType = 'git'
@@ -27,5 +32,6 @@ module.exports = {
   FileSource,
   GitSource,
   RegistrySource,
-  FactorySource: (name, path, options) => resolveSource(name, path, options)
+  FactorySource: (name, path, options) => resolveSource(name, path, options),
+  ZipTree
 }

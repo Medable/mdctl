@@ -1,11 +1,35 @@
 /* eslint-disable import/no-extraneous-dependencies */
-const Package = require('../index')
+const Package = require('../index'),
+      fs = require('fs'),
+      path = require('path'),
+      ndjson = require('ndjson')
 
 describe('CLI - Pkg - Install package', () => {
 
+  it('test git package source', async() => {
+
+    const pkg = new Package(
+      'my-study-1022992',
+      'git+https://gitlab.medable.com/platform/environments/data-transfers.git#test_pkg',
+      null,
+      {
+        dependencies: {},
+        token: 'ph_UVi__jayWH4p7w3Qi'
+      }
+    )
+
+    const d = await pkg.evaluate()
+    console.log(d)
+    // const result = await pkg.evaluate()
+    // const stream = await result.dependantPkgs[0].getStream()
+    // stream.on('data', (chunk) => {
+    //   console.log(chunk)
+    // })
+    // stream.resume()
+  })
 
   it('test package', async() => {
-    const pkg = new Package({
+    const pkg = new Package('my-study-1022992',{
       name: 'my-study-1022992',
       version: '1.0.0-rc.1',
       engines: {
@@ -17,13 +41,33 @@ describe('CLI - Pkg - Install package', () => {
         'data-transfers': 'git+https://gitlab.medable.com/platform/environments/data-transfers.git#test_pkg',
         axon: 'file:///Users/gastonrobledo/Projects/medable/orgs/axon'
       }
-
-
     }, {
-      token: 'tijBHzajwYrpz4MBVw2G'
+      token: 'ph_UVi__jayWH4p7w3Qi'
     })
-    await pkg.evaluate()
+
+    await pkg.install()
+    // const result = await pkg.evaluate()
+    // const stream = await result.dependantPkgs[0].getStream()
+    // stream.on('data', (chunk) => {
+    //   console.log(chunk)
+    // })
+    // stream.resume()
   })
 
+  it('test package export', async() => {
+    const stream = fs.createReadStream(path.resolve('data.ndjson'))
+    const pkg = new Package('exported','1.0.0-rc.1', {
+      ndjsonStream: stream.pipe(ndjson.stringify())
+    })
+
+    const data = await pkg.evaluate()
+    console.log(data)
+    // const result = await pkg.evaluate()
+    // const stream = await result.dependantPkgs[0].getStream()
+    // stream.on('data', (chunk) => {
+    //   console.log(chunk)
+    // })
+    // stream.resume()
+  })
 
 })
