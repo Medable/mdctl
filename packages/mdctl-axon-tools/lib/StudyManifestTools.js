@@ -332,9 +332,11 @@ class StudyManifestTools {
     // eslint-disable-next-line default-case
     switch (entity) {
       case 'study': {
+        const ingestScript = 'studyIngestTransform.js'
         packageFile.name = 'Study export'
         packageFile.description = 'An export of a study'
-        delete packageFile.pipes
+        packageFile.pipes.ingest = ingestScript
+        fs.copyFileSync(path.join(packageFileDir, ingestScript), path.join(outputDir, ingestScript))
         break
       }
       case 'task': {
