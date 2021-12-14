@@ -39,13 +39,12 @@ class StudyManifestTools {
             .limit(false)
             .toArray(),
           orgReferenceProps = allObj.reduce((a, obj) => {
+            if (!a[obj.pluralName]) {
+              // eslint-disable-next-line no-param-reassign
+              a[obj.pluralName] = []
+            }
             obj.properties.forEach((prop) => {
               if (prop.type === 'Reference' || (prop.type === 'ObjectId' && prop.sourceObject)) {
-                if (!a[obj.pluralName]) {
-                  // eslint-disable-next-line no-param-reassign
-                  a[obj.pluralName] = []
-                }
-
                 a[obj.pluralName].push({
                   name: prop.name,
                   array: !!prop.array,
@@ -191,6 +190,7 @@ class StudyManifestTools {
             pluralName = this.mapObjectNameToPlural(entity.object),
             references = ignore.includes(pluralName) ? [] : orgReferenceProps[pluralName]
       let valid = true
+      // if (!references) return
 
       references.forEach((ref) => {
         if (entity[ref.name]) {
