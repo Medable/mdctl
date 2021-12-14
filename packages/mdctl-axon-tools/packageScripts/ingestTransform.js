@@ -4,6 +4,23 @@ const { Transform } = require('runtime.transform')
 
 module.exports = class extends Transform {
 
+  beforeAll(memo) {
+    const {
+            // eslint-disable-next-line camelcase
+            org: { objects: { object } }
+          } = global,
+
+          studySchemaCursor = object
+            .find({ name: 'c_study' })
+            .skipAcl()
+            .grant('read')
+            .paths('properties.name')
+
+    if (!studySchemaCursor.hasNext()) return
+
+    memo.studySchema = studySchemaCursor.next()
+  }
+
   before(memo) {
     const {
       // eslint-disable-next-line camelcase
@@ -31,7 +48,7 @@ module.exports = class extends Transform {
     switch (resource.object) {
 
       case 'c_study':
-        this.studyAdjustments(resource)
+        this.studyAdjustments(resource, memo)
         break
 
       case 'ec__document_template':
@@ -70,11 +87,17 @@ module.exports = class extends Transform {
    * Add modifications to the c_study object
    * @param {*} resource
    */
-  studyAdjustments(resource) {
+  studyAdjustments(resource, memo) {
 
     // eslint-disable-next-line no-prototype-builtins
     if (!resource.hasOwnProperty('c_no_pii')) {
-      resource.c_no_pii = false
+
+      const hasNoPiiProp = memo
+        .studySchema
+        .properties
+        .find(({ name }) => name === 'c_no_pii')
+
+      if (hasNoPiiProp) resource.c_no_pii = false
     }
 
   }

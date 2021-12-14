@@ -11,32 +11,50 @@ jest.mock('@medable/mdctl-api-driver/lib/cortex.object', () => ({ Object: class 
 describe('ingestTransform', () => {
 
   const existingStudy = {
-    _id: '1',
-    c_name: 'Study',
-    c_key: 'abc'
-  }
+          _id: '1',
+          c_name: 'Study',
+          c_key: 'abc'
+        },
+        hasNextStudyMock = jest.fn(() => true),
+        nextStudyMock = jest.fn(() => existingStudy),
+        hasNextStudySchema = jest.fn(() => true),
+        nextStudySchemaMock = jest.fn(() => ({ _id: '1', object: 'object', properties: [{ name: 'c_no_pii' }] })),
+        defaultGlobals = {
+          objects: {
+            c_study: {
+              find: () => ({
+                skipAcl: () => ({
+                  grant: () => ({
+                    paths: () => ({
+                      hasNext: hasNextStudyMock,
+                      next: nextStudyMock
+                    })
+                  })
+                })
+              })
+            },
+            object: {
+              find: () => ({
+                skipAcl: () => ({
+                  grant: () => ({
+                    paths: () => ({
+                      hasNext: hasNextStudySchema,
+                      next: nextStudySchemaMock
+                    })
+                  })
+                })
+              })
+            }
+          }
+        }
 
   describe('before', () => {
 
-    const hasNextMock = jest.fn(() => true),
-          nextMock = jest.fn(() => existingStudy)
 
-    global.org = {
-      objects: {
-        c_study: {
-          find: () => ({
-            skipAcl: () => ({
-              grant: () => ({
-                paths: () => ({
-                  hasNext: hasNextMock,
-                  next: nextMock
-                })
-              })
-            })
-          })
-        }
-      }
-    }
+    beforeAll(() => {
+      global.org = defaultGlobals
+    })
+
 
     afterEach(() => {
       jest.clearAllMocks()
@@ -76,6 +94,10 @@ describe('ingestTransform', () => {
       transform = new Transform()
     })
 
+    beforeEach(() => {
+      global.org = defaultGlobals
+    })
+
     it.each([
       // test, resource, memo, expected
       ['should perform studyReferenceAdjustment', { object: 'c_some_object', c_study: '' }, { study: { c_key: 'abc' } }, { object: 'c_some_object', c_study: 'c_study.abc' }],
@@ -83,13 +105,34 @@ describe('ingestTransform', () => {
       ['should perform studyAdjustments and preserve c_no_pii if it does exist', { object: 'c_study', c_no_pii: true }, {}, { object: 'c_study', c_no_pii: true }],
       ['should perform econsentDocumentTemplateAdjustments', { object: 'ec__document_template', ec__published: true, ec__status: 'random' }, {}, { object: 'ec__document_template', ec__status: 'draft', c_sites: [] }]
     ])('%s', (test, resource, memo, expected) => {
+
+      transform.beforeAll(memo)
+
       const transformedResource = transform.each(resource, memo)
 
       expect(transformedResource)
         .toEqual(expected)
     })
-  })
 
+
+    it('should not add c_study.c_no_pii for older versions without this property', () => {
+
+      const noPiiStudySchemaMock = jest.fn(() => ({ _id: '1', object: 'object', properties: [{ name: 'c_some_other_prop' }] })),
+            memo = {},
+            resource = { object: 'c_study' },
+            expectedResource = resource // no changes
+
+      global.org.objects.object.find().skipAcl().grant().paths().next = noPiiStudySchemaMock
+
+      transform.beforeAll(memo)
+
+      // eslint-disable-next-line one-var
+      const transformedResource = transform.each(resource, memo)
+
+      expect(transformedResource)
+        .toBe(expectedResource)
+    })
+  })
 
 })
 
