@@ -4,25 +4,28 @@ const { Transform } = require('runtime.transform')
 
 module.exports = class extends Transform {
 
-  beforeAll(memo) {
-
+  before(memo) {
     const {
       // eslint-disable-next-line camelcase
       org: { objects: { c_study } }
     } = global
 
-    // eslint-disable-next-line no-param-reassign
-    memo.study = c_study
-      .find()
-      .skipAcl()
-      .grant('public')
-      .paths('_id', 'c_name', 'c_key')
-      .next()
+    if (!memo.study) {
+      const studyCursor = c_study
+        .find()
+        .skipAcl()
+        .grant('public')
+        .paths('_id', 'c_name', 'c_key')
+
+      if (studyCursor.hasNext()) {
+        memo.study = studyCursor.next()
+      }
+    }
   }
 
   each(resource, memo) {
 
-    this.generalAdjustments(resource, memo)
+    this.studyReferenceAdjustment(resource, memo)
 
     switch (resource.object) {
 
@@ -41,7 +44,16 @@ module.exports = class extends Transform {
     return resource
   }
 
-  generalAdjustments(resource, memo) {
+  /**
+   * When an object has a study reference and the study
+   * object is not exported (for example when exporting tasks only)
+   * apply the reference from the memo
+   * @param {*} resource
+   * @param {*} memo
+   */
+  studyReferenceAdjustment(resource, memo) {
+
+    if (!memo.study) return
 
     const studyReference = `c_study.${memo.study.c_key}`,
           hasStudyReference = !!resource.c_study,
@@ -50,7 +62,6 @@ module.exports = class extends Transform {
     if (hasStudyReference && isDifferent) {
       resource.c_study = `c_study.${memo.study.c_key}`
     }
-
   }
 
   /**
