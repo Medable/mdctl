@@ -241,8 +241,9 @@ class StudyManifestTools {
 
     const { orgObjects } = privatesAccessor(this),
           { uniqueKey } = orgObjects.find(v => v.pluralName === object),
-          paths = [uniqueKey, ...orgReferenceProps[object].map(v => v.name)],
-          expand = [...orgReferenceProps[object].filter(v => v.type === 'Reference').map(v => v.name)],
+          refProps = (orgReferenceProps[object] && orgReferenceProps[object].map(v => v.name)) || [],
+          paths = [uniqueKey, ...refProps],
+          expand = [...refProps.filter(v => v.type === 'Reference').map(v => v.name)],
           cursor = org.objects[object].find(where)
             .paths(paths)
             .limit(false)
