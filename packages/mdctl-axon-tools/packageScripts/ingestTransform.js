@@ -10,17 +10,18 @@ module.exports = class extends Transform {
       org: { objects: { c_study } }
     } = global
 
-    if (!memo.study) {
-      const studyCursor = c_study
-        .find()
-        .skipAcl()
-        .grant('public')
-        .paths('_id', 'c_name', 'c_key')
+    if (memo.study) return
 
-      if (studyCursor.hasNext()) {
-        memo.study = studyCursor.next()
-      }
-    }
+    // eslint-disable-next-line one-var
+    const studyCursor = c_study
+      .find()
+      .skipAcl()
+      .grant('public')
+      .paths('_id', 'c_name', 'c_key')
+
+    if (!studyCursor.hasNext()) return
+
+    memo.study = studyCursor.next()
   }
 
   each(resource, memo) {
@@ -56,7 +57,8 @@ module.exports = class extends Transform {
     if (!memo.study) return
 
     const studyReference = `c_study.${memo.study.c_key}`,
-          hasStudyReference = !!resource.c_study,
+          // eslint-disable-next-line no-prototype-builtins
+          hasStudyReference = resource.hasOwnProperty('c_study'),
           isDifferent = resource.c_study !== studyReference
 
     if (hasStudyReference && isDifferent) {
