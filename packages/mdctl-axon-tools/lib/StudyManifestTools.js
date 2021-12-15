@@ -190,7 +190,6 @@ class StudyManifestTools {
             pluralName = this.mapObjectNameToPlural(entity.object),
             references = ignore.includes(pluralName) ? [] : orgReferenceProps[pluralName]
       let valid = true
-      // if (!references) return
 
       references.forEach((ref) => {
         if (entity[ref.name]) {
@@ -281,7 +280,7 @@ class StudyManifestTools {
 
           documentTemplates = await this.getExportObjects(org, 'ec__document_templates', { ec__study: study._id }, orgReferenceProps),
           knowledgeChecks = await this.getExportObjects(org, 'ec__knowledge_checks', { ec__document_template: { $in: documentTemplates.map(v => v._id) } }, orgReferenceProps),
-          defaultDoc = await this.getExportObjects(org, 'ec__default_document_css', null, orgReferenceProps)
+          defaultDoc = await this.getExportObjects(org, 'ec__default_document_csses', null, orgReferenceProps)
 
     return [...tasks, ...steps, ...branches,
       ...visitSchedules, ...visits, ...groups, ...faults, ...reports,
@@ -301,9 +300,10 @@ class StudyManifestTools {
   async getConsentManifestEntities(org, consentId, orgReferenceProps) {
 
     const documentTemplates = await this.getExportObjects(org, 'ec__document_templates', { _id: { $in: consentId } }, orgReferenceProps),
-          knowledgeChecks = await this.getExportObjects(org, 'ec__knowledge_checks', { ec__document_template: { $in: documentTemplates.map(v => v._id) } }, orgReferenceProps)
+          knowledgeChecks = await this.getExportObjects(org, 'ec__knowledge_checks', { ec__document_template: { $in: documentTemplates.map(v => v._id) } }, orgReferenceProps),
+          defaultCSS = await this.getExportObjects(org, 'ec__default_document_csses', null, orgReferenceProps)
 
-    return [...documentTemplates, ...knowledgeChecks]
+    return [...documentTemplates, ...knowledgeChecks, ...defaultCSS]
   }
 
   writeIssues(removedEntities) {
