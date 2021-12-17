@@ -327,7 +327,8 @@ class StudyManifestTools {
   writePackage(entity) {
     const packageFile = JSON.parse(fs.readFileSync(path.join(packageFileDir, 'package.json'), 'UTF8')),
           { options } = privatesAccessor(this),
-          outputDir = options.dir || process.cwd()
+          outputDir = options.dir || process.cwd(),
+          ingestScript = 'ingestTransform.js'
 
 
     // eslint-disable-next-line default-case
@@ -335,25 +336,22 @@ class StudyManifestTools {
       case 'study': {
         packageFile.name = 'Study export'
         packageFile.description = 'An export of a study'
-        delete packageFile.pipes
         break
       }
       case 'task': {
         packageFile.name = 'Task export'
         packageFile.description = 'An export of task or multiple tasks'
-        packageFile.pipes.ingest = 'taskIngestTransform.js'
-        fs.copyFileSync(path.join(packageFileDir, 'taskIngestTransform.js'), path.join(outputDir, 'taskIngestTransform.js'))
         break
       }
       case 'consent': {
         packageFile.name = 'Consent export'
         packageFile.description = 'An export of task or multiple consent templates'
-        packageFile.pipes.ingest = 'consentIngestTransform.js'
-        fs.copyFileSync(path.join(packageFileDir, 'consentIngestTransform.js'), path.join(outputDir, 'consentIngestTransform.js'))
-
         break
       }
     }
+
+    packageFile.pipes.ingest = ingestScript
+    fs.copyFileSync(path.join(packageFileDir, ingestScript), path.join(outputDir, ingestScript))
 
     fs.writeFileSync(`${outputDir}/package.json`, JSON.stringify(packageFile, null, 2))
   }

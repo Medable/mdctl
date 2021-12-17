@@ -17,12 +17,15 @@
   "globals": {
     "beforeEach": true,
     "afterEach": true,
+    "beforeAll": true,
+    "afterAll": true,
     "describe": true,
     "expect": true,
     "it": true,
     "xdescribe": true,
     "xit": true,
-    "testUtils": true
+    "testUtils": true,
+    "jest": true
   },
   "rules": {
     "camelcase": "error",
