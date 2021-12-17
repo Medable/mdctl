@@ -1,6 +1,8 @@
 /* eslint-disable no-param-reassign */
 // eslint-disable-next-line import/no-unresolved
 const { Transform } = require('runtime.transform')
+// eslint-disable-next-line import/no-unresolved
+const config = require('config')
 
 module.exports = class extends Transform {
 
@@ -15,6 +17,8 @@ module.exports = class extends Transform {
             .skipAcl()
             .grant('read')
             .paths('properties.name')
+
+    memo.availableApps = this.getAvailableApps()
 
     if (!studySchemaCursor.hasNext()) return
 
@@ -42,6 +46,8 @@ module.exports = class extends Transform {
   }
 
   each(resource, memo) {
+
+    this.checkIfDependenciesAvailabe(resource, memo)
 
     this.studyReferenceAdjustment(resource, memo)
 
@@ -114,6 +120,45 @@ module.exports = class extends Transform {
     }
 
     resource.ec__status = 'draft'
+  }
+
+  /**
+   * Returns a list of available applications in the target environment
+   */
+  getAvailableApps() {
+    const eConsentKey = 'ec__version.version',
+          televisitKey = 'tv__config.version',
+          eConsentConfig = config.get(eConsentKey),
+          televisitConfig = config.get(televisitKey)
+
+    return {
+      eConsentConfig,
+      televisitConfig
+    }
+  }
+
+  /**
+   * Returns true if the dependencies for the resource to import are met
+   * otherwise throws an exception
+   */
+  checkIfDependenciesAvailabe(resource, memo) {
+
+    const isEconsentSpecific = resource.object.startsWith('ec__'),
+          isEconsentInstalled = !!memo.availableApps.eConsentConfig,
+          isTelevisitSpecific = resource.object.startsWith('tv__'),
+          isTelevisitInstalled = !!memo.availableApps.televisitConfig
+
+    if (isEconsentSpecific && !isEconsentInstalled) {
+      // eslint-disable-next-line no-undef
+      throw Fault.create('kInvalidArgument', { reason: 'Target environment has not installed eConsent, please install eConsent and try again' })
+    }
+
+    if (isTelevisitSpecific && !isTelevisitInstalled) {
+      // eslint-disable-next-line no-undef
+      throw Fault.create('kInvalidArgument', { reason: 'Target environment has not installed Televisit, please install Televisit and try again' })
+    }
+
+    return true
   }
 
 }
