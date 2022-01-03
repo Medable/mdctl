@@ -11,9 +11,6 @@ const Fault = require('@medable/mdctl-core/fault'),
         registry: RegistrySource
       },
       resolveSource = (name, path, options) => {
-        if (!name) {
-          throw Fault.create('mdctl.package.error', { reason: 'Missing pacakge name.' })
-        }
         let sourceType = 'registry'
         if(options.ndjsonStream) {
           sourceType = 'ndjson'
