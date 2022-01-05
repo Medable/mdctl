@@ -273,6 +273,7 @@ class StudyManifestTools {
           groupTasks = await this.getExportObjects(org, 'c_group_tasks', { c_group: { $in: groups.map(v => v._id) } }, orgReferenceProps),
           faults = await this.getExportObjects(org, 'c_faults', null, orgReferenceProps),
           reports = await this.getExportObjects(org, 'c_dmweb_reports', null, orgReferenceProps),
+          sites = await this.getExportObjects(org, 'c_sites', { c_study: study._id }, orgReferenceProps),
 
           taskAssignments = await this.getExportObjects(org, 'c_task_assignments', null, orgReferenceProps),
           participantSchedules = await this.getExportObjects(org, 'c_participant_schedules', null, orgReferenceProps),
@@ -283,7 +284,7 @@ class StudyManifestTools {
           defaultDoc = await this.getExportObjects(org, 'ec__default_document_csses', null, orgReferenceProps)
 
     return [...tasks, ...steps, ...branches,
-      ...visitSchedules, ...visits, ...groups, ...faults, ...reports,
+      ...visitSchedules, ...visits, ...groups, ...faults, ...reports, ...sites,
       ...groupTasks, ...taskAssignments, ...participantSchedules,
       ...patientFlags, ...documentTemplates, ...knowledgeChecks, ...defaultDoc]
   }
