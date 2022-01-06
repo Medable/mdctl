@@ -47,7 +47,10 @@ module.exports = class extends Transform {
 
   each(resource, memo) {
 
-    this.checkIfDependenciesAvailabe(resource, memo)
+    // if it is the manifest we let it go as is
+    if (resource.object === 'manifest') return resource
+
+    this.checkIfDependenciesAvailable(resource, memo)
 
     this.studyReferenceAdjustment(resource, memo)
 
@@ -141,7 +144,7 @@ module.exports = class extends Transform {
    * Returns true if the dependencies for the resource to import are met
    * otherwise throws an exception
    */
-  checkIfDependenciesAvailabe(resource, memo) {
+  checkIfDependenciesAvailable(resource, memo) {
 
     const isEconsentSpecific = resource.object.startsWith('ec__'),
           isEconsentInstalled = !!memo.availableApps.eConsentConfig,
