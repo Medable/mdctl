@@ -15,6 +15,7 @@ class Package {
   }
 
   shouldIncludePackage(name, version, excludedPackages = {}) {
+    // apply semver to match as well
     return !(excludedPackages[name] && excludedPackages[name].version === version)
   }
 
@@ -24,12 +25,12 @@ class Package {
     await source.loadPackageInfo()
     // get dependencies
     for(const depName of Object.keys(source.dependencies || {})) {
-      const depVersion = source.dependencies[depName]
-      if(this.shouldIncludePackage(depName, depVersion, excludePackages)) {
-        const pkg = new Package(depName, depVersion, null, {...this.options, level: this.level + 1})
-        await pkg.evaluate()
+      const depVersion = source.dependencies[depName],
+            pkg = new Package(depName, depVersion, null, {...this.options, level: this.level + 1})
+      await pkg.evaluate(excludePackages)
+      if(this.shouldIncludePackage(pkg.name, pkg.version, excludePackages)) {
         dependantPkgs.push(pkg)
-        excludePackages[depName] = { version: depVersion, level: pkg.level }
+        excludePackages[pkg.name] = { version: pkg.version, level: pkg.level }
       }
     }
 

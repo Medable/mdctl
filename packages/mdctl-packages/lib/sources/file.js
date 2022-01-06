@@ -7,14 +7,15 @@ const path = require("path"),
 class FileSource extends Source {
 
   constructor(name, path, options = {}) {
+    path = path.replace('file://', '')
     super(name, path, options);
   }
 
   async readConfigFiles() {
-    const rcFile = fs.readFileSync(path.join(`/${this.name}`, '.mpmrc'), 'utf8')
+    const rcFile = fs.readFileSync(path.join(this.path, '.mpmrc'), 'utf8')
     if(rcFile) {
       const rcData = JSON.parse(rcFile.toString()),
-            pkgFile = fs.readFileSync(path.join(`/${this.name}`, path.join( rcData.package.root, 'package.json')), 'utf8')
+            pkgFile = fs.readFileSync(path.join(this.path, path.join( rcData.package.root, 'package.json')), 'utf8')
       return JSON.parse(pkgFile)
     }
     throw new Error('No config file found')
@@ -33,7 +34,7 @@ class FileSource extends Source {
   }
 
   async getStream() {
-    const zip = new ZipTree(`/${this.name}`, { fs })
+    const zip = new ZipTree(`/${this.path}`, { fs })
     return zip.compress()
   }
 

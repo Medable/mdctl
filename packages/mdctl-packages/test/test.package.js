@@ -6,37 +6,14 @@ const Package = require('../index'),
 
 describe('CLI - Pkg - Install package', () => {
 
-  it('test git package source', async() => {
-    const p = new Package('', '.')
-    const pkg = new Package(
-      'my-study-1022992',
-      'git+https://gitlab.medable.com/platform/environments/data-transfers.git#test_pkg',
-      null,
-      {
-        dependencies: {},
-        token: 'ph_UVi__jayWH4p7w3Qi'
-      }
-    )
+  it('test package evaluation', async() => {
 
-    const d = await pkg.evaluate(),
-          pFile = fs.createWriteStream(`./${d.name}-${d.version}.zip`),
-          pStream = await d.getPackageStream()
-    pStream.pipe(pFile)
-    console.log(`${d}`)
+    const p = new Package('test', `file://${__dirname}/test_pkg`, null, {
+      token: 'ph_UVi__jayWH4p7w3Qi'
+    })
 
-    console.log('\nDependencies: \n')
-    for(const p of d.dependenciesPackages) {
-      const pdFile = fs.createWriteStream(`./${p.name}-${p.version}.zip`),
-            s = await p.getPackageStream()
-      s.pipe(pdFile)
-      console.log(`${p}`)
-    }
-    // const result = await pkg.evaluate()
-    // const stream = await result.dependantPkgs[0].getStream()
-    // stream.on('data', (chunk) => {
-    //   console.log(chunk)
-    // })
-    // stream.resume()
+    await p.evaluate()
+    console.log(p.dependenciesPackages)
   })
 
   it('test package', async() => {

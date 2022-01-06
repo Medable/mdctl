@@ -23,6 +23,10 @@ class Source {
     return privatesAccessor(this).version
   }
 
+  get path() {
+    return privatesAccessor(this).path
+  }
+
   get dependencies() {
     return privatesAccessor(this).dependencies
   }
