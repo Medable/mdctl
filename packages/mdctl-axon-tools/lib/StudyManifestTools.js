@@ -274,6 +274,7 @@ class StudyManifestTools {
           faults = await this.getExportObjects(org, 'c_faults', null, orgReferenceProps),
           reports = await this.getExportObjects(org, 'c_dmweb_reports', null, orgReferenceProps),
           sites = await this.getExportObjects(org, 'c_sites', { c_study: study._id }, orgReferenceProps),
+          anchorDateTemplates = await this.getExportObjects(org, 'c_anchor_date_templates', { c_study: study._id }, orgReferenceProps),
 
           taskAssignments = await this.getExportObjects(org, 'c_task_assignments', null, orgReferenceProps),
           participantSchedules = await this.getExportObjects(org, 'c_participant_schedules', null, orgReferenceProps),
@@ -285,7 +286,7 @@ class StudyManifestTools {
 
     return [...tasks, ...steps, ...branches,
       ...visitSchedules, ...visits, ...groups, ...faults, ...reports, ...sites,
-      ...groupTasks, ...taskAssignments, ...participantSchedules,
+      ...groupTasks, ...taskAssignments, ...participantSchedules, ...anchorDateTemplates,
       ...patientFlags, ...documentTemplates, ...knowledgeChecks, ...defaultDoc]
   }
 
