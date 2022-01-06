@@ -22,7 +22,10 @@ describe('getStudyManifestEntities', () => {
     jest.clearAllMocks()
   })
 
-  it('should include c_sites', async() => {
+  it.each([
+    ['c_sites'],
+    ['c_anchor_date_templates']
+  ])('should include %s', async(entity) => {
     const entities = await manifestTools.getStudyManifestEntities({}, {}, {}),
           objectsRequested = mockGetExportedObjects
             .mock
@@ -30,7 +33,7 @@ describe('getStudyManifestEntities', () => {
             .map(([, objectRequested]) => objectRequested)
 
     expect(objectsRequested)
-      .toContain('c_sites')
+      .toContain(entity)
   })
 
 })
