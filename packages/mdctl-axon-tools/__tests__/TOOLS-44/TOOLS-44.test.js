@@ -10,7 +10,7 @@ jest.mock('config', () => ({ get: jest.fn() }), { virtual: true })
 // eslint-disable-next-line import/no-unresolved
 const { get: getConfigMock } = require('config')
 
-describe('checkIfDependenciesAvailabe', () => {
+describe('checkIfDependenciesAvailable', () => {
 
   const existingStudy = {
           _id: '1',
