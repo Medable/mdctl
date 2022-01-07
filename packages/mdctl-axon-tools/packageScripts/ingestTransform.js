@@ -58,6 +58,7 @@ module.exports = class extends Transform {
 
       case 'c_study':
         this.studyAdjustments(resource, memo)
+        this.checkIfAppsAvailable(resource, memo)
         break
 
       case 'ec__document_template':
@@ -162,6 +163,27 @@ module.exports = class extends Transform {
     }
 
     return true
+  }
+
+  /**
+   * Returns true if the study has privacy items and all items have an app assigned
+   * otherwise throws an exception
+   */
+  checkIfAppsAvailable(resource) {
+
+    const hasPrivacyItems = resource.c_privacy_items && !!resource.c_privacy_items.length
+
+    if (!hasPrivacyItems) return true
+
+    // eslint-disable-next-line one-var
+    const emptyApps = resource
+      .c_privacy_items
+      .find(({ c_apps: apps }) => apps && apps.length === 0)
+
+    if (!emptyApps) return true
+
+    // eslint-disable-next-line no-undef
+    throw Fault.create('kInvalidArgument', { reason: `The Study imported has a privacy item called: '${emptyApps.c_label}' without an app assigned, assign an app, export and try again` })
   }
 
 }
