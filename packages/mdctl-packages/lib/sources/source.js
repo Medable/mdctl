@@ -1,4 +1,4 @@
-const  { privatesAccessor } = require('@medable/mdctl-core-utils/privates')
+const { privatesAccessor } = require('@medable/mdctl-core-utils/privates')
 
 
 class Source {
@@ -39,14 +39,13 @@ class Source {
     return privatesAccessor(this).options
   }
 
-  get type(){
+  get type() {
     return this.constructor.name
   }
 
   async loadPackageInfo() {
     throw new Error('Must be implement on inherited sources')
   }
-
 
   async getStream() {
     throw new Error('Must be implement on inherited sources')

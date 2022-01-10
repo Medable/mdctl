@@ -1,17 +1,9 @@
 /* eslint-disable class-methods-use-this */
 
-const fs = require('fs'),
-      _ = require('lodash'),
-      pump = require('pump'),
-      ndjson = require('ndjson'),
-      { isSet, parseString, rString } = require('@medable/mdctl-core-utils/values'),
-      Packages = require('packages/mdctl-packages'),
-      ImportStream = require('@medable/mdctl-core/streams/import_stream'),
-      ImportFileTreeAdapter = require('@medable/mdctl-import-adapter'),
-      {
-        createConfig, loadDefaults
-      } = require('../lib/config'),
-      Task = require('../lib/task')
+const _ = require('lodash'),
+      { isSet } = require('@medable/mdctl-core-utils/values'),
+      Task = require('../lib/task'),
+      { publishPkg, installPkg } = require('../lib/package')
 
 
 class Package extends Task {
@@ -51,33 +43,45 @@ class Package extends Task {
       throw new Error('Invalid command')
     }
 
-    const config = createConfig()
-    config.update(await loadDefaults())
     return this[handler](cli)
+
+  }
+
+  async 'package@get'(cli) {
+    throw Error('Not Implemented')
   }
 
   async 'package@list'(cli) {
-    const result = await this.registry.getPackages()
-    console.log(result)
+    // const result = await this.registry.getPackages()
+    // console.log(result)
+    throw Error('Not Implemented')
   }
 
   async 'package@publish'(cli) {
-    // this will build package artifact
-    const params = await cli.getArguments(this.optionKeys),
-          inputDir = params.dir || process.cwd(),
-          packageJson = parseString(fs.readFileSync(`${inputDir}/package.json`)),
-          pkg = this.args('2') || `${packageJson.name}@${packageJson.version}`,
-          fileAdapter = new ImportFileTreeAdapter(`${inputDir}/${packageJson.mdEnvPath || 'configuration'}`, 'json'),
-          importStream = new ImportStream(fileAdapter),
-          ndjsonStream = ndjson.stringify(),
-          streamList = [importStream, ndjsonStream],
-          [name, version] = pkg.split('@')
-    await this.registry.publishPackage(name, version, pump(streamList), packageJson.mdDependencies)
-    console.log(`${name}@${version} has been published!`)
+    // Determine where to publish the package i.e either cortex or registry
+    const name = this.args('name') || '',
+          source = this.args('source') || 'cortex',
+          registryUrl = this.args('registryUrl') || process.env.REGISTRY_URL,
+          registryProjectId = this.args('registryProjectId') || process.env.REGISTRY_PROJECT_ID,
+          registryToken = this.args('registryToken') || process.env.REGISTRY_TOKEN,
+          client = await cli.getApiClient({ credentials: await cli.getAuthOptions() })
+
+    await publishPkg(name, {
+      source, registryUrl, registryProjectId, registryToken, client
+    })
   }
 
   async 'package@install'(cli) {
     // this will install a package in target organization
+    const name = this.args('2') || '',
+          registryUrl = this.args('registryUrl') || process.env.REGISTRY_URL,
+          registryProjectId = this.args('registryProjectId') || process.env.REGISTRY_PROJECT_ID,
+          registryToken = this.args('registryToken') || process.env.REGISTRY_TOKEN,
+          client = await cli.getApiClient({ credentials: await cli.getAuthOptions() })
+
+    await installPkg(name, {
+      registryUrl, registryProjectId, registryToken, client
+    })
   }
 
   // ----------------------------------------------------------------------------------------------

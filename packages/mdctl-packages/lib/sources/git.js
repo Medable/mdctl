@@ -91,7 +91,7 @@ class GitSource extends Source {
               dependencies: info.dependencies || {},
               version: info.version,
               name: info.name,
-              engine: info.engine || {}
+              engines: info.engines || {}
             }
       Object.assign(privatesAccessor(this), packageInfo)
     } catch (ex) {
