@@ -58,13 +58,13 @@ class Package extends Task {
   }
 
   async 'package@publish'(cli) {
-    // Determine where to publish the package i.e either cortex or registry
+    // Determine where to publish the package i.e either cortex or registry (default)
     const name = this.args('name') || '',
-          source = this.args('source') || 'cortex',
+          source = this.args('source') || 'registry',
           registryUrl = this.args('registryUrl') || process.env.REGISTRY_URL,
           registryProjectId = this.args('registryProjectId') || process.env.REGISTRY_PROJECT_ID,
           registryToken = this.args('registryToken') || process.env.REGISTRY_TOKEN,
-          client = await cli.getApiClient({ credentials: await cli.getAuthOptions() })
+          client = source === 'cortex' ? await cli.getApiClient({ credentials: await cli.getAuthOptions() }) : null
 
     await publishPkg(name, {
       source, registryUrl, registryProjectId, registryToken, client

@@ -15,10 +15,28 @@ class FileSource extends Source {
     const rcFile = fs.readFileSync(path.join(this.path, '.mpmrc'), 'utf8')
     if (rcFile) {
       const rcData = JSON.parse(rcFile.toString()),
-            pkgFile = fs.readFileSync(path.join(this.path, path.join(rcData.package.root, 'package.json')), 'utf8')
+            pkgFile = fs.readFileSync(path.join(this.path, rcData.package.root, 'package.json'), 'utf8'),
+            pkgInfo = JSON.parse(pkgFile),
+            manifestEntry = pkgInfo.manifest
+
+      if (manifestEntry) {
+        const manifestPath = path.join(this.path, rcData.package.root, manifestEntry)
+
+        if (!fs.existsSync(manifestPath)) {
+          throw new Error('Manifest not found. Not a valid package.')
+        }
+      } else {
+        const manifestJsonPath = path.join(this.path, rcData.package.root, 'manifest.json'),
+              manifestYmlPath = path.join(this.path, rcData.package.root, 'manifest.yml'),
+              manifestYamlPath = path.join(this.path, rcData.package.root, 'manifest.yaml')
+
+        if (!fs.existsSync(manifestJsonPath) && !fs.existsSync(manifestYmlPath) && !fs.existsSync(manifestYamlPath)) {
+          throw new Error('Manifest not found. Not a valid package.')
+        }
+      }
 
       privatesAccessor(this).rootDir = rcData.package.root
-      return JSON.parse(pkgFile)
+      return pkgInfo
     }
     throw new Error('No config file found')
   }

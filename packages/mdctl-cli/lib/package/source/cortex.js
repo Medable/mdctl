@@ -8,8 +8,8 @@ class Cortex {
     this.name = name
     this.version = version
     this.client = options.client
-    this.publishPath = process.env.PACKAGE_PUBLISH_PATH || '/packages/publish'
-    this.installPath = process.env.PACKAGE_INSTALL_PATH || '/packages/install'
+    this.publishPath = process.env.PACKAGE_PUBLISH_PATH || '/developer/packages/publish'
+    this.installPath = process.env.PACKAGE_INSTALL_PATH || '/developer/packages/install'
   }
 
   async installPackage(pkg) {
