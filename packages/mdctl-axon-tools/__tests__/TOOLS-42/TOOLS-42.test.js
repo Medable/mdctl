@@ -189,4 +189,135 @@ describe('StudyManifestTools', () => {
     expect(copiedPackageJson)
       .toStrictEqual(expected)
   })
+
+  it('should getIdsByReferenceType for each of the available types', () => {
+    const studyManifestTools = new StudyManifestTools(),
+          entity = {
+            c_key: 'eafca833-7f7a-45f6-bba1-5bb7bad8c2ee',
+            c_study: {
+              _id: '60ca4a670ee6980100215a5d',
+              object: 'c_study',
+              path: '/c_studies/60ca4a670ee6980100215a5d'
+            },
+            c_visits: [
+              '610bfcc53e5bb50100d87369',
+              '611fe3cf6db3df0100238e01'
+            ],
+            _id: '60ca0d6c10f3800100661d0a',
+            c_assignment_availability: [
+              {
+                c_flag: {
+                  _id: '60ca0d7010f38001006621b0',
+                  object: 'c_patient_flag',
+                  path: '/c_patient_flags/60ca0d7010f38001006621b0'
+                }
+              },
+              {
+                c_flag: {
+                  _id: '60ca0d7010f38001006621b1',
+                  object: 'c_patient_flag',
+                  path: '/c_patient_flags/60ca0d7010f38001006621b1'
+                }
+              }
+            ],
+            c_end_date_anchor: {
+              c_template: {
+                _id: '5fda25b723b606010051fa04',
+                object: 'c_anchor_date_template',
+                path: '/c_anchor_date_templates/5fda25b723b606010051fa04'
+              }
+            },
+            object: 'c_some_object'
+          },
+          taskReferences = [
+            {
+              name: 'c_study',
+              array: false,
+              object: 'c_study',
+              type: 'Reference'
+            },
+            {
+              name: 'c_visits',
+              array: true,
+              object: 'c_visit',
+              type: 'ObjectId'
+            },
+            {
+              name: 'c_assignment_availability',
+              array: true,
+              type: 'Document',
+              documents: [
+                {
+                  name: 'c_flag',
+                  array: false,
+                  object: 'c_patient_flag',
+                  type: 'Reference'
+                }
+              ]
+            },
+            {
+              name: 'c_end_date_anchor',
+              array: false,
+              type: 'Document',
+              documents: [
+                {
+                  name: 'c_template',
+                  array: false,
+                  object: 'c_anchor_date_template',
+                  type: 'Reference'
+                }
+              ]
+            }
+          ],
+          ids = studyManifestTools.getIdsByReferenceType(entity, taskReferences)
+
+    expect(ids)
+      .toStrictEqual([
+        { reference: 'c_study', referenceIds: [{ _id: '60ca4a670ee6980100215a5d', reference: 'c_study' }] },
+        { reference: 'c_visits', referenceIds: [{ _id: '610bfcc53e5bb50100d87369', reference: 'c_visits' }, { _id: '611fe3cf6db3df0100238e01', reference: 'c_visits' }] },
+        { reference: 'c_assignment_availability', referenceIds: [{ _id: '60ca0d7010f38001006621b0', reference: 'c_flag' }, { _id: '60ca0d7010f38001006621b1', reference: 'c_flag' }] },
+        { reference: 'c_end_date_anchor', referenceIds: [{ _id: '5fda25b723b606010051fa04', reference: 'c_template' }] }
+      ])
+  })
+
+
+  it('should getEntityIssues', () => {
+
+    const studyManifestTools = new StudyManifestTools(),
+          entity = {
+            c_key: 'eafca833-7f7a-45f6-bba1-5bb7bad8c2ee',
+            c_visits: [
+              '610bfcc53e5bb50100d87369',
+              '611fe3cf6db3df0100238e01'
+            ],
+            _id: '60ca0d6c10f3800100661d0a',
+            object: 'c_some_entity'
+          },
+          someEntityReferences = [{
+            name: 'c_study',
+            array: false,
+            object: 'c_study',
+            type: 'Reference'
+          },
+          {
+            name: 'c_visits',
+            array: true,
+            object: 'c_visit',
+            type: 'ObjectId'
+          }],
+          refEntityIds = studyManifestTools.getIdsByReferenceType(entity, someEntityReferences),
+          entities = [
+            {
+              object: 'c_visit',
+              _id: '610bfcc53e5bb50100d87369'
+            }],
+          issues = studyManifestTools.getEntityIssues(entity, refEntityIds, entities)
+
+    expect(issues)
+      .toStrictEqual([
+        'No entity id for c_some_entity 60ca0d6c10f3800100661d0a for reference c_study',
+        'Entity not found in export for c_some_entity 60ca0d6c10f3800100661d0a for reference c_visits id 611fe3cf6db3df0100238e01'
+      ])
+
+  })
 })
