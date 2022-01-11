@@ -230,6 +230,11 @@ class StudyManifestTools {
 
     })
 
+    if (removedEntities.length) {
+      console.log('\x1b[1m\x1b[31m\x1b[40m%s\x1b[0m', 'Referential Integrity Errors Found')
+      console.log('\x1b[1m\x1b[31m\x1b[40m%s\x1b[0m', 'Please check issuesReport.json for more details')
+    }
+
     return { outputEntities, removedEntities }
 
   }
