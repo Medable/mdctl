@@ -59,8 +59,6 @@ class StudyManifestTools {
       orgObjects: allObj.map(({ name, pluralName, uniqueKey }) => ({ name, pluralName, uniqueKey }))
     })
 
-    fs.writeFileSync('./all-references.log', JSON.stringify(orgReferenceProps, null, ' '))
-
     return { orgReferenceProps }
   }
 
@@ -196,8 +194,6 @@ class StudyManifestTools {
   }
 
   validateReferences(entities, orgReferenceProps, ignore = []) {
-
-    fs.writeFileSync('./all-entities.log', JSON.stringify(entities, null, ' '))
 
     console.log('Validating Internal References')
     const outputEntities = [],
