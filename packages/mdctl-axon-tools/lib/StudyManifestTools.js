@@ -43,8 +43,6 @@ class StudyManifestTools {
 
               const references = this.getReferences(obj)
 
-              if (!references.length) return acc
-
               if (!acc[obj.pluralName]) {
                 acc[obj.pluralName] = []
               }
@@ -200,12 +198,12 @@ class StudyManifestTools {
           removedEntities = []
 
     entities.forEach((entity) => {
+
       const pluralName = this.mapObjectNameToPlural(entity.object),
             references = ignore.includes(pluralName) ? [] : orgReferenceProps[pluralName],
             refEntityIds = this.getIdsByReferenceType(entity, references),
             issues = this.getEntityIssues(entity, refEntityIds, entities),
             isValid = issues.length === 0
-
 
       if (isValid) {
         outputEntities.push(entity)
@@ -234,11 +232,12 @@ class StudyManifestTools {
         refEntityIds.push(wrapper)
 
       } else if (ref.type === 'ObjectId') {
-        const objectIdArr = entity[ref.name],
-              referenceIds = objectIdArr
-                .map(objectId => ({ _id: objectId, reference: ref.name }))
+        const objectIdArr = entity[ref.name]
 
-        if (referenceIds.length) {
+        if (objectIdArr && objectIdArr.length) {
+          const referenceIds = objectIdArr
+            .map(objectId => ({ _id: objectId, reference: ref.name }))
+
           wrapper.referenceIds.push(...referenceIds)
         }
 
@@ -246,33 +245,38 @@ class StudyManifestTools {
 
       } else if (ref.type === 'Document' && ref.array) { // Document Array Case
 
-        const documents = entity[ref.name],
-              referenceIds = documents
-                .map(document => this.getIdsByReferenceType(document, ref.documents))
-                // flatten
-                .reduce(
-                  (flatAcc, [{ referenceIds: referenceIdArr }]) => flatAcc.concat(referenceIdArr), []
-                )
+        const documents = entity[ref.name]
 
-        if (referenceIds.length) {
+        if (documents && documents.length) {
+          const referenceIds = documents
+            .map(document => this.getIdsByReferenceType(document, ref.documents))
+          // flatten
+            .reduce(
+              (flatAcc, [{ referenceIds: referenceIdArr }]) => flatAcc.concat(referenceIdArr), []
+            )
+
           wrapper.referenceIds.push(...referenceIds)
         }
 
         refEntityIds.push(wrapper)
 
       } else if (ref.type === 'Document') {
-        const document = entity[ref.name],
-              referenceIdsWrapper = this.getIdsByReferenceType(document, ref.documents),
-              referenceIds = referenceIdsWrapper
+        const document = entity[ref.name]
+
+        if (document) {
+          const referenceIdsWrapper = this.getIdsByReferenceType(document, ref.documents),
+                referenceIds = referenceIdsWrapper
                 // flatten
-                .reduce(
-                  (flatAcc, { referenceIds: referenceIdArr }) => flatAcc.concat(referenceIdArr), []
-                )
-        if (referenceIds.length) {
+                  .reduce(
+                    (flatAcc, { referenceIds: referenceIdArr }) => flatAcc.concat(referenceIdArr), []
+                  )
+
           wrapper.referenceIds.push(...referenceIds)
         }
 
+
         refEntityIds.push(wrapper)
+
       }
     })
 
@@ -285,6 +289,7 @@ class StudyManifestTools {
     refEntityIds.forEach(({ reference, referenceIds }) => {
 
       if (referenceIds.length) {
+
         referenceIds.forEach(({ _id: refEntityId, reference: subReference }) => {
           const refEntity = entities.find(v => v._id === refEntityId)
 
