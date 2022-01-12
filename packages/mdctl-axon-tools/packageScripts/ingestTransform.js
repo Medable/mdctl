@@ -131,12 +131,18 @@ module.exports = class extends Transform {
   getAvailableApps() {
     const eConsentKey = 'ec__version.version',
           televisitKey = 'tv__config.version',
+          integrationsKey = 'int__config.version',
+          oracleKey = 'orac__config.version',
           eConsentConfig = config.get(eConsentKey),
-          televisitConfig = config.get(televisitKey)
+          televisitConfig = config.get(televisitKey),
+          integrationsConfig = config.get(integrationsKey),
+          oracleConfig = config.get(oracleKey)
 
     return {
       eConsentConfig,
-      televisitConfig
+      televisitConfig,
+      integrationsConfig,
+      oracleConfig
     }
   }
 
@@ -149,7 +155,11 @@ module.exports = class extends Transform {
     const isEconsentSpecific = resource.object.startsWith('ec__'),
           isEconsentInstalled = !!memo.availableApps.eConsentConfig,
           isTelevisitSpecific = resource.object.startsWith('tv__'),
-          isTelevisitInstalled = !!memo.availableApps.televisitConfig
+          isTelevisitInstalled = !!memo.availableApps.televisitConfig,
+          isIntegrationsSpecfic = resource.object.startsWith('int__'),
+          isIntegrationsInstalled = !!memo.availableApps.integrationsConfig,
+          isOracleSpecific = resource.object.startsWith('orac__'),
+          isOracleInstalled = memo.availableApps.oracleConfig
 
     if (isEconsentSpecific && !isEconsentInstalled) {
       // eslint-disable-next-line no-undef
@@ -159,6 +169,16 @@ module.exports = class extends Transform {
     if (isTelevisitSpecific && !isTelevisitInstalled) {
       // eslint-disable-next-line no-undef
       throw Fault.create('kInvalidArgument', { reason: 'Target environment has not installed Televisit, please install Televisit and try again' })
+    }
+
+    if (isIntegrationsSpecfic && !isIntegrationsInstalled) {
+      // eslint-disable-next-line no-undef
+      throw Fault.create('kInvalidArgument', { reason: 'Target environment has not installed Integrations, please install Integrations and try again' })
+    }
+
+    if (isOracleSpecific && !isOracleInstalled) {
+      // eslint-disable-next-line no-undef
+      throw Fault.create('kInvalidArgument', { reason: 'Target environment has not installed Oracle Integration, please install Oracle Integration and try again' })
     }
 
     return true

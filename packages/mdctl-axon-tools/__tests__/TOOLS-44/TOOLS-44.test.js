@@ -64,38 +64,27 @@ describe('checkIfDependenciesAvailable', () => {
     jest.clearAllMocks()
   })
 
-  it('should prevent installation of ec__ objects if eConsent is not enabled', () => {
+  it.each([
+    // testCase, object, error
+    ['prevent', 'ec__some_object', 'Target environment has not installed eConsent, please install eConsent and try again'],
+    ['allow', 'ec__some_object', null],
+    ['prevent', 'tv__some_object', 'Target environment has not installed Televisit, please install Televisit and try again'],
+    ['allow', 'tv__some_object', null],
+    ['prevent', 'int__some_object', 'Target environment has not installed Integrations, please install Integrations and try again'],
+    ['allow', 'int__some_object', null],
+    ['prevent', 'orac__some_object', 'Target environment has not installed Oracle Integration, please install Oracle Integration and try again'],
+    ['allow', 'orac__some_object', null],
+  ])('should %s installation of %s', (testCase, object, error) => {
 
-    getConfigMock.mockImplementation(() => '')
+    const version = testCase === 'prevent' ? '' : '1.0'
 
+    getConfigMock.mockImplementation(() => version)
+
+    // eslint-disable-next-line one-var
     const transform = new Transform(),
 
           resource = {
-            object: 'ec__some_object'
-          },
-          memo = {}
-
-    transform.beforeAll(memo)
-
-    let fault
-
-    try {
-      transform.each(resource, memo)
-    } catch (err) {
-      fault = err
-    }
-
-    expect(fault.reason)
-      .toEqual('Target environment has not installed eConsent, please install eConsent and try again')
-  })
-
-  it('should allow installation of tv__ objects if Televisit is enabled', () => {
-    getConfigMock.mockImplementation(() => '1.0')
-
-    const transform = new Transform(),
-
-          resource = {
-            object: 'tv__some_object'
+            object
           },
           memo = {}
 
@@ -110,12 +99,16 @@ describe('checkIfDependenciesAvailable', () => {
       fault = err
     }
 
-    expect(fault)
-      .toBeUndefined()
+    if (testCase === 'prevent') {
+      expect(fault.reason)
+        .toEqual(error)
+    } else {
+      expect(fault)
+        .toBeUndefined()
 
-    expect(response)
-      .toEqual(resource)
+      expect(response)
+        .toEqual(resource)
+    }
+
   })
-
-
 })
