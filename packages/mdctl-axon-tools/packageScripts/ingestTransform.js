@@ -15,7 +15,7 @@ module.exports = class extends Transform {
   beforeAll(memo) {
     const {
             // eslint-disable-next-line camelcase
-            org: { objects: { object, c_sites } }
+            org: { objects: { object } }
           } = global,
 
           studySchemaCursor = object
@@ -29,11 +29,6 @@ module.exports = class extends Transform {
     if (!studySchemaCursor.hasNext()) return
 
     memo.studySchema = studySchemaCursor.next()
-    memo.c_sties = c_sites.find()
-      .skipAcl()
-      .grant(consts.accessLevels.read)
-      .paths('c_key')
-      .toArray()
   }
 
   before(memo) {
@@ -126,18 +121,20 @@ module.exports = class extends Transform {
    * Add modifications to the ec__document_template object
    * @param {*} resource
    */
-  econsentDocumentTemplateAdjustments(resource, memo) {
+  econsentDocumentTemplateAdjustments(resource) {
 
-    const doc = global
-      .org
-      .objects
-      .ec__document_template
-      .readOne({ ec__key: resource.ec__key })
-      .skipAcl()
-      .grant(consts.accessLevels.read)
-      .throwNotFound(false)
-      .paths('ec__status', 'ec__title', 'ec__key')
-      .execute()
+    const {
+            // eslint-disable-next-line camelcase
+            org: { objects: { ec__document_template, c_sites } }
+          } = global,
+
+          doc = ec__document_template
+            .readOne({ ec__key: resource.ec__key })
+            .skipAcl()
+            .grant(consts.accessLevels.read)
+            .throwNotFound(false)
+            .paths('ec__status', 'ec__title', 'ec__key')
+            .execute()
 
     if (doc && doc.ec__status !== 'draft') {
       throw Fault.create('kInvalidArgument',
@@ -149,15 +146,19 @@ module.exports = class extends Transform {
         })
     }
 
-    const studySites = memo.c_sites.map(v => `c_site.${v._c_key}`)
-
     // keep the sites that are set on the document in the target if it exists
     if (doc && doc.ec__sites) {
       resource.ec__sites.push(...doc.ec__sites)
     }
 
     // make sure sites array only contains sites that are in the target
-    resource.c_sites = resource.ec__sites.filter(v => studySites.includes(v))
+    resource.c_sites = resource.ec__sites.filter((v) => {
+      const spl = v.split('.'),
+            // eslint-disable-next-line camelcase
+            c_key = spl[1]
+            console.log(c_key)
+      return c_sites.find({ c_key }).hasNext()
+    })
 
 
     // importing a new published doc? Set the published date as today.
