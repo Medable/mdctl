@@ -229,29 +229,33 @@ describe('StudyManifestTools', () => {
             },
             object: 'c_some_object'
           },
-          taskReferences = [
+          someObjectReferences = [
             {
               name: 'c_study',
               array: false,
               object: 'c_study',
-              type: 'Reference'
+              type: 'Reference',
+              required: false
             },
             {
               name: 'c_visits',
               array: true,
               object: 'c_visit',
-              type: 'ObjectId'
+              type: 'ObjectId',
+              required: false
             },
             {
               name: 'c_assignment_availability',
               array: true,
               type: 'Document',
+              required: false,
               documents: [
                 {
                   name: 'c_flag',
                   array: false,
                   object: 'c_patient_flag',
-                  type: 'Reference'
+                  type: 'Reference',
+                  required: false,
                 }
               ]
             },
@@ -259,24 +263,26 @@ describe('StudyManifestTools', () => {
               name: 'c_end_date_anchor',
               array: false,
               type: 'Document',
+              required: false,
               documents: [
                 {
                   name: 'c_template',
                   array: false,
                   object: 'c_anchor_date_template',
-                  type: 'Reference'
+                  type: 'Reference',
+                  required: false
                 }
               ]
             }
           ],
-          ids = studyManifestTools.getIdsByReferenceType(entity, taskReferences)
+          ids = studyManifestTools.getIdsByReferenceType(entity, someObjectReferences)
 
     expect(ids)
       .toStrictEqual([
-        { reference: 'c_study', referenceIds: [{ _id: '60ca4a670ee6980100215a5d', reference: 'c_study' }] },
-        { reference: 'c_visits', referenceIds: [{ _id: '610bfcc53e5bb50100d87369', reference: 'c_visits' }, { _id: '611fe3cf6db3df0100238e01', reference: 'c_visits' }] },
-        { reference: 'c_assignment_availability', referenceIds: [{ _id: '60ca0d7010f38001006621b0', reference: 'c_flag' }, { _id: '60ca0d7010f38001006621b1', reference: 'c_flag' }] },
-        { reference: 'c_end_date_anchor', referenceIds: [{ _id: '5fda25b723b606010051fa04', reference: 'c_template' }] }
+        { reference: 'c_study', referenceIds: [{ _id: '60ca4a670ee6980100215a5d', reference: 'c_study', required: false }], required: false },
+        { reference: 'c_visits', referenceIds: [{ _id: '610bfcc53e5bb50100d87369', reference: 'c_visits', required: false }, { _id: '611fe3cf6db3df0100238e01', reference: 'c_visits', required: false }], required: false },
+        { reference: 'c_assignment_availability', referenceIds: [{ _id: '60ca0d7010f38001006621b0', reference: 'c_flag', required: false }, { _id: '60ca0d7010f38001006621b1', reference: 'c_flag', required: false }], required: false },
+        { reference: 'c_end_date_anchor', referenceIds: [{ _id: '5fda25b723b606010051fa04', reference: 'c_template', required: false }], required: false }
       ])
   })
 
@@ -296,12 +302,14 @@ describe('StudyManifestTools', () => {
           someEntityReferences = [{
             name: 'c_study',
             array: false,
+            required: true,
             object: 'c_study',
             type: 'Reference'
           },
           {
             name: 'c_visits',
             array: true,
+            required: false,
             object: 'c_visit',
             type: 'ObjectId'
           }],

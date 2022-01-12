@@ -68,10 +68,13 @@ class StudyManifestTools {
       const isReference = prop.type === 'Reference',
             isObjectIdWithSourceObj = (prop.type === 'ObjectId' && prop.sourceObject),
             isDocument = prop.type === 'Document',
+            hasValidators = !!(prop.validators && prop.validators.length),
+            isRequired = hasValidators && prop.validators.find(({ name }) => name === 'required'),
             reference = {
               name: prop.name,
               array: !!prop.array,
               object: prop.sourceObject,
+              required: isRequired,
               type: prop.type
             }
 
@@ -81,7 +84,7 @@ class StudyManifestTools {
 
       } else if (isDocument) {
 
-        const documentReferences = this.getReferences(prop, prop.name)
+        const documentReferences = this.getReferences(prop)
 
         if (documentReferences.length) {
           reference.documents = documentReferences
@@ -220,13 +223,14 @@ class StudyManifestTools {
 
     references.forEach((ref) => {
 
-      const wrapper = { reference: ref.name, referenceIds: [] }
+      const wrapper = { reference: ref.name, referenceIds: [], required: ref.required }
 
       if (ref.type === 'Reference') {
         const reference = entity[ref.name]
 
         if (reference) {
-          wrapper.referenceIds.push({ _id: reference._id, reference: ref.name })
+          wrapper.referenceIds
+            .push({ _id: reference._id, reference: ref.name, required: ref.required })
         }
 
         refEntityIds.push(wrapper)
@@ -236,7 +240,7 @@ class StudyManifestTools {
 
         if (objectIdArr && objectIdArr.length) {
           const referenceIds = objectIdArr
-            .map(objectId => ({ _id: objectId, reference: ref.name }))
+            .map(objectId => ({ _id: objectId, reference: ref.name, required: ref.required }))
 
           wrapper.referenceIds.push(...referenceIds)
         }
@@ -286,9 +290,12 @@ class StudyManifestTools {
   getEntityIssues(entity, refEntityIds, entities) {
     const issues = []
 
-    refEntityIds.forEach(({ reference, referenceIds }) => {
+    refEntityIds.forEach(({ reference, referenceIds, required }) => {
 
-      if (referenceIds.length) {
+      const hasReferences = referenceIds.length > 0,
+            hasNoReferenceAndRequired = required && referenceIds.length === 0
+
+      if (hasReferences) {
 
         referenceIds.forEach(({ _id: refEntityId, reference: subReference }) => {
           const refEntity = entities.find(v => v._id === refEntityId)
@@ -298,7 +305,7 @@ class StudyManifestTools {
             issues.push(issue)
           }
         })
-      } else {
+      } else if (hasNoReferenceAndRequired) {
         const issue = `No entity id for ${entity.object} ${entity._id} for reference ${reference}`
         issues.push(issue)
       }
