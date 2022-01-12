@@ -131,8 +131,8 @@ module.exports = class extends Transform {
   getAvailableApps() {
     const eConsentKey = 'ec__version.version',
           televisitKey = 'tv__config.version',
-          integrationsKey = 'int__config.version',
-          oracleKey = 'orac__config.version',
+          integrationsKey = 'int__version.version',
+          oracleKey = 'orac__version.version',
           eConsentConfig = config.get(eConsentKey),
           televisitConfig = config.get(televisitKey),
           integrationsConfig = config.get(integrationsKey),
