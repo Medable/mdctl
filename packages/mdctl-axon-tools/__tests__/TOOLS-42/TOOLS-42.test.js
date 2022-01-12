@@ -419,4 +419,64 @@ describe('StudyManifestTools', () => {
       .toStrictEqual(expectedReferences)
 
   })
+
+  it('should getReferenceProps for each of the available types', () => {
+    const studyManifestTools = new StudyManifestTools(),
+          someObjectReferences = [
+            {
+              name: 'c_study',
+              array: false,
+              object: 'c_study',
+              type: 'Reference',
+              required: false
+            },
+            {
+              name: 'c_visits',
+              array: true,
+              object: 'c_visit',
+              type: 'ObjectId',
+              required: false
+            },
+            {
+              name: 'c_assignment_availability',
+              array: true,
+              type: 'Document',
+              required: false,
+              documents: [
+                {
+                  name: 'c_flag',
+                  array: false,
+                  object: 'c_patient_flag',
+                  type: 'Reference',
+                  required: false,
+                }
+              ]
+            },
+            {
+              name: 'c_end_date_anchor',
+              array: false,
+              type: 'Document',
+              required: false,
+              documents: [
+                {
+                  name: 'c_template',
+                  array: false,
+                  object: 'c_anchor_date_template',
+                  type: 'Reference',
+                  required: false
+                }
+              ]
+            }
+          ],
+          referenceProps = studyManifestTools.getReferenceProps(someObjectReferences)
+
+    expect(referenceProps)
+      .toStrictEqual([
+        'c_study',
+        'c_visits',
+        'c_assignment_availability.c_flag',
+        'c_end_date_anchor.c_template'
+      ])
+  })
+
 })
