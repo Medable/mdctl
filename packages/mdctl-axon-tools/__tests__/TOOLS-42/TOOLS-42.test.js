@@ -328,4 +328,95 @@ describe('StudyManifestTools', () => {
       ])
 
   })
+
+
+  it('should getReferences', () => {
+
+    const studyManifestTools = new StudyManifestTools(),
+          objectSchema = {
+            label: 'Participant Group',
+            name: 'c_group',
+            uniqueKey: 'c_key',
+            properties: [
+              {
+                validators: [],
+                label: 'Visit Schedules',
+                name: 'c_visit_schedules',
+                sourceObject: 'c_visit_schedule',
+                type: 'ObjectId',
+                array: true
+              },
+              {
+                array: false,
+                label: 'Anchor Date',
+                name: 'c_anchor_date',
+                sourceObject: 'c_anchor_date_template',
+                type: 'Reference',
+                validators: [{
+                  name: 'required'
+                }]
+              },
+              {
+                label: 'Schedule',
+                name: 'c_schedule',
+                properties: [
+                  {
+                    array: false,
+                    label: 'Anchor Date',
+                    name: 'c_anchor_date',
+                    sourceObject: 'c_anchor_date_template',
+                    type: 'Reference'
+                  },
+                  {
+                    validators: [],
+                    label: 'Name',
+                    name: 'c_name',
+                    sourceObject: 'c_name',
+                    type: 'String',
+                    array: false
+                  }
+                ],
+                type: 'Document',
+                array: false,
+                validators: []
+              },
+            ]
+          },
+          expectedReferences = [
+            {
+              name: 'c_visit_schedules',
+              array: true,
+              object: 'c_visit_schedule',
+              required: false,
+              type: 'ObjectId'
+            },
+            {
+              name: 'c_anchor_date',
+              array: false,
+              object: 'c_anchor_date_template',
+              required: true,
+              type: 'Reference'
+            },
+            {
+              name: 'c_schedule',
+              array: false,
+              required: false,
+              type: 'Document',
+              documents: [
+                {
+                  name: 'c_anchor_date',
+                  array: false,
+                  object: 'c_anchor_date_template',
+                  required: false,
+                  type: 'Reference'
+                }
+              ]
+            }
+          ],
+          references = studyManifestTools.getReferences(objectSchema)
+
+    expect(references)
+      .toStrictEqual(expectedReferences)
+
+  })
 })

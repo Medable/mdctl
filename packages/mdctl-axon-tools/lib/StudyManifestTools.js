@@ -60,6 +60,11 @@ class StudyManifestTools {
     return { orgReferenceProps }
   }
 
+  /**
+   * Recursively analyzes an object and returns the references found
+   * @param {*} object schema
+   * @returns an array of references found in the schema
+   */
   getReferences(object) {
     const res = []
 
@@ -69,11 +74,11 @@ class StudyManifestTools {
             isObjectIdWithSourceObj = (prop.type === 'ObjectId' && prop.sourceObject),
             isDocument = prop.type === 'Document',
             hasValidators = !!(prop.validators && prop.validators.length),
-            isRequired = hasValidators && prop.validators.find(({ name }) => name === 'required'),
+            isRequired = hasValidators && !!(prop.validators.find(({ name }) => name === 'required')),
             reference = {
               name: prop.name,
               array: !!prop.array,
-              object: prop.sourceObject,
+              ...(prop.sourceObject && { object: prop.sourceObject }),
               required: isRequired,
               type: prop.type
             }
@@ -386,7 +391,6 @@ class StudyManifestTools {
 
           // oracle
           oracleStudies = await this.getExportObjects(org, 'orac__studies', null, orgReferenceProps),
-          oracleSubjects = await this.getExportObjects(org, 'orac__subjects', null, orgReferenceProps),
           oracleSites = await this.getExportObjects(org, 'orac__sites', null, orgReferenceProps),
           oracleForms = await this.getExportObjects(org, 'orac__forms', null, orgReferenceProps),
           oracleQuestions = await this.getExportObjects(org, 'orac__form_questions', null, orgReferenceProps),
@@ -400,7 +404,7 @@ class StudyManifestTools {
       ...patientFlags, ...documentTemplates, ...knowledgeChecks, ...defaultDoc,
       ...lookerIntegrationRecords,
       ...vendorIntegrationRecords, ...integrationMappings, ...integrationPipelines,
-      ...oracleStudies, ...oracleSubjects, ...oracleSites,
+      ...oracleStudies, ...oracleSites,
       ...oracleForms, ...oracleQuestions, ...oracleEvents
     ]
   }
