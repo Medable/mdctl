@@ -1,4 +1,10 @@
+/* eslint-disable import/no-extraneous-dependencies */
+/* eslint-disable no-undef */
+/* eslint-disable no-underscore-dangle */
 /* eslint-disable no-param-reassign */
+
+const moment = require('moment')
+
 // eslint-disable-next-line import/no-unresolved
 const { Transform } = require('runtime.transform')
 // eslint-disable-next-line import/no-unresolved
@@ -61,7 +67,7 @@ module.exports = class extends Transform {
         break
 
       case 'ec__document_template':
-        this.econsentDocumentTemplateAdjustments(resource)
+        this.econsentDocumentTemplateAdjustments(resource, memo)
         break
 
       default:
@@ -116,13 +122,52 @@ module.exports = class extends Transform {
    * @param {*} resource
    */
   econsentDocumentTemplateAdjustments(resource) {
-    resource.c_sites = []
 
-    if (resource.ec__published) {
-      delete resource.ec__published
+    const {
+            // eslint-disable-next-line camelcase
+            org: { objects: { ec__document_template, c_sites } }
+          } = global,
+
+          doc = ec__document_template
+            .readOne({ ec__key: resource.ec__key })
+            .skipAcl()
+            .grant(consts.accessLevels.read)
+            .throwNotFound(false)
+            .paths('ec__status', 'ec__title', 'ec__key')
+            .execute()
+
+    if (doc && doc.ec__status !== 'draft') {
+      throw Fault.create('kInvalidArgument',
+        {
+          errCode: 'cortex.invalidArgument.updateDisabled',
+          reason: 'An eConsent template in this import exists in the target and is not in draft',
+          message: `Document Key ${doc.ec__key}, Document title "${doc.ec__title}"`
+        })
+    }
+    if (!resource.ec__sites) {
+      resource.ec__sites = []
     }
 
-    resource.ec__status = 'draft'
+    // keep the sites that are set on the document in the target if it exists
+    if (doc && doc.ec__sites) {
+      resource.ec__sites.push(...doc.ec__sites)
+    }
+
+    // make sure sites array only contains sites that are in the target
+
+
+    resource.ec__sites = resource.ec__sites.filter((v) => {
+      const spl = v.split('.'),
+            // eslint-disable-next-line camelcase
+            c_key = spl[1]
+      return c_sites.find({ c_key }).hasNext()
+    })
+
+
+    // importing a new published doc? Set the published date as today.
+    if (!doc && resource.ec__status === 'published') {
+      resource.ec__published = moment().format('YYYY-MM-DD')
+    }
   }
 
   /**
