@@ -33,6 +33,7 @@
     "async-iter-stream": "^1.2.0",
     "inflection": "^1.12.0",
     "lodash": "^4.17.14",
+    "moment": "^2.29.1",
     "ndjson": "^1.5.0",
     "pump": "^3.0.0",
     "stream-to-iterator": "^3.0.2-0"
