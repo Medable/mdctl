@@ -3,7 +3,7 @@
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable no-param-reassign */
 
-import moment from 'moment'
+const moment = require('moment')
 
 // eslint-disable-next-line import/no-unresolved
 const { Transform } = require('runtime.transform')
@@ -141,9 +141,11 @@ module.exports = class extends Transform {
         {
           errCode: 'cortex.invalidArgument.updateDisabled',
           reason: 'An eConsent template in this import exists in the target and is not in draft',
-          message: `Document Key ${doc.ec__key}, Document title "${doc.ec__title}"`,
-          resource
+          message: `Document Key ${doc.ec__key}, Document title "${doc.ec__title}"`
         })
+    }
+    if (!resource.ec__sites) {
+      resource.ec__sites = []
     }
 
     // keep the sites that are set on the document in the target if it exists
@@ -152,11 +154,12 @@ module.exports = class extends Transform {
     }
 
     // make sure sites array only contains sites that are in the target
-    resource.c_sites = resource.ec__sites.filter((v) => {
+
+
+    resource.ec__sites = resource.ec__sites.filter((v) => {
       const spl = v.split('.'),
             // eslint-disable-next-line camelcase
             c_key = spl[1]
-            console.log(c_key)
       return c_sites.find({ c_key }).hasNext()
     })
 
