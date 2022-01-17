@@ -24,7 +24,16 @@ describe('getStudyManifestEntities', () => {
 
   it.each([
     ['c_sites'],
-    ['c_anchor_date_templates']
+    ['c_anchor_date_templates'],
+    ['c_looker_integration_records'],
+    ['int__vendor_integration_records'],
+    ['int__model_mappings'],
+    ['int__pipelines'],
+    ['orac__studies'],
+    ['orac__sites'],
+    ['orac__forms'],
+    ['orac__form_questions'],
+    ['orac__events']
   ])('should include %s', async(entity) => {
     const entities = await manifestTools.getStudyManifestEntities({}, {}, {}),
           objectsRequested = mockGetExportedObjects
