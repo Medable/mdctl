@@ -38,48 +38,69 @@ class StudyManifestTools {
           allObj = await objects.find()
             .limit(false)
             .toArray(),
-          orgReferenceProps = allObj.reduce((a, obj) => {
-            if (!a[obj.pluralName]) {
-              // eslint-disable-next-line no-param-reassign
-              a[obj.pluralName] = []
-            }
-            obj.properties.forEach((prop) => {
-              if (prop.type === 'Reference' || (prop.type === 'ObjectId' && prop.sourceObject)) {
-                a[obj.pluralName].push({
-                  name: prop.name,
-                  array: !!prop.array,
-                  object: prop.sourceObject,
-                  type: prop.type
-                })
+          orgReferenceProps = allObj
+            .reduce((acc, obj) => {
+
+              const references = this.getReferences(obj)
+
+              if (!acc[obj.pluralName]) {
+                acc[obj.pluralName] = []
               }
 
-              if (prop.properties) {
-                prop.properties.forEach((subProp) => {
-                  if (prop.type === 'Reference' || (prop.type === 'ObjectId' && prop.sourceObject)) {
-                    if (!a[obj.pluralName]) {
-                      // eslint-disable-next-line no-param-reassign
-                      a[obj.pluralName] = []
-                    }
+              acc[obj.pluralName].push(...references)
 
-                    a[obj.pluralName].push({
-                      name: `${prop.name}.${subProp.name}`,
-                      array: !!subProp.array,
-                      object: subProp.sourceObject,
-                      type: subProp.type
-                    })
-                  }
-                })
-              }
-            })
-            return a
-          }, {})
+              return acc
+
+            }, {})
 
     Object.assign(privatesAccessor(this), {
       orgObjects: allObj.map(({ name, pluralName, uniqueKey }) => ({ name, pluralName, uniqueKey }))
     })
 
     return { orgReferenceProps }
+  }
 
+  /**
+   * Recursively analyzes an object and returns the references found
+   * @param {*} object schema
+   * @returns an array of references found in the schema
+   */
+  getReferences(object) {
+    const res = []
+
+    object.properties.forEach((prop) => {
+
+      const isReference = prop.type === 'Reference',
+            isObjectIdWithSourceObj = (prop.type === 'ObjectId' && prop.sourceObject),
+            isDocument = prop.type === 'Document',
+            hasValidators = !!(prop.validators && prop.validators.length),
+            isRequired = hasValidators && !!(prop.validators.find(({ name }) => name === 'required')),
+            reference = {
+              name: prop.name,
+              array: !!prop.array,
+              ...(prop.sourceObject && { object: prop.sourceObject }),
+              required: isRequired,
+              type: prop.type
+            }
+
+      if (isReference || isObjectIdWithSourceObj) {
+
+        res.push(reference)
+
+      } else if (isDocument) {
+
+        const documentReferences = this.getReferences(prop)
+
+        if (documentReferences.length) {
+          reference.documents = documentReferences
+          res.push(reference)
+        }
+
+      }
+
+    })
+
+    return res
   }
 
   mapObjectNameToPlural(name) {
@@ -107,9 +128,7 @@ class StudyManifestTools {
     this.writeIssues(removedEntities)
     this.writePackage('study')
 
-
     return { manifest, removedEntities }
-
   }
 
   async getTasksManifest(taskIds) {
@@ -181,53 +200,24 @@ class StudyManifestTools {
   }
 
   validateReferences(entities, orgReferenceProps, ignore = []) {
+
     console.log('Validating Internal References')
     const outputEntities = [],
           removedEntities = []
 
     entities.forEach((entity) => {
-      const issues = [],
-            pluralName = this.mapObjectNameToPlural(entity.object),
-            references = ignore.includes(pluralName) ? [] : orgReferenceProps[pluralName]
-      let valid = true
 
-      references.forEach((ref) => {
-        if (entity[ref.name]) {
-          const refEntityIds = []
+      const pluralName = this.mapObjectNameToPlural(entity.object),
+            references = ignore.includes(pluralName) ? [] : orgReferenceProps[pluralName],
+            refEntityIds = this.getIdsByReferenceType(entity, references),
+            issues = this.getEntityIssues(entity, refEntityIds, entities),
+            isValid = issues.length === 0
 
-          if (ref.type === 'Reference') {
-            refEntityIds.push(entity[ref.name]._id)
-          } else if (ref.array) {
-            if (!entity[ref.name].length) return
-            refEntityIds.push(...entity[ref.name])
-          } else {
-            refEntityIds.push(entity[ref.name])
-          }
-
-          if (refEntityIds.length) {
-            refEntityIds.forEach((refEntityId) => {
-              const refEntity = entities.find(v => v._id === refEntityId)
-
-              if (!refEntity) {
-                valid = false
-                const issue = `Entity not found in export for ${entity.object} ${entity._id} for reference ${ref.name} id ${refEntityId}`
-                issues.push(issue)
-              }
-            })
-          } else {
-            valid = false
-            const issue = `No entity id for ${entity.object} ${entity._id} for reference ${ref.name}`
-            issues.push(issue)
-          }
-        }
-      })
-
-      if (valid) {
+      if (isValid) {
         outputEntities.push(entity)
       } else {
         removedEntities.push({ entity, issues })
       }
-
     })
 
     if (removedEntities.length) {
@@ -236,25 +226,116 @@ class StudyManifestTools {
     }
 
     return { outputEntities, removedEntities }
+  }
 
+  getIdsByReferenceType(entity, references) {
+    const refEntityIds = []
+
+    references.forEach((ref) => {
+
+      const wrapper = { reference: ref.name, referenceIds: [], required: ref.required }
+
+      if (ref.type === 'Reference') {
+        const reference = entity[ref.name]
+
+        if (reference) {
+          wrapper.referenceIds
+            .push({ _id: reference._id, reference: ref.name, required: ref.required })
+        }
+
+        refEntityIds.push(wrapper)
+
+      } else if (ref.type === 'ObjectId') {
+        const objectIdArr = entity[ref.name]
+
+        if (objectIdArr && objectIdArr.length) {
+          const referenceIds = objectIdArr
+            .map(objectId => ({ _id: objectId, reference: ref.name, required: ref.required }))
+
+          wrapper.referenceIds.push(...referenceIds)
+        }
+
+        refEntityIds.push(wrapper)
+
+      } else if (ref.type === 'Document' && ref.array) { // Document Array Case
+
+        const documents = entity[ref.name]
+
+        if (documents && documents.length) {
+          const referenceIds = documents
+            .map(document => this.getIdsByReferenceType(document, ref.documents))
+          // flatten
+            .reduce(
+              (flatAcc, [{ referenceIds: referenceIdArr }]) => flatAcc.concat(referenceIdArr), []
+            )
+
+          wrapper.referenceIds.push(...referenceIds)
+        }
+
+        refEntityIds.push(wrapper)
+
+      } else if (ref.type === 'Document') {
+        const document = entity[ref.name]
+
+        if (document) {
+          const referenceIdsWrapper = this.getIdsByReferenceType(document, ref.documents),
+                referenceIds = referenceIdsWrapper
+                // flatten
+                  .reduce(
+                    (flatAcc, { referenceIds: referenceIdArr }) => flatAcc.concat(referenceIdArr), []
+                  )
+
+          wrapper.referenceIds.push(...referenceIds)
+        }
+
+
+        refEntityIds.push(wrapper)
+
+      }
+    })
+
+    return refEntityIds
+  }
+
+  getEntityIssues(entity, refEntityIds, entities) {
+    const issues = []
+
+    refEntityIds.forEach(({ reference, referenceIds, required }) => {
+
+      const hasReferences = referenceIds.length > 0,
+            hasNoReferenceAndRequired = required && referenceIds.length === 0
+
+      if (hasReferences) {
+
+        referenceIds.forEach(({ _id: refEntityId, reference: subReference }) => {
+          const refEntity = entities.find(v => v._id === refEntityId)
+
+          if (!refEntity) {
+            const issue = `Entity not found in export for ${entity.object} ${entity._id} for reference ${subReference} id ${refEntityId}`
+            issues.push(issue)
+          }
+        })
+      } else if (hasNoReferenceAndRequired) {
+        const issue = `No entity id for ${entity.object} ${entity._id} for reference ${reference}`
+        issues.push(issue)
+      }
+    })
+
+    return issues
   }
 
   async getExportObjects(org, object, where, orgReferenceProps) {
 
+    // is it available in the org? if not return an empty array
     if (!privatesAccessor(this).orgObjects.find(v => v.pluralName === object)) return []
 
     const { orgObjects } = privatesAccessor(this),
           { uniqueKey } = orgObjects.find(v => v.pluralName === object),
-          refProps = (orgReferenceProps[object] && orgReferenceProps[object].map(v => v.name)) || [],
+          refProps = this.getReferenceProps(orgReferenceProps[object]),
           paths = [uniqueKey, ...refProps],
-          expand = [...refProps.filter(v => v.type === 'Reference').map(v => v.name)],
           cursor = org.objects[object].find(where)
             .paths(paths)
             .limit(false)
-
-    if (expand.length) {
-      cursor.expand(expand)
-    }
 
     console.log(`Getting ${object}`)
     // eslint-disable-next-line one-var
@@ -263,8 +344,24 @@ class StudyManifestTools {
     if (data.length && data[0].object === 'fault') {
       throw data[0]
     }
-    return data
 
+    return data
+  }
+
+  getReferenceProps(referencedProps = []) {
+    return referencedProps
+      .map((referenceProp) => {
+        const isDocument = referenceProp.type === 'Document'
+
+        if (isDocument) {
+          return referenceProp
+            .documents
+            .map(subReferenceProp => `${referenceProp.name}.${subReferenceProp.name}`)
+        }
+
+        return [referenceProp.name]
+      })
+      .reduce((acc, curr) => acc.concat(curr), [])
   }
 
   async getStudyManifestEntities(org, study, orgReferenceProps) {
@@ -287,12 +384,34 @@ class StudyManifestTools {
 
           documentTemplates = await this.getExportObjects(org, 'ec__document_templates', { ec__study: study._id }, orgReferenceProps),
           knowledgeChecks = await this.getExportObjects(org, 'ec__knowledge_checks', { ec__document_template: { $in: documentTemplates.map(v => v._id) } }, orgReferenceProps),
-          defaultDoc = await this.getExportObjects(org, 'ec__default_document_csses', null, orgReferenceProps)
+          defaultDoc = await this.getExportObjects(org, 'ec__default_document_csses', null, orgReferenceProps),
 
-    return [...tasks, ...steps, ...branches,
+          // looker
+          lookerIntegrationRecords = await this.getExportObjects(org, 'c_looker_integration_records', null, orgReferenceProps),
+
+          // integrations
+          vendorIntegrationRecords = await this.getExportObjects(org, 'int__vendor_integration_records', null, orgReferenceProps),
+          integrationMappings = await this.getExportObjects(org, 'int__model_mappings', null, orgReferenceProps),
+          integrationPipelines = await this.getExportObjects(org, 'int__pipelines', null, orgReferenceProps),
+
+          // oracle
+          oracleStudies = await this.getExportObjects(org, 'orac__studies', null, orgReferenceProps),
+          oracleSites = await this.getExportObjects(org, 'orac__sites', null, orgReferenceProps),
+          oracleForms = await this.getExportObjects(org, 'orac__forms', null, orgReferenceProps),
+          oracleQuestions = await this.getExportObjects(org, 'orac__form_questions', null, orgReferenceProps),
+          oracleEvents = await this.getExportObjects(org, 'orac__events', null, orgReferenceProps)
+
+
+    return [
+      ...tasks, ...steps, ...branches,
       ...visitSchedules, ...visits, ...groups, ...faults, ...reports, ...sites,
       ...groupTasks, ...taskAssignments, ...participantSchedules, ...anchorDateTemplates,
-      ...patientFlags, ...documentTemplates, ...knowledgeChecks, ...defaultDoc]
+      ...patientFlags, ...documentTemplates, ...knowledgeChecks, ...defaultDoc,
+      ...lookerIntegrationRecords,
+      ...vendorIntegrationRecords, ...integrationMappings, ...integrationPipelines,
+      ...oracleStudies, ...oracleSites,
+      ...oracleForms, ...oracleQuestions, ...oracleEvents
+    ]
   }
 
   async getTaskManifestEntities(org, taskIds, orgReferenceProps) {
