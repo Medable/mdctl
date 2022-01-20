@@ -252,7 +252,7 @@ describe('StudyManifestTools', () => {
                 path: '/c_anchor_date_templates/5fda25b723b606010051fa04'
               }
             },
-            c_group_id: "61e7f1c0abc1c50100056832",
+            c_group_id: '61e7f1c0abc1c50100056832',
             object: 'c_some_object'
           },
           someObjectReferences = [
