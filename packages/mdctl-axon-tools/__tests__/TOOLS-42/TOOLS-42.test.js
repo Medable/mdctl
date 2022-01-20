@@ -252,6 +252,7 @@ describe('StudyManifestTools', () => {
                 path: '/c_anchor_date_templates/5fda25b723b606010051fa04'
               }
             },
+            c_group_id: "61e7f1c0abc1c50100056832",
             object: 'c_some_object'
           },
           someObjectReferences = [
@@ -298,7 +299,13 @@ describe('StudyManifestTools', () => {
                   required: false
                 }
               ]
-            }
+            },
+            {
+              name: 'c_group_id',
+              array: false,
+              type: 'ObjectId',
+              required: false
+            },
           ],
           ids = studyManifestTools.getIdsByReferenceType(entity, someObjectReferences)
 
@@ -307,7 +314,8 @@ describe('StudyManifestTools', () => {
         { reference: 'c_study', referenceIds: [{ _id: '60ca4a670ee6980100215a5d', reference: 'c_study', required: false }], required: false },
         { reference: 'c_visits', referenceIds: [{ _id: '610bfcc53e5bb50100d87369', reference: 'c_visits', required: false }, { _id: '611fe3cf6db3df0100238e01', reference: 'c_visits', required: false }], required: false },
         { reference: 'c_assignment_availability', referenceIds: [{ _id: '60ca0d7010f38001006621b0', reference: 'c_flag', required: false }, { _id: '60ca0d7010f38001006621b1', reference: 'c_flag', required: false }], required: false },
-        { reference: 'c_end_date_anchor', referenceIds: [{ _id: '5fda25b723b606010051fa04', reference: 'c_template', required: false }], required: false }
+        { reference: 'c_end_date_anchor', referenceIds: [{ _id: '5fda25b723b606010051fa04', reference: 'c_template', required: false }], required: false },
+        { reference: 'c_group_id', referenceIds: [{ _id: '61e7f1c0abc1c50100056832', reference: 'c_group_id', required: false }], required: false }
       ])
   })
 

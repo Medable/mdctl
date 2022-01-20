@@ -243,9 +243,7 @@ class StudyManifestTools {
             .push({ _id: reference._id, reference: ref.name, required: ref.required })
         }
 
-        refEntityIds.push(wrapper)
-
-      } else if (ref.type === 'ObjectId') {
+      } else if (ref.type === 'ObjectId' && ref.array) {
         const objectIdArr = entity[ref.name]
 
         if (objectIdArr && objectIdArr.length) {
@@ -255,7 +253,13 @@ class StudyManifestTools {
           wrapper.referenceIds.push(...referenceIds)
         }
 
-        refEntityIds.push(wrapper)
+      } else if(ref.type === 'ObjectId') {
+        const objectId = entity[ref.name]
+
+        if(objectId) {
+          wrapper.referenceIds
+            .push({ _id: objectId, reference: ref.name, required: ref.required })
+        }
 
       } else if (ref.type === 'Document' && ref.array) { // Document Array Case
 
@@ -272,8 +276,6 @@ class StudyManifestTools {
           wrapper.referenceIds.push(...referenceIds)
         }
 
-        refEntityIds.push(wrapper)
-
       } else if (ref.type === 'Document') {
         const document = entity[ref.name]
 
@@ -288,10 +290,9 @@ class StudyManifestTools {
           wrapper.referenceIds.push(...referenceIds)
         }
 
-
-        refEntityIds.push(wrapper)
-
       }
+
+      refEntityIds.push(wrapper)
     })
 
     return refEntityIds
