@@ -236,11 +236,14 @@ class StudyManifestTools {
       const wrapper = { reference: ref.name, referenceIds: [], required: ref.required }
 
       if (ref.type === 'Reference') {
+
         const reference = entity[ref.name]
 
         if (reference) {
           wrapper.referenceIds
             .push({ _id: reference._id, reference: ref.name, required: ref.required })
+
+          refEntityIds.push(wrapper)
         }
 
       } else if (ref.type === 'ObjectId' && ref.array) {
@@ -251,14 +254,18 @@ class StudyManifestTools {
             .map(objectId => ({ _id: objectId, reference: ref.name, required: ref.required }))
 
           wrapper.referenceIds.push(...referenceIds)
+
+          refEntityIds.push(wrapper)
         }
 
-      } else if(ref.type === 'ObjectId') {
+      } else if (ref.type === 'ObjectId') {
         const objectId = entity[ref.name]
 
-        if(objectId) {
+        if (objectId) {
           wrapper.referenceIds
             .push({ _id: objectId, reference: ref.name, required: ref.required })
+
+          refEntityIds.push(wrapper)
         }
 
       } else if (ref.type === 'Document' && ref.array) { // Document Array Case
@@ -274,6 +281,8 @@ class StudyManifestTools {
             )
 
           wrapper.referenceIds.push(...referenceIds)
+
+          refEntityIds.push(wrapper)
         }
 
       } else if (ref.type === 'Document') {
@@ -288,11 +297,12 @@ class StudyManifestTools {
                   )
 
           wrapper.referenceIds.push(...referenceIds)
+
+          refEntityIds.push(wrapper)
         }
 
       }
 
-      refEntityIds.push(wrapper)
     })
 
     return refEntityIds

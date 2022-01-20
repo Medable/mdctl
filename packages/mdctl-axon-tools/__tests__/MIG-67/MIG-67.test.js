@@ -73,12 +73,12 @@ describe('StudyManifestTools', () => {
             object: 'c_patient_flag'
           },
           patientFlagsReferences = studyManifestTools.getReferences(schema),
-          refEntityIds = studyManifestTools.getIdsByReferenceType(entity, patientFlagsReferences)
-          // issues = studyManifestTools.getEntityIssues(entity, refEntityIds, [entity])
+          refEntityIds = studyManifestTools.getIdsByReferenceType(entity, patientFlagsReferences),
+          issues = studyManifestTools.getEntityIssues(entity, refEntityIds, [entity])
 
-    console.log(patientFlagsReferences)
-    console.log(refEntityIds)
-    // console.log(issues)
+    console.log(JSON.stringify(patientFlagsReferences, null, ' '))
+    console.log(JSON.stringify(refEntityIds, null, ' '))
+    console.log(issues)
 
   })
 })
