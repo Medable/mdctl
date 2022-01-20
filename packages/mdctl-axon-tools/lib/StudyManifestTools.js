@@ -74,20 +74,26 @@ class StudyManifestTools {
             isObjectIdWithSourceObj = (prop.type === 'ObjectId' && prop.sourceObject),
             isDocument = prop.type === 'Document',
             hasValidators = !!(prop.validators && prop.validators.length),
-            isRequired = hasValidators && !!(prop.validators.find(({ name }) => name === 'required')),
             reference = {
               name: prop.name,
               array: !!prop.array,
               ...(prop.sourceObject && { object: prop.sourceObject }),
-              required: isRequired,
               type: prop.type
             }
 
       if (isReference || isObjectIdWithSourceObj) {
 
+        const isRequired = hasValidators && !!(prop.validators.find(({ name }) => name === 'required'))
+        reference.required = isRequired
+
         res.push(reference)
 
       } else if (isDocument) {
+
+        // Documents are just wrappers
+        // so they are always not required even if the  document is required
+        // we care if the references INSIDE the document are required
+        reference.required = false
 
         const documentReferences = this.getReferences(prop)
 

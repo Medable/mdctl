@@ -76,7 +76,6 @@ describe('StudyManifestTools', () => {
           refEntityIds = studyManifestTools.getIdsByReferenceType(entity, patientFlagsReferences),
           issues = studyManifestTools.getEntityIssues(entity, refEntityIds, [entity])
 
-    console.log(JSON.stringify(patientFlagsReferences, null, ' '))
     console.log(JSON.stringify(refEntityIds, null, ' '))
     console.log(issues)
 
