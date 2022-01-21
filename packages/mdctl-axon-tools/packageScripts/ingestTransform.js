@@ -128,7 +128,8 @@ module.exports = class extends Transform {
             // eslint-disable-next-line camelcase
             org: { objects: { ec__document_template, c_sites } }
           } = global,
-          studyReference = `c_study.${memo.study.c_key}`,
+          targetHasStudy = memo.study,
+          studyReference = targetHasStudy && `c_study.${memo.study.c_key}`,
           studyIsDifferent = resource.ec__study !== studyReference,
           doc = ec__document_template
             .readOne({ ec__key: resource.ec__key })
@@ -165,7 +166,7 @@ module.exports = class extends Transform {
 
 
     // fix the study reference if necessary
-    if (studyIsDifferent) {
+    if (targetHasStudy && studyIsDifferent) {
       resource.ec__study = studyReference
     }
 
