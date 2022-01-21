@@ -72,12 +72,24 @@ describe('StudyManifestTools', () => {
             _id: '615bcd016631cc0100d2766c',
             object: 'c_patient_flag'
           },
+          entities = [{
+            _id: '615bcd016631cc0100d2766c',
+            object: 'c_patient_flag'
+          },
+          {
+            _id: '615b60d1bf2e4301008f4d68',
+            object: 'c_task'
+          },
+          {
+            _id: '615bca961a20230100471c01',
+            object: 'c_task'
+          }],
           patientFlagsReferences = studyManifestTools.getReferences(schema),
           refEntityIds = studyManifestTools.getIdsByReferenceType(entity, patientFlagsReferences),
-          issues = studyManifestTools.getEntityIssues(entity, refEntityIds, [entity])
+          issues = studyManifestTools.getEntityIssues(entity, refEntityIds, entities)
 
-    console.log(JSON.stringify(refEntityIds, null, ' '))
-    console.log(issues)
+
+    expect(issues).toHaveLength(0)
 
   })
 })
