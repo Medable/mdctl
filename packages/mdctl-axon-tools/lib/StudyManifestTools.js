@@ -239,7 +239,9 @@ class StudyManifestTools {
 
     references.forEach((ref) => {
 
-      const wrapper = { reference: ref.name, referenceIds: [], required: ref.required }
+      const wrapper = {
+        reference: ref.name, referenceIds: [], required: ref.required, type: ref.type
+      }
 
       if (ref.type === 'Reference') {
 
