@@ -4,7 +4,21 @@ const Transform = require('../../packageScripts/ingestTransform.js')
 const StudyManifestTools = require('../../lib/StudyManifestTools')
 
 jest.mock('runtime.transform', () => ({ Transform: class {} }), { virtual: true })
-jest.mock('@medable/mdctl-core-utils/privates', () => ({ privatesAccessor: () => ({ options: { dir: __dirname } }) }), { virtual: true })
+jest.mock('@medable/mdctl-core-utils/privates', () => ({
+  privatesAccessor: () => ({
+    options: { dir: __dirname },
+    orgObjects: [
+      {
+        name: 'c_study',
+        uniqueKey: 'c_key',
+      },
+      {
+        name: 'c_some_object',
+        uniqueKey: 'c_key',
+      }
+    ]
+  })
+}), { virtual: true })
 jest.mock('@medable/mdctl-api-driver', () => ({ Driver: class {} }), { virtual: true })
 jest.mock('@medable/mdctl-api-driver/lib/cortex.object', () => ({ Object: class {} }), { virtual: true })
 jest.mock('config', () => ({ get: jest.fn(() => '1.0') }), { virtual: true })
@@ -510,6 +524,49 @@ describe('StudyManifestTools', () => {
         'c_assignment_availability.c_flag',
         'c_end_date_anchor.c_template'
       ])
+  })
+
+  it('should createManifest', () => {
+    const entities = [{
+            _id: '615bcd016631cc0100d2766c',
+            object: 'c_study',
+            c_key: 'key-001'
+          },
+          {
+            _id: '615b60d1bf2e4301008f4d68',
+            object: 'c_some_object',
+            c_key: 'key-002'
+          }],
+
+          studyManifestTools = new StudyManifestTools(),
+
+          manifest = studyManifestTools.createManifest(entities)
+
+    expect(manifest)
+      .toStrictEqual({
+        object: 'manifest',
+        dependencies: false,
+        exportOwner: false,
+        importOwner: false,
+        c_study: {
+          includes: [
+            'key-001'
+          ],
+          defer: [
+            'c_public_group',
+            'c_default_subject_site',
+            'c_default_subject_visit_schedule',
+            'c_default_subject_group',
+            'c_default_participant_schedule',
+            'c_menu_config.c_group_id'
+          ]
+        },
+        c_some_object: {
+          includes: [
+            'key-002'
+          ]
+        }
+      })
   })
 
 })
