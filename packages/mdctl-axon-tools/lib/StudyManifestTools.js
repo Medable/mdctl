@@ -197,7 +197,8 @@ class StudyManifestTools {
         'c_default_subject_site',
         'c_default_subject_visit_schedule',
         'c_default_subject_group',
-        'c_default_participant_schedule'
+        'c_default_participant_schedule',
+        'c_menu_config.c_group_id'
       ]
     }
 
@@ -240,7 +241,7 @@ class StudyManifestTools {
     references.forEach((ref) => {
 
       const wrapper = {
-        reference: ref.name, referenceIds: [], required: ref.required, type: ref.type
+        reference: ref.name, referenceIds: [], required: ref.required
       }
 
       if (ref.type === 'Reference') {
@@ -250,9 +251,9 @@ class StudyManifestTools {
         if (reference) {
           wrapper.referenceIds
             .push({ _id: reference._id, reference: ref.name, required: ref.required })
-
-          refEntityIds.push(wrapper)
         }
+
+        refEntityIds.push(wrapper)
 
       } else if (ref.type === 'ObjectId' && ref.array) {
         const objectIdArr = entity[ref.name]
@@ -262,9 +263,9 @@ class StudyManifestTools {
             .map(objectId => ({ _id: objectId, reference: ref.name, required: ref.required }))
 
           wrapper.referenceIds.push(...referenceIds)
-
-          refEntityIds.push(wrapper)
         }
+
+        refEntityIds.push(wrapper)
 
       } else if (ref.type === 'ObjectId') {
         const objectId = entity[ref.name]
@@ -272,9 +273,9 @@ class StudyManifestTools {
         if (objectId) {
           wrapper.referenceIds
             .push({ _id: objectId, reference: ref.name, required: ref.required })
-
-          refEntityIds.push(wrapper)
         }
+
+        refEntityIds.push(wrapper)
 
       } else if (ref.type === 'Document' && ref.array) { // Document Array Case
 
@@ -290,8 +291,9 @@ class StudyManifestTools {
 
           wrapper.referenceIds.push(...referenceIds)
 
-          refEntityIds.push(wrapper)
         }
+
+        refEntityIds.push(wrapper)
 
       } else if (ref.type === 'Document') {
         const document = entity[ref.name]
@@ -306,8 +308,9 @@ class StudyManifestTools {
 
           wrapper.referenceIds.push(...referenceIds)
 
-          refEntityIds.push(wrapper)
         }
+
+        refEntityIds.push(wrapper)
 
       }
 
