@@ -122,13 +122,13 @@ module.exports = class extends Transform {
    * Add modifications to the ec__document_template object
    * @param {*} resource
    */
-  econsentDocumentTemplateAdjustments(resource) {
+  econsentDocumentTemplateAdjustments(resource, memo) {
 
     const {
             // eslint-disable-next-line camelcase
             org: { objects: { ec__document_template, c_sites } }
           } = global,
-          studyReference = `ec__study.${memo.study.c_key}`,
+          studyReference = `c_study.${memo.study.c_key}`,
           studyIsDifferent = resource.ec__study !== studyReference,
           doc = ec__document_template
             .readOne({ ec__key: resource.ec__key })
