@@ -122,13 +122,15 @@ module.exports = class extends Transform {
    * Add modifications to the ec__document_template object
    * @param {*} resource
    */
-  econsentDocumentTemplateAdjustments(resource) {
+  econsentDocumentTemplateAdjustments(resource, memo) {
 
     const {
             // eslint-disable-next-line camelcase
             org: { objects: { ec__document_template, c_sites } }
           } = global,
-
+          targetHasStudy = memo.study,
+          studyReference = targetHasStudy && `c_study.${memo.study.c_key}`,
+          studyIsDifferent = resource.ec__study !== studyReference,
           doc = ec__document_template
             .readOne({ ec__key: resource.ec__key })
             .skipAcl()
@@ -155,8 +157,6 @@ module.exports = class extends Transform {
     }
 
     // make sure sites array only contains sites that are in the target
-
-
     resource.ec__sites = resource.ec__sites.filter((v) => {
       const spl = v.split('.'),
             // eslint-disable-next-line camelcase
@@ -164,6 +164,11 @@ module.exports = class extends Transform {
       return c_sites.find({ c_key }).hasNext()
     })
 
+
+    // fix the study reference if necessary
+    if (targetHasStudy && studyIsDifferent) {
+      resource.ec__study = studyReference
+    }
 
     // importing a new published doc? Set the published date as today.
     if (!doc && resource.ec__status === 'published') {
