@@ -10,18 +10,18 @@ class Package {
       content,
       options,
       dependantPkgs: [],
+      unresolvedPkgs: [],
       source: FactorySource(name, version, options)
     })
   }
 
   shouldIncludePackage(name, version, excludedPackages = {}) {
-    // apply semver to match as well
     return !(excludedPackages[name] && excludedPackages[name].version === version)
   }
 
   async evaluate(excludePackages = {}) {
     // get source content
-    const { source, dependantPkgs } = privatesAccessor(this)
+    const { source, unresolvedPkgs, dependantPkgs } = privatesAccessor(this)
     await source.loadPackageInfo()
     // get dependencies
     for(const depName of Object.keys(source.dependencies || {})) {
@@ -34,10 +34,10 @@ class Package {
       }
     }
 
-    // TODO: resolve dependencies
+
+    // TODO: when same package has multiple versions what to do?
+    // present to the use the ability to choose which version to keep
     return this
-
-
   }
 
   get options() {
