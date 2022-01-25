@@ -74,20 +74,26 @@ class StudyManifestTools {
             isObjectIdWithSourceObj = (prop.type === 'ObjectId' && prop.sourceObject),
             isDocument = prop.type === 'Document',
             hasValidators = !!(prop.validators && prop.validators.length),
-            isRequired = hasValidators && !!(prop.validators.find(({ name }) => name === 'required')),
             reference = {
               name: prop.name,
               array: !!prop.array,
               ...(prop.sourceObject && { object: prop.sourceObject }),
-              required: isRequired,
               type: prop.type
             }
 
       if (isReference || isObjectIdWithSourceObj) {
 
+        const isRequired = hasValidators && !!(prop.validators.find(({ name }) => name === 'required'))
+        reference.required = isRequired
+
         res.push(reference)
 
       } else if (isDocument) {
+
+        // Documents are just wrappers
+        // so they are always not required even if the  document is required
+        // we care if the references INSIDE the document are required
+        reference.required = false
 
         const documentReferences = this.getReferences(prop)
 
@@ -191,7 +197,8 @@ class StudyManifestTools {
         'c_default_subject_site',
         'c_default_subject_visit_schedule',
         'c_default_subject_group',
-        'c_default_participant_schedule'
+        'c_default_participant_schedule',
+        'c_menu_config.c_group_id'
       ]
     }
 
@@ -233,15 +240,20 @@ class StudyManifestTools {
 
     references.forEach((ref) => {
 
-      const wrapper = { reference: ref.name, referenceIds: [], required: ref.required }
+      const wrapper = {
+        reference: ref.name, referenceIds: [], required: ref.required
+      }
 
       if (ref.type === 'Reference') {
+
         const reference = entity[ref.name]
 
         if (reference) {
           wrapper.referenceIds
             .push({ _id: reference._id, reference: ref.name, required: ref.required })
         }
+
+        refEntityIds.push(wrapper)
 
       } else if (ref.type === 'ObjectId' && ref.array) {
         const objectIdArr = entity[ref.name]
@@ -253,13 +265,17 @@ class StudyManifestTools {
           wrapper.referenceIds.push(...referenceIds)
         }
 
-      } else if(ref.type === 'ObjectId') {
+        refEntityIds.push(wrapper)
+
+      } else if (ref.type === 'ObjectId') {
         const objectId = entity[ref.name]
 
-        if(objectId) {
+        if (objectId) {
           wrapper.referenceIds
             .push({ _id: objectId, reference: ref.name, required: ref.required })
         }
+
+        refEntityIds.push(wrapper)
 
       } else if (ref.type === 'Document' && ref.array) { // Document Array Case
 
@@ -274,7 +290,10 @@ class StudyManifestTools {
             )
 
           wrapper.referenceIds.push(...referenceIds)
+
         }
+
+        refEntityIds.push(wrapper)
 
       } else if (ref.type === 'Document') {
         const document = entity[ref.name]
@@ -288,11 +307,13 @@ class StudyManifestTools {
                   )
 
           wrapper.referenceIds.push(...referenceIds)
+
         }
+
+        refEntityIds.push(wrapper)
 
       }
 
-      refEntityIds.push(wrapper)
     })
 
     return refEntityIds
