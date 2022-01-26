@@ -1,3 +1,4 @@
+/* eslint-disable one-var */
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable newline-per-chained-call */
 const fs = require('fs'),
@@ -121,14 +122,115 @@ class StudyManifestTools {
           study = await c_study.readOne()
             .execute(),
           { orgReferenceProps } = await this.getOrgObjectInfo(org),
-          allEntities = [study, ...await this.getStudyManifestEntities(org, study, orgReferenceProps)],
-          { outputEntities, removedEntities } = this.validateReferences(allEntities, orgReferenceProps),
+          // allEntities = [study, ...await this.getStudyManifestEntities(org, study, orgReferenceProps)],
+          allEntities = [study],
+          // { outputEntities, removedEntities } = this.validateReferences(allEntities, orgReferenceProps),
+          outputEntities = allEntities,
           manifest = this.createManifest(outputEntities)
 
-    this.writeIssues(removedEntities)
+    this.writePostImportScript(org, outputEntities)
+
+    // this.writeIssues(removedEntities)
     this.writePackage('study')
 
-    return { manifest, removedEntities }
+    return { manifest }
+    // return { manifest, removedEntities }
+  }
+
+  async writePostImportScript(org, entities) {
+
+    console.log('Writing post import script')
+
+    const studyExport = entities.find(({ object }) => object === 'c_study')
+
+    if (!studyExport) return
+
+    const [currentStudy] = await org
+            .objects
+            .c_study
+            .find({ c_key: studyExport.c_key })
+            .paths('c_menu_config')
+            .limit(1)
+            .toArray(),
+
+          menuConfig = currentStudy.c_menu_config || []
+
+    if (menuConfig.length === 0) return
+
+    const [studySchema] = await org
+            .objects
+            .object
+            .find({ name: 'c_study' })
+            .paths(
+              'properties.name',
+              'properties.properties',
+              'properties.properties.name',
+              'properties.properties.type'
+            )
+            .limit(1)
+            .passive(true)
+            .toArray(),
+
+          hasStringGroupId = studySchema
+            .properties
+            .find((prop) => {
+
+              if (prop.name !== 'c_menu_config') return false
+
+              const groupIdProp = prop.properties.find(({ name }) => name === 'c_group_id')
+
+              if (!groupIdProp) return false
+
+              return groupIdProp.type === 'String'
+            })
+
+    if (!hasStringGroupId) return
+
+    const mapping = []
+
+    // eslint-disable-next-line no-restricted-syntax
+    for (const config of menuConfig) {
+
+      const groupId = config.c_group_id
+
+      // eslint-disable-next-line no-await-in-loop
+      const [group] = await org
+        .objects
+        .c_groups
+        .find({ _id: groupId })
+        .paths('c_key')
+        .limit(1)
+        .toArray()
+
+      if (!group) return
+
+      mapping.push({
+        path: `c_study.${studyExport.c_key}.c_menu_config.${config.c_key}.c_group_id`,
+        mapTo: {
+          $pathTo: [{
+            $dbNext: {
+              object: 'c_group',
+              operation: 'cursor',
+              paths: [
+                '_id'
+              ],
+              where: {
+                c_key: group.c_key
+              }
+            }
+          }, '_id']
+        }
+      })
+    }
+
+    const outputDir = process.cwd()
+
+    fs.writeFileSync(`${outputDir}/install.after.js`, `
+      const mappings = ${JSON.stringify(mapping)}
+      require('logger')
+        .debug(mappings)
+      return mapping
+    `)
   }
 
   async getTasksManifest(taskIds) {
@@ -253,10 +355,10 @@ class StudyManifestTools {
           wrapper.referenceIds.push(...referenceIds)
         }
 
-      } else if(ref.type === 'ObjectId') {
+      } else if (ref.type === 'ObjectId') {
         const objectId = entity[ref.name]
 
-        if(objectId) {
+        if (objectId) {
           wrapper.referenceIds
             .push({ _id: objectId, reference: ref.name, required: ref.required })
         }
@@ -478,6 +580,9 @@ class StudyManifestTools {
     }
 
     packageFile.pipes.ingest = ingestScript
+
+    packageFile.scripts = { afterImport: 'install.after.js' }
+
     fs.copyFileSync(path.join(packageFileDir, ingestScript), path.join(outputDir, ingestScript))
 
     fs.writeFileSync(`${outputDir}/package.json`, JSON.stringify(packageFile, null, 2))
