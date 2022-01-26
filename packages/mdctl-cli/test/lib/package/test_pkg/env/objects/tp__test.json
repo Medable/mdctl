@@ -1,0 +1,13 @@
+{
+  "name": "tp__test",
+  "label": "Test Object",
+  "object": "object",
+  "properties": [
+    {
+      "name": "c_test_property",
+      "label": "Test Property",
+      "type": "String",
+      "indexed": true
+    }
+  ]
+}

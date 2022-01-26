@@ -31,8 +31,8 @@ class Source {
     return privatesAccessor(this).dependencies
   }
 
-  get engine() {
-    return privatesAccessor(this).engine
+  get engines() {
+    return privatesAccessor(this).engines
   }
 
   get options() {

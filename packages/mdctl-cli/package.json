@@ -25,7 +25,8 @@
     "test:watch": "npm run test:only -- --watch",
     "test:examples": "node examples/",
     "cover": "istanbul cover ../../node_modules/mocha/bin/_mocha -- --recursive --timeout 10000",
-    "lint": "eslint . --ext .js"
+    "lint": "eslint . --ext .js",
+    "test:package": "mocha --timeout 1200000 ./test/lib/package"
   },
   "dependencies": {
     "@medable/mdctl-api": "^1.0.62",
