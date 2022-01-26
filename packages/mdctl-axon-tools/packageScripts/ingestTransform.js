@@ -105,6 +105,14 @@ module.exports = class extends Transform {
    */
   studyAdjustments(resource, memo) {
 
+    if ( memo.study && resource.c_key !== memo.study.c_key) {
+      throw Fault.create('kInvalidArgument',
+        {
+          errCode: 'cortex.invalidArgument.updateDisabled',
+          reason: 'Study you are importing does not match the study that exists in the target org'
+        })
+      }
+
     // eslint-disable-next-line no-prototype-builtins
     if (!resource.hasOwnProperty('c_no_pii')) {
 
