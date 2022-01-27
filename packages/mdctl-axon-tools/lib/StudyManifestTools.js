@@ -131,23 +131,21 @@ class StudyManifestTools {
           study = await c_study.readOne()
             .execute(),
           { orgReferenceProps } = await this.getOrgObjectInfo(org),
-          // allEntities = [study, ...await this.getStudyManifestEntities(org, study, orgReferenceProps)],
-          allEntities = [study],
-          // { outputEntities, removedEntities } = this.validateReferences(allEntities, orgReferenceProps),
-          outputEntities = allEntities,
+          allEntities = [study, ...await this.getStudyManifestEntities(org, study, orgReferenceProps)],
+          { outputEntities, removedEntities } = this.validateReferences(allEntities, orgReferenceProps),
           manifest = this.createManifest(outputEntities),
-          mappings = new MenuConfigMapping(org).getMappings(),
+          menuConfigMapping = new MenuConfigMapping(org),
+          mappings = await menuConfigMapping.getMappings(),
           hasMappings = !!mappings.length
 
     if (hasMappings) {
       this.writePostImportScript(mappings)
     }
 
-    // this.writeIssues(removedEntities)
+    this.writeIssues(removedEntities)
     this.writePackage('study')
 
-    return { manifest }
-    // return { manifest, removedEntities }
+    return { manifest, removedEntities }
   }
 
   async writePostImportScript(mappings) {
@@ -157,10 +155,46 @@ class StudyManifestTools {
     console.log('Writing post import script')
 
     fs.writeFileSync(`${outputDir}/install.after.js`, `
-      const mappings = ${JSON.stringify(mappings)}
-      require('logger')
-        .debug(mappings)
-      return mapping
+const { run } = require('expressions')
+
+const mappings = ${JSON.stringify(mappings)}
+
+mappings.forEach(({ path, mapTo }) => {
+  const [entity, entityKey, property, ...rest] = path.split('.'),
+      isDocPropUpdate = !!rest.length,
+      value = run(mapTo)
+
+if (isDocPropUpdate) {
+  const [entityResult] = org.objects[entity]
+    .find({ c_key: entityKey })
+    .paths(property)
+    .limit(1)
+    .toArray()
+
+  if (!entityResult) return
+
+  const documentProps = entityResult[property]
+
+  if (!documentProps || documentProps.length === 0) return
+
+  const [docPropKey, docProp] = rest
+
+  if (!docPropKey || !docProp) return
+
+  const propToUpdate = documentProps.find(({ c_key }) => c_key === docPropKey),
+
+        idToUpdate = propToUpdate._id
+
+  return org.objects[entity]
+    .updateOne({ c_key: entityKey })
+    .pathUpdate(property + '/' + idToUpdate + '/' + docProp , value)
+
+}
+
+return org.objects[entity]
+  .updateOne({ c_key: entityKey }, { $set: { [property]: value } })
+  .execute()
+})
     `)
   }
 
