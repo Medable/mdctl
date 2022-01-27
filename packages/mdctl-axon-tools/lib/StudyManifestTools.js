@@ -1,5 +1,7 @@
 /* eslint-disable one-var */
 /* eslint-disable no-underscore-dangle */
+
+
 /* eslint-disable newline-per-chained-call */
 const fs = require('fs'),
       { privatesAccessor } = require('@medable/mdctl-core-utils/privates'),
@@ -7,6 +9,7 @@ const fs = require('fs'),
       { Org } = require('@medable/mdctl-api-driver/lib/cortex.object'),
       path = require('path'),
       packageFileDir = path.join(__dirname, '../packageScripts')
+const MenuConfigMapping = require('./mappings/MenuConfigMapping')
 
 class StudyManifestTools {
 
@@ -132,9 +135,13 @@ class StudyManifestTools {
           allEntities = [study],
           // { outputEntities, removedEntities } = this.validateReferences(allEntities, orgReferenceProps),
           outputEntities = allEntities,
-          manifest = this.createManifest(outputEntities)
+          manifest = this.createManifest(outputEntities),
+          mappings = new MenuConfigMapping(org).getMappings(),
+          hasMappings = !!mappings.length
 
-    this.writePostImportScript(org, outputEntities)
+    if (hasMappings) {
+      this.writePostImportScript(mappings)
+    }
 
     // this.writeIssues(removedEntities)
     this.writePackage('study')
@@ -143,96 +150,14 @@ class StudyManifestTools {
     // return { manifest, removedEntities }
   }
 
-  async writePostImportScript(org, entities) {
+  async writePostImportScript(mappings) {
+    const { options } = privatesAccessor(this),
+          outputDir = options.dir || process.cwd()
 
     console.log('Writing post import script')
 
-    const studyExport = entities.find(({ object }) => object === 'c_study')
-
-    if (!studyExport) return
-
-    const [currentStudy] = await org
-            .objects
-            .c_study
-            .find({ c_key: studyExport.c_key })
-            .paths('c_menu_config')
-            .limit(1)
-            .toArray(),
-
-          menuConfig = currentStudy.c_menu_config || []
-
-    if (menuConfig.length === 0) return
-
-    const [studySchema] = await org
-            .objects
-            .object
-            .find({ name: 'c_study' })
-            .paths(
-              'properties.name',
-              'properties.properties',
-              'properties.properties.name',
-              'properties.properties.type'
-            )
-            .limit(1)
-            .passive(true)
-            .toArray(),
-
-          hasStringGroupId = studySchema
-            .properties
-            .find((prop) => {
-
-              if (prop.name !== 'c_menu_config') return false
-
-              const groupIdProp = prop.properties.find(({ name }) => name === 'c_group_id')
-
-              if (!groupIdProp) return false
-
-              return groupIdProp.type === 'String'
-            })
-
-    if (!hasStringGroupId) return
-
-    const mapping = []
-
-    // eslint-disable-next-line no-restricted-syntax
-    for (const config of menuConfig) {
-
-      const groupId = config.c_group_id
-
-      // eslint-disable-next-line no-await-in-loop
-      const [group] = await org
-        .objects
-        .c_groups
-        .find({ _id: groupId })
-        .paths('c_key')
-        .limit(1)
-        .toArray()
-
-      if (!group) return
-
-      mapping.push({
-        path: `c_study.${studyExport.c_key}.c_menu_config.${config.c_key}.c_group_id`,
-        mapTo: {
-          $pathTo: [{
-            $dbNext: {
-              object: 'c_group',
-              operation: 'cursor',
-              paths: [
-                '_id'
-              ],
-              where: {
-                c_key: group.c_key
-              }
-            }
-          }, '_id']
-        }
-      })
-    }
-
-    const outputDir = process.cwd()
-
     fs.writeFileSync(`${outputDir}/install.after.js`, `
-      const mappings = ${JSON.stringify(mapping)}
+      const mappings = ${JSON.stringify(mappings)}
       require('logger')
         .debug(mappings)
       return mapping
