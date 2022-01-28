@@ -155,15 +155,15 @@ class StudyManifestTools {
 
     console.log('Writing post import script')
 
-    const hookPath = `${outputDir}/install.after.js`
+    const installAfterScript = 'install.after.js'
 
     const packageReference = {
       scripts: {
-        afterImport: hookPath
+        afterImport: installAfterScript
       }
     }
 
-    fs.writeFileSync(`${outputDir}/install.after.js`, mappingScript)
+    fs.writeFileSync(`${outputDir}/${installAfterScript}`, mappingScript)
 
     return packageReference
   }
@@ -234,7 +234,6 @@ class StudyManifestTools {
     }
 
     return manifest
-
   }
 
   validateReferences(entities, orgReferenceProps, ignore = []) {
@@ -499,8 +498,6 @@ class StudyManifestTools {
       fs.writeFileSync(`${outputDir}/issuesReport.json`, JSON.stringify(issues, null, 2))
       fs.writeFileSync(`${outputDir}/detailedIssuesReport.json`, JSON.stringify(removedEntities, null, 2))
     }
-
-
   }
 
   writePackage(entity, externalConfig) {
