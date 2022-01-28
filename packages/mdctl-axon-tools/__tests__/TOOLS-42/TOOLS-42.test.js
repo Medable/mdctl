@@ -184,7 +184,8 @@ describe('StudyManifestTools', () => {
         ingestTransformPath = `${__dirname}/${ingestTransform}`,
         packageJson = 'package.json',
         packageJsonPath = `${__dirname}/${packageJson}`,
-        afterInstallScript = `${__dirname}/install.after.js`
+        afterInstallScript = 'install.after.js',
+        afterInstallScriptPath = `${__dirname}/${afterInstallScript}`
 
   afterEach(() => {
     if (fs.existsSync(ingestTransformPath)) {
@@ -195,8 +196,8 @@ describe('StudyManifestTools', () => {
       fs.unlinkSync(packageJsonPath)
     }
 
-    if (fs.existsSync(afterInstallScript)) {
-      fs.unlinkSync(afterInstallScript)
+    if (fs.existsSync(afterInstallScriptPath)) {
+      fs.unlinkSync(afterInstallScriptPath)
     }
   })
 
@@ -604,14 +605,14 @@ describe('StudyManifestTools', () => {
     expect(packageReference)
       .toStrictEqual({
         scripts: {
-          afterImport: `${__dirname}/install.after.js`
+          afterImport: 'install.after.js'
         }
       })
 
-    expect(fs.existsSync(afterInstallScript)).toBeTruthy()
+    expect(fs.existsSync(afterInstallScriptPath)).toBeTruthy()
 
     // eslint-disable-next-line one-var
-    const afterInstallScriptContent = fs.readFileSync(afterInstallScript)
+    const afterInstallScriptContent = fs.readFileSync(afterInstallScriptPath)
 
     expect(afterInstallScriptContent.toString())
       .toBe(expectedScript)
