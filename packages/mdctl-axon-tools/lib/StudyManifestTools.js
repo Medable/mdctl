@@ -137,12 +137,14 @@ class StudyManifestTools {
           menuConfigMapping = new MenuConfigMapping(org),
           mappingScript = await menuConfigMapping.getMappingScript()
 
+    let extraConfig
+
     if (mappingScript) {
-      this.writeInstallAftertScript(mappingScript)
+      extraConfig = this.writeInstallAftertScript(mappingScript)
     }
 
     this.writeIssues(removedEntities)
-    this.writePackage('study')
+    this.writePackage('study', extraConfig)
 
     return { manifest, removedEntities }
   }
@@ -153,7 +155,17 @@ class StudyManifestTools {
 
     console.log('Writing post import script')
 
+    const hookPath = `${outputDir}/install.after.js`
+
+    const packageReference = {
+      scripts: {
+        afterImport: hookPath
+      }
+    }
+
     fs.writeFileSync(`${outputDir}/install.after.js`, mappingScript)
+
+    return packageReference
   }
 
   async getTasksManifest(taskIds) {
@@ -491,9 +503,9 @@ class StudyManifestTools {
 
   }
 
-  writePackage(entity) {
-    const packageFile = JSON.parse(fs.readFileSync(path.join(packageFileDir, 'package.json'), 'UTF8')),
-          { options } = privatesAccessor(this),
+  writePackage(entity, externalConfig) {
+    let packageFile = JSON.parse(fs.readFileSync(path.join(packageFileDir, 'package.json'), 'UTF8'))
+    const { options } = privatesAccessor(this),
           outputDir = options.dir || process.cwd(),
           ingestScript = 'ingestTransform.js'
 
@@ -519,7 +531,12 @@ class StudyManifestTools {
 
     packageFile.pipes.ingest = ingestScript
 
-    packageFile.scripts = { afterImport: 'install.after.js' }
+    if (externalConfig) {
+      packageFile = {
+        ...packageFile,
+        ...externalConfig
+      }
+    }
 
     fs.copyFileSync(path.join(packageFileDir, ingestScript), path.join(outputDir, ingestScript))
 

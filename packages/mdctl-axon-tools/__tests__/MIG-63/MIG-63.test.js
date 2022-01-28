@@ -67,7 +67,6 @@ describe('MenuConfigMappings', () => {
                 limit() {
                   return {
                     async toArray() {
-                      console.log('groupId', groupId)
                       if (groupId === '001') {
                         return [{
                           _id: '001',
@@ -160,6 +159,5 @@ mappings.forEach(({ path, mapTo }) => {
 
     expect(script)
       .toBe(expectedScript)
-
   })
 })
