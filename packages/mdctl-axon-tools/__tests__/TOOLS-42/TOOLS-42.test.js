@@ -594,13 +594,13 @@ describe('StudyManifestTools', () => {
       })
   })
 
-  it('writeInstallAftertScript', () => {
+  it('writeInstallAfterScript', () => {
 
     const studyManifestTools = new StudyManifestTools(),
 
           expectedScript = 'some very interesting script',
 
-          packageReference = studyManifestTools.writeInstallAftertScript(expectedScript)
+          packageReference = studyManifestTools.writeInstallAfterScript(expectedScript)
 
     expect(packageReference)
       .toStrictEqual({

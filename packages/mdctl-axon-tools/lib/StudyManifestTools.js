@@ -140,7 +140,7 @@ class StudyManifestTools {
     let extraConfig
 
     if (mappingScript) {
-      extraConfig = this.writeInstallAftertScript(mappingScript)
+      extraConfig = this.writeInstallAfterScript(mappingScript)
     }
 
     this.writeIssues(removedEntities)
@@ -149,7 +149,7 @@ class StudyManifestTools {
     return { manifest, removedEntities }
   }
 
-  writeInstallAftertScript(mappingScript) {
+  writeInstallAfterScript(mappingScript) {
     const { options } = privatesAccessor(this),
           outputDir = options.dir || process.cwd()
 
