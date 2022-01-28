@@ -597,9 +597,16 @@ describe('StudyManifestTools', () => {
 
     const studyManifestTools = new StudyManifestTools(),
 
-          expectedScript = 'some very interesting script'
+          expectedScript = 'some very interesting script',
 
-    studyManifestTools.writeInstallAftertScript(expectedScript)
+          packageReference = studyManifestTools.writeInstallAftertScript(expectedScript)
+
+    expect(packageReference)
+      .toStrictEqual({
+        scripts: {
+          afterImport: `${__dirname}/install.after.js`
+        }
+      })
 
     expect(fs.existsSync(afterInstallScript)).toBeTruthy()
 
