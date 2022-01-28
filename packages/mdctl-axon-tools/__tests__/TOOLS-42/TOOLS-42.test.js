@@ -183,7 +183,9 @@ describe('StudyManifestTools', () => {
   const ingestTransform = 'ingestTransform.js',
         ingestTransformPath = `${__dirname}/${ingestTransform}`,
         packageJson = 'package.json',
-        packageJsonPath = `${__dirname}/${packageJson}`
+        packageJsonPath = `${__dirname}/${packageJson}`,
+        afterInstallScript = 'install.after.js',
+        afterInstallScriptPath = `${__dirname}/${afterInstallScript}`
 
   afterEach(() => {
     if (fs.existsSync(ingestTransformPath)) {
@@ -192,6 +194,10 @@ describe('StudyManifestTools', () => {
 
     if (fs.existsSync(packageJsonPath)) {
       fs.unlinkSync(packageJsonPath)
+    }
+
+    if (fs.existsSync(afterInstallScriptPath)) {
+      fs.unlinkSync(afterInstallScriptPath)
     }
   })
 
@@ -227,6 +233,25 @@ describe('StudyManifestTools', () => {
 
     expect(copiedPackageJson)
       .toStrictEqual(expected)
+  })
+
+
+  it('writePackage with install.after hook', () => {
+    const packageType = 'study',
+          expectedPackage = {
+            object: 'package', name: 'Study export', version: '0.0.1', description: 'An export of a study', pipes: { ingest: 'ingestTransform.js' }, script: { afterImport: '123' }
+          },
+          studyManifestTools = new StudyManifestTools()
+
+    studyManifestTools.writePackage(packageType, { script: { afterImport: '123' } })
+
+    expect(fs.existsSync(packageJsonPath)).toBeTruthy()
+
+    // eslint-disable-next-line one-var
+    const copiedPackageJson = JSON.parse(fs.readFileSync(packageJsonPath))
+
+    expect(copiedPackageJson)
+      .toStrictEqual(expectedPackage)
   })
 
   it('should getIdsByReferenceType for each of the available types', () => {
@@ -567,6 +592,30 @@ describe('StudyManifestTools', () => {
           ]
         }
       })
+  })
+
+  it('writeInstallAfterScript', () => {
+
+    const studyManifestTools = new StudyManifestTools(),
+
+          expectedScript = 'some very interesting script',
+
+          packageReference = studyManifestTools.writeInstallAfterScript(expectedScript)
+
+    expect(packageReference)
+      .toStrictEqual({
+        scripts: {
+          afterImport: 'install.after.js'
+        }
+      })
+
+    expect(fs.existsSync(afterInstallScriptPath)).toBeTruthy()
+
+    // eslint-disable-next-line one-var
+    const afterInstallScriptContent = fs.readFileSync(afterInstallScriptPath)
+
+    expect(afterInstallScriptContent.toString())
+      .toBe(expectedScript)
   })
 
 })

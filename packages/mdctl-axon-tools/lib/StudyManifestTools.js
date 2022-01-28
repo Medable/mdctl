@@ -1,4 +1,7 @@
+/* eslint-disable one-var */
 /* eslint-disable no-underscore-dangle */
+
+
 /* eslint-disable newline-per-chained-call */
 const fs = require('fs'),
       { privatesAccessor } = require('@medable/mdctl-core-utils/privates'),
@@ -6,6 +9,7 @@ const fs = require('fs'),
       { Org } = require('@medable/mdctl-api-driver/lib/cortex.object'),
       path = require('path'),
       packageFileDir = path.join(__dirname, '../packageScripts')
+const MenuConfigMapping = require('./mappings/MenuConfigMapping')
 
 class StudyManifestTools {
 
@@ -129,12 +133,39 @@ class StudyManifestTools {
           { orgReferenceProps } = await this.getOrgObjectInfo(org),
           allEntities = [study, ...await this.getStudyManifestEntities(org, study, orgReferenceProps)],
           { outputEntities, removedEntities } = this.validateReferences(allEntities, orgReferenceProps),
-          manifest = this.createManifest(outputEntities)
+          manifest = this.createManifest(outputEntities),
+          menuConfigMapping = new MenuConfigMapping(org),
+          mappingScript = await menuConfigMapping.getMappingScript()
+
+    let extraConfig
+
+    if (mappingScript) {
+      extraConfig = this.writeInstallAfterScript(mappingScript)
+    }
 
     this.writeIssues(removedEntities)
-    this.writePackage('study')
+    this.writePackage('study', extraConfig)
 
     return { manifest, removedEntities }
+  }
+
+  writeInstallAfterScript(mappingScript) {
+    const { options } = privatesAccessor(this),
+          outputDir = options.dir || process.cwd()
+
+    console.log('Writing post import script')
+
+    const installAfterScript = 'install.after.js'
+
+    const packageReference = {
+      scripts: {
+        afterImport: installAfterScript
+      }
+    }
+
+    fs.writeFileSync(`${outputDir}/${installAfterScript}`, mappingScript)
+
+    return packageReference
   }
 
   async getTasksManifest(taskIds) {
@@ -203,7 +234,6 @@ class StudyManifestTools {
     }
 
     return manifest
-
   }
 
   validateReferences(entities, orgReferenceProps, ignore = []) {
@@ -468,13 +498,11 @@ class StudyManifestTools {
       fs.writeFileSync(`${outputDir}/issuesReport.json`, JSON.stringify(issues, null, 2))
       fs.writeFileSync(`${outputDir}/detailedIssuesReport.json`, JSON.stringify(removedEntities, null, 2))
     }
-
-
   }
 
-  writePackage(entity) {
-    const packageFile = JSON.parse(fs.readFileSync(path.join(packageFileDir, 'package.json'), 'UTF8')),
-          { options } = privatesAccessor(this),
+  writePackage(entity, externalConfig) {
+    let packageFile = JSON.parse(fs.readFileSync(path.join(packageFileDir, 'package.json'), 'UTF8'))
+    const { options } = privatesAccessor(this),
           outputDir = options.dir || process.cwd(),
           ingestScript = 'ingestTransform.js'
 
@@ -499,6 +527,14 @@ class StudyManifestTools {
     }
 
     packageFile.pipes.ingest = ingestScript
+
+    if (externalConfig) {
+      packageFile = {
+        ...packageFile,
+        ...externalConfig
+      }
+    }
+
     fs.copyFileSync(path.join(packageFileDir, ingestScript), path.join(outputDir, ingestScript))
 
     fs.writeFileSync(`${outputDir}/package.json`, JSON.stringify(packageFile, null, 2))
