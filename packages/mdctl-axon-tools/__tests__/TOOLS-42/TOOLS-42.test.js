@@ -1,5 +1,6 @@
 // eslint-disable-next-line import/no-dynamic-require
 const fs = require('fs')
+const { isEqual } = require('lodash')
 const Transform = require('../../packageScripts/ingestTransform.js')
 const StudyManifestTools = require('../../lib/StudyManifestTools')
 
@@ -616,6 +617,105 @@ describe('StudyManifestTools', () => {
 
     expect(afterInstallScriptContent.toString())
       .toBe(expectedScript)
+  })
+
+  // eslint-disable-next-line one-var
+  const siteMock = (where, paths) => ({
+          objects: {
+            c_sites: {
+              find(whereArg) {
+
+                if (!isEqual(where, whereArg)) throw new Error('Invalid find where clause')
+
+                return {
+                  paths(pathsArg) {
+
+                    if (!isEqual(paths, pathsArg)) throw new Error('Invalid paths clause')
+
+                    return {
+                      limit(limitClause) {
+
+                        if (limitClause !== false) throw new Error('Invalid limit clause')
+
+                        return {
+                          async toArray() {
+                            return [{ _id: '123' }]
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }),
+
+        ecKnowledgeChecks = where => ({
+          objects: {
+            ec__document_templates: {
+              aggregate(whereArg) {
+
+                const expectedAggregation = [
+                  {
+                    $match: where
+                  },
+                  {
+                    $project: {
+                      ec__knowledge_checks: {
+                        $expand: {
+                          limit: 1000,
+                          pipeline: [{
+                            $project: {
+                              _id: 1,
+                              object: 1
+                            }
+                          }]
+                        }
+                      }
+                    }
+                  }
+                ]
+
+                if (!isEqual(whereArg, expectedAggregation)) throw new Error('Invalid where clause')
+
+                return {
+                  limit(limitClause) {
+
+                    if (limitClause !== 500000) throw new Error('Invalid limit clause')
+
+                    return {
+                      async toArray() {
+                        return [{
+                          _id: '321',
+                          ec__knowledge_checks: {
+                            data: [
+                              { _id: '123' }
+                            ]
+                          }
+                        }]
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        })
+
+  it.each([
+    ['c_sites', siteMock, { _id: '123' }, ['_id']],
+    ['ec__knowledge_checks', ecKnowledgeChecks, { _id: '123' }, ['_id']]
+  ])('getExportArray: %s', async(object, mock, where, paths) => {
+
+    const studyManifestTools = new StudyManifestTools(),
+          org = mock(where, paths),
+
+          resArray = await studyManifestTools.getExportArray(org, object, where, paths)
+
+    expect(resArray).toHaveLength(1)
+
+    expect(resArray[0]).toStrictEqual({ _id: '123' })
   })
 
 })
