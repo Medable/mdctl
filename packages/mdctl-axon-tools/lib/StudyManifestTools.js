@@ -243,7 +243,7 @@ class StudyManifestTools {
           removedEntities = []
 
     entities.forEach((entity) => {
-
+      console.log(entity.object || JSON.stringify(entity, null, ' '))
       const pluralName = this.mapObjectNameToPlural(entity.object),
             references = ignore.includes(pluralName) ? [] : orgReferenceProps[pluralName],
             refEntityIds = this.getIdsByReferenceType(entity, references),
@@ -384,20 +384,66 @@ class StudyManifestTools {
     const { orgObjects } = privatesAccessor(this),
           { uniqueKey } = orgObjects.find(v => v.pluralName === object),
           refProps = this.getReferenceProps(orgReferenceProps[object]),
-          paths = [uniqueKey, ...refProps],
-          cursor = org.objects[object].find(where)
-            .paths(paths)
-            .limit(false)
+          paths = [uniqueKey, ...refProps]
 
     console.log(`Getting ${object}`)
-    // eslint-disable-next-line one-var
-    const data = await cursor.toArray()
+
+    const data = await this.getExportArray(org, object, where, paths)
 
     if (data.length && data[0].object === 'fault') {
       throw data[0]
     }
 
     return data
+  }
+
+  async getExportArray(org, object, where, paths) {
+
+    switch (object) {
+
+      // Workaround until AXONCONFIG-2581 gets implemented
+      case 'ec__knowledge_checks': {
+
+        const pathsInObjectForm = paths
+          .reduce((acc, curr) => ({
+            ...acc,
+            [curr]: 1
+          }), {
+            object: 1
+          })
+
+        const results = await org.objects
+          .ec__document_templates
+          .aggregate([
+            {
+              $match: where
+            },
+            {
+              $project: {
+                ec__knowledge_checks: {
+                  $expand: {
+                    // we assume there won't be more than 1k knowledge checks per template
+                    limit: 1000,
+                    pipeline: [{
+                      $project: pathsInObjectForm
+                    }]
+                  }
+                }
+              }
+            }
+          ])
+          .limit(500000)
+          .toArray()
+
+        return results.reduce((acc, curr) => acc.concat(curr.ec__knowledge_checks.data), [])
+      }
+      default:
+        return org.objects[object].find(where)
+          .paths(paths)
+          .limit(false)
+          .toArray()
+    }
+
   }
 
   getReferenceProps(referencedProps = []) {
@@ -435,7 +481,7 @@ class StudyManifestTools {
           patientFlags = await this.getExportObjects(org, 'c_patient_flags', null, orgReferenceProps),
 
           documentTemplates = await this.getExportObjects(org, 'ec__document_templates', { ec__study: study._id }, orgReferenceProps),
-          knowledgeChecks = await this.getExportObjects(org, 'ec__knowledge_checks', { ec__document_template: { $in: documentTemplates.map(v => v._id) } }, orgReferenceProps),
+          knowledgeChecks = await this.getExportObjects(org, 'ec__knowledge_checks', { _id: { $in: documentTemplates.map(v => v._id) } }, orgReferenceProps),
           defaultDoc = await this.getExportObjects(org, 'ec__default_document_csses', null, orgReferenceProps),
 
           // looker
