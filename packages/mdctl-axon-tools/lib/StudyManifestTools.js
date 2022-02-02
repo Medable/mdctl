@@ -243,7 +243,6 @@ class StudyManifestTools {
           removedEntities = []
 
     entities.forEach((entity) => {
-      console.log(entity.object || JSON.stringify(entity, null, ' '))
       const pluralName = this.mapObjectNameToPlural(entity.object),
             references = ignore.includes(pluralName) ? [] : orgReferenceProps[pluralName],
             refEntityIds = this.getIdsByReferenceType(entity, references),
