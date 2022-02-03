@@ -311,12 +311,43 @@ class StudyManifestTools {
         const documents = entity[ref.name]
 
         if (documents && documents.length) {
-          const referenceIds = documents
+          let referenceIds = documents
             .map(document => this.getIdsByReferenceType(document, ref.documents))
           // flatten
             .reduce(
-              (flatAcc, [{ referenceIds: referenceIdArr }]) => flatAcc.concat(referenceIdArr), []
+              (flatAcc, foundReferences) => {
+                const existingReferences = foundReferences.filter(foundReference => foundReference.referenceIds.length)
+
+                existingReferences.forEach((existingReference) => {
+                  const accumulatedRef = flatAcc.find(refAcc => refAcc.reference === existingReferences.reference)
+
+                  if (accumulatedRef) {
+                    accumulatedRef.referenceIds.push(...existingReference.referenceIds)
+                  } else {
+                    flatAcc.push(existingReference)
+                  }
+
+                })
+
+                return flatAcc
+              }, []
             )
+
+          referenceIds = referenceIds
+            .reduce((acc, referenceId) => {
+
+              referenceId
+                .referenceIds
+                .forEach((subRef) => {
+                  const existingSubRef = acc.find(accRef => accRef._id === subRef._id)
+
+                  if (!existingSubRef) {
+                    acc.push(subRef)
+                  }
+                })
+
+              return acc
+            }, [])
 
           wrapper.referenceIds.push(...referenceIds)
 
