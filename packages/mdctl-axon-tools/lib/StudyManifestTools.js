@@ -9,6 +9,7 @@ const fs = require('fs'),
       { Org } = require('@medable/mdctl-api-driver/lib/cortex.object'),
       path = require('path'),
       packageFileDir = path.join(__dirname, '../packageScripts')
+const { isObject, isArray } = require('lodash')
 const MenuConfigMapping = require('./mappings/MenuConfigMapping')
 
 class StudyManifestTools {
@@ -239,8 +240,8 @@ class StudyManifestTools {
   validateReferences(entities, orgReferenceProps, ignore = []) {
 
     console.log('Validating Internal References')
-    const outputEntities = [],
-          removedEntities = []
+    let outputEntities = []
+    const removedEntities = []
 
     entities.forEach((entity) => {
       const pluralName = this.mapObjectNameToPlural(entity.object),
@@ -256,12 +257,91 @@ class StudyManifestTools {
       }
     })
 
+    const dependencyIssues = this.getDependencyIssues(outputEntities, removedEntities)
+
+    if (dependencyIssues.length) {
+      removedEntities.push(...dependencyIssues)
+
+      // recalulate output entities
+      outputEntities = outputEntities
+        .filter((outputEntity) => {
+          const isRemoved = dependencyIssues.find(({ entity }) => entity._id === outputEntity._id)
+          return !isRemoved
+        })
+    }
+
     if (removedEntities.length) {
       console.log('\x1b[1m\x1b[31m\x1b[40m%s\x1b[0m', 'Referential Integrity Errors Found')
       console.log('\x1b[1m\x1b[31m\x1b[40m%s\x1b[0m', 'Please check issuesReport.json for more details')
     }
 
     return { outputEntities, removedEntities }
+  }
+
+  /**
+   * Checks if there are dependency issues from existing issues
+   * For example: if a patient flag has been flagged as removed entity then we also need to prevent
+   * other entities that may be using that flag from being exported too
+   */
+  getDependencyIssues(outputEntities, removedEntitiesAndIssues) {
+    const removedEntities = removedEntitiesAndIssues
+      .map(({ entity }) => entity)
+      .reduce((acc, entity) => ({ ...acc, [entity._id]: entity }), {})
+
+    const dependentEntitiesToRemove = outputEntities
+      .map((entity) => {
+        const allIds = this.getIdsFromEntity(entity)
+
+        const issuesFound = []
+
+        allIds.forEach((id) => {
+
+          const entityRemoved = removedEntities[id]
+
+          if (entityRemoved) {
+            const issueFound = { entity, issues: [`The object ${entity.object} (${entity._id}) is removed from export because it depends on ${entityRemoved.object} (${entityRemoved._id}) which has issues`] }
+            issuesFound.push(issueFound)
+          }
+        })
+
+        return issuesFound
+      })
+      .filter(entityAndIssue => !!entityAndIssue.length)
+      .reduce((acc, entityAndIssue) => acc.concat(entityAndIssue), [])
+
+    return dependentEntitiesToRemove
+  }
+
+  getIdsFromEntity(entity) {
+    const objectIdRegex = /^[a-f\d]{24}$/i
+
+    const entityIds = []
+
+    if (isArray(entity)) {
+      const subPropsInArray = entity
+        .map(prop => this.getIdsFromEntity(prop))
+        .reduce((acc, curr) => acc.concat(curr), [])
+
+      entityIds.push(...subPropsInArray)
+    } else if (isObject(entity)) {
+
+      Object.keys(entity)
+        .forEach((key) => {
+
+          if (key === '_id') {
+            entityIds.push(entity[key])
+          } else {
+            const propertyValue = entity[key]
+
+            const subPropIds = this.getIdsFromEntity(propertyValue)
+            entityIds.push(...subPropIds)
+          }
+        })
+    } else if (objectIdRegex.test(entity)) {
+      entityIds.push(entity)
+    }
+
+    return entityIds
   }
 
   getIdsByReferenceType(entity, references) {
@@ -381,6 +461,7 @@ class StudyManifestTools {
 
   getEntityIssues(entity, refEntityIds, entities) {
     const issues = []
+    const removedEntityIds = []
 
     refEntityIds.forEach(({ reference, referenceIds, required }) => {
 
