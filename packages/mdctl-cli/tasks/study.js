@@ -10,7 +10,8 @@ const _ = require('lodash'),
       {
         askSelectTasks,
         askSelectConsentTemplates
-      } = require('../lib/studyQuestions')
+      } = require('../lib/studyQuestions'),
+      Env = require('./env')
 
 class Study extends Task {
 
@@ -94,8 +95,18 @@ class Study extends Task {
     } catch (e) {
       throw e
     }
+  }
 
+  async 'study@import'(cli) {
+    console.log('Starting Study Import')
+    const params = await cli.getArguments(this.optionKeys)
 
+    params.triggers = false
+    params.backup = false
+
+    const env = new Env()
+    
+    await env['env@import'](cli)
   }
 
   async 'study@tasks'(cli) {
