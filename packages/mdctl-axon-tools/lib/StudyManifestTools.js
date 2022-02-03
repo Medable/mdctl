@@ -243,7 +243,6 @@ class StudyManifestTools {
           removedEntities = []
 
     entities.forEach((entity) => {
-      console.log(entity.object || JSON.stringify(entity, null, ' '))
       const pluralName = this.mapObjectNameToPlural(entity.object),
             references = ignore.includes(pluralName) ? [] : orgReferenceProps[pluralName],
             refEntityIds = this.getIdsByReferenceType(entity, references),
@@ -524,7 +523,7 @@ class StudyManifestTools {
   async getConsentManifestEntities(org, consentId, orgReferenceProps) {
 
     const documentTemplates = await this.getExportObjects(org, 'ec__document_templates', { _id: { $in: consentId } }, orgReferenceProps),
-          knowledgeChecks = await this.getExportObjects(org, 'ec__knowledge_checks', { ec__document_template: { $in: documentTemplates.map(v => v._id) } }, orgReferenceProps),
+          knowledgeChecks = await this.getExportObjects(org, 'ec__knowledge_checks', { _id: { $in: documentTemplates.map(v => v._id) } }, orgReferenceProps),
           defaultCSS = await this.getExportObjects(org, 'ec__default_document_csses', null, orgReferenceProps)
 
     return [...documentTemplates, ...knowledgeChecks, ...defaultCSS]
