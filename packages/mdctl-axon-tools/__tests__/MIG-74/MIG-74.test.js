@@ -76,8 +76,14 @@ describe('StudyManifestTools', () => {
   it('getDependencyIssues', () => {
 
     const studyManifestTools = new StudyManifestTools(),
-
-          outputEntities = [entity],
+          existingOutputEntity = {
+            c_some_object_id: '619d12295f596301004ea9ef',
+            c_assignment_availability: [],
+            type: 'c_existing_output',
+            _id: '619d12285f596301004ea88e',
+            object: 'c_task_assignment'
+          },
+          outputEntities = [entity, existingOutputEntity],
           removedEntities = [{
             entity: {
               _id: '616129e1e7b0f50100a30e5f',
