@@ -88,10 +88,34 @@ describe('StudyManifestTools', () => {
               _id: '619d120d5f596301004e77b4',
               object: 'c_participant_schedule'
             }
+          },
+          {
+            entity: {
+              _id: '61532aebf20c3601001b7818',
+              object: 'c_anchor_date_template'
+            }
+          },
+          {
+            entity: {
+              _id: '616129e1e7b0f50100a30e77',
+              object: 'c_some_object'
+            }
           }],
           dependencyIssues = studyManifestTools.getDependencyIssues(outputEntities, removedEntities)
 
-    console.log(dependencyIssues)
+    expect(dependencyIssues).toHaveLength(1)
+
+    // eslint-disable-next-line one-var
+    const [depencyIssue] = dependencyIssues
+
+    expect(depencyIssue.entity).toBeDefined()
+
+    expect(depencyIssue.issues).toStrictEqual([
+      'The object c_task_assignment (619d125c5f596301004ef0fc) is removed from export because it depends on c_participant_schedule (619d120d5f596301004e77b4) which has issues',
+      'The object c_task_assignment (619d125c5f596301004ef0fc) is removed from export because it depends on c_anchor_date_template (61532aebf20c3601001b7818) which has issues',
+      'The object c_task_assignment (619d125c5f596301004ef0fc) is removed from export because it depends on c_task (616129e1e7b0f50100a30e5f) which has issues',
+      'The object c_task_assignment (619d125c5f596301004ef0fc) is removed from export because it depends on c_some_object (616129e1e7b0f50100a30e77) which has issues'
+    ])
 
   })
 })

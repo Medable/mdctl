@@ -257,6 +257,7 @@ class StudyManifestTools {
       }
     })
 
+    // check if from the output entities depend on some of the removed entities
     const dependencyIssues = this.getDependencyIssues(outputEntities, removedEntities)
 
     if (dependencyIssues.length) {
@@ -292,26 +293,24 @@ class StudyManifestTools {
       .map((entity) => {
         const allIds = this.getIdsFromEntity(entity)
 
-        const issuesFound = []
+        const issues = allIds
+        // only get the ones with removed entities
+          .filter(id => !!removedEntities[id])
+          .map((id) => {
 
-        allIds.forEach((id) => {
+            const entityRemoved = removedEntities[id]
+            return `The object ${entity.object} (${entity._id}) is removed from export because it depends on ${entityRemoved.object} (${entityRemoved._id}) which has issues`
+          })
 
-          const entityRemoved = removedEntities[id]
-
-          if (entityRemoved) {
-            const issueFound = { entity, issues: [`The object ${entity.object} (${entity._id}) is removed from export because it depends on ${entityRemoved.object} (${entityRemoved._id}) which has issues`] }
-            issuesFound.push(issueFound)
-          }
-        })
-
-        return issuesFound
+        return { entity, issues }
       })
-      .filter(entityAndIssue => !!entityAndIssue.length)
-      .reduce((acc, entityAndIssue) => acc.concat(entityAndIssue), [])
 
     return dependentEntitiesToRemove
   }
 
+  /**
+   * Recursively get all the ObjectIds from a given entity
+   */
   getIdsFromEntity(entity) {
     const objectIdRegex = /^[a-f\d]{24}$/i
 
