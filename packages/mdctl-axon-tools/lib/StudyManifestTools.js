@@ -304,6 +304,7 @@ class StudyManifestTools {
 
         return { entity, issues }
       })
+      .filter(({ issues }) => issues.length)
 
     return dependentEntitiesToRemove
   }
