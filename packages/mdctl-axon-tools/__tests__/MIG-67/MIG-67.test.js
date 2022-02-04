@@ -62,12 +62,19 @@ describe('StudyManifestTools', () => {
                 }
               },
               {
-                c_task_completion: {
+                c_boolean_step: {
                   _id: '615bca961a20230100471c01',
-                  object: 'c_task',
-                  path: '/c_tasks/615bca961a20230100471c01'
+                  object: 'c_step',
+                  path: '/c_step/615bca961a20230100471c01'
                 }
-              }
+              },
+              {
+                c_task_completion: {
+                  _id: '615b60d1bf2e4301008f4d77',
+                  object: 'c_task',
+                  path: '/c_tasks/615b60d1bf2e4301008f4d77'
+                }
+              },
             ],
             _id: '615bcd016631cc0100d2766c',
             object: 'c_patient_flag'
@@ -79,17 +86,17 @@ describe('StudyManifestTools', () => {
           {
             _id: '615b60d1bf2e4301008f4d68',
             object: 'c_task'
-          },
-          {
-            _id: '615bca961a20230100471c01',
-            object: 'c_task'
           }],
           patientFlagsReferences = studyManifestTools.getReferences(schema),
           refEntityIds = studyManifestTools.getIdsByReferenceType(entity, patientFlagsReferences),
           issues = studyManifestTools.getEntityIssues(entity, refEntityIds, entities)
 
-
-    expect(issues).toHaveLength(0)
+    expect(issues).toHaveLength(2)
+    expect(issues)
+      .toStrictEqual([
+        'Entity not found in export for c_patient_flag 615bcd016631cc0100d2766c for reference c_boolean_step id 615bca961a20230100471c01',
+        'Entity not found in export for c_patient_flag 615bcd016631cc0100d2766c for reference c_task_completion id 615b60d1bf2e4301008f4d77'
+      ])
 
   })
 })
