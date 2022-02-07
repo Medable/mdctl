@@ -1,0 +1,11 @@
+{
+  "name": "TestPackage",
+  "version": "1.0.5",
+  "engines": {
+    "cortex": "> 2.15.8"
+  },
+  "dependencies": {
+    "axon": "git+https://gitlab.medable.com/axon/org.git#test_pkg",
+    "data-transfers": "git+https://gitlab.medable.com/platform/environments/data-transfers.git#test_pkg"
+  }
+}

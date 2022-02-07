@@ -16,7 +16,7 @@ describe('CLI - Pkg - Install package', () => {
     console.log(p.dependenciesPackages)
   })
 
-  it('test package', async() => {
+  it.skip('test package', async() => {
     const pkg = new Package('my-study-1022992',{
       name: 'my-study-1022992',
       version: '1.0.0-rc.1',
@@ -42,7 +42,7 @@ describe('CLI - Pkg - Install package', () => {
     // stream.resume()
   })
 
-  it('test package export', async() => {
+  it.skip('test package export', async() => {
     const stream = fs.createReadStream(path.resolve('data.ndjson'))
     const pkg = new Package('exported','1.0.0-rc.1', {
       ndjsonStream: stream.pipe(ndjson.stringify())
