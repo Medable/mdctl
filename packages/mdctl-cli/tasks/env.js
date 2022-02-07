@@ -127,13 +127,18 @@ class Env extends Task {
 
     // eslint-disable-next-line consistent-return
     let stream,
-        postImportFn = () => {}
+        postImportFn = () => {},
+        memoObject,
+        complete,
+        fault
+
     try {
       try {
         // eslint-disable-next-line max-len
-        const { response, postImport } = await importEnv({ client, ...params, stream: ndjson.parse() })
+        const { response, postImport, memo } = await importEnv({ client, ...params, stream: ndjson.parse() })
         stream = response
         postImportFn = postImport
+        memoObject = memo
       } catch (e) {
         if (e instanceof Stream) {
           stream = e
@@ -142,8 +147,8 @@ class Env extends Task {
         }
       }
 
-      const result = await new Promise((resolve, reject) => {
-        let completed = false
+      complete = await new Promise((resolve, reject) => {
+        let hasCompleted = false
         stream.on('data', (data) => {
           if (data instanceof Buffer) {
             /* eslint-disable no-param-reassign */
@@ -160,7 +165,7 @@ class Env extends Task {
           } else {
             outputResult(data)
             if (data.type === 'status' && data.stage === 'complete') {
-              completed = true
+              hasCompleted = true
             }
           }
         })
@@ -170,16 +175,21 @@ class Env extends Task {
         })
 
         stream.on('end', () => {
-          resolve(completed)
+          resolve(hasCompleted)
         })
       })
-      if (result) {
+      if (complete) {
         console.log('Import Finished!')
       } else {
         console.log('Import Finished with errors....!')
       }
+    } catch (err) {
+      fault = err
+      throw err
     } finally {
-      await postImportFn()
+      await postImportFn({
+        client, err: fault, complete, memo: memoObject
+      })
     }
 
   }
@@ -203,40 +213,40 @@ class Env extends Task {
 
   static help() {
 
-    return `    
+    return `
       Environment environment tools.
-      
-      Usage: 
-        
+
+      Usage:
+
         mdctl env [command] [options]
-            
-      Arguments:               
-        
-        command                      
-          export - export from an endpoint environment        
-          import - import to an endpoint environment   
-          add object [type] name - add a new resource  
-                  
-        options     
-          --endpoint sets the endpoint. eg. api.dev.medable.com     
-          --env sets the environment. eg. example                              
+
+      Arguments:
+
+        command
+          export - export from an endpoint environment
+          import - import to an endpoint environment
+          add object [type] name - add a new resource
+
+        options
+          --endpoint sets the endpoint. eg. api.dev.medable.com
+          --env sets the environment. eg. example
           --manifest - defaults to $cwd/manifest.json
           --resource - import single resource, overriding manifest (eg. script.c_foo)
           --format - export format (json, yaml) defaults to json
           --debug - log messages and progress to stdout
           --clear - export will clear output dir before export default true
-          --preferUrls - set to true to force the server to send urls instead of base64 encoded chunks 
+          --preferUrls - set to true to force the server to send urls instead of base64 encoded chunks
           --silent - skip documents with missing export keys instead of failing
           --backup - (Import only) default: true. set to false to disable the deployment backup/rollback mechanism
           --production - (Import only) default: false. To help prevent unintentional imports, the production flag must be set in production and only in production environments.
           --triggers - (Import only) default: true. set to false to disable script triggers for imported resources
           --dry-run - (Import only) will skip calling api
           --docs - (Export only) generates documentation for the environment
-          
+
         experimental commands
           provision - provision an org into an environment
           teardown - teardown an org
-          
+
         experimental options
           --email sets the email of the admin user eg. admin@medable.com
           --code sets the environment code (org code) is (optional), is (required) for teardown

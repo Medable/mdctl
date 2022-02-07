@@ -5,7 +5,7 @@ const fs = require('fs'),
       pump = require('pump'),
       ndjson = require('ndjson'),
       { isSet, parseString, rString } = require('@medable/mdctl-core-utils/values'),
-      Packages = require('packages/mdctl-packages'),
+      Packages = require('@medable/mdctl-packages'),
       ImportStream = require('@medable/mdctl-core/streams/import_stream'),
       ImportFileTreeAdapter = require('@medable/mdctl-import-adapter'),
       {
