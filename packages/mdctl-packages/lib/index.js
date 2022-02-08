@@ -12,15 +12,12 @@ const Fault = require('@medable/mdctl-core/fault'),
       },
       resolveSource = (name, path, options) => {
         let sourceType = 'registry'
-        if(options.ndjsonStream) {
+        if (options.ndjsonStream) {
           sourceType = 'ndjson'
         } else if (path.indexOf('file://') > -1 || path === '.') {
           sourceType = 'file'
         } else if (path.indexOf('git+https://') > -1) {
           sourceType = 'git'
-        }
-        if (sourceType === 'registry') {
-          throw new Error('Registry source is not implemented yet')
         }
         return new sources[sourceType](name, path, options)
       }
