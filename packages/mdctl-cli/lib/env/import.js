@@ -113,23 +113,8 @@ const pump = require('pump'),
           return { response, postImport: fileAdapter.postImport(), memo }
         }
 
-        return new Promise((resolve, reject) => {
-          const items = [],
-                streamChain = pump(...streamList, () => {
-                  if (options.debug) {
-                    console.debug(`Ending stream, total chunks sent: ${items.length}`)
-                  }
-                  resolve({ response: options.returnBlob ? Buffer.concat(items) : '', postImport: fileAdapter.postImport(), memo })
-                })
-          streamChain.on('data', d => items.push(d))
-          streamChain.on('error', (e) => {
-            if (options.debug) {
-              console.debug(e)
-            }
-            reject(e)
-          })
-          streamChain.resume()
-        })
+        const response = pump(...streamList)
+        return { response, postImport: fileAdapter.postImport(), memo }
 
       }
 
