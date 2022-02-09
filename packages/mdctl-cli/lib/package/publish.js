@@ -1,4 +1,4 @@
-const Package = require('../../../mdctl-packages'),
+const Package = require('@medable/mdctl-packages'),
       { Registry, Cortex } = require('../package/source'),
       publishPkg = async(name, params) => {
         const {

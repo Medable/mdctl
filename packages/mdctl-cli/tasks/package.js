@@ -1,5 +1,4 @@
 /* eslint-disable class-methods-use-this */
-
 const _ = require('lodash'),
       { isSet } = require('@medable/mdctl-core-utils/values'),
       Task = require('../lib/task'),

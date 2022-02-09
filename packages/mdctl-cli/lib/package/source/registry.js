@@ -1,4 +1,4 @@
-const { RegistrySource } = require('../../../../mdctl-packages/lib')
+const { RegistrySource } = require('@medable/mdctl-packages/lib')
 
 class Registry {
 

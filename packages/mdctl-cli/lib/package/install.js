@@ -1,4 +1,4 @@
-const Package = require('../../../mdctl-packages'),
+const Package = require('@medable/mdctl-packages'),
       { Cortex } = require('../package/source'),
       installPkg = async(name, params) => {
         let tmpName = name
