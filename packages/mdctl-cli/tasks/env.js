@@ -58,11 +58,11 @@ class Env extends Task {
       },
       triggers: {
         type: 'boolean',
-        default: true
+        default: false
       },
       backup: {
         type: 'boolean',
-        default: true
+        default: false
       },
       silent: {
         type: 'boolean',
