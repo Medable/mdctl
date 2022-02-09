@@ -44,9 +44,9 @@ const pump = require('pump'),
                 ...searchParamsToObject(url.searchParams),
                 preferUrls: rBool(options.preferUrls, false),
                 silent: rBool(options.silent, false),
-                backup: rBool(options.backup, true),
+                backup: rBool(options.backup, false),
                 production: rBool(options.production, false),
-                triggers: rBool(options.triggers, true)
+                triggers: rBool(options.triggers, false)
               },
               requestOptions = {},
               fileAdapter = new ImportFileTreeAdapter(inputDir, options.format, manifest),
