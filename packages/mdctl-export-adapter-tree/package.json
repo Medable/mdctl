@@ -1,6 +1,6 @@
 {
   "name": "@medable/mdctl-export-adapter-tree",
-  "version": "1.0.63-alpha.6",
+  "version": "1.0.63-alpha.7",
   "description": "Medable Developer Client Tools :: Export Tree Adapter",
   "repository": {
     "type": "git",
@@ -25,9 +25,9 @@
     "lint": "eslint *.js"
   },
   "dependencies": {
-    "@medable/mdctl-core": "^1.0.63-alpha.6",
-    "@medable/mdctl-core-utils": "^1.0.63-alpha.6",
-    "@medable/mdctl-node-utils": "^1.0.63-alpha.6",
+    "@medable/mdctl-core": "^1.0.63-alpha.7",
+    "@medable/mdctl-core-utils": "^1.0.63-alpha.7",
+    "@medable/mdctl-node-utils": "^1.0.63-alpha.7",
     "globby": "^10.0.1",
     "jsonpath": "^1.1.1",
     "lodash": "^4.17.21",
