@@ -38,14 +38,15 @@ const pump = require('pump'),
               client = options.client || new Client({ ...Config.global.client, ...options }),
               inputDir = options.dir || process.cwd(),
               progress = rFunction(options.progress),
+              memo = {},
               url = new URL('/developer/environment/import', client.environment.url),
               query = {
                 ...searchParamsToObject(url.searchParams),
                 preferUrls: rBool(options.preferUrls, false),
                 silent: rBool(options.silent, false),
-                backup: rBool(options.backup, true),
+                backup: rBool(options.backup, false),
                 production: rBool(options.production, false),
-                triggers: rBool(options.triggers, true)
+                triggers: rBool(options.triggers, false)
               },
               requestOptions = {},
               fileAdapter = new ImportFileTreeAdapter(inputDir, options.format, manifest),
@@ -86,6 +87,11 @@ const pump = require('pump'),
         })
         streamList.push(debuggerStream)
 
+        const preImport = fileAdapter.preImport()
+        await preImport({
+          client, options, importStream, fileAdapter, memo
+        })
+
         if (!options.dryRun) {
           pathTo(requestOptions, 'headers.accept', 'application/x-ndjson')
           requestOptions.headers['Content-Type'] = 'application/x-ndjson'
@@ -97,32 +103,18 @@ const pump = require('pump'),
           if (options.debug) {
             console.log(`calling api ${url.pathname} with params ${JSON.stringify(requestOptions)}`)
           }
-          return client.call(url.pathname, {
+          const response = await client.call(url.pathname, {
             method: 'POST',
             body: pump(...streamList),
             stream: options.stream,
             query,
             requestOptions
           })
+          return { response, postImport: fileAdapter.postImport(), memo }
         }
 
-        return new Promise((resolve, reject) => {
-          const items = [],
-                streamChain = pump(...streamList, () => {
-                  if (options.debug) {
-                    console.debug(`Ending stream, total chunks sent: ${items.length}`)
-                  }
-                  resolve(options.returnBlob ? Buffer.concat(items) : '')
-                })
-          streamChain.on('data', d => items.push(d))
-          streamChain.on('error', (e) => {
-            if (options.debug) {
-              console.debug(e)
-            }
-            reject(e)
-          })
-          streamChain.resume()
-        })
+        const response = pump(...streamList)
+        return { response, postImport: fileAdapter.postImport(), memo }
 
       }
 

@@ -137,7 +137,12 @@ function guessEndpoint(options = {}) {
   const out = {},
         aliasedEndpoints = {
           prod: 'https://api.medable.com',
-          'int-dev': 'https://api-int-dev.medable.com'
+          'int-dev': 'https://api-int-dev.medable.com',
+          'eu1': 'https://api-eu1.medable.com',
+          'eu1-dev': 'https://api-eu1-dev.medable.com',
+          'cn1': 'https://api.medable.cn',
+          'cn1-dev': 'https://api.dev.medable.cn',
+          'ali-platform': 'https://api.platform.medable.cn'
         },
         { endpoint, env } = options
 
