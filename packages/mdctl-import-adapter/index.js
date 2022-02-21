@@ -1,6 +1,7 @@
 const EventEmitter = require('events'),
       globby = require('globby'),
       uuid = require('uuid'),
+      path = require('path'),
       jp = require('jsonpath'),
       fs = require('fs'),
       _ = require('lodash'),
@@ -14,7 +15,8 @@ const EventEmitter = require('events'),
       KNOWN_FILES = {
         data: 'data/**/*.{json,yaml}',
         objects: 'env/**/*.{json,yaml}',
-        manifest: 'manifest.{json,yaml}'
+        manifest: 'manifest.{json,yaml}',
+        package: 'package.{json,yaml}'
       }
 
 
@@ -30,11 +32,33 @@ class ImportFileTreeAdapter extends EventEmitter {
       manifest,
       metadata: {},
       index: 0,
-      preparedChunks: []
+      preparedChunks: [],
+      preImport: null,
+      postImport: null,
+      packageData: null
     })
 
     this.loadMetadata()
+    this.readPackageFile()
     this.readManifest()
+  }
+
+  preImport() {
+    const { preImport, input } = privatesAccessor(this)
+    if (preImport) {
+      // eslint-disable-next-line global-require,import/no-dynamic-require
+      return require(path.join(input, preImport))
+    }
+    return () => {}
+  }
+
+  postImport() {
+    const { postImport, input } = privatesAccessor(this)
+    if (postImport) {
+      // eslint-disable-next-line global-require,import/no-dynamic-require
+      return require(path.join(input, postImport))
+    }
+    return () => {}
   }
 
   get files() {
@@ -76,6 +100,12 @@ class ImportFileTreeAdapter extends EventEmitter {
     return { results: [section.content], blobResults: [] }
   }
 
+  async loadPackageFromObject() {
+    const { packageData, input, format } = privatesAccessor(this),
+          section = new ImportSection(packageData, 'package', `package.${format}`, input)
+    return { results: [section.content], blobResults: [] }
+  }
+
   async loadFileContent(f) {
     const section = await this.loadFile(f)
     await this.loadFacets(section)
@@ -103,10 +133,15 @@ class ImportFileTreeAdapter extends EventEmitter {
   }
 
   async prepareChunks() {
-    const { files, manifest, preparedChunks } = privatesAccessor(this),
+    const {
+            files, manifest, packageData, preparedChunks
+          } = privatesAccessor(this),
           promises = []
     if (preparedChunks.length) {
       return Promise.resolve(preparedChunks)
+    }
+    if (packageData) {
+      promises.push(this.loadPackageFromObject())
     }
     if (manifest) {
       promises.push(this.loadManifestFromObject())
@@ -139,6 +174,69 @@ class ImportFileTreeAdapter extends EventEmitter {
     })
   }
 
+  readPackageFile() {
+
+    let packageData,
+        script
+
+    const { input } = privatesAccessor(this),
+          location = globby.sync([KNOWN_FILES.package], { cwd: input }),
+          paths = [],
+          getScript = (...params) => {
+            for (const param of params) {
+              if (packageData.scripts[param]) {
+                return packageData.scripts[param]
+              }
+            }
+            return null
+          }
+
+    if (location.length > 0 && fs.existsSync(`${input}/${location[0]}`)) {
+      packageData = parseString(fs.readFileSync(`${input}/${location[0]}`))
+      paths.push(KNOWN_FILES.package)
+    }
+    if (packageData) {
+      if (packageData.scripts) {
+        script = getScript('preImport', 'preimport')
+        if (script) {
+          privatesAccessor(this, 'preImport', script)
+        }
+        script = getScript('postImport', 'postimport')
+        if (script) {
+          privatesAccessor(this, 'postImport', script)
+        }
+        script = getScript('beforeimport', 'beforeImport', 'preinstall', 'preInstall')
+        if (script) {
+          const beforeImport = path.join(input, script)
+          if (fs.existsSync(beforeImport)) {
+            packageData.scripts.beforeImport = fs.readFileSync(beforeImport).toString()
+          }
+        }
+        script = getScript('afterimport', 'afterImport', 'postinstall', 'postInstall')
+        if (script) {
+          const afterImport = path.join(input, script)
+          if (fs.existsSync(afterImport)) {
+            packageData.scripts.afterImport = fs.readFileSync(afterImport).toString()
+          }
+        }
+      }
+      if (packageData.pipes) {
+        if (_.isString(packageData.pipes.ingest)) {
+          const ingestPipe = path.join(input, packageData.pipes.ingest)
+          if (fs.existsSync(ingestPipe)) {
+            packageData.pipes.ingest = fs.readFileSync(ingestPipe).toString()
+          }
+        }
+      }
+      if (packageData.manifest) {
+        const manifestData = parseString(fs.readFileSync(`${input}/${packageData.manifest}`))
+        privatesAccessor(this, 'manifest', manifestData)
+      }
+      privatesAccessor(this, 'packageData', packageData)
+    }
+
+  }
+
   readManifest() {
     const { manifest, input } = privatesAccessor(this),
           paths = []
@@ -149,7 +247,7 @@ class ImportFileTreeAdapter extends EventEmitter {
         manifestData = JSON.parse(fs.readFileSync(`${input}/${location[0]}`))
         paths.push(KNOWN_FILES.manifest)
       } else {
-        throw Fault.from({ code: 'kManifestNotFound', reason: 'There is no manifest defined neither found in directory' })
+        throw Fault.create('mdctl.kManifestNotFound.error', { reason: 'There is no manifest set as parameter neither found in directory' })
       }
     }
     /* eslint-disable one-var */
@@ -183,8 +281,9 @@ class ImportFileTreeAdapter extends EventEmitter {
 
   walkFiles(dir, paths = [KNOWN_FILES.manifest, KNOWN_FILES.objects, KNOWN_FILES.data]) {
     const files = globby.sync(paths, { cwd: dir }),
-          mappedFiles = _.map(files, f => `${dir}/${f}`)
-    privatesAccessor(this, 'files', mappedFiles)
+          mappedFiles = _.map(files, f => `${dir}/${f}`),
+          currentFiles = privatesAccessor(this, 'files')
+    privatesAccessor(this, 'files', currentFiles.concat(mappedFiles))
   }
 
   loadFile(file) {
@@ -217,15 +316,15 @@ class ImportFileTreeAdapter extends EventEmitter {
     }
   }
 
-  getParentFromPath(chunk, path) {
+  getParentFromPath(chunk, value) {
     const { content } = privatesAccessor(chunk),
-          parent = jp.parent(content, jp.stringify(path))
+          parent = jp.parent(content, jp.stringify(value))
     if (parent.code || parent.name || parent.label || parent.resource) {
       return parent
     }
-    path.pop()
+    value.pop()
 
-    return path.length > 1 ? this.getParentFromPath(chunk, path) : {}
+    return value.length > 1 ? this.getParentFromPath(chunk, value) : {}
   }
 
   async loadFacets(chunk) {
@@ -263,16 +362,29 @@ class ImportFileTreeAdapter extends EventEmitter {
   }
 
   async loadScripts(chunk) {
-    const { content, basePath } = privatesAccessor(chunk),
-          nodes = jp.nodes(content, '$..script')
-    nodes.forEach((n) => {
-      if (!_.isObject(n.value)) {
-        if (n.value.indexOf('/env') === 0) {
-          const jsFile = `${basePath}${n.value}`
-          jp.value(content, jp.stringify(n.path), fs.readFileSync(jsFile).toString())
-        }
+    if (chunk.key === 'package') {
+      const { content: { scripts } } = chunk,
+            { preInstall, postInstall } = scripts,
+            { input } = privatesAccessor(this)
+
+      if (preInstall) {
+        scripts.preInstall = fs.readFileSync(path.join(input, preInstall)).toString()
       }
-    })
+      if (postInstall) {
+        scripts.postInstall = fs.readFileSync(path.join(input, postInstall)).toString()
+      }
+    } else {
+      const { content, basePath } = privatesAccessor(chunk),
+            nodes = jp.nodes(content, '$..script')
+      nodes.forEach((n) => {
+        if (!_.isObject(n.value)) {
+          if (n.value.indexOf('/env') === 0) {
+            const jsFile = `${basePath}${n.value}`
+            jp.value(content, jp.stringify(n.path), fs.readFileSync(jsFile).toString())
+          }
+        }
+      })
+    }
     return true
   }
 

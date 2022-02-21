@@ -1,6 +1,6 @@
 {
   "name": "@medable/mdctl-import-adapter",
-  "version": "1.0.53",
+  "version": "1.0.63-alpha.7",
   "description": "Medable Developer Client Tools :: Import Adapter",
   "repository": {
     "type": "git",
@@ -10,7 +10,7 @@
     "url": "https://github.com/Medable/mdctl/issues"
   },
   "engines": {
-    "node": ">=12 <13",
+    "node": ">=12 <17",
     "npm": ">=6"
   },
   "author": "Medable, Inc. <mdctl@medable.com>",
@@ -25,13 +25,13 @@
     "lint": "eslint *.js"
   },
   "dependencies": {
-    "@medable/mdctl-core": "^1.0.53",
-    "@medable/mdctl-core-utils": "^1.0.53",
-    "@medable/mdctl-node-utils": "^1.0.53",
+    "@medable/mdctl-core": "^1.0.63-alpha.7",
+    "@medable/mdctl-core-utils": "^1.0.63-alpha.7",
+    "@medable/mdctl-node-utils": "^1.0.63-alpha.7",
     "clone": "^2.1.2",
     "globby": "^9.1.0",
-    "jsonpath": "^1.0.2",
-    "lodash": "^4.17.14",
+    "jsonpath": "^1.1.1",
+    "lodash": "^4.17.21",
     "lodash.isplainobject": "^4.0.6",
     "mime-types": "^2.1.21",
     "pluralize": "^7.0.0",
