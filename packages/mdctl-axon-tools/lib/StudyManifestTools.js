@@ -474,7 +474,7 @@ class StudyManifestTools {
           const refEntity = entities.find(v => v._id === refEntityId)
 
           if (!refEntity) {
-            const issue = `Entity not found in export for ${entity.object} ${entity._id} for reference ${subReference} id ${refEntityId}`
+            const issue = `The object ${entity.object} (${entity._id}) is removed from export because it depends on ${subReference} (${refEntityId}) which doesn't exist`
             issues.push(issue)
           }
         })

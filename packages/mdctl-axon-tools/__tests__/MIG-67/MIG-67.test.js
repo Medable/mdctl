@@ -94,8 +94,8 @@ describe('StudyManifestTools', () => {
     expect(issues).toHaveLength(2)
     expect(issues)
       .toStrictEqual([
-        'Entity not found in export for c_patient_flag 615bcd016631cc0100d2766c for reference c_boolean_step id 615bca961a20230100471c01',
-        'Entity not found in export for c_patient_flag 615bcd016631cc0100d2766c for reference c_task_completion id 615b60d1bf2e4301008f4d77'
+        "The object c_patient_flag (615bcd016631cc0100d2766c) is removed from export because it depends on c_boolean_step (615bca961a20230100471c01) which doesn't exist",
+        "The object c_patient_flag (615bcd016631cc0100d2766c) is removed from export because it depends on c_task_completion (615b60d1bf2e4301008f4d77) which doesn't exist"
       ])
 
   })

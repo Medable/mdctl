@@ -397,7 +397,7 @@ describe('StudyManifestTools', () => {
     expect(issues)
       .toStrictEqual([
         'No entity id for c_some_entity 60ca0d6c10f3800100661d0a for reference c_study',
-        'Entity not found in export for c_some_entity 60ca0d6c10f3800100661d0a for reference c_visits id 611fe3cf6db3df0100238e01'
+        "The object c_some_entity (60ca0d6c10f3800100661d0a) is removed from export because it depends on c_visits (611fe3cf6db3df0100238e01) which doesn't exist"
       ])
 
   })
