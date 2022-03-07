@@ -32,7 +32,8 @@ const fs = require('fs'),
                   ...searchParamsToObject(url.searchParams),
                   preferUrls: rBool(options.preferUrls, false),
                   silent: rBool(options.silent, false),
-                  backup: rBool(options.backup, true)
+                  skipDefaults: rBool(options.skipDefaults, false),
+                  skipEmptyArrays: rBool(options.skipEmptyArrays, false),
                 },
                 method: 'post'
               },

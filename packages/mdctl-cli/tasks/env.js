@@ -9,6 +9,7 @@ const _ = require('lodash'),
       { pathTo } = require('@medable/mdctl-core-utils'),
       exportEnv = require('../lib/env/export'),
       importEnv = require('../lib/env/import'),
+      {compare: compareEnv} = require('../lib/env/compare'),
       Task = require('../lib/task'),
       {
         createConfig, loadDefaults
@@ -75,6 +76,26 @@ class Env extends Task {
       dir: {
         type: 'string',
         default: ''
+      },
+      skipDefaults: {
+        type: 'boolean',
+        default: false
+      },
+      skipEmptyArrays: {
+        type: 'boolean',
+        default: false
+      },
+      onlyChanges: {
+        type: 'boolean',
+        default: false
+      },
+      object: {
+        type: 'boolean',
+        default: false
+      },
+      color: {
+        type: 'boolean',
+        default: false
       }
     }
 
@@ -136,7 +157,7 @@ class Env extends Task {
       try {
         // eslint-disable-next-line max-len
         const { response, postImport, memo } = await importEnv({ client, ...params, stream: ndjson.parse() })
-        stream = response
+        stream = response || new Stream.PassThrough()
         postImportFn = postImport
         memoObject = memo
       } catch (e) {
@@ -203,6 +224,22 @@ class Env extends Task {
           })
     await add(options)
     console.log('Resource added...!')
+  }
+
+  async 'env@compare'(cli) {
+    const client = await cli.getApiClient({ credentials: await cli.getAuthOptions() }),
+          params = await cli.getArguments(this.optionKeys),
+          format = this.args('format'),
+          options = isSet(params) ? params : {},
+          inputDir = options.dir || process.cwd(),
+          result = await compareEnv(inputDir, client,{ ...params, format })
+    if(result.length > 0) {
+      for (const item of result) {
+        console.log(item.diff)
+      }
+    } else {
+      console.log('No differences!')
+    }
   }
 
   // ----------------------------------------------------------------------------------------------
