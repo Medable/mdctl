@@ -2,7 +2,7 @@ const { Transform } = require('stream'),
       { isCustomName } = require('@medable/mdctl-core-utils/values'),
       { ExportSection, StreamChunk } = require('./section'),
       Fault = require('../fault'),
-      KEYS = ['manifest', 'manifest-dependencies', 'manifest-exports', 'env', 'app', 'config', 'notification', 'policy', 'role', 'smsNumber', 'serviceAccount', 'storageLocation', 'configuration', 'facet', 'object', 'script', 'template', 'view']
+      KEYS = ['manifest', 'manifest-dependencies', 'manifest-exports', 'env', 'app', 'config', 'notification', 'policy', 'role', 'smsNumber', 'serviceAccount', 'storageLocation', 'configuration', 'facet', 'object', 'script', 'template', 'view', 'i18n']
 
 class ExportStream extends Transform {
 
