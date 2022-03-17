@@ -210,6 +210,7 @@ class Manifest extends ManifestStage {
     return [
       'env',
       'configs',
+      'i18ns',
       'scripts', 'views', 'templates',
       'apps', 'roles', 'serviceAccounts', 'smsNumbers', 'policies', 'notifications', 'storageLocations']
   }
@@ -277,6 +278,10 @@ class Manifest extends ManifestStage {
 
   get views() {
     return privatesAccessor(this, 'views')
+  }
+
+  get i18ns() {
+    return privatesAccessor(this, 'i18ns')
   }
 
   get templates() {
