@@ -1,9 +1,8 @@
 const EventEmitter = require('events'),
-      globby = require('globby'),
+      fg = require('fast-glob'),
       uuid = require('uuid'),
       path = require('path'),
       jp = require('jsonpath'),
-      fs = require('fs'),
       _ = require('lodash'),
       pluralize = require('pluralize'),
       { ImportSection } = require('@medable/mdctl-core/streams/section'),
@@ -19,13 +18,18 @@ const EventEmitter = require('events'),
         package: 'package.{json,yaml}'
       }
 
-
 class ImportFileTreeAdapter extends EventEmitter {
 
-  constructor(inputDir, format = 'json', manifest = null, cache) {
+  constructor(inputDir, format = 'json', manifest = null, cache = null, customFs = null) {
     super()
+    // eslint-disable-next-line global-require
+    let fs = require('fs')
+    if (customFs) {
+      fs = customFs
+    }
     Object.assign(privatesAccessor(this), {
       files: [],
+      fs,
       input: inputDir || process.cwd(),
       cache: cache || `${inputDir || process.cwd()}/.cache.json`,
       format: format || 'json',
@@ -179,8 +183,8 @@ class ImportFileTreeAdapter extends EventEmitter {
     let packageData,
         script
 
-    const { input } = privatesAccessor(this),
-          location = globby.sync([KNOWN_FILES.package], { cwd: input }),
+    const { input, fs } = privatesAccessor(this),
+          location = fg.sync([KNOWN_FILES.package], { cwd: input, fs }),
           paths = [],
           getScript = (...params) => {
             for (const param of params) {
@@ -238,11 +242,11 @@ class ImportFileTreeAdapter extends EventEmitter {
   }
 
   readManifest() {
-    const { manifest, input } = privatesAccessor(this),
+    const { manifest, input, fs } = privatesAccessor(this),
           paths = []
     let manifestData = manifest
     if (!manifestData) {
-      const location = globby.sync([KNOWN_FILES.manifest], { cwd: input })
+      const location = fg.sync([KNOWN_FILES.manifest], { cwd: input, fs })
       if (location.length > 0 && fs.existsSync(`${input}/${location[0]}`)) {
         manifestData = JSON.parse(fs.readFileSync(`${input}/${location[0]}`))
         paths.push(KNOWN_FILES.manifest)
@@ -280,7 +284,8 @@ class ImportFileTreeAdapter extends EventEmitter {
   }
 
   walkFiles(dir, paths = [KNOWN_FILES.manifest, KNOWN_FILES.objects, KNOWN_FILES.data]) {
-    const files = globby.sync(paths, { cwd: dir }),
+    const { fs } = privatesAccessor(this),
+          files = fg.sync(paths, { cwd: dir, fs }),
           mappedFiles = _.map(files, f => `${dir}/${f}`),
           currentFiles = privatesAccessor(this, 'files')
     privatesAccessor(this, 'files', currentFiles.concat(mappedFiles))
@@ -288,7 +293,7 @@ class ImportFileTreeAdapter extends EventEmitter {
 
   loadFile(file) {
     const {
-      input, metadata
+      input, metadata, fs
     } = privatesAccessor(this)
     return new Promise((resolve, reject) => {
       const contents = []
@@ -307,7 +312,7 @@ class ImportFileTreeAdapter extends EventEmitter {
   }
 
   loadMetadata() {
-    const { cache, format } = privatesAccessor(this)
+    const { cache, format, fs } = privatesAccessor(this)
     if (fs.existsSync(cache)) {
       const content = fs.readFileSync(cache),
             metadata = JSON.parse(content.toString())
@@ -329,8 +334,9 @@ class ImportFileTreeAdapter extends EventEmitter {
 
   async loadFacets(chunk) {
     const {
-      content, facets, extraFiles, basePath
-    } = privatesAccessor(chunk)
+            content, facets, extraFiles, basePath
+          } = privatesAccessor(chunk),
+          { fs } = privatesAccessor(this)
     return new Promise(async(success) => {
       const nodes = jp.nodes(content, '$..filePath')
       if (nodes.length) {
@@ -365,7 +371,7 @@ class ImportFileTreeAdapter extends EventEmitter {
     if (chunk.key === 'package') {
       const { content: { scripts } } = chunk,
             { preInstall, postInstall } = scripts,
-            { input } = privatesAccessor(this)
+            { input, fs } = privatesAccessor(this)
 
       if (preInstall) {
         scripts.preInstall = fs.readFileSync(path.join(input, preInstall)).toString()
@@ -375,6 +381,7 @@ class ImportFileTreeAdapter extends EventEmitter {
       }
     } else {
       const { content, basePath } = privatesAccessor(chunk),
+            { fs } = privatesAccessor(this),
             nodes = jp.nodes(content, '$..script')
       nodes.forEach((n) => {
         if (!_.isObject(n.value)) {
@@ -389,7 +396,8 @@ class ImportFileTreeAdapter extends EventEmitter {
   }
 
   async loadTemplates(chunk) {
-    const { content, key, basePath } = privatesAccessor(chunk)
+    const { content, key, basePath } = privatesAccessor(chunk),
+          { fs } = privatesAccessor(this)
     if (key === 'template') {
       if (_.isArray(content.localizations)) {
         const nodes = jp.nodes(content.localizations, '$..content')

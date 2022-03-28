@@ -13,10 +13,20 @@ const pump = require('pump'),
       ImportFileTreeAdapter = require('@medable/mdctl-import-adapter'),
       { Client } = require('@medable/mdctl-api'),
       LockUnlock = require('../lock_unlock'),
+      isReadableStream = stream => stream !== null
+          && typeof stream === 'object'
+          && typeof stream.pipe === 'function'
+          && stream.readable !== false
+          // eslint-disable-next-line no-underscore-dangle
+          && typeof stream._read === 'function'
+          // eslint-disable-next-line no-underscore-dangle
+          && typeof stream._readableState === 'object',
 
       importEnv = async(input) => {
 
-        let manifest = input && input.manifest
+        let manifest = input && input.manifest,
+            preImport,
+            postImport
 
         if (rString(input && input.resource)) {
 
@@ -33,35 +43,48 @@ const pump = require('pump'),
           }
         }
 
-
         const options = isSet(input) ? input : {},
               client = options.client || new Client({ ...Config.global.client, ...options }),
-              inputDir = options.dir || process.cwd(),
               progress = rFunction(options.progress),
               memo = {},
               url = new URL('/developer/environment/import', client.environment.url),
               query = {
-                ...searchParamsToObject(url.searchParams),
-                preferUrls: rBool(options.preferUrls, false),
-                silent: rBool(options.silent, false),
-                backup: rBool(options.backup, false),
-                production: rBool(options.production, false),
-                triggers: rBool(options.triggers, false)
-              },
+            ...searchParamsToObject(url.searchParams),
+            preferUrls: rBool(options.preferUrls, false),
+            silent: rBool(options.silent, false),
+            backup: rBool(options.backup, false),
+            production: rBool(options.production, false),
+            triggers: rBool(options.triggers, false)
+          },
               requestOptions = {},
-              fileAdapter = new ImportFileTreeAdapter(inputDir, options.format, manifest),
-              importStream = new ImportStream(fileAdapter),
-              ndjsonStream = ndjson.stringify(),
-              streamList = [importStream, ndjsonStream],
-              { endpoint, env } = client.credentials.environment,
-              lockUnlock = new LockUnlock(inputDir, endpoint, env)
+              ndjsonStream = ndjson.stringify()
 
-        if (lockUnlock.checkLock(['import'])) {
-          throw Fault.create('kWorkspaceLocked', {
-            reason: `There is a lock in the workspace ${inputDir} for ${endpoint}/${env}`,
-            path: inputDir
-          })
+        // eslint-disable-next-line one-var
+        let { inputStream } = options
+
+        if (!inputStream || !isReadableStream(inputStream)) {
+
+          const inputDir = options.dir || process.cwd(),
+                { endpoint, env } = client.credentials.environment,
+                lockUnlock = new LockUnlock(inputDir, endpoint, env)
+
+          if (lockUnlock.checkLock(['import'])) {
+            throw Fault.create('kWorkspaceLocked', {
+              reason: `There is a lock in the workspace ${inputDir} for ${endpoint}/${env}`,
+              path: inputDir
+            })
+          }
+
+          // eslint-disable-next-line one-var
+          const fileAdapter = new ImportFileTreeAdapter(inputDir, options.format, manifest)
+          inputStream = new ImportStream(fileAdapter)
+
+          preImport = fileAdapter.preImport()
+          postImport = fileAdapter.postImport()
         }
+
+        // eslint-disable-next-line one-var
+        const streamList = [inputStream, ndjsonStream]
 
 
         if (options.gzip) {
@@ -87,10 +110,11 @@ const pump = require('pump'),
         })
         streamList.push(debuggerStream)
 
-        const preImport = fileAdapter.preImport()
-        await preImport({
-          client, options, importStream, fileAdapter, memo
-        })
+        if (preImport) {
+          await preImport({
+            client, options, inputStream, memo
+          })
+        }
 
         if (!options.dryRun) {
           pathTo(requestOptions, 'headers.accept', 'application/x-ndjson')
@@ -106,16 +130,17 @@ const pump = require('pump'),
           const response = await client.call(url.pathname, {
             method: 'POST',
             body: pump(...streamList),
-            stream: options.stream,
+            stream: options.outputStream,
             query,
             requestOptions
           })
-          return { response, postImport: fileAdapter.postImport(), memo }
+          return { response, postImport, memo }
         }
 
         const response = pump(...streamList)
-        return { response, postImport: fileAdapter.postImport(), memo }
+        return { response, postImport, memo }
 
       }
+const Stream = require("stream");
 
 module.exports = importEnv

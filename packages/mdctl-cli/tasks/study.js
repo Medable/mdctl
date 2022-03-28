@@ -68,7 +68,6 @@ class Study extends Task {
     }
     return this[handler](cli)
 
-
   }
 
   async 'study@export'(cli) {
@@ -91,7 +90,6 @@ class Study extends Task {
 
       console.log('Study Export finished...!')
 
-
     } catch (e) {
       throw e
     }
@@ -105,7 +103,7 @@ class Study extends Task {
     params.backup = false
 
     const env = new Env()
-    
+
     await env['env@import'](cli)
   }
 
@@ -127,7 +125,6 @@ class Study extends Task {
       // eslint-disable-next-line one-var
       const { manifest } = await studyTools.getTasksManifest(selectedTasks)
 
-
       if (!params.manifestOnly) {
         const options = {
           format: 'json',
@@ -140,11 +137,9 @@ class Study extends Task {
 
       console.log('Export finished...!')
 
-
     } catch (e) {
       throw e
     }
-
 
   }
 
@@ -179,11 +174,9 @@ class Study extends Task {
 
       console.log('Export finished...!')
 
-
     } catch (e) {
       throw e
     }
-
 
   }
 

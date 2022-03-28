@@ -1,5 +1,4 @@
 const { Writable } = require('stream'),
-      fs = require('fs'),
       jp = require('jsonpath'),
       _ = require('lodash'),
       globby = require('globby'),
@@ -22,6 +21,7 @@ class ExportFileTreeAdapter extends Writable {
     const { format = 'json', mdctl = null, clearOutput = true } = options,
           output = outputPath || process.cwd(),
           privates = {
+            fs: options.fs || require('fs'),
             clearOutput,
             format,
             mdctl,
@@ -71,20 +71,22 @@ class ExportFileTreeAdapter extends Writable {
   }
 
   loadMetadata() {
-    const file = this.cache
+    const file = this.cache,
+          { fs } = privatesAccessor(this)
     if (fs.existsSync(file)) {
       const content = fs.readFileSync(file)
       privatesAccessor(this, 'metadata', JSON.parse(content))
     }
   }
 
-  static async downloadResources(url, fileWriter) {
+  async downloadResources(url, fileWriter) {
     return new Promise((resolve, reject) => {
       request(url).pipe(fileWriter).on('finish', resolve).on('error', reject)
     })
   }
 
-  static fileNeedsUpdate(f, pathFile) {
+  fileNeedsUpdate(f, pathFile) {
+    const { fs } = privatesAccessor(this)
     if (f.ETag && fs.existsSync(pathFile)) {
       return md5FileHash(pathFile) !== f.ETag
     }
@@ -133,12 +135,12 @@ class ExportFileTreeAdapter extends Writable {
 
     for (const r of assets) {
       ensureDir(r.folder)
-      if (ExportFileTreeAdapter.fileNeedsUpdate(r, r.file)) {
+      if (this.fileNeedsUpdate(r, r.file)) {
         if (r.remoteLocation && r.url) {
           // download remote resource
           const fileWriter = fs.createWriteStream(r.file)
           /* eslint-disable no-await-in-loop */
-          await ExportFileTreeAdapter.downloadResources(r.url, fileWriter)
+          await this.downloadResources(r.url, fileWriter)
         } else if (r.base64) {
           this.writeToFile(r.file, Buffer.from(r.base64, 'base64'), true)
         } else {
@@ -184,20 +186,20 @@ class ExportFileTreeAdapter extends Writable {
     this.writeToFile(`${this.output}/.cache.json`, JSON.stringify(this.metadata, null, 2), true)
   }
 
-  processChunk(chunk) {
+  async processChunk(chunk) {
     try {
       if (chunk.key === 'stream') {
-        this.writeStreamAsset(chunk)
+        await this.writeStreamAsset(chunk)
       } else {
         const folder = `${this.output}/${chunk.getPath()}`
         if (chunk.isFacet) {
           chunk.extractAssets()
-          this.writeBinaryFiles(chunk)
+          await this.writeBinaryFiles(chunk)
         } else {
           // ensureDir(folder)
           chunk.extractScripts()
           chunk.extractTemplates()
-          this.writeExtraFiles(folder, chunk)
+          await this.writeExtraFiles(folder, chunk)
         }
         if (chunk.isWritable) {
           this.addResource({
@@ -240,8 +242,7 @@ class ExportFileTreeAdapter extends Writable {
   }
 
   _write(chunk, enc, cb) {
-    this.processChunk(chunk)
-    cb()
+    this.processChunk(chunk).then(() => cb).catch(e => cb)
   }
 
   async _final(cb) {

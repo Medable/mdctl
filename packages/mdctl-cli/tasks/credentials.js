@@ -71,7 +71,7 @@ class Credentials extends Task {
       // support adding a bunch at once.
       const file = await loadJsonOrYaml(this.args('file'))
       if (Array.isArray(file)) {
-        return Promise.all(file.map(input => cli.credentialsProvider.add(input, input)))
+        return Promise.all(file.map((input) => cli.credentialsProvider.add(input, input)))
       }
     }
     // auto-detect type
@@ -283,7 +283,6 @@ class Credentials extends Task {
 
   }
 
-
   async 'credentials@logout'(cli) {
 
     // attempt to logout of the api.
@@ -348,7 +347,7 @@ class Credentials extends Task {
 
           const jti = this.args('3'),
                 secrets = await cli.credentialsProvider.list({ type: 'token' }),
-                secret = secrets.filter(v => jsonwebtoken.decode(v.token).jti === jti)[0],
+                secret = secrets.filter((v) => jsonwebtoken.decode(v.token).jti === jti)[0],
                 local = Boolean(
                   secret
                   && await cli.credentialsProvider.deleteCredentials(secret.type, secret.encoded)
@@ -370,7 +369,7 @@ class Credentials extends Task {
           const secrets = (await cli.credentialsProvider.list({
                   type: 'token', endpoint, env, username, apiKey
                 })),
-                jtis = new Set((await jwt.list({ client })).data.map(v => v.jti))
+                jtis = new Set((await jwt.list({ client })).data.map((v) => v.jti))
 
           let local = 0,
               remote = 0
@@ -400,7 +399,7 @@ class Credentials extends Task {
                 }
 
               },
-              err => (err ? reject(err) : resolve())
+              (err) => (err ? reject(err) : resolve())
             )
           })
 
@@ -412,7 +411,7 @@ class Credentials extends Task {
                   remote += 1
                 }
               },
-              err => (err ? reject(err) : resolve())
+              (err) => (err ? reject(err) : resolve())
             )
           })
 
@@ -519,7 +518,6 @@ class Credentials extends Task {
     console.log(deleted)
 
   }
-
 
   // ----------------------------------------------------------------------------------------------
 

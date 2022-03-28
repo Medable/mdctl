@@ -1,4 +1,3 @@
-
 /* eslint-disable global-require */
 /* eslint-disable import/no-dynamic-require */
 
@@ -67,7 +66,7 @@ function loadTaskNames() {
     }
   }
 
-  return Object.assign({}, knownTaskNames)
+  return { ...knownTaskNames }
 }
 
 function getTask(task) {
@@ -85,7 +84,7 @@ function getRegisteredTasks() {
     }, {})
   }
 
-  return Object.assign({}, knownTasks)
+  return { ...knownTasks }
 
 }
 

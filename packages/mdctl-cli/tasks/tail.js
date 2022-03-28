@@ -58,7 +58,6 @@ class Tail extends Task {
             }
           }
 
-
     async function run() {
 
       let restart = true

@@ -146,7 +146,7 @@ class Fault extends Error {
     }
 
     if (err instanceof Error) {
-      return new Fault('kError', err.message, err.statusCode || err.status, err.name || 'error', err.path, err.index, err.resource)
+      return new Fault('kError', err.message, err.statusCode || err.status, err.name || 'error', err.reason, err.path, err.index, err.resource)
     }
 
     if (forceError) {

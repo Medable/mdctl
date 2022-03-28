@@ -149,7 +149,6 @@ async function writeDefaults(contents) {
 
 }
 
-
 module.exports = {
   Config,
   createConfig,

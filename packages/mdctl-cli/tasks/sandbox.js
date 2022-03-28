@@ -11,7 +11,6 @@ const _ = require('lodash'),
       { Fault } = require('@medable/mdctl-core'),
       Task = require('../lib/task')
 
-
 class Sandbox extends Task {
 
   static get taskNames() {
@@ -84,7 +83,6 @@ class Sandbox extends Task {
         })
 
       })
-
 
     }
 

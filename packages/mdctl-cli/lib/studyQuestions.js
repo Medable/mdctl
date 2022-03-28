@@ -3,7 +3,7 @@ const { prompt } = require('inquirer'),
 
       askSelectTasks = async(inputArgs) => {
         // eslint-disable-next-line no-underscore-dangle
-        const choices = inputArgs.tasks.map(v => ({ name: v.c_name, value: v._id })),
+        const choices = inputArgs.tasks.map((v) => ({ name: v.c_name, value: v._id })),
               result = await prompt([{
                 type: 'checkbox',
                 name: 'selectedTasks',
@@ -16,7 +16,7 @@ const { prompt } = require('inquirer'),
 
       askSelectConsentTemplates = async(inputArgs) => {
         // eslint-disable-next-line no-underscore-dangle
-        const choices = inputArgs.consents.map(v => ({ name: v.ec__title, value: v._id })),
+        const choices = inputArgs.consents.map((v) => ({ name: v.ec__title, value: v._id })),
               result = await prompt([{
                 type: 'checkbox',
                 name: 'selectedConsents',

@@ -116,7 +116,7 @@ describe('Environment Export', () => {
       stream: streamedBlob,
       dir: tempDir,
       format: 'yaml'
-    }).then(stream => new Promise((resolve) => {
+    }).then((stream) => new Promise((resolve) => {
       assert(stream.items.length === 68, 'there are some missing objects created')
       resolve()
     })).catch((e) => {

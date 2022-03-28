@@ -1,0 +1,8 @@
+{
+  "object": "manifest",
+  "objects": [
+      {
+        "name": "tp__test"
+      }
+  ]
+}

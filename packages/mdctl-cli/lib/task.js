@@ -1,4 +1,3 @@
-
 /* eslint-disable class-methods-use-this */
 
 const _ = require('lodash'),
@@ -12,26 +11,23 @@ const _ = require('lodash'),
       } = require('@medable/mdctl-core-utils/values'),
       { createConfig } = require('./config')
 
-
 class Task {
 
   constructor(args) {
     Object.assign(privatesAccessor(this), {
       // store cli arguments
-      args: createConfig(Object.assign(
-        {
-          strictSSL: {
-            type: 'boolean',
-            default: true
-          },
-          preferUrls: {
-            type: 'boolean',
-            default: false
-          }
+      args: createConfig({
+        strictSSL: {
+          type: 'boolean',
+          default: true
         },
-        yargs.options(args || {}).argv,
-        process.argv.slice(2)
-      )),
+        preferUrls: {
+          type: 'boolean',
+          default: false
+        },
+        ...yargs.options(args || {}).argv,
+        ...process.argv.slice(2)
+      }),
     })
   }
 
@@ -62,7 +58,6 @@ class Task {
         throw new RangeError('Invalid output format. Expected json, pretty, text or yaml')
     }
   }
-
 
   get args() {
     return privatesAccessor(this).args
