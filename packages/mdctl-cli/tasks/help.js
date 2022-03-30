@@ -1,4 +1,3 @@
-
 /* eslint-disable  class-methods-use-this */
 
 const { pad } = require('@medable/mdctl-core-utils/values'),
@@ -21,7 +20,7 @@ class Help extends Task {
 
     if (!taskName) {
 
-      const tasksHelps = taskNames.filter(t => t.indexOf('--') === -1).map(value => `${pad(padTo, value)} - ${tasks[value].synopsis}`)
+      const tasksHelps = taskNames.filter((t) => t.indexOf('--') === -1).map((value) => `${pad(padTo, value)} - ${tasks[value].synopsis}`)
       return console.log(`
       Available commands:
       

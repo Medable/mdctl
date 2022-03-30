@@ -96,7 +96,7 @@ class Plugin extends Task {
           try {
 
             const command = this.args(String(argOffset + 1)),
-                  entry = remote.commands.find(v => v.name === command)
+                  entry = remote.commands.find((v) => v.name === command)
 
             if (command === Undefined || command.indexOf('--') === 0) {
 
@@ -186,9 +186,7 @@ class Plugin extends Task {
           plugin = new PluginClass()
     return plugin.run(cli)
 
-
   }
-
 
   // ----------------------------------------------------------------------------------------------
 

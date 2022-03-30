@@ -41,11 +41,11 @@ module.exports = class MdCtlCli {
       cwd: process.cwd(),
 
       // store cli arguments
-      args: createConfig(Object.assign(
-        {},
-        yargs.help(false).options({}).argv,
-        process.argv.slice(2)
-      )),
+      args: createConfig({
+
+        ...yargs.help(false).options({}).argv,
+        ...process.argv.slice(2)
+      }),
 
       // the current task
       task: null,
@@ -95,11 +95,11 @@ module.exports = class MdCtlCli {
             task = await createTask(this, taskName)
 
       // get cli arguments and options
-      privates.args = createConfig(Object.assign(
-        {},
-        yargs.argv,
-        args
-      ))
+      privates.args = createConfig({
+
+        ...yargs.argv,
+        ...args
+      })
 
       await this.configure()
 
@@ -201,7 +201,7 @@ module.exports = class MdCtlCli {
                   isActiveClientReusable = !_.isUndefined(activeLogin)
                     && this.doesClientMatchSecret(activeClientConfig, activeCredentials),
                   client = isActiveClientReusable
-                    ? new Client(Object.assign({ credentialsProvider }, activeClientConfig))
+                    ? new Client({ credentialsProvider, ...activeClientConfig })
                     : this.createNewClientBy(activeCredentials)
 
             return { client, activeCredentials }
@@ -225,7 +225,6 @@ module.exports = class MdCtlCli {
                       { provider: credentialsProvider, credentials: activeCredentials }
                     ))
                     : this.createNewClientBy(defaultPasswordSecret)
-
 
             return { client, activeCredentials }
           },
@@ -320,7 +319,7 @@ module.exports = class MdCtlCli {
   getArguments(arrayOfKeys) {
     const args = _.reduce(arrayOfKeys,
       (sum, key) => _.extend(sum, { [key]: this.args(key) }), {})
-    return _.pickBy(args, v => !_.isUndefined(v) && v !== null && v !== '')
+    return _.pickBy(args, (v) => !_.isUndefined(v) && v !== null && v !== '')
   }
 
 }

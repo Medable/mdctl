@@ -83,9 +83,9 @@ class LockUnlock {
       console.log(`Workspace ${this.configFile} locked for ${this.endpoint}/${this.env}`)
     } else {
       let currentLock = this.readConfig()
-      const existingForEndpoint = _.filter(currentLock, cl => cl.endpoint === this.endpoint),
-            existingLock = _.find(existingForEndpoint, cl => cl.env === this.env),
-            existingWithWildCardIdx = _.findIndex(existingLock, cl => cl.env === '*')
+      const existingForEndpoint = _.filter(currentLock, (cl) => cl.endpoint === this.endpoint),
+            existingLock = _.find(existingForEndpoint, (cl) => cl.env === this.env),
+            existingWithWildCardIdx = _.findIndex(existingLock, (cl) => cl.env === '*')
       if (!existingLock) {
         if ((this.env === '' || this.env === '*') && existingForEndpoint.length > 0) {
           const result = await prompt([{
@@ -95,7 +95,7 @@ class LockUnlock {
             default: true
           }])
           if (result.wildcard) {
-            currentLock = _.filter(currentLock, cl => cl.endpoint !== this.endpoint)
+            currentLock = _.filter(currentLock, (cl) => cl.endpoint !== this.endpoint)
             lock.env = lock.env || '*'
             currentLock.push(lock)
           }
@@ -131,7 +131,7 @@ class LockUnlock {
     } else {
       let currentLock = this.readConfig()
       // eslint-disable-next-line max-len
-      currentLock = _.filter(currentLock, cl => cl.endpoint !== this.endpoint && (this.env !== '' ? cl.env !== this.env : true))
+      currentLock = _.filter(currentLock, (cl) => cl.endpoint !== this.endpoint && (this.env !== '' ? cl.env !== this.env : true))
       this.writeConfig(currentLock)
     }
   }
@@ -163,10 +163,10 @@ class LockUnlock {
 
   checkLock(actions = ['import', 'export']) {
     const locks = this.getCurrentLocks(),
-          lock = _.find(locks, l => this.formatEndpoint(l.endpoint) === this.endpoint && (l.env && l.env !== '*' ? l.env === this.env : true))
+          lock = _.find(locks, (l) => this.formatEndpoint(l.endpoint) === this.endpoint && (l.env && l.env !== '*' ? l.env === this.env : true))
     // also add check for actions
     if (lock) {
-      const matchingActions = lock.actions.filter(e => actions.indexOf(e) !== -1)
+      const matchingActions = lock.actions.filter((e) => actions.indexOf(e) !== -1)
       return matchingActions.length > 0
     }
     return false

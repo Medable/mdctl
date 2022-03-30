@@ -30,7 +30,6 @@ class Workspace extends Task {
     return this[handler](cli)
   }
 
-
   static get taskNames() {
     return ['workspace', 'ws']
   }
@@ -43,7 +42,7 @@ class Workspace extends Task {
           result = await askWorkspaceLock(params),
           client = await cli.getApiClient(),
           { endpoint: defaultEndpoint, env: defaultEnv } = client.credentials.environment,
-          options = Object.assign({ endpoint: defaultEndpoint, env: defaultEnv }, result),
+          options = { endpoint: defaultEndpoint, env: defaultEnv, ...result },
           {
             dir, endpoint, env, actions
           } = options,
@@ -66,7 +65,7 @@ class Workspace extends Task {
               })
 
         // eslint-disable-next-line max-len
-        table.push(...locks.map(lock => [lock.endpoint, lock.env, lock.actions, lockUnlock.formatEndpoint(lock.endpoint)]))
+        table.push(...locks.map((lock) => [lock.endpoint, lock.env, lock.actions, lockUnlock.formatEndpoint(lock.endpoint)]))
         response = table.toString()
         break
       case 'clear':

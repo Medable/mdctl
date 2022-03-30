@@ -73,7 +73,6 @@ const fs = require('fs'),
             return null
           }
 
-
           if (isPlainObject(packageFile)) {
             pkg = packageFile
           } else if (fs.existsSync(packageFile)) {

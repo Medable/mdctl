@@ -2,7 +2,6 @@ const { Client } = require('@medable/mdctl-api'),
       { Config, Fault } = require('@medable/mdctl-core'),
       { isSet, pathTo } = require('@medable/mdctl-core-utils/values'),
 
-
       provision = async(input) => {
         const options = isSet(input) ? input : {},
               { params } = options,

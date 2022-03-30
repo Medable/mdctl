@@ -64,10 +64,10 @@ describe('Environment Import', () => {
               if (err) {
                 return reject(err)
               }
-              const result = _.filter(dezipped.toString().split('\n'), i => i !== ''),
-                    loadedItems = _.map(result, i => JSON.parse(i)),
-                    blobItems = _.groupBy(_.filter(loadedItems, i => i.data && i.streamId), 'streamId'),
-                    otherItems = _.filter(loadedItems, i => !i.data && !i.streamId)
+              const result = _.filter(dezipped.toString().split('\n'), (i) => i !== ''),
+                    loadedItems = _.map(result, (i) => JSON.parse(i)),
+                    blobItems = _.groupBy(_.filter(loadedItems, (i) => i.data && i.streamId), 'streamId'),
+                    otherItems = _.filter(loadedItems, (i) => !i.data && !i.streamId)
               assert(otherItems.length === 38, 'there are more/less files than loaded')
               assert(Object.keys(blobItems).length === 3, 'there are more/less blob items than loaded')
               return resolve()

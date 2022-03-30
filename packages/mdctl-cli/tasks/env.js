@@ -135,7 +135,7 @@ class Env extends Task {
     try {
       try {
         // eslint-disable-next-line max-len
-        const { response, postImport, memo } = await importEnv({ client, ...params, stream: ndjson.parse() })
+        const { response, postImport, memo } = await importEnv({ client, ...params, outputStream: ndjson.parse() })
         stream = response
         postImportFn = postImport
         memoObject = memo
@@ -187,7 +187,7 @@ class Env extends Task {
       fault = err
       throw err
     } finally {
-      await postImportFn({
+      postImportFn && await postImportFn({
         client, err: fault, complete, memo: memoObject
       })
     }

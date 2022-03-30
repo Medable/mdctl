@@ -11,27 +11,27 @@ const { stringToBoolean, rVal, rString } = require('@medable/mdctl-core-utils/va
         defaultEndpoint: {
           message: 'The default cortex endpoint',
           default: 'api.dev.medable.com',
-          transform: v => rString(v, '')
+          transform: (v) => rString(v, '')
         },
         defaultEnv: {
           message: 'The default endpoint env (org code)',
           default: '',
-          transform: v => rString(v, '')
+          transform: (v) => rString(v, '')
         },
         defaultAccount: {
           message: 'The default account email',
           default: '',
-          transform: v => rString(v, '')
+          transform: (v) => rString(v, '')
         },
         strictSSL: {
           message: 'Verify endpoint ssl certificates by default. Use only for debugging.',
           default: true,
-          transform: v => stringToBoolean(v, true)
+          transform: (v) => stringToBoolean(v, true)
         },
         experimental: {
           message: 'Enable experimental features.',
           default: false,
-          transform: v => stringToBoolean(v, false)
+          transform: (v) => stringToBoolean(v, false)
         }
       }
 

@@ -33,8 +33,8 @@ const { prompt } = require('inquirer'),
                   name: 'endpoint',
                   message: 'The api endpoint (example: https://api.dev.medable.com)',
                   type: 'input',
-                  when: hash => !isSet(currentArgs.endpoint) && (hash.type !== 'token'),
-                  validate: value => validateEndpoint(value) || 'Invalid URL',
+                  when: (hash) => !isSet(currentArgs.endpoint) && (hash.type !== 'token'),
+                  validate: (value) => validateEndpoint(value) || 'Invalid URL',
                   default: rString(_.get(currentArgs, 'endpoint'))
                 },
                 {
@@ -42,28 +42,28 @@ const { prompt } = require('inquirer'),
                   name: 'env',
                   message: 'The env (org code)',
                   default: rString(_.get(currentArgs, 'env')),
-                  when: hash => !isSet(currentArgs.env) && (hash.type !== 'token')
+                  when: (hash) => !isSet(currentArgs.env) && (hash.type !== 'token')
                 },
                 {
                   type: 'input',
                   name: 'username',
                   message: 'The account username',
                   default: rString(_.get(currentArgs, 'username')),
-                  when: hash => !isSet(currentArgs.username) && (hash.type === 'password' || _.get(currentArgs, 'type') === 'password')
+                  when: (hash) => !isSet(currentArgs.username) && (hash.type === 'password' || _.get(currentArgs, 'type') === 'password')
                 },
                 {
                   name: 'password',
                   message: 'The account password',
                   type: 'password',
                   default: rString(_.get(currentArgs, 'password')),
-                  when: hash => !isSet(currentArgs.password) && (hash.type === 'password' || _.get(currentArgs, 'type') === 'password')
+                  when: (hash) => !isSet(currentArgs.password) && (hash.type === 'password' || _.get(currentArgs, 'type') === 'password')
                 },
                 {
                   name: 'token',
                   message: 'The JSON Web Token',
                   type: 'password',
                   default: rString(_.get(currentArgs, 'token')),
-                  when: hash => !isSet(currentArgs.token) && (hash.type === 'token' || _.get(currentArgs, 'type') === 'token'),
+                  when: (hash) => !isSet(currentArgs.token) && (hash.type === 'token' || _.get(currentArgs, 'type') === 'token'),
                   validate: (input, hash) => {
                     const jwt = jsonwebtoken.decode(input)
                     if (jwt) {
@@ -79,7 +79,7 @@ const { prompt } = require('inquirer'),
                   message: 'The api key',
                   type: 'input',
                   default: rString(_.get(currentArgs, 'apiKey')),
-                  when: hash => (['password', 'signature'].includes(hash.type) || ['password', 'signature'].includes(_.get(currentArgs, 'type'))) && !isSet(currentArgs.apiKey),
+                  when: (hash) => (['password', 'signature'].includes(hash.type) || ['password', 'signature'].includes(_.get(currentArgs, 'type'))) && !isSet(currentArgs.apiKey),
                   validate: (input) => {
                     try {
                       return validateApiKey(input)
@@ -93,7 +93,7 @@ const { prompt } = require('inquirer'),
                   message: 'The api signing secret',
                   type: 'password',
                   default: rString(_.get(currentArgs, 'apiSecret')),
-                  when: hash => (hash.type === 'signature' || _.get(currentArgs, 'type') === 'signature') && !isSet(currentArgs.apiSecret),
+                  when: (hash) => (hash.type === 'signature' || _.get(currentArgs, 'type') === 'signature') && !isSet(currentArgs.apiSecret),
                   validate: (input) => {
                     try {
                       return validateApiSecret(input)
@@ -112,7 +112,7 @@ const { prompt } = require('inquirer'),
           {
             name: 'saveCredentials',
             message: 'Do you want to save these credentials?',
-            validate: value => (value.toLowerCase() === 'y' || value.toLowerCase() === 'n') || 'Only valid values are: y-Y/n-N',
+            validate: (value) => (value.toLowerCase() === 'y' || value.toLowerCase() === 'n') || 'Only valid values are: y-Y/n-N',
             default: 'n',
           }
         ])
@@ -127,7 +127,7 @@ const { prompt } = require('inquirer'),
               }),
               credentialsInRowFormat = _(listOfSecrets)
               // This is a hack but the object comes in a way that prop can't be read
-                .map(s => JSON.parse(JSON.stringify(s)))
+                .map((s) => JSON.parse(JSON.stringify(s)))
                 .map(({ url, email, apiKey }, idx) => [idx, url, email, apiKey]).value()
 
         table.push(...credentialsInRowFormat)
@@ -139,8 +139,8 @@ const { prompt } = require('inquirer'),
           {
             name: 'credentialsIndex',
             message: 'Select the index of credential or -1 if none',
-            validate: value => _.inRange(_.parseInt(value), -1, listOfSecrets.length) || `Must select between -1...${(listOfSecrets.length - 1)}`,
-            transform: value => rInt(value, -1),
+            validate: (value) => _.inRange(_.parseInt(value), -1, listOfSecrets.length) || `Must select between -1...${(listOfSecrets.length - 1)}`,
+            transform: (value) => rInt(value, -1),
             default: -1,
           }
         ])
@@ -163,8 +163,8 @@ const { prompt } = require('inquirer'),
                 name: 'endpoint',
                 message: 'The api endpoint (example: dev or edge)',
                 type: 'input',
-                when: hash => !isSet(currentArgs.endpoint) && ['clear', 'list'].indexOf((hash.action || currentArgs.action)) < 0,
-                validate: value => value !== '' || 'Invalid value for endpoint',
+                when: (hash) => !isSet(currentArgs.endpoint) && ['clear', 'list'].indexOf((hash.action || currentArgs.action)) < 0,
+                validate: (value) => value !== '' || 'Invalid value for endpoint',
                 default: rString(_.get(currentArgs, 'endpoint'))
               },
               {
@@ -172,7 +172,7 @@ const { prompt } = require('inquirer'),
                 name: 'env',
                 message: 'The env (org code, empty will match all)',
                 default: rString(_.get(currentArgs, 'env')),
-                when: hash => !isSet(currentArgs.env) && ['clear', 'list'].indexOf((hash.action || currentArgs.action)) < 0
+                when: (hash) => !isSet(currentArgs.env) && ['clear', 'list'].indexOf((hash.action || currentArgs.action)) < 0
               },
               {
                 type: 'checkbox',
@@ -180,19 +180,20 @@ const { prompt } = require('inquirer'),
                 message: 'Use this lock for',
                 choices: ['import', 'export'],
                 default: rString(_.get(currentArgs, 'actions'), 'import,export').split(','),
-                when: hash => !isSet(currentArgs.actions) && ['clear', 'list', 'remove'].indexOf((hash.action || currentArgs.action)) < 0
+                when: (hash) => !isSet(currentArgs.actions) && ['clear', 'list', 'remove'].indexOf((hash.action || currentArgs.action)) < 0
               }
               ])
         return _.extend(currentArgs, result)
       },
 
       question = async(message, defaultValue, options = {}) => {
-        const result = await prompt(Object.assign({
+        const result = await prompt({
           type: 'input',
           name: 'question',
           message,
-          default: rString(defaultValue, undefined)
-        }, options))
+          default: rString(defaultValue, undefined),
+          ...options
+        })
         return result && result.question
       }
 

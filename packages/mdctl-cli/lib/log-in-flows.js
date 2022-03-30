@@ -1,4 +1,3 @@
-
 const _ = require('lodash'),
       {
         loadJsonOrYaml,
@@ -8,11 +7,11 @@ const _ = require('lodash'),
         askUserCredentials,
         askUserToSaveCredentials,
         askUserToChooseCredentials,
-      } = require('../lib/questionnaires'),
+      } = require('./questionnaires'),
       {
         loginWithExistingCredentials,
         logInWithPasswordSecret
-      } = require('../lib/authentication')
+      } = require('./authentication')
 
 async function storeCredentials(cli, credentials) {
   let result
@@ -77,12 +76,11 @@ async function logInWithDefCredentialsFlow(cli) {
   return result
 }
 
-
 async function logInFlow(cli) {
   const filteringArguments = ['endpoint', 'env', 'username', 'apiKey'],
         allowedArguments = filteringArguments.concat(['file', 'strictSSL']),
         parsedArguments = cli.getArguments(allowedArguments),
-        areFilteringArgsPassed = parsedArgs => _.intersection(_(parsedArgs).keys().value(),
+        areFilteringArgsPassed = (parsedArgs) => _.intersection(_(parsedArgs).keys().value(),
           filteringArguments).length > 0,
         readFile = async(filePath) => {
           const result = await loadJsonOrYaml(filePath)
