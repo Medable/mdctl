@@ -4,7 +4,7 @@ const _ = require('lodash'),
       { pathTo } = require('@medable/mdctl-core-utils'),
       { isSet } = require('@medable/mdctl-core-utils/values'),
       Task = require('../lib/task'),
-      { publishPkg, installPkg } = require('../lib/package')
+      { installPkg } = require('../lib/package')
 
 class Package extends Task {
 
@@ -56,23 +56,10 @@ class Package extends Task {
   }
 
   async 'package@list'(cli) {
-    // const result = await this.registry.getPackages()
-    // console.log(result)
     throw Error('Not Implemented')
   }
 
   async 'package@publish'(cli) {
-    // // Determine where to publish the package i.e either cortex or registry (default)
-    // const name = this.args('name') || '',
-    //       source = this.args('source') || 'registry',
-    //       registryUrl = this.args('registryUrl') || process.env.REGISTRY_URL,
-    //       registryProjectId = this.args('registryProjectId') || process.env.REGISTRY_PROJECT_ID,
-    //       registryToken = this.args('registryToken') || process.env.REGISTRY_TOKEN,
-    //       client = source === 'cortex' ? await cli.getApiClient({ credentials: await cli.getAuthOptions() }) : null
-    //
-    // await publishPkg(name, {
-    //   source, registryUrl, registryProjectId, registryToken, client
-    // })
     throw Error('Not Implemented')
   }
 
@@ -182,10 +169,10 @@ class Package extends Task {
       Arguments:
 
         command
-          get - get a package from repository
-          list - get a list of published packages from repository
-          publish - publish as package to repository
-          install - install a new package
+          get - get a package from registry
+          list - get a list of published packages from registry
+          publish - publish as package
+          install - install a new package in remote target
 
         options
           --dry-run - will skip calling api
