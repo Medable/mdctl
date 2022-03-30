@@ -1,6 +1,6 @@
 {
   "name": "@medable/mdctl-packages",
-  "version": "1.0.0",
+  "version": "1.0.65-alpha.0",
   "description": "Medable Developer Client Tools :: Packages",
   "repository": {
     "type": "git",
@@ -21,12 +21,12 @@
     "lint": "eslint . --ext .js"
   },
   "dependencies": {
-    "@medable/mdctl-core": "^1.0.63-alpha.0",
-    "@medable/mdctl-core-utils": "^1.0.63-alpha.0",
-    "@medable/mdctl-export-adapter-tree": "^1.0.63-alpha.0",
-    "@medable/mdctl-import-adapter": "^1.0.63-alpha.0",
-    "@medable/mdctl-node-utils": "^1.0.63-alpha.0",
-    "@medable/mdctl-secrets": "^1.0.63-alpha.0",
+    "@medable/mdctl-core": "^1.0.65-alpha.0",
+    "@medable/mdctl-core-utils": "^1.0.65-alpha.0",
+    "@medable/mdctl-export-adapter-tree": "^1.0.65-alpha.0",
+    "@medable/mdctl-import-adapter": "^1.0.65-alpha.0",
+    "@medable/mdctl-node-utils": "^1.0.65-alpha.0",
+    "@medable/mdctl-secrets": "^1.0.65-alpha.0",
     "archiver": "^5.3.0",
     "async": "^3.2.2",
     "axios": "^0.21.1",
