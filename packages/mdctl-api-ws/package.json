@@ -1,6 +1,6 @@
 {
   "name": "@medable/mdctl-api-ws",
-  "version": "1.0.63-alpha.7",
+  "version": "1.0.64",
   "description": "Medable Developer Client Tools :: Websocket Client",
   "repository": {
     "type": "git",
@@ -25,7 +25,7 @@
   "author": "Medable, Inc. <mdctl@medable.com>",
   "license": "MIT",
   "dependencies": {
-    "@medable/mdctl-core": "^1.0.63-alpha.7",
+    "@medable/mdctl-core": "^1.0.64",
     "@medable/mdctl-core-utils": "^1.0.63-alpha.7",
     "@medable/mdctl-secrets": "^1.0.63-alpha.7",
     "jsonwebtoken": "^8.5.1",
