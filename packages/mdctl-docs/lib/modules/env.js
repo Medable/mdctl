@@ -23,7 +23,8 @@ const path = require('path'),
         'scripts',
         'smsNumbers',
         'templates',
-        'views'
+        'views',
+        'i18ns'
       ]),
       RESOURCE_TYPES = Object.freeze({
         JOB: 'job',
