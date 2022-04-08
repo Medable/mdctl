@@ -3,9 +3,10 @@ const fs = require('fs'),
       ndjson = require('ndjson'),
       path = require('path'),
       isPlainObject = require('lodash.isplainobject'),
+      _ = require('lodash'),
       { URL } = require('url'),
       {
-        isSet, parseString, pathTo, rBool, isString
+        isSet, parseString, pathTo, rBool
       } = require('@medable/mdctl-core-utils/values'),
       Docs = require('@medable/mdctl-docs'),
       {
@@ -20,6 +21,7 @@ const fs = require('fs'),
       exportEnv = async(input) => {
 
         const options = isSet(input) ? input : {},
+              { manifest: optionsManifest } = options,
               client = options.client || new Client({ ...Config.global.client, ...options }),
               outputDir = options.dir || process.cwd(),
               packageFile = options.package || `${outputDir}/package.${options.format || 'json'}`,
@@ -41,10 +43,13 @@ const fs = require('fs'),
               streamTransform = new ExportStream(),
               adapter = options.adapter || new ExportFileTreeAdapter(outputDir, streamOptions),
               // eslint-disable-next-line max-len
-              lockUnlock = new LockUnlock(outputDir, client.environment.endpoint, client.environment.env)
+              lockUnlock = new LockUnlock(outputDir, client.environment.endpoint, client.environment.env),
+              memo = {}
 
         let manifestFile,
-            inputStream
+            inputStream,
+            preExport = () => {},
+            postExport = () => {}
 
         if (lockUnlock.checkLock(['export'])) {
           throw Fault.create('kWorkspaceLocked', {
@@ -55,43 +60,69 @@ const fs = require('fs'),
         inputStream = ndjson.parse()
         if (!options.stream) {
 
-          let pkg = {},
+          let pkg,
+              script,
               manifest = {}
 
-          if (!isPlainObject(packageFile) && fs.existsSync(packageFile)) {
+          const getScript = (...params) => {
+            for (const param of params) { // eslint-disable-line no-restricted-syntax
+              if (pkg.scripts[param]) {
+                return pkg.scripts[param]
+              }
+            }
+            return null
+          }
+
+
+          if (isPlainObject(packageFile)) {
+            pkg = packageFile
+          } else if (fs.existsSync(packageFile)) {
             try {
               pkg = parseString(fs.readFileSync(packageFile), options.format)
             } catch (e) {
               throw Fault.create({ reason: e.message })
             }
+          }
+
+          if (pkg) {
             if (pkg.scripts) {
-              if (pkg.scripts.beforeexport) {
-                const beforeExport = path.join(outputDir, pkg.scripts.beforeexport)
+              script = getScript('preExport', 'preexport')
+              if (script) {
+                // eslint-disable-next-line global-require, import/no-dynamic-require
+                preExport = require(path.join(outputDir, script))
+              }
+              script = getScript('postExport', 'postexport')
+              if (script) {
+                // eslint-disable-next-line global-require, import/no-dynamic-require
+                postExport = require(path.join(outputDir, script))
+              }
+              script = getScript('beforeexport', 'beforeExport')
+              if (script) {
+                const beforeExport = path.join(outputDir, script)
                 if (fs.existsSync(beforeExport)) {
-                  pkg.scripts.beforeexport = fs.readFileSync(beforeExport).toString()
+                  pkg.scripts.beforeExport = fs.readFileSync(beforeExport).toString()
                 }
               }
-              if (pkg.scripts.afterexport) {
-                const afterExport = path.join(outputDir, pkg.scripts.afterexport)
+              script = getScript('afterexport', 'afterExport')
+              if (script) {
+                const afterExport = path.join(outputDir, script)
                 if (fs.existsSync(afterExport)) {
-                  pkg.scripts.afterexport = fs.readFileSync(afterExport).toString()
+                  pkg.scripts.afterExport = fs.readFileSync(afterExport).toString()
                 }
               }
             }
             if (pkg.pipes) {
-              if (isString(pkg.pipes.export)) {
-                const ingestTransform = path.join(outputDir, pkg.pipes.export)
-                if (fs.existsSync(ingestTransform)) {
-                  pkg.pipes.export = fs.readFileSync(ingestTransform).toString()
+              if (_.isString(pkg.pipes.export)) {
+                const exportPipe = path.join(outputDir, pkg.pipes.export)
+                if (fs.existsSync(exportPipe)) {
+                  pkg.pipes.export = fs.readFileSync(exportPipe).toString()
                 }
               }
             }
-          } else {
-            pkg = packageFile
           }
 
-          if (options.manifest) {
-            manifest = options.manifest
+          if (optionsManifest) {
+            manifest = optionsManifest
           } else if (pkg && pkg.manifest) {
             manifestFile = `${outputDir}/${pkg.manifest}`
           } else if (fs.existsSync(`${outputDir}/manifest.${options.format || 'json'}`)) {
@@ -106,18 +137,32 @@ const fs = require('fs'),
             }
           }
 
+          await preExport({
+            client, options, manifest, package: pkg, memo
+          })
+
           pathTo(requestOptions, 'requestOptions.headers.accept', 'application/x-ndjson')
           await client.call(url.pathname, Object.assign(requestOptions, {
             stream: inputStream, body: { manifest, package: pkg }
           }))
+
         } else {
           inputStream = options.stream.pipe(ndjson.parse())
         }
 
         return new Promise((resolve, reject) => {
-          const resultStream = pump(inputStream, streamTransform, adapter, (error) => {
-            if (error) {
-              return reject(error)
+          const resultStream = pump(inputStream, streamTransform, adapter, async(err) => {
+
+            try {
+              await postExport({
+                client, err, options, memo
+              })
+            } catch (e) {
+              return reject(e)
+            }
+
+            if (err) {
+              return reject(err)
             }
 
             if (options.docs) {
