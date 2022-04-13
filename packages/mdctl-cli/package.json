@@ -41,7 +41,7 @@
     "@medable/mdctl-manifest": "^1.0.64",
     "@medable/mdctl-node-utils": "^1.0.64",
     "@medable/mdctl-sandbox": "^1.0.64",
-    "async": "^2.6.3",
+    "async": "^3.2.2",
     "cli-table": "^0.3.1",
     "clone": "^2.1.2",
     "globby": "^9.1.0",
