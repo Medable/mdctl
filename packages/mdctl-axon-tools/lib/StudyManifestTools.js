@@ -271,12 +271,42 @@ class StudyManifestTools {
         })
     }
 
+    this.checkExportIntegrity(outputEntities, removedEntities)
+
     if (removedEntities.length) {
       console.log('\x1b[1m\x1b[31m\x1b[40m%s\x1b[0m', 'Referential Integrity Errors Found')
       console.log('\x1b[1m\x1b[31m\x1b[40m%s\x1b[0m', 'Please check issuesReport.json for more details')
     }
 
     return { outputEntities, removedEntities }
+  }
+
+  checkExportIntegrity(outputEntities, removedEntities) {
+    this.checkEcIntegrity(outputEntities)
+    const studyRemoved = removedEntities.find(entityWrapper => entityWrapper.entity.object === 'c_study')
+    if (studyRemoved) {
+      throw {message: 'Study cannot be exported due to referential integrity issues', reason: JSON.stringify(studyRemoved.issues)}
+    }
+  }
+
+  checkEcIntegrity(entities) {
+    // if study has EC templates and no default css, throw error and do not export
+    let hasEcTemplates, hasDefaultDocCss
+
+    hasEcTemplates = entities.some((entity) => {
+      return entity.object == 'ec__document_template'
+    })
+    
+    if (hasEcTemplates) {
+      hasDefaultDocCss = entities.some((entity) => {
+        return entity.object == 'ec__default_document_css'
+      })
+
+      if (!hasDefaultDocCss) {throw {
+        message: 'Export cannot be completed because there is no ec__default_document_css',
+        reason: 'Exports that contain EC templates must also contain an EC default document CSS'
+      }}
+    }
   }
 
   /**
