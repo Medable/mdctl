@@ -1,3 +1,4 @@
+const MenuConfigMap = require('../../lib/mappings/maps/MenuConfigMap')
 const MenuConfigMapping = require('../../lib/mappings/MenuConfigMapping')
 
 describe('MenuConfigMappings', () => {
@@ -87,7 +88,7 @@ describe('MenuConfigMappings', () => {
   }
 
   it('getMappings', async() => {
-    const menuConfigMapping = new MenuConfigMapping(org),
+    const menuConfigMapping = new MenuConfigMap(org),
           mappings = await menuConfigMapping.getMappings()
 
     expect(mappings)
@@ -125,6 +126,7 @@ const { run } = require('expressions')
 const mappings = [{"path":"c_study.aaa.c_menu_config.bbb.c_group_id","mapTo":{"$pathTo":[{"$dbNext":{"object":"c_group","operation":"cursor","paths":["_id"],"where":{"c_key":"ccc"}}},"_id"]}}]
 
 mappings.forEach(({ path, mapTo }) => {
+
   const [entity, entityKey, property, ...rest] = path.split('.'),
       isDocPropUpdate = !!rest.length,
       value = run(mapTo)
@@ -155,6 +157,12 @@ mappings.forEach(({ path, mapTo }) => {
       .pathUpdate(property + '/' + idToUpdate + '/' + docProp , value)
 
   }
+
+  //normal prop update
+  return org.objects[entity]
+    .updateOne({ c_key: entityKey }, { $set: { [property]: value }})
+    .execute()
+
 })`
 
     expect(script)
