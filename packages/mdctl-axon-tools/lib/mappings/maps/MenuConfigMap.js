@@ -62,7 +62,6 @@ module.exports = class MenuConfigMap {
   }
 
   async getMappings() {
-    console.log('org', this.org)
     const mapping = [],
           currentStudy = await this.getExistingStudy(),
           menuConfig = currentStudy.c_menu_config || []
