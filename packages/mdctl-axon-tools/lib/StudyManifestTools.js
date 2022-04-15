@@ -11,7 +11,7 @@ const fs = require('fs'),
       packageFileDir = path.join(__dirname, '../packageScripts'),
       { Fault } = require('@medable/mdctl-core')
 const { isObject, isArray } = require('lodash')
-const MenuConfigMapping = require('./mappings/MenuConfigMapping')
+const { getMappingScript } = require('./mappings')
 
 class StudyManifestTools {
 
@@ -136,8 +136,7 @@ class StudyManifestTools {
           allEntities = [study, ...await this.getStudyManifestEntities(org, study, orgReferenceProps)],
           { outputEntities, removedEntities } = this.validateReferences(allEntities, orgReferenceProps),
           manifest = this.createManifest(outputEntities),
-          menuConfigMapping = new MenuConfigMapping(org),
-          mappingScript = await menuConfigMapping.getMappingScript()
+          mappingScript = await getMappingScript(org)
 
     let extraConfig
 
