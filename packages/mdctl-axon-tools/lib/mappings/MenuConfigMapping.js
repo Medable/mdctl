@@ -1,4 +1,4 @@
-const getMappingScript = require('./index')
+const { getMappingScript } = require('./index')
 
 module.exports = class MenuConfigMapping {
 

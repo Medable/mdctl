@@ -1,45 +1,59 @@
-const getMappings = require('./maps')
+const { getMappings } = require('./maps')
 
-module.exports = async function getMappingScript(org) {
-  const mappings = await getMappings(org)
+module.exports = {
+  async getMappingScript(org) {
 
-  if (mappings.length === 0) return ''
+    const mappings = await getMappings(org)
 
-  return `
+    if (mappings.length === 0) return ''
+
+    return `
     const { run } = require('expressions')
+    const { debug } = require('logger')
 
     const mappings = ${JSON.stringify(mappings)}
 
     mappings.forEach(({ path, mapTo }) => {
-    const [entity, entityKey, property, ...rest] = path.split('.'),
-        isDocPropUpdate = !!rest.length,
-        value = run(mapTo)
 
-    if (isDocPropUpdate) {
-      const [entityResult] = org.objects[entity]
-        .find({ c_key: entityKey })
-        .paths(property)
-        .limit(1)
-        .toArray()
+      const [entity, entityKey, property, ...rest] = path.split('.'),
+          isDocPropUpdate = !!rest.length,
+          value = run(mapTo)
 
-      if (!entityResult) return
+      if (isDocPropUpdate) {
+        const [entityResult] = org.objects[entity]
+          .find({ c_key: entityKey })
+          .paths(property)
+          .limit(1)
+          .toArray()
 
-      const documentProps = entityResult[property]
+        if (!entityResult) return
 
-      if (!documentProps) return
+        const documentProps = entityResult[property]
 
-      const [docPropKey, docProp] = rest
+        if (!documentProps) return
 
-      if (!docPropKey || !docProp) return
+        const [docPropKey, docProp] = rest
 
-      const propToUpdate = documentProps.find(({ c_key }) => c_key === docPropKey),
+        if (!docPropKey || !docProp) return
 
-            idToUpdate = propToUpdate._id
+        const propToUpdate = documentProps.find(({ c_key }) => c_key === docPropKey),
 
+              idToUpdate = propToUpdate._id
+
+        return org.objects[entity]
+          .updateOne({ c_key: entityKey })
+          .pathUpdate(property + '/' + idToUpdate + '/' + docProp , value)
+
+      }
+
+      debug('setting', org.objects[entity]
+      .updateOne({ c_key: entityKey }, { $set: { [property]: value }}).getOptions())
+
+      //normal prop update
       return org.objects[entity]
-        .updateOne({ c_key: entityKey })
-        .pathUpdate(property + '/' + idToUpdate + '/' + docProp , value)
+        .updateOne({ c_key: entityKey }, { $set: { [property]: value }})
+        .execute()
 
-    }
     })`
+  }
 }
