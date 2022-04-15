@@ -286,7 +286,7 @@ class StudyManifestTools {
     this.checkEcIntegrity(outputEntities)
     const studyRemoved = removedEntities.find(entityWrapper => entityWrapper.entity.object === 'c_study')
     if (studyRemoved) {
-      throw Fault.create({ message: 'Study cannot be exported due to referential integrity issues', reason: JSON.stringify(studyRemoved.issues) })
+      throw Fault.create('kInvalidArgument', { message: 'Study cannot be exported due to referential integrity issues', reason: JSON.stringify(studyRemoved.issues) })
     }
   }
 
@@ -300,7 +300,7 @@ class StudyManifestTools {
       hasDefaultDocCss = entities.some(entity => entity.object === 'ec__default_document_css')
 
       if (!hasDefaultDocCss) {
-        throw Fault.create({
+        throw Fault.create('kInvalidArgument', {
           message: 'Export cannot be completed because there is no ec__default_document_css',
           reason: 'Exports that contain EC templates must also contain an EC default document CSS'
         })
