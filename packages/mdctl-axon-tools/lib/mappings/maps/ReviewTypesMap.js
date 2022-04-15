@@ -140,8 +140,14 @@ module.exports = class ReviewsTypesMap {
         .map((requiredReviewId) => {
           const reviewType = reviewTypes
             .find(({ _id: reviewTypeId }) => reviewTypeId === requiredReviewId)
-          return reviewType.c_key
+
+
+          return reviewType && reviewType.c_key
         })
+        .filter(reviewType => !!reviewType)
+
+      // eslint-disable-next-line no-continue
+      if (!requiredReviewKeys.length) continue
 
       mapping.push({
         path: `c_group_task.${groupTask.c_key}.c_required_reviews`,
