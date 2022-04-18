@@ -8,9 +8,10 @@ const fs = require('fs'),
       { Driver } = require('@medable/mdctl-api-driver'),
       { Org } = require('@medable/mdctl-api-driver/lib/cortex.object'),
       path = require('path'),
-      packageFileDir = path.join(__dirname, '../packageScripts')
+      packageFileDir = path.join(__dirname, '../packageScripts'),
+      { Fault } = require('@medable/mdctl-core')
 const { isObject, isArray } = require('lodash')
-const MenuConfigMapping = require('./mappings/MenuConfigMapping')
+const { getMappingScript } = require('./mappings')
 
 class StudyManifestTools {
 
@@ -135,8 +136,7 @@ class StudyManifestTools {
           allEntities = [study, ...await this.getStudyManifestEntities(org, study, orgReferenceProps)],
           { outputEntities, removedEntities } = this.validateReferences(allEntities, orgReferenceProps),
           manifest = this.createManifest(outputEntities),
-          menuConfigMapping = new MenuConfigMapping(org),
-          mappingScript = await menuConfigMapping.getMappingScript()
+          mappingScript = await getMappingScript(org)
 
     let extraConfig
 
@@ -285,27 +285,25 @@ class StudyManifestTools {
     this.checkEcIntegrity(outputEntities)
     const studyRemoved = removedEntities.find(entityWrapper => entityWrapper.entity.object === 'c_study')
     if (studyRemoved) {
-      throw {message: 'Study cannot be exported due to referential integrity issues', reason: JSON.stringify(studyRemoved.issues)}
+      throw Fault.create('kInvalidArgument', { message: 'Study cannot be exported due to referential integrity issues', reason: JSON.stringify(studyRemoved.issues) })
     }
   }
 
   checkEcIntegrity(entities) {
     // if study has EC templates and no default css, throw error and do not export
-    let hasEcTemplates, hasDefaultDocCss
+    let hasDefaultDocCss
 
-    hasEcTemplates = entities.some((entity) => {
-      return entity.object == 'ec__document_template'
-    })
-    
+    const hasEcTemplates = entities.some(entity => entity.object === 'ec__document_template')
+
     if (hasEcTemplates) {
-      hasDefaultDocCss = entities.some((entity) => {
-        return entity.object == 'ec__default_document_css'
-      })
+      hasDefaultDocCss = entities.some(entity => entity.object === 'ec__default_document_css')
 
-      if (!hasDefaultDocCss) {throw {
-        message: 'Export cannot be completed because there is no ec__default_document_css',
-        reason: 'Exports that contain EC templates must also contain an EC default document CSS'
-      }}
+      if (!hasDefaultDocCss) {
+        throw Fault.create('kInvalidArgument', {
+          message: 'Export cannot be completed because there is no ec__default_document_css',
+          reason: 'Exports that contain EC templates must also contain an EC default document CSS'
+        })
+      }
     }
   }
 
