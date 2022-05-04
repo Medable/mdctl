@@ -1,6 +1,6 @@
 {
   "name": "@medable/mdctl-secrets",
-  "version": "1.0.63-alpha.7",
+  "version": "1.0.65-alpha.0",
   "description": "Medable Developer Tools :: Secrets",
   "repository": {
     "type": "git",
@@ -25,7 +25,7 @@
     "lint": "eslint *.js"
   },
   "dependencies": {
-    "@medable/mdctl-core-utils": "^1.0.63-alpha.7",
+    "@medable/mdctl-core-utils": "^1.0.65-alpha.0",
     "create-hmac": "^1.1.7",
     "jsonwebtoken": "^8.4.0"
   },
