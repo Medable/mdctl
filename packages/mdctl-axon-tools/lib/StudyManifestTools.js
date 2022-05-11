@@ -8,10 +8,9 @@ const fs = require('fs'),
       { Driver } = require('@medable/mdctl-api-driver'),
       { Org } = require('@medable/mdctl-api-driver/lib/cortex.object'),
       path = require('path'),
-      packageFileDir = path.join(__dirname, '../packageScripts'),
-      { Fault } = require('@medable/mdctl-core')
+      packageFileDir = path.join(__dirname, '../packageScripts')
 const { isObject, isArray } = require('lodash')
-const { getMappingScript } = require('./mappings')
+const MenuConfigMapping = require('./mappings/MenuConfigMapping')
 
 class StudyManifestTools {
 
@@ -125,19 +124,39 @@ class StudyManifestTools {
 
   async getStudyManifest() {
     console.log('Building Manifest')
+    const manifestAndDeps = await this.buildManifestAndDependencies()
+    await this.writeToDisk(manifestAndDeps)
+    return manifestAndDeps
+  }
+
+  async buildManifestAndDependencies() {
     const { client } = privatesAccessor(this),
           driver = new Driver(client),
           org = new Org(driver),
           // eslint-disable-next-line camelcase
           { c_study } = org.objects,
-          study = await c_study.readOne()
-            .execute(),
+          study = await c_study.readOne().execute(),
           { orgReferenceProps } = await this.getOrgObjectInfo(org),
+          // eslint-disable-next-line max-len
           allEntities = [study, ...await this.getStudyManifestEntities(org, study, orgReferenceProps)],
+          // eslint-disable-next-line max-len
           { outputEntities, removedEntities } = this.validateReferences(allEntities, orgReferenceProps),
           manifest = this.createManifest(outputEntities),
-          mappingScript = await getMappingScript(org)
+          menuConfigMapping = new MenuConfigMapping(org),
+          mappingScript = await menuConfigMapping.getMappingScript(),
+          ingestTransform = fs.readFileSync('../packageScripts/ingestTransform.js')
 
+    return {
+      manifest,
+      removedEntities,
+      mappingScript,
+      ingestTransform: ingestTransform.toString()
+    }
+  }
+
+  async writeToDisk({
+    manifest, removedEntities, mappingScript, ingestTransform
+  }) {
     let extraConfig
 
     if (mappingScript) {
@@ -146,8 +165,6 @@ class StudyManifestTools {
 
     this.writeIssues(removedEntities)
     this.writePackage('study', extraConfig)
-
-    return { manifest, removedEntities }
   }
 
   writeInstallAfterScript(mappingScript) {
@@ -271,40 +288,12 @@ class StudyManifestTools {
         })
     }
 
-    this.checkExportIntegrity(outputEntities, removedEntities)
-
     if (removedEntities.length) {
       console.log('\x1b[1m\x1b[31m\x1b[40m%s\x1b[0m', 'Referential Integrity Errors Found')
       console.log('\x1b[1m\x1b[31m\x1b[40m%s\x1b[0m', 'Please check issuesReport.json for more details')
     }
 
     return { outputEntities, removedEntities }
-  }
-
-  checkExportIntegrity(outputEntities, removedEntities) {
-    this.checkEcIntegrity(outputEntities)
-    const studyRemoved = removedEntities.find(entityWrapper => entityWrapper.entity.object === 'c_study')
-    if (studyRemoved) {
-      throw Fault.create('kInvalidArgument', { message: 'Study cannot be exported due to referential integrity issues', reason: JSON.stringify(studyRemoved.issues) })
-    }
-  }
-
-  checkEcIntegrity(entities) {
-    // if study has EC templates and no default css, throw error and do not export
-    let hasDefaultDocCss
-
-    const hasEcTemplates = entities.some(entity => entity.object === 'ec__document_template')
-
-    if (hasEcTemplates) {
-      hasDefaultDocCss = entities.some(entity => entity.object === 'ec__default_document_css')
-
-      if (!hasDefaultDocCss) {
-        throw Fault.create('kInvalidArgument', {
-          message: 'Export cannot be completed because there is no ec__default_document_css',
-          reason: 'Exports that contain EC templates must also contain an EC default document CSS'
-        })
-      }
-    }
   }
 
   /**
