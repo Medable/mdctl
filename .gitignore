@@ -70,3 +70,7 @@ output*/
 # iOS
 .DS_Store
 scratch
+
+# nix
+.direnv
+result
