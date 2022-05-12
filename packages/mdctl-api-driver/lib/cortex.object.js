@@ -65,7 +65,9 @@ class CortexObject {
     regName = registeredAliases[singular] // eslint-disable-line prefer-const
 
     if (regName) {
-      return registeredObjects[regName]
+      const obj = registeredObjects[regName]
+      obj.driver = driver
+      return obj
     }
 
     // Using this allows subclassing of CortexObject
@@ -79,6 +81,10 @@ class CortexObject {
       return cls
     }
 
+  }
+
+  set driver(driver) {
+    privatesAccessor(this, 'driver', driver)
   }
 
   get driver() {
