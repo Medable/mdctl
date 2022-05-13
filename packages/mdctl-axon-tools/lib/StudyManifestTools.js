@@ -12,6 +12,7 @@ const fs = require('fs'),
       { Fault } = require('@medable/mdctl-core')
 const { isObject, isArray } = require('lodash')
 const { getMappingScript } = require('./mappings')
+const MenuConfigMapping = require('./mappings/MenuConfigMapping')
 
 class StudyManifestTools {
 
@@ -125,19 +126,39 @@ class StudyManifestTools {
 
   async getStudyManifest() {
     console.log('Building Manifest')
+    const manifestAndDeps = await this.buildManifestAndDependencies()
+    await this.writeToDisk(manifestAndDeps)
+    return manifestAndDeps
+  }
+
+  async buildManifestAndDependencies() {
     const { client } = privatesAccessor(this),
           driver = new Driver(client),
           org = new Org(driver),
           // eslint-disable-next-line camelcase
           { c_study } = org.objects,
-          study = await c_study.readOne()
-            .execute(),
+          study = await c_study.readOne().execute(),
           { orgReferenceProps } = await this.getOrgObjectInfo(org),
+          // eslint-disable-next-line max-len
           allEntities = [study, ...await this.getStudyManifestEntities(org, study, orgReferenceProps)],
+          // eslint-disable-next-line max-len
           { outputEntities, removedEntities } = this.validateReferences(allEntities, orgReferenceProps),
           manifest = this.createManifest(outputEntities),
-          mappingScript = await getMappingScript(org)
+          menuConfigMapping = new MenuConfigMapping(org),
+          mappingScript = await menuConfigMapping.getMappingScript(),
+          ingestTransform = fs.readFileSync('../packageScripts/ingestTransform.js')
 
+    return {
+      manifest,
+      removedEntities,
+      mappingScript,
+      ingestTransform: ingestTransform.toString()
+    }
+  }
+
+  async writeToDisk({
+    manifest, removedEntities, mappingScript, ingestTransform
+  }) {
     let extraConfig
 
     if (mappingScript) {
@@ -146,8 +167,6 @@ class StudyManifestTools {
 
     this.writeIssues(removedEntities)
     this.writePackage('study', extraConfig)
-
-    return { manifest, removedEntities }
   }
 
   writeInstallAfterScript(mappingScript) {
