@@ -130,7 +130,7 @@ class StudyManifestTools {
     return manifestAndDeps
   }
 
-  async getOneStudy(org) {
+  async getFirstStudy(org) {
     const study = await org.objects.c_study.readOne().execute()
     return study
   }
@@ -139,7 +139,7 @@ class StudyManifestTools {
     const { client } = privatesAccessor(this),
           driver = new Driver(client),
           org = new Org(driver),
-          study = await this.getOneStudy(org),
+          study = await this.getFirstStudy(org),
           { orgReferenceProps } = await this.getOrgObjectInfo(org),
           allEntities = [study, ...await this.getStudyManifestEntities(org, study, orgReferenceProps)],
           { outputEntities, removedEntities } = this.validateReferences(allEntities, orgReferenceProps),
