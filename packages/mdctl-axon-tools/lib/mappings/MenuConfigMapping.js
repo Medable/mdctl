@@ -6,7 +6,7 @@ module.exports = class MenuConfigMapping {
     this.org = org
   }
 
-  // WORKAROUND to be backwards compatible with Axon Deployer using this as entry point
+  // WORKAROUND to be backwards compatible with Axon Deployer using this as entry poin
   async getMappingScript() {
     return getMappingScript(this.org)
   }
