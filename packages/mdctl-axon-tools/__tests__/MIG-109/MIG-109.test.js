@@ -101,7 +101,7 @@ describe('MIG-109 - Test StudyManifestTools ', () => {
   })
 
   it('Test buildManifestAndDependencies function', async() => {
-    jest.spyOn(StudyManifestTools.prototype, 'getOneStudy').mockImplementation(() => org)
+    jest.spyOn(StudyManifestTools.prototype, 'getFirstStudy').mockImplementation(() => org)
     jest.spyOn(StudyManifestTools.prototype, 'getOrgObjectInfo').mockImplementation(() => dummyReferences)
     jest.spyOn(StudyManifestTools.prototype, 'validateReferences').mockImplementation(() => entities)
     jest.spyOn(StudyManifestTools.prototype, 'createManifest').mockImplementation(() => manifest)
