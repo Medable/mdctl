@@ -130,20 +130,22 @@ class StudyManifestTools {
     return manifestAndDeps
   }
 
+  async getOneStudy(org) {
+    const study = await org.objects.c_study.readOne().execute()
+    return study
+  }
+
   async buildManifestAndDependencies() {
     const { client } = privatesAccessor(this),
           driver = new Driver(client),
           org = new Org(driver),
-          // eslint-disable-next-line camelcase
-          { c_study } = org.objects,
-          study = await c_study.readOne()
-            .execute(),
+          study = await this.getOneStudy(org),
           { orgReferenceProps } = await this.getOrgObjectInfo(org),
           allEntities = [study, ...await this.getStudyManifestEntities(org, study, orgReferenceProps)],
           { outputEntities, removedEntities } = this.validateReferences(allEntities, orgReferenceProps),
           manifest = this.createManifest(outputEntities),
           mappingScript = await getMappingScript(org),
-          ingestTransform = fs.readFileSync('../packageScripts/ingestTransform.js')
+          ingestTransform = fs.readFileSync(`${__dirname}/../packageScripts/ingestTransform.js`)
 
     return {
       manifest,
@@ -153,7 +155,9 @@ class StudyManifestTools {
     }
   }
 
-  async writeToDisk({ manifest, removedEntities, mappingScript, ingestTransform }) {
+  async writeToDisk({
+    manifest, removedEntities, mappingScript, ingestTransform
+  }) {
     let extraConfig
 
     if (mappingScript) {
