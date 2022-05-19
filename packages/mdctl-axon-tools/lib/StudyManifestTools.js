@@ -125,29 +125,58 @@ class StudyManifestTools {
 
   async getStudyManifest() {
     console.log('Building Manifest')
+    const manifestAndDeps = await this.buildManifestAndDependencies()
+    await this.writeStudyToDisk(manifestAndDeps)
+    return manifestAndDeps
+  }
+
+  async getFirstStudy(org) {
+    const study = await org.objects.c_study.readOne().execute()
+    return study
+  }
+
+  async getOrgAndReferences() {
     const { client } = privatesAccessor(this),
           driver = new Driver(client),
           org = new Org(driver),
-          // eslint-disable-next-line camelcase
-          { c_study } = org.objects,
-          study = await c_study.readOne()
-            .execute(),
-          { orgReferenceProps } = await this.getOrgObjectInfo(org),
-          allEntities = [study, ...await this.getStudyManifestEntities(org, study, orgReferenceProps)],
-          { outputEntities, removedEntities } = this.validateReferences(allEntities, orgReferenceProps),
-          manifest = this.createManifest(outputEntities),
-          mappingScript = await getMappingScript(org)
+          { orgReferenceProps } = await this.getOrgObjectInfo(org)
+    return { org, orgReferenceProps }
+  }
 
+  validateAndCreateManifest(allEntities, orgReferenceProps, ignore = []) {
+    const { outputEntities, removedEntities } = this
+            .validateReferences(allEntities, orgReferenceProps, ignore),
+          manifest = this.createManifest(outputEntities)
+
+    return { manifest, removedEntities }
+  }
+
+  async buildManifestAndDependencies() {
+    const { org, orgReferenceProps } = await this.getOrgAndReferences(),
+          study = await this.getFirstStudy(org),
+          allEntities = [study, ...await this.getStudyManifestEntities(org, study, orgReferenceProps)],
+          { manifest, removedEntities } = this.validateAndCreateManifest(allEntities, orgReferenceProps),
+          mappingScript = await getMappingScript(org),
+          ingestTransform = fs.readFileSync(`${__dirname}/../packageScripts/ingestTransform.js`)
+
+    return {
+      manifest,
+      removedEntities,
+      mappingScript,
+      ingestTransform: ingestTransform.toString()
+    }
+  }
+
+  async writeStudyToDisk({
+    manifest, removedEntities, mappingScript, ingestTransform
+  }) {
     let extraConfig
 
     if (mappingScript) {
       extraConfig = this.writeInstallAfterScript(mappingScript)
     }
 
-    this.writeIssues(removedEntities)
-    this.writePackage('study', extraConfig)
-
-    return { manifest, removedEntities }
+    this.writeToDisk('study', removedEntities, extraConfig)
   }
 
   writeInstallAfterScript(mappingScript) {
@@ -169,18 +198,22 @@ class StudyManifestTools {
     return packageReference
   }
 
+  writeToDisk(entityType, removedEntities, extraConfig) {
+    this.writeIssues(removedEntities)
+    this.writePackage(entityType, extraConfig)
+  }
+
   async getTasksManifest(taskIds) {
     console.log('Building Manifest')
-    const { client } = privatesAccessor(this),
-          driver = new Driver(client),
-          org = new Org(driver),
-          { orgReferenceProps } = await this.getOrgObjectInfo(org),
-          allEntities = await this.getTaskManifestEntities(org, taskIds, orgReferenceProps),
-          { outputEntities, removedEntities } = this.validateReferences(allEntities, orgReferenceProps, ['c_tasks']),
-          manifest = this.createManifest(outputEntities)
+    const manifestAndDeps = await this.buildTaskManifestAndDependencies(taskIds)
+    this.writeToDisk('task', manifestAndDeps.removedEntities)
+    return manifestAndDeps
+  }
 
-    this.writeIssues(removedEntities)
-    this.writePackage('task')
+  async buildTaskManifestAndDependencies(taskIds) {
+    const { org, orgReferenceProps } = await this.getOrgAndReferences(),
+          allEntities = await this.getTaskManifestEntities(org, taskIds, orgReferenceProps),
+          { manifest, removedEntities } = this.validateAndCreateManifest(allEntities, orgReferenceProps, ['c_tasks'])
 
     return { manifest, removedEntities }
 
@@ -188,19 +221,17 @@ class StudyManifestTools {
 
   async getConsentsManifest(consentIds) {
     console.log('Building Manifest')
-    const { client } = privatesAccessor(this),
-          driver = new Driver(client),
-          org = new Org(driver),
-          { orgReferenceProps } = await this.getOrgObjectInfo(org),
-          allEntities = await this.getConsentManifestEntities(org, consentIds, orgReferenceProps),
-          { outputEntities, removedEntities } = this.validateReferences(allEntities, orgReferenceProps, ['ec__document_templates']),
-          manifest = this.createManifest(outputEntities)
+    const manifestAndDeps = await this.buildConsentManifestAndDependencies(consentIds)
+    this.writeToDisk('consent', manifestAndDeps.removedEntities)
+    return manifestAndDeps
+  }
 
-    this.writeIssues(removedEntities)
-    this.writePackage('consent')
+  async buildConsentManifestAndDependencies(consentIds) {
+    const { org, orgReferenceProps } = await this.getOrgAndReferences(),
+          allEntities = await this.getConsentManifestEntities(org, consentIds, orgReferenceProps),
+          { manifest, removedEntities } = this.validateAndCreateManifest(allEntities, orgReferenceProps, ['ec__document_templates'])
 
     return { manifest, removedEntities }
-
   }
 
   createManifest(entities) {
