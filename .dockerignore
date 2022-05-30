@@ -1,0 +1,12 @@
+.deployignore
+.eslintignore
+.eslintrc
+.git/
+.gitignore
+.gitlab-ci.yml
+.npmrc
+.nycrc.json
+.retireignore.json
+config.local.json
+justfile
+README.md
