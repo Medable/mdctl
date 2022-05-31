@@ -31,6 +31,9 @@ lerna publish --no-git-tag-version --no-push --registry=http://localhost:4873
 #### Run test
 `lerna run test`
 
+### Run mdctl in a container
+
+
 #### Packages
 
 [mdctl-api](packages/mdctl-api/README.md)
