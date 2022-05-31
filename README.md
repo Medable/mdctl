@@ -31,6 +31,17 @@ lerna publish --no-git-tag-version --no-push --registry=http://localhost:4873
 #### Run test
 `lerna run test`
 
+### Run MDCTL in a docker conatiner
+```
+Steps to run in a container
+1. Build the image, docker build -t <Image-Name> --build-arg BRANCH_NAME=<BRANCH-TO-TEST> .
+   Note: If no branch is supplied, it will take master as a default branch
+2. Run the container, docker run -it --name <CONATINER-NAME> -v <PATH-OF-ANY-FOLDER>:/root/.medable sh
+   Once you are inside the conatiner , you can run any mdctl commands. 
+   Note: The credentials created on particular conatiner will also be available on another conatiner, but remember to use the same <PATH-OF-ANY-FOLDER> 
+```
+
+
 #### Packages
 
 [mdctl-api](packages/mdctl-api/README.md)
