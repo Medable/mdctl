@@ -41,10 +41,7 @@ Steps to run in a container
    Once you are inside the conatiner , you can run any mdctl commands. 
    Note: The credentials created on particular conatiner will also be available on another conatiner, but remember to use the same PATH-OF-ANY-FOLDER
 3. Once you exited from that conatiner. if you want to log in to that conatiner.
-        ```
-        docker restart <CONATINER-NAME>
-        docker attach <CONTAINER-NAME>
-        ```
+        `docker restart <CONATINER-NAME> && docker attach <CONTAINER-NAME>`
 
 
 
