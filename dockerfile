@@ -1,6 +1,7 @@
 FROM node:14-alpine
 
-ARG BRANCH_NAME
+ARG BRANCH_NAME=master
+
 ENV MDCTL_CLI_ENCRYPTION_KEY=_your_key_key_with_enough_bits_1
 
 RUN npm install -g lerna && \
