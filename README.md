@@ -36,14 +36,34 @@ Steps to run in a container
 1. Build the image
         `docker build -t <IMAGE-NAME> --build-arg BRANCH_NAME=<BRANCH-TO-TEST> .`
    Note: If no branch is supplied, it will take master as a default branch
-2. Run the container
-        `docker run -it --name <CONATINER-NAME> -v <PATH-OF-ANY-FOLDER>:/root/.medable <IMAGE-NAME> sh`
-   Once you are inside the conatiner , you can run any mdctl commands. 
-   Note: The credentials created on particular conatiner will also be available on another conatiner, but remember to use the same PATH-OF-ANY-FOLDER
-3. Once you exited from that conatiner. if you want to log in to that conatiner.
-        `docker restart <CONATINER-NAME> && docker attach <CONTAINER-NAME>`
+2. To store the credentials, 
+   - create a folder in your home directory, this folder will be shared across multiple containers
+   - move into that folder using `cd`
+   - copy the full path of that folder using `pwd`
+   - run the below command to add the credentials
+        `docker run -it  -v <CREDENTIAL-FOLDER>:/root/.medable <IMAGE-NAME> mdctl credentials add`
+   - likewise you can run any mdctl command
 
+3. But, to run any mdctl export or import command you need to 
+   - create a folder in your home directory, this will contain the exported or the imported data
+   - move into that folder using `cd`
+   - if trying to run import command copy the manifest and other files in this folder
+   - if trying to run export command, after running the export command this folder will contain the exported data
+   - copy the full path of that folder using `pwd`
+   - if you are using crdentials type token for the env run the below command to export
+        `docker run -it  -v <CREDENTIAL-FOLDER>:/root/.medable -v <DATA-FOLDER>:/data <IMAGE-NAME> mdctl env export --env <YOUR-ENV>`
+   - likewise you can run the import command as well
+   - if you are using password as a credentials type, then you need to be on the same session
+        - You can log in to the conatiner
+            `docker run -it  -v <CREDENTIAL-FOLDER>:/root/.medable -v <DATA-FOLDER>:/data <IMAGE-NAME> sh`
+        - You can login to your env and run the command
+            ```
+            mdctl credentials login
+            mdctl study export
+            ```
 
+Note: Remove all the stopped container which might have taken unecessary space 
+    `docker container prune`
 
 #### Packages
 
