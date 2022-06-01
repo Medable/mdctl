@@ -19,3 +19,5 @@ RUN lerna bootstrap --hoist
 
 WORKDIR ./packages/mdctl-cli 
 RUN npm link
+
+WORKDIR /data
