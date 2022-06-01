@@ -31,7 +31,7 @@ lerna publish --no-git-tag-version --no-push --registry=http://localhost:4873
 #### Run test
 `lerna run test`
 
-### Run MDCTL in a docker conatiner
+### Run MDCTL in a docker container
 Steps to run in a container
 1. Build the image
         `docker build -t <IMAGE-NAME> --build-arg BRANCH_NAME=<BRANCH-TO-TEST> .`
@@ -54,7 +54,7 @@ Steps to run in a container
         `docker run -it  -v <CREDENTIAL-FOLDER>:/root/.medable -v <DATA-FOLDER>:/data <IMAGE-NAME> mdctl env export --env <YOUR-ENV>`
    - likewise you can run the import command as well
    - if you are using password as a credentials type, then you need to be on the same session
-        - You can log in to the conatiner
+        - You can log in to the container
             `docker run -it  -v <CREDENTIAL-FOLDER>:/root/.medable -v <DATA-FOLDER>:/data <IMAGE-NAME> sh`
         - You can login to your env and run the command
             ```
