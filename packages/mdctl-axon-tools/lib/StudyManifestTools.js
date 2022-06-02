@@ -27,17 +27,24 @@ class StudyManifestTools {
     let manifestJSON
     try {
       manifestJSON = JSON.parse(manifestObject)
-      if (manifestJSON.object !== 'manifest') {
+      if (!manifestJSON.object || manifestJSON.object !== 'manifest') {
         throw Fault.create('kInvalidArgument', { reason: 'The argument is not a valid manifest' })
       }
     } catch (e) {
-      try {
-        if (fs.existsSync(manifestObject)) {
-          throw Fault.create('kInvalidArgument', { reason: 'The manifest file does not exists' })
+      if (!(e instanceof SyntaxError)) {
+        throw e
+      } else {
+        try {
+          if (!fs.existsSync(manifestObject)) {
+            throw Fault.create('kInvalidArgument', { reason: 'The manifest file does not exists' })
+          }
+          manifestJSON = JSON.parse(fs.readFileSync(manifestObject))
+        } catch (err) {
+          if (err instanceof SyntaxError) {
+            throw Fault.create('kInvalidArgument', { reason: 'The manifest file is not a valid JSON' })
+          }
+          throw err
         }
-        manifestJSON = JSON.parse(fs.readFileSync(manifestObject))
-      } catch (err) {
-        throw Fault.create('kInvalidArgument', { reason: 'The manifest file is not a valid JSON' })
       }
     }
     return manifestJSON
@@ -269,6 +276,24 @@ class StudyManifestTools {
     const { org, orgReferenceProps } = await this.getOrgAndReferences(),
           allEntities = await this.getConsentManifestEntities(org, consentIds, orgReferenceProps),
           { manifest, removedEntities } = this.validateAndCreateManifest(allEntities, orgReferenceProps, ['ec__document_templates'])
+
+    return { manifest, removedEntities }
+  }
+
+  // This function is not used but it's handy to have for unit tests
+  async buildVisitManifestAndDependencies(visitIds) {
+    const { org, orgReferenceProps } = await this.getOrgAndReferences(),
+          allEntities = await this.getVisitManifestEntities(org, visitIds, orgReferenceProps),
+          { manifest, removedEntities } = this.validateAndCreateManifest(allEntities, orgReferenceProps, ['c_visit_schedules'])
+
+    return { manifest, removedEntities }
+  }
+
+  // This function is not used but it's handy to have for unit tests
+  async buildGroupManifestAndDependencies(groupIds) {
+    const { org, orgReferenceProps } = await this.getOrgAndReferences(),
+          allEntities = await this.getGroupManifestEntities(org, groupIds, orgReferenceProps),
+          { manifest, removedEntities } = this.validateAndCreateManifest(allEntities, orgReferenceProps, ['c_groups'])
 
     return { manifest, removedEntities }
   }
