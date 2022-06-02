@@ -35,6 +35,8 @@ describe('getStudyManifestEntities', () => {
     ['orac__form_questions'],
     ['orac__events']
   ])('should include %s', async(entity) => {
+    jest.spyOn(StudyManifestTools.prototype, 'getObjectIDsArray').mockImplementation(() => [1])
+    jest.spyOn(StudyManifestTools.prototype, 'mapObjectNameToPlural').mockImplementation(() => entity)
     const entities = await manifestTools.getStudyManifestEntities({}, {}, {}),
           objectsRequested = mockGetExportedObjects
             .mock

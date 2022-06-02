@@ -41,6 +41,10 @@ class Study extends Task {
       manifestOnly: {
         type: 'boolean',
         default: false
+      },
+      manifestObject: {
+        type: 'string',
+        default: ''
       }
     }
 
@@ -74,10 +78,11 @@ class Study extends Task {
   async 'study@export'(cli) {
     const client = await cli.getApiClient({ credentials: await cli.getAuthOptions() }),
           params = await cli.getArguments(this.optionKeys),
-          studyTools = new StudyManifestTools(client, params)
+          studyTools = new StudyManifestTools(client, params),
+          manifestObj = params.manifestObject
 
     try {
-      const { manifest } = await studyTools.getStudyManifest()
+      const { manifest } = await studyTools.getStudyManifest(manifestObj)
 
       if (!params.manifestOnly) {
         const options = {
@@ -99,13 +104,12 @@ class Study extends Task {
 
   async 'study@import'(cli) {
     console.log('Starting Study Import')
-    const params = await cli.getArguments(this.optionKeys)
+    const params = await cli.getArguments(this.optionKeys),
+          env = new Env()
 
     params.triggers = false
     params.backup = false
 
-    const env = new Env()
-    
     await env['env@import'](cli)
   }
 
@@ -233,7 +237,7 @@ class Study extends Task {
     
     Usage: 
       
-      mdctl study [command]       
+      mdctl study [command] --manifestObject     
           
     Arguments:               
       
@@ -241,7 +245,28 @@ class Study extends Task {
         export - Exports the study from the current org
         import - Imports the study into the current org
         task [action] - Allows the select of tasks to export from the current org  
-        consent [action] - Allows the select of consent templates to export from the current org                                                                                                                                   
+        consent [action] - Allows the select of consent templates to export from the current org  
+        
+      Options 
+        
+        --manifestObject - receives a valid manifest JSON object or the path to a manifest file 
+        
+      Notes
+        
+        --manifestObject is \x1b[4monly available for "export" command\x1b[0m, and it is expected to have the following format:
+        {
+          "<OBJECT_NAME_1>": {
+            "includes": [
+              "key_1", "key_2", etc...
+            ]
+          },
+          "<OBJECT_NAME_X>": {
+            "includes": [
+              "key_N", "key_N+1", etc...
+            ]
+          }
+          "object": "manifest"
+        }          
     `
   }
 

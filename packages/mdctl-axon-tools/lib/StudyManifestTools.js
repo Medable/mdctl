@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 /* eslint-disable one-var */
 /* eslint-disable no-underscore-dangle */
 
@@ -20,6 +21,26 @@ class StudyManifestTools {
       client,
       options
     })
+  }
+
+  loadManifest(manifestObject) {
+    let manifestJSON
+    try {
+      manifestJSON = JSON.parse(manifestObject)
+      if (manifestJSON.object !== 'manifest') {
+        throw Fault.create('kInvalidArgument', { reason: 'The argument is not a valid manifest' })
+      }
+    } catch (e) {
+      try {
+        if (fs.existsSync(manifestObject)) {
+          throw Fault.create('kInvalidArgument', { reason: 'The manifest file does not exists' })
+        }
+        manifestJSON = JSON.parse(fs.readFileSync(manifestObject))
+      } catch (err) {
+        throw Fault.create('kInvalidArgument', { reason: 'The manifest file is not a valid JSON' })
+      }
+    }
+    return manifestJSON
   }
 
   async getTasks() {
@@ -123,9 +144,9 @@ class StudyManifestTools {
     return privatesAccessor(this).orgObjects.find(v => v.pluralName === pluralName).name
   }
 
-  async getStudyManifest() {
+  async getStudyManifest(manifestObject) {
     console.log('Building Manifest')
-    const manifestAndDeps = await this.buildManifestAndDependencies()
+    const manifestAndDeps = await this.buildManifestAndDependencies(manifestObject)
     await this.writeStudyToDisk(manifestAndDeps)
     return manifestAndDeps
   }
@@ -151,13 +172,31 @@ class StudyManifestTools {
     return { manifest, removedEntities }
   }
 
-  async buildManifestAndDependencies() {
+  async buildManifestAndDependencies(manifestObject) {
+    let allEntities,
+        mappingScript,
+        ignoreKeys
+
     const { org, orgReferenceProps } = await this.getOrgAndReferences(),
-          study = await this.getFirstStudy(org),
-          allEntities = [study, ...await this.getStudyManifestEntities(org, study, orgReferenceProps)],
-          { manifest, removedEntities } = this.validateAndCreateManifest(allEntities, orgReferenceProps),
-          mappingScript = await getMappingScript(org),
           ingestTransform = fs.readFileSync(`${__dirname}/../packageScripts/ingestTransform.js`)
+
+    if (manifestObject) {
+      const manifestJSON = this.loadManifest(manifestObject)
+
+      ignoreKeys = Object.keys(manifestJSON).filter(key => typeof manifestJSON[key] === 'object')
+        .map(key => this.mapObjectNameToPlural(key))
+
+      allEntities = await this.getStudyManifestEntities(org, null, manifestJSON, orgReferenceProps)
+    } else {
+      const study = await this.getFirstStudy(org)
+      ignoreKeys = []
+      allEntities = [study,
+        ...await this.getStudyManifestEntities(org, study, null, orgReferenceProps)]
+      mappingScript = await getMappingScript(org)
+    }
+
+    const { manifest, removedEntities } = this
+      .validateAndCreateManifest(allEntities, orgReferenceProps, ignoreKeys)
 
     return {
       manifest,
@@ -632,15 +671,18 @@ class StudyManifestTools {
       .reduce((acc, curr) => acc.concat(curr), [])
   }
 
+  /*
   async getStudyManifestEntities(org, study, orgReferenceProps) {
+    const taskIds = (await org.objects.c_tasks.find({ c_study: study._id }).limit(false).toArray()).map(v => v._id),
+          consentIds = (await org.objects.ec__document_templates.find({ c_study: study._id }).limit(false).toArray()).map(v => v._id),
+          visitsIds = (await org.objects.c_visit_schedules.find({ c_study: study._id }).limit(false).toArray()).map(v => v._id),
+          groupsIds = (await org.objects.c_groups.find({ c_study: study._id }).limit(false).toArray()).map(v => v._id),
 
-    const tasks = await this.getExportObjects(org, 'c_tasks', { c_study: study._id }, orgReferenceProps),
-          steps = await this.getExportObjects(org, 'c_steps', { c_task: { $in: tasks.map(v => v._id) } }, orgReferenceProps),
-          branches = await this.getExportObjects(org, 'c_branches', { c_task: { $in: tasks.map(v => v._id) } }, orgReferenceProps),
-          visitSchedules = await this.getExportObjects(org, 'c_visit_schedules', { c_study: study._id }, orgReferenceProps),
-          visits = await this.getExportObjects(org, 'c_visits', { c_visit_schedules: { $in: visitSchedules.map(v => v._id) } }, orgReferenceProps),
-          groups = await this.getExportObjects(org, 'c_groups', { c_study: study._id }, orgReferenceProps),
-          groupTasks = await this.getExportObjects(org, 'c_group_tasks', { c_group: { $in: groups.map(v => v._id) } }, orgReferenceProps),
+          tasksAndDependencies = await this.getTaskManifestEntities(org, taskIds, orgReferenceProps),
+          templatesAndDependencies = await this.getConsentManifestEntities(org, consentIds, orgReferenceProps),
+          visitSchedulesAndDependencies = await this.getVisitManifestEntities(org, visitsIds, orgReferenceProps),
+          groupsAndDependencies = await this.getGroupManifestEntities(org, groupsIds, orgReferenceProps),
+
           faults = await this.getExportObjects(org, 'c_faults', null, orgReferenceProps),
           reports = await this.getExportObjects(org, 'c_dmweb_reports', null, orgReferenceProps),
           sites = await this.getExportObjects(org, 'c_sites', { c_study: study._id }, orgReferenceProps),
@@ -649,10 +691,6 @@ class StudyManifestTools {
           taskAssignments = await this.getExportObjects(org, 'c_task_assignments', null, orgReferenceProps),
           participantSchedules = await this.getExportObjects(org, 'c_participant_schedules', null, orgReferenceProps),
           patientFlags = await this.getExportObjects(org, 'c_patient_flags', null, orgReferenceProps),
-
-          documentTemplates = await this.getExportObjects(org, 'ec__document_templates', { ec__study: study._id }, orgReferenceProps),
-          knowledgeChecks = await this.getExportObjects(org, 'ec__knowledge_checks', { _id: { $in: documentTemplates.map(v => v._id) } }, orgReferenceProps),
-          defaultDoc = await this.getExportObjects(org, 'ec__default_document_csses', null, orgReferenceProps),
 
           // looker
           lookerIntegrationRecords = await this.getExportObjects(org, 'c_looker_integration_records', null, orgReferenceProps),
@@ -669,17 +707,94 @@ class StudyManifestTools {
           oracleQuestions = await this.getExportObjects(org, 'orac__form_questions', null, orgReferenceProps),
           oracleEvents = await this.getExportObjects(org, 'orac__events', null, orgReferenceProps)
 
-
     return [
-      ...tasks, ...steps, ...branches,
-      ...visitSchedules, ...visits, ...groups, ...faults, ...reports, ...sites,
-      ...groupTasks, ...taskAssignments, ...participantSchedules, ...anchorDateTemplates,
-      ...patientFlags, ...documentTemplates, ...knowledgeChecks, ...defaultDoc,
-      ...lookerIntegrationRecords,
+      ...tasksAndDependencies, ...visitSchedulesAndDependencies, ...faults, ...reports, ...sites,
+      ...groupsAndDependencies, ...taskAssignments, ...participantSchedules, ...anchorDateTemplates,
+      ...patientFlags, ...templatesAndDependencies, ...lookerIntegrationRecords,
       ...vendorIntegrationRecords, ...integrationMappings, ...integrationPipelines,
-      ...oracleStudies, ...oracleSites,
-      ...oracleForms, ...oracleQuestions, ...oracleEvents
+      ...oracleStudies, ...oracleSites, ...oracleForms, ...oracleQuestions, ...oracleEvents
     ]
+  }
+  */
+
+  async getStudyManifestEntities(org, study, manifestObject, orgReferenceProps) {
+    const manifestEntities = [],
+          // Define the available entities to export or get them from the manifest in input
+          manifestKeys = (study)
+            ? ['c_task', 'c_visit_schedule', 'ec__document_template', 'c_group',
+              'c_anchor_date_template', 'c_fault', 'c_dmweb_report', 'c_site', 'c_task_assignment', 'c_participant_schedule',
+              'c_patient_flag', 'c_looker_integration_record', 'int__vendor_integration_record', 'int__model_mapping',
+              'int__pipeline', 'orac__studies', 'orac__sites', 'orac__forms', 'orac__form_questions', 'orac__events']
+            : Object.keys(manifestObject).filter(key => typeof manifestObject[key] === 'object')
+
+    // eslint-disable-next-line no-restricted-syntax
+    for await (const key of manifestKeys) {
+      // Determine whether queriying by c_study or c_key
+      const property = (study) ? 'c_study' : 'c_key',
+            // Use the study ID or the entities inside the "includes" array in the manifest
+            values = (study) ? [study._id] : manifestObject[key].includes
+
+      let ids,
+          pluralName,
+          objectAndDependencies
+
+      switch (key) {
+        case 'c_task': {
+          // Get the Tasks ID's from the study or the manifest
+          ids = (await this.getObjectIDsArray(org, key, property, values)).map(v => v._id)
+          // Load the manifest for the current ID's and their dependencies
+          objectAndDependencies = await this.getTaskManifestEntities(org, ids, orgReferenceProps)
+          break
+        }
+        case 'ec__document_template': {
+          // Get the eConsents ID's from the study or the manifest
+          ids = (await this.getObjectIDsArray(org, key, property, values)).map(v => v._id)
+          // Load the manifest for the current ID's and their dependencies
+          objectAndDependencies = await this.getConsentManifestEntities(org, ids, orgReferenceProps)
+          break
+        }
+        case 'c_visit_schedule': {
+          // Get the Visit Schedules ID's from the study or the manifest
+          ids = (await this.getObjectIDsArray(org, key, property, values)).map(v => v._id)
+          // Load the manifest for the current ID's and their dependencies
+          objectAndDependencies = await this.getVisitManifestEntities(org, ids, orgReferenceProps)
+          break
+        }
+        case 'c_group': {
+          // Get the Groups ID's from the study or the manifest
+          ids = (await this.getObjectIDsArray(org, key, property, values)).map(v => v._id)
+          // Load the manifest for the current ID's and their dependencies
+          objectAndDependencies = await this.getGroupManifestEntities(org, ids, orgReferenceProps)
+          break
+        }
+        case 'c_site':
+        case 'c_anchor_date_template': {
+          pluralName = this.mapObjectNameToPlural(key)
+          // These objects seem not to have dependencies so we'll load them directly
+          objectAndDependencies = await this.getExportObjects(org, pluralName, { [property]: { $in: values } }, orgReferenceProps)
+          break
+        }
+        default: {
+          try {
+            // If there's no plural form for current key, use the key itself
+            pluralName = this.mapObjectNameToPlural(key)
+          } catch (e) {
+            pluralName = key
+          }
+          // Export the entire entity (no 'where' filter) if present
+          objectAndDependencies = await this.getExportObjects(org, pluralName, null, orgReferenceProps)
+          break
+        }
+      }
+      // Push the deconstructed object
+      manifestEntities.push(...objectAndDependencies)
+    }
+
+    return manifestEntities
+  }
+
+  async getObjectIDsArray(org, key, property, values) {
+    return org.objects[key].find({ [property]: { $in: values } }).limit(false).toArray()
   }
 
   async getTaskManifestEntities(org, taskIds, orgReferenceProps) {
@@ -698,6 +813,20 @@ class StudyManifestTools {
           defaultCSS = await this.getExportObjects(org, 'ec__default_document_csses', null, orgReferenceProps)
 
     return [...documentTemplates, ...knowledgeChecks, ...defaultCSS]
+  }
+
+  async getVisitManifestEntities(org, visitIds, orgReferenceProps) {
+    const visitSchedules = await this.getExportObjects(org, 'c_visit_schedules', { _id: { $in: visitIds } }, orgReferenceProps),
+          visits = await this.getExportObjects(org, 'c_visits', { c_visit_schedules: { $in: visitSchedules.map(v => v._id) } }, orgReferenceProps)
+
+    return [...visitSchedules, ...visits]
+  }
+
+  async getGroupManifestEntities(org, groupIds, orgReferenceProps) {
+    const groups = await this.getExportObjects(org, 'c_groups', { _id: { $in: groupIds } }, orgReferenceProps),
+          groupTasks = await this.getExportObjects(org, 'c_group_tasks', { c_group: { $in: groups.map(v => v._id) } }, orgReferenceProps)
+
+    return [...groups, ...groupTasks]
   }
 
   writeIssues(removedEntities) {
