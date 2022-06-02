@@ -157,7 +157,8 @@ describe('MIG-109 - Test StudyManifestTools ', () => {
     jest.spyOn(StudyManifestTools.prototype, 'getOrgObjectInfo').mockImplementation(() => dummyReferences)
     jest.spyOn(StudyManifestTools.prototype, 'validateReferences').mockImplementation(() => entities)
     jest.spyOn(StudyManifestTools.prototype, 'createManifest').mockImplementation(() => manifest)
-
+    jest.spyOn(StudyManifestTools.prototype, 'getObjectIDsArray').mockImplementation(() => entities.filter(o => o.object === 'c_task'))
+    jest.spyOn(StudyManifestTools.prototype, 'mapObjectNameToPlural').mockImplementation(() => 'c_tasks')
     // eslint-disable-next-line one-var
     const manifestAndDeps = await manifestTools.buildManifestAndDependencies()
 
