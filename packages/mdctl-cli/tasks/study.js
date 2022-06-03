@@ -1,6 +1,7 @@
 /* eslint-disable class-methods-use-this */
 
 const _ = require('lodash'),
+      fs = require('fs'),
       jsyaml = require('js-yaml'),
       { rString, isSet } = require('@medable/mdctl-core-utils/values'),
       { StudyManifestTools } = require('@medable/mdctl-axon-tools'),
@@ -82,7 +83,11 @@ class Study extends Task {
           manifestObj = params.manifestObject
 
     try {
-      const { manifest } = await studyTools.getStudyManifest(manifestObj)
+      let manifestJSON
+      if (manifestObj) {
+        manifestJSON = this.validateManifest(manifestObj)
+      }
+      const { manifest } = await studyTools.getStudyManifest(manifestJSON)
 
       if (!params.manifestOnly) {
         const options = {
@@ -191,6 +196,26 @@ class Study extends Task {
 
   }
 
+  validateManifest(manifestObject) {
+    let manifestJSON
+    try {
+      manifestJSON = JSON.parse(manifestObject)
+    } catch (e) {
+      try {
+        if (!fs.existsSync(manifestObject)) {
+          throw Fault.create('kInvalidArgument', { reason: 'The manifest file does not exists' })
+        }
+        manifestJSON = JSON.parse(fs.readFileSync(manifestObject))
+      } catch (err) {
+        if (err instanceof SyntaxError) {
+          throw Fault.create('kInvalidArgument', { reason: 'The manifest is not a valid JSON' })
+        }
+        throw err
+      }
+    }
+    return manifestJSON
+  }
+
   mergeJsonArgIf(options, arg) {
 
     const value = this.args(arg)
@@ -249,8 +274,11 @@ class Study extends Task {
         
       Options 
         
-        --manifestObject - receives a valid manifest JSON object or the path to a manifest file 
-        
+        --manifestObject -  receives a valid manifest JSON object \x1b[4OR\x1b[0m the path to a manifest file to
+                            specify the entities to export (e.g. tasks and consents, etc...).
+                            The manifest can only contain object instances, other org config objects 
+                            can be exported through "mdctl env export" command
+      
       Notes
         
         --manifestObject is \x1b[4monly available for "export" command\x1b[0m, and it is expected to have the following format:

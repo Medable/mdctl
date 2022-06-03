@@ -23,31 +23,20 @@ class StudyManifestTools {
     })
   }
 
-  validateManifest(manifestObject) {
-    let manifestJSON
-    try {
-      manifestJSON = JSON.parse(manifestObject)
-      if (!manifestJSON.object || manifestJSON.object !== 'manifest') {
-        throw Fault.create('kInvalidArgument', { reason: 'The argument is not a valid manifest' })
-      }
-    } catch (e) {
-      if (!(e instanceof SyntaxError)) {
-        throw e
-      } else {
-        try {
-          if (!fs.existsSync(manifestObject)) {
-            throw Fault.create('kInvalidArgument', { reason: 'The manifest file does not exists' })
-          }
-          manifestJSON = JSON.parse(fs.readFileSync(manifestObject))
-        } catch (err) {
-          if (err instanceof SyntaxError) {
-            throw Fault.create('kInvalidArgument', { reason: 'The manifest file is not a valid JSON' })
-          }
-          throw err
-        }
-      }
+  getAvailableObjectNames() {
+    return ['c_study', 'c_task', 'c_visit_schedule', 'ec__document_template', 'c_group',
+      'c_anchor_date_template', 'c_fault', 'c_dmweb_report', 'c_site', 'c_task_assignment', 'c_participant_schedule',
+      'c_patient_flag', 'c_looker_integration_record', 'int__vendor_integration_record', 'int__model_mapping',
+      'int__pipeline', 'orac__studies', 'orac__sites', 'orac__forms', 'orac__form_questions', 'orac__events']
+  }
+
+  validateAndCleanManifest(manifestJSON) {
+    if (!manifestJSON.object || manifestJSON.object !== 'manifest') {
+      throw Fault.create('kInvalidArgument', { reason: 'The argument is not a valid manifest' })
     }
-    return manifestJSON
+    return Object.keys(manifestJSON)
+      .filter(key => this.getAvailableObjectNames().includes(key))
+      .reduce((curr, key) => Object.assign(curr, { [key]: manifestJSON[key] }), {})
   }
 
   async getTasks() {
@@ -179,26 +168,25 @@ class StudyManifestTools {
     return { manifest, removedEntities }
   }
 
-  async buildManifestAndDependencies(manifestObject) {
+  async buildManifestAndDependencies(manifestJSON) {
     let ignoreKeys = [],
         mappingScript,
-        study,
-        manifestJSON
+        cleanManifest,
+        study
 
     const { org, orgReferenceProps } = await this.getOrgAndReferences(),
           ingestTransform = fs.readFileSync(`${__dirname}/../packageScripts/ingestTransform.js`)
 
-    if (manifestObject) {
-      manifestJSON = this.validateManifest(manifestObject)
+    if (manifestJSON) {
+      cleanManifest = this.validateAndCleanManifest(manifestJSON)
 
-      ignoreKeys = Object.keys(manifestJSON).filter(key => typeof manifestJSON[key] === 'object')
-        .map(key => this.mapObjectNameToPlural(key))
+      ignoreKeys = Object.keys(cleanManifest).map(key => this.mapObjectNameToPlural(key))
     } else {
       study = await this.getFirstStudy(org)
       mappingScript = await getMappingScript(org)
     }
 
-    const allEntities = await this.getStudyManifestEntities(org, study, manifestJSON, orgReferenceProps)
+    const allEntities = await this.getStudyManifestEntities(org, study, cleanManifest, orgReferenceProps)
     const { manifest, removedEntities } = this
       .validateAndCreateManifest(allEntities, orgReferenceProps, ignoreKeys)
 
@@ -693,61 +681,10 @@ class StudyManifestTools {
       .reduce((acc, curr) => acc.concat(curr), [])
   }
 
-  /*
-  async getStudyManifestEntities(org, study, orgReferenceProps) {
-    const taskIds = (await org.objects.c_tasks.find({ c_study: study._id }).limit(false).toArray()).map(v => v._id),
-          consentIds = (await org.objects.ec__document_templates.find({ c_study: study._id }).limit(false).toArray()).map(v => v._id),
-          visitsIds = (await org.objects.c_visit_schedules.find({ c_study: study._id }).limit(false).toArray()).map(v => v._id),
-          groupsIds = (await org.objects.c_groups.find({ c_study: study._id }).limit(false).toArray()).map(v => v._id),
-
-          tasksAndDependencies = await this.getTaskManifestEntities(org, taskIds, orgReferenceProps),
-          templatesAndDependencies = await this.getConsentManifestEntities(org, consentIds, orgReferenceProps),
-          visitSchedulesAndDependencies = await this.getVisitManifestEntities(org, visitsIds, orgReferenceProps),
-          groupsAndDependencies = await this.getGroupManifestEntities(org, groupsIds, orgReferenceProps),
-
-          faults = await this.getExportObjects(org, 'c_faults', null, orgReferenceProps),
-          reports = await this.getExportObjects(org, 'c_dmweb_reports', null, orgReferenceProps),
-          sites = await this.getExportObjects(org, 'c_sites', { c_study: study._id }, orgReferenceProps),
-          anchorDateTemplates = await this.getExportObjects(org, 'c_anchor_date_templates', { c_study: study._id }, orgReferenceProps),
-
-          taskAssignments = await this.getExportObjects(org, 'c_task_assignments', null, orgReferenceProps),
-          participantSchedules = await this.getExportObjects(org, 'c_participant_schedules', null, orgReferenceProps),
-          patientFlags = await this.getExportObjects(org, 'c_patient_flags', null, orgReferenceProps),
-
-          // looker
-          lookerIntegrationRecords = await this.getExportObjects(org, 'c_looker_integration_records', null, orgReferenceProps),
-
-          // integrations
-          vendorIntegrationRecords = await this.getExportObjects(org, 'int__vendor_integration_records', null, orgReferenceProps),
-          integrationMappings = await this.getExportObjects(org, 'int__model_mappings', null, orgReferenceProps),
-          integrationPipelines = await this.getExportObjects(org, 'int__pipelines', null, orgReferenceProps),
-
-          // oracle
-          oracleStudies = await this.getExportObjects(org, 'orac__studies', null, orgReferenceProps),
-          oracleSites = await this.getExportObjects(org, 'orac__sites', null, orgReferenceProps),
-          oracleForms = await this.getExportObjects(org, 'orac__forms', null, orgReferenceProps),
-          oracleQuestions = await this.getExportObjects(org, 'orac__form_questions', null, orgReferenceProps),
-          oracleEvents = await this.getExportObjects(org, 'orac__events', null, orgReferenceProps)
-
-    return [
-      ...tasksAndDependencies, ...visitSchedulesAndDependencies, ...faults, ...reports, ...sites,
-      ...groupsAndDependencies, ...taskAssignments, ...participantSchedules, ...anchorDateTemplates,
-      ...patientFlags, ...templatesAndDependencies, ...lookerIntegrationRecords,
-      ...vendorIntegrationRecords, ...integrationMappings, ...integrationPipelines,
-      ...oracleStudies, ...oracleSites, ...oracleForms, ...oracleQuestions, ...oracleEvents
-    ]
-  }
-  */
-
   async getStudyManifestEntities(org, study, manifestObject, orgReferenceProps) {
     const manifestEntities = [],
           // Define the available entities to export or get them from the manifest in input
-          manifestKeys = (study)
-            ? ['c_study', 'c_task', 'c_visit_schedule', 'ec__document_template', 'c_group',
-              'c_anchor_date_template', 'c_fault', 'c_dmweb_report', 'c_site', 'c_task_assignment', 'c_participant_schedule',
-              'c_patient_flag', 'c_looker_integration_record', 'int__vendor_integration_record', 'int__model_mapping',
-              'int__pipeline', 'orac__studies', 'orac__sites', 'orac__forms', 'orac__form_questions', 'orac__events']
-            : Object.keys(manifestObject).filter(key => typeof manifestObject[key] === 'object')
+          manifestKeys = study ? this.getAvailableObjectNames() : Object.keys(manifestObject)
 
     // eslint-disable-next-line no-restricted-syntax
     for await (const key of manifestKeys) {
