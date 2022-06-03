@@ -177,7 +177,7 @@ describe('MIG-85 - Test partial migrations in StudyManifestTools', () => {
       .toBeUndefined()
   })
 
-  it('Test loadManifest function - Invalid manifest', async() => {
+  it('Test validateManifest function - Invalid manifest', async() => {
     const manifest = `{
       "object": "something",
       "c_group": {
@@ -194,7 +194,7 @@ describe('MIG-85 - Test partial migrations in StudyManifestTools', () => {
 
     let res
     try {
-      res = manifestTools.loadManifest(manifest)
+      res = manifestTools.validateManifest(manifest)
     } catch (err) {
       res = err
     }
@@ -207,12 +207,12 @@ describe('MIG-85 - Test partial migrations in StudyManifestTools', () => {
       .toBe('The argument is not a valid manifest')
   })
 
-  it('Test loadManifest function - Invalid file path', async() => {
+  it('Test validateManifest function - Invalid file path', async() => {
     const manifest = `${__dirname}/wrongPath.json`
 
     let res
     try {
-      res = manifestTools.loadManifest(manifest)
+      res = manifestTools.validateManifest(manifest)
     } catch (err) {
       res = err
     }
@@ -225,12 +225,12 @@ describe('MIG-85 - Test partial migrations in StudyManifestTools', () => {
       .toBe('The manifest file does not exists')
   })
 
-  it('Test loadManifest function - Invalid JSON file', async() => {
+  it('Test validateManifest function - Invalid JSON file', async() => {
     const manifest = `${__dirname}/wrongManifest.json`
 
     let res
     try {
-      res = manifestTools.loadManifest(manifest)
+      res = manifestTools.validateManifest(manifest)
     } catch (err) {
       res = err
     }

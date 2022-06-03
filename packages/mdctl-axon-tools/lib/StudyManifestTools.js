@@ -23,7 +23,7 @@ class StudyManifestTools {
     })
   }
 
-  loadManifest(manifestObject) {
+  validateManifest(manifestObject) {
     let manifestJSON
     try {
       manifestJSON = JSON.parse(manifestObject)
@@ -180,28 +180,25 @@ class StudyManifestTools {
   }
 
   async buildManifestAndDependencies(manifestObject) {
-    let allEntities,
+    let ignoreKeys = [],
         mappingScript,
-        ignoreKeys
+        study,
+        manifestJSON
 
     const { org, orgReferenceProps } = await this.getOrgAndReferences(),
           ingestTransform = fs.readFileSync(`${__dirname}/../packageScripts/ingestTransform.js`)
 
     if (manifestObject) {
-      const manifestJSON = this.loadManifest(manifestObject)
+      manifestJSON = this.validateManifest(manifestObject)
 
       ignoreKeys = Object.keys(manifestJSON).filter(key => typeof manifestJSON[key] === 'object')
         .map(key => this.mapObjectNameToPlural(key))
-
-      allEntities = await this.getStudyManifestEntities(org, null, manifestJSON, orgReferenceProps)
     } else {
-      const study = await this.getFirstStudy(org)
-      ignoreKeys = []
-      allEntities = [study,
-        ...await this.getStudyManifestEntities(org, study, null, orgReferenceProps)]
+      study = await this.getFirstStudy(org)
       mappingScript = await getMappingScript(org)
     }
 
+    const allEntities = await this.getStudyManifestEntities(org, study, manifestJSON, orgReferenceProps)
     const { manifest, removedEntities } = this
       .validateAndCreateManifest(allEntities, orgReferenceProps, ignoreKeys)
 
@@ -746,7 +743,7 @@ class StudyManifestTools {
     const manifestEntities = [],
           // Define the available entities to export or get them from the manifest in input
           manifestKeys = (study)
-            ? ['c_task', 'c_visit_schedule', 'ec__document_template', 'c_group',
+            ? ['c_study', 'c_task', 'c_visit_schedule', 'ec__document_template', 'c_group',
               'c_anchor_date_template', 'c_fault', 'c_dmweb_report', 'c_site', 'c_task_assignment', 'c_participant_schedule',
               'c_patient_flag', 'c_looker_integration_record', 'int__vendor_integration_record', 'int__model_mapping',
               'int__pipeline', 'orac__studies', 'orac__sites', 'orac__forms', 'orac__form_questions', 'orac__events']
