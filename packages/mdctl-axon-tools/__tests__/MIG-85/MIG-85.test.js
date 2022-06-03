@@ -11,15 +11,6 @@ describe('MIG-85 - Test partial migrations in StudyManifestTools', () => {
 
   let manifestTools
   const mockGetExportedObjects = jest.fn(() => []),
-        existingStudy = {
-          _id: '1',
-          c_name: 'Study',
-          c_key: 'abc'
-        },
-        hasNextStudyMock = jest.fn(() => true),
-        nextStudyMock = jest.fn(() => existingStudy),
-        hasNextStudySchema = jest.fn(() => true),
-        nextStudySchemaMock = jest.fn(() => ({ _id: '1', object: 'object', properties: [{ name: 'c_no_pii' }] })),
         entities = [{
           _id: '615bcd016631cc0100d2766c',
           object: 'c_study',
@@ -106,27 +97,10 @@ describe('MIG-85 - Test partial migrations in StudyManifestTools', () => {
         ],
         org = {
           objects: {
-            c_study: {
-              readOne: () => ({
-                skipAcl: () => ({
-                  grant: () => ({
-                    paths: () => ({
-                      hasNext: hasNextStudyMock,
-                      next: nextStudyMock
-                    })
-                  })
-                })
-              })
-            },
-            object: {
+            c_task: {
               find: () => ({
-                skipAcl: () => ({
-                  grant: () => ({
-                    paths: () => ({
-                      hasNext: hasNextStudySchema,
-                      next: nextStudySchemaMock
-                    })
-                  })
+                limit: () => ({
+                  toArray: () => entities.filter(e => e.object === 'c_task')
                 })
               })
             }
@@ -288,8 +262,6 @@ describe('MIG-85 - Test partial migrations in StudyManifestTools', () => {
           ingestTransform = fs.readFileSync(`${__dirname}/../../packageScripts/ingestTransform.js`).toString(),
           stringifiedManifest = JSON.stringify(manifest)
 
-
-    // jest.spyOn(StudyManifestTools.prototype, 'getFirstStudy').mockImplementation(() => org)
     jest.spyOn(StudyManifestTools.prototype, 'getOrgObjectInfo').mockImplementation(() => dummyReferences)
     jest.spyOn(StudyManifestTools.prototype, 'validateReferences').mockImplementation(() => entities)
     jest.spyOn(StudyManifestTools.prototype, 'createManifest').mockImplementation(() => manifest)
@@ -306,5 +278,13 @@ describe('MIG-85 - Test partial migrations in StudyManifestTools', () => {
       .toBeUndefined()
     expect(manifestAndDeps.ingestTransform)
       .toStrictEqual(ingestTransform)
+  })
+
+  it('Test getObjectIDsArray function', async() => {
+    const filteredEntities = entities.filter(e => e.object === 'c_task'),
+          res = await manifestTools.getObjectIDsArray(org, 'c_task', 'c_key', ['key-003', 'key-004'])
+
+    expect(res)
+      .toStrictEqual(filteredEntities)
   })
 })
