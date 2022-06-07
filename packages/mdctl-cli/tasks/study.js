@@ -290,7 +290,8 @@ class Study extends Task {
       
       Notes
         
-        --manifestObject is \x1b[4monly available for "export" command\x1b[0m, and it is expected to have the following format:
+        --manifestObject is \x1b[4monly available for "export" command and it currently supports ONLY Assignments and eConsents\x1b[0m; 
+                         it is expected to have the following format:
         {
           "<OBJECT_NAME_1>": {
             "includes": [
