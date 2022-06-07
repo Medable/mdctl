@@ -213,6 +213,15 @@ class Study extends Task {
         throw err
       }
     }
+    /*
+      Ignore any keys passed in other than Assignments and eConsents.
+      In future this will be removed but for now we will only support those 2 objects together
+    */
+    manifestJSON = _.pick(manifestJSON, ['c_task', 'ec__document_template', 'object'])
+    if (_.isEqual(manifestJSON, { object: 'manifest' })) {
+      // This means that the manifest passed does not contain Assignments or eConsents
+      throw Fault.create('kInvalidArgument', { reason: 'No Assignments or eConsents to export' })
+    }
     return manifestJSON
   }
 
