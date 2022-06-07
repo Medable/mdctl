@@ -5,7 +5,8 @@ jest.mock('@medable/mdctl-api-driver/lib/cortex.object', () => ({ Object: class 
 jest.mock('../../lib/mappings')
 
 const fs = require('fs'),
-      StudyManifestTools = require('../../lib/StudyManifestTools')
+      StudyManifestTools = require('../../lib/StudyManifestTools'),
+      study = require('../../../mdctl-cli/tasks/study')
 
 describe('MIG-85 - Test partial migrations in StudyManifestTools', () => {
 
@@ -194,7 +195,7 @@ describe('MIG-85 - Test partial migrations in StudyManifestTools', () => {
 
     let res
     try {
-      res = manifestTools.validateManifest(manifest)
+      res = manifestTools.validateAndCleanManifest(manifest)
     } catch (err) {
       res = err
     }
@@ -205,42 +206,6 @@ describe('MIG-85 - Test partial migrations in StudyManifestTools', () => {
       .toBe('kInvalidArgument')
     expect(res.reason)
       .toBe('The argument is not a valid manifest')
-  })
-
-  it('Test validateManifest function - Invalid file path', async() => {
-    const manifest = `${__dirname}/wrongPath.json`
-
-    let res
-    try {
-      res = manifestTools.validateManifest(manifest)
-    } catch (err) {
-      res = err
-    }
-
-    expect(res.errCode)
-      .toBe('mdctl.invalidArgument.unspecified')
-    expect(res.code)
-      .toBe('kInvalidArgument')
-    expect(res.reason)
-      .toBe('The manifest file does not exists')
-  })
-
-  it('Test validateManifest function - Invalid JSON file', async() => {
-    const manifest = `${__dirname}/wrongManifest.json`
-
-    let res
-    try {
-      res = manifestTools.validateManifest(manifest)
-    } catch (err) {
-      res = err
-    }
-
-    expect(res.errCode)
-      .toBe('mdctl.invalidArgument.unspecified')
-    expect(res.code)
-      .toBe('kInvalidArgument')
-    expect(res.reason)
-      .toBe('The manifest file is not a valid JSON')
   })
 
   it('Test study manifest creation from manifest', async() => {
@@ -259,8 +224,7 @@ describe('MIG-85 - Test partial migrations in StudyManifestTools', () => {
               ]
             }
           },
-          ingestTransform = fs.readFileSync(`${__dirname}/../../packageScripts/ingestTransform.js`).toString(),
-          stringifiedManifest = JSON.stringify(manifest)
+          ingestTransform = fs.readFileSync(`${__dirname}/../../packageScripts/ingestTransform.js`).toString()
 
     jest.spyOn(StudyManifestTools.prototype, 'getOrgObjectInfo').mockImplementation(() => dummyReferences)
     jest.spyOn(StudyManifestTools.prototype, 'validateReferences').mockImplementation(() => entities)
@@ -268,7 +232,7 @@ describe('MIG-85 - Test partial migrations in StudyManifestTools', () => {
     jest.spyOn(StudyManifestTools.prototype, 'getObjectIDsArray').mockImplementation(() => entities.filter(o => o.object === 'c_task'))
     jest.spyOn(StudyManifestTools.prototype, 'mapObjectNameToPlural').mockImplementation(() => 'c_tasks')
     // eslint-disable-next-line one-var
-    const manifestAndDeps = await manifestTools.buildManifestAndDependencies(stringifiedManifest)
+    const manifestAndDeps = await manifestTools.buildManifestAndDependencies(manifest)
 
     expect(manifestAndDeps.manifest)
       .toStrictEqual(manifest)
@@ -286,5 +250,16 @@ describe('MIG-85 - Test partial migrations in StudyManifestTools', () => {
 
     expect(res)
       .toStrictEqual(filteredEntities)
+  })
+
+  it('Test getAvailableObjectNames', () => {
+    const availableObjects = manifestTools.getAvailableObjectNames(),
+          expectedObjects = ['c_study', 'c_task', 'c_visit_schedule', 'ec__document_template', 'c_group',
+            'c_anchor_date_template', 'c_fault', 'c_dmweb_report', 'c_site', 'c_task_assignment', 'c_participant_schedule',
+            'c_patient_flag', 'c_looker_integration_record', 'int__vendor_integration_record', 'int__model_mapping',
+            'int__pipeline', 'orac__studies', 'orac__sites', 'orac__forms', 'orac__form_questions', 'orac__events']
+
+    expect(availableObjects)
+      .toStrictEqual(expectedObjects)
   })
 })
