@@ -150,6 +150,7 @@ function guessEndpoint(options = {}) {
           cn1: `https://api.${cnDomain}`,
           'cn1-dev': `https://api.dev.${cnDomain}`,
           'ali-platform': `https://api.platform.${cnDomain}`,
+          local: `https://api.local.${usDomain}`
         },
         { endpoint, env } = options
 
