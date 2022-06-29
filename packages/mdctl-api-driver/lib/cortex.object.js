@@ -14,17 +14,24 @@ const { privatesAccessor } = require('@medable/mdctl-core-utils/privates'),
         PatchManyOperation,
         BulkOperation
       } = require('./operations'),
-      { QueryCursor, AggregationCursor } = require('./cursor'),
-      registeredObjects = {},
-      registeredAliases = {}
+      { QueryCursor, AggregationCursor } = require('./cursor')
+
 
 class CortexObject {
 
   constructor(objectName, driver) {
 
-    Object.defineProperty(this, 'name', {
-      value: objectName.toLowerCase(),
-      enumerable: true
+    Object.defineProperties(this, {
+      name: {
+        value: objectName.toLowerCase(),
+        enumerable: true
+      },
+      registeredObjects: {
+        value: {}
+      },
+      registeredAliases: {
+        value: {}
+      }
     })
 
     Object.assign(privatesAccessor(this), {
@@ -32,15 +39,17 @@ class CortexObject {
     })
   }
 
-  static registerObject(name, cls, ...aliases) {
+
+  registerObject(name, cls, ...aliases) {
     [name, ...aliases].map(n => n.toLowerCase()).forEach((alias) => {
-      registeredAliases[alias] = name
+      this.registeredAliases[alias] = name
     })
-    registeredObjects[name] = cls
+    this.registeredObjects[name] = cls
   }
 
+
   // eslint-disable-next-line camelcase
-  static register_object(...args) {
+  register_object(...args) {
     this.registerObject(...args)
   }
 
@@ -62,10 +71,12 @@ class CortexObject {
       plural = name
     }
 
-    regName = registeredAliases[singular] // eslint-disable-line prefer-const
+    if (this.registeredAliases) {
+      regName = this.registeredAliases[singular] // eslint-disable-line prefer-const
+    }
 
     if (regName) {
-      const obj = registeredObjects[regName]
+      const obj = this.registeredObjects[regName]
       obj.driver = driver
       return obj
     }
@@ -77,7 +88,7 @@ class CortexObject {
 
     {
       const cls = new CortexObject(singular, driver)
-      this.register_object(singular, cls, plural)
+      cls.register_object(singular, cls, plural)
       return cls
     }
 
@@ -162,7 +173,8 @@ class Org extends CortexObject {
         if (target[property]) {
           return target[property]
         }
-        target[property] = CortexObject.as(property, driver) // eslint-disable-line no-param-reassign
+        // eslint-disable-next-line no-param-reassign
+        target[property] = CortexObject.as(property, driver)
         return target[property]
       }
     })
