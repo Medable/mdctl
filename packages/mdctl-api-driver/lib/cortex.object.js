@@ -15,16 +15,23 @@ const { privatesAccessor } = require('@medable/mdctl-core-utils/privates'),
         BulkOperation
       } = require('./operations'),
       { QueryCursor, AggregationCursor } = require('./cursor')
-      // registeredObjects = {},
-      // registeredAliases = {}
+
 
 class CortexObject {
 
   constructor(objectName, driver) {
 
-    Object.defineProperty(this, 'name', {
-      value: objectName.toLowerCase(),
-      enumerable: true
+    Object.defineProperties(this, {
+      name: {
+        value: objectName.toLowerCase(),
+        enumerable: true
+      },
+      registeredObjects: {
+        value: {}
+      },
+      registeredAliases: {
+        value: {}
+      }
     })
 
     Object.assign(privatesAccessor(this), {
@@ -32,14 +39,14 @@ class CortexObject {
     })
   }
 
-  /*
+
   registerObject(name, cls, ...aliases) {
     [name, ...aliases].map(n => n.toLowerCase()).forEach((alias) => {
       this.registeredAliases[alias] = name
     })
     this.registeredObjects[name] = cls
   }
-  */
+
 
   // eslint-disable-next-line camelcase
   register_object(...args) {
@@ -56,22 +63,24 @@ class CortexObject {
     const name = String(inputName).toLowerCase()
 
     let singular = singularize(name),
-        plural = pluralize(name)// ,
-        // regName
+        plural = pluralize(name),
+        regName
 
     if (name !== singular && name !== plural) {
       singular = name
       plural = name
     }
-    /*
-    regName = this.registeredAliases[singular] // eslint-disable-line prefer-const
+
+    if (this.registeredAliases) {
+      regName = this.registeredAliases[singular] // eslint-disable-line prefer-const
+    }
 
     if (regName) {
       const obj = this.registeredObjects[regName]
       obj.driver = driver
       return obj
     }
-    */
+
     // Using this allows subclassing of CortexObject
     // eg. HubObject.as('Namespace')
     // eslint-disable-next-line no-new-func
@@ -79,7 +88,7 @@ class CortexObject {
 
     {
       const cls = new CortexObject(singular, driver)
-      // this.register_object(singular, cls, plural)
+      cls.register_object(singular, cls, plural)
       return cls
     }
 
