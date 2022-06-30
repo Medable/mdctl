@@ -2,7 +2,7 @@
 const { Client } = require('@medable/mdctl-api')
 const MemoryCredentialsProvider = require('@medable/mdctl-core/credentials/memory_provider')
 const { Org, Driver } = require('../index')
-const { assert, expect } = require('chai'),
+const { assert } = require('chai'),
       { setUp, restore } = require('./lib/mock')
 
 let org
