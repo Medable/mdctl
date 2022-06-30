@@ -47,7 +47,6 @@ class CortexObject {
     this.registeredObjects[name] = cls
   }
 
-
   // eslint-disable-next-line camelcase
   register_object(...args) {
     this.registerObject(...args)
@@ -58,7 +57,7 @@ class CortexObject {
    * @param inputName
    * @returns {*}
    */
-  static as(inputName, driver) {
+  as(inputName, driver) {
 
     const name = String(inputName).toLowerCase()
 
@@ -71,9 +70,7 @@ class CortexObject {
       plural = name
     }
 
-    if (this.registeredAliases) {
-      regName = this.registeredAliases[singular] // eslint-disable-line prefer-const
-    }
+    regName = this.registeredAliases[singular] // eslint-disable-line prefer-const
 
     if (regName) {
       const obj = this.registeredObjects[regName]
@@ -88,7 +85,7 @@ class CortexObject {
 
     {
       const cls = new CortexObject(singular, driver)
-      cls.register_object(singular, cls, plural)
+      this.register_object(singular, cls, plural)
       return cls
     }
 
@@ -174,10 +171,20 @@ class Org extends CortexObject {
           return target[property]
         }
         // eslint-disable-next-line no-param-reassign
-        target[property] = CortexObject.as(property, driver)
+        target[property] = self.as(property, driver)
         return target[property]
       }
     })
+  }
+
+  // This function is only for testing purpouse
+  getRegisteredObjects() {
+    return this.registeredObjects
+  }
+
+  // This function is only for testing purpouse
+  getRegisteredAliases() {
+    return this.registeredAliases
   }
 
 }
