@@ -238,7 +238,8 @@ class Study extends Task {
     Arguments:               
       
       Command                        
-        export - Exports the study from the current org      
+        export - Exports the study from the current org
+        import - Imports the study into the current org
         task [action] - Allows the select of tasks to export from the current org  
         consent [action] - Allows the select of consent templates to export from the current org                                                                                                                                   
     `
