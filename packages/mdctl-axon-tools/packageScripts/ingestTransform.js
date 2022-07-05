@@ -144,7 +144,7 @@ module.exports = class extends Transform {
             .skipAcl()
             .grant(consts.accessLevels.read)
             .throwNotFound(false)
-            .paths('ec__status', 'ec__title', 'ec__key')
+            .paths('ec__status', 'ec__title', 'ec__key', 'ec__identifier')
             .execute()
 
     if (doc && doc.ec__status !== 'draft') {
@@ -155,6 +155,26 @@ module.exports = class extends Transform {
           message: `Document Key ${doc.ec__key}, Document title "${doc.ec__title}"`
         })
     }
+
+    if (!doc) {
+      const docWithSameIdentifier = ec__document_template
+        .readOne({ ec__identifier: resource.ec__identifier })
+        .skipAcl()
+        .grant(consts.accessLevels.read)
+        .throwNotFound(false)
+        .paths('ec__key')
+        .execute()
+
+      if (docWithSameIdentifier) {
+        // the last 5 digits of the ec__key to the ec__identifier to ensure unique ec__key
+        resource.ec__identifier = resource.ec__identifier + '-' + resource.ec__key.slice(-5)
+      }
+    } else if (doc.ec__identifier !== resource.ec__identifier) {
+      // might have same ec__key but different ec__identifier because it was initially migrated in having the same ec__key as an existing template
+      // in which case, apply the target ec__identifier to the template being imported so it overwrites correctly
+      resource.ec__identifier = doc.ec__identifier
+    }
+
     if (!resource.ec__sites) {
       resource.ec__sites = []
     }

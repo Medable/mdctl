@@ -134,15 +134,23 @@ function pathsTo(obj, ...paths) {
  */
 function guessEndpoint(options = {}) {
 
-  const out = {},
+  const usDomain = 'medable.com',
+        cnDomain = 'medable.cn',
+        out = {},
         aliasedEndpoints = {
-          prod: 'https://api.medable.com',
-          'int-dev': 'https://api-int-dev.medable.com',
-          'eu1': 'https://api-eu1.medable.com',
-          'eu1-dev': 'https://api-eu1-dev.medable.com',
-          'cn1': 'https://api.medable.cn',
-          'cn1-dev': 'https://api.dev.medable.cn',
-          'ali-platform': 'https://api.platform.medable.cn'
+          prod: `https://api.${usDomain}`,
+          us1: `https://api.${usDomain}`,
+          dev: `https://api.dev.${usDomain}`,
+          'us1-dev': `https://api.dev.${usDomain}`,
+          demo: `https://api.demo.${usDomain}`,
+          edge: `https://api.edge.${usDomain}`,
+          platform: `https://api.platform.${usDomain}`,
+          qa: `https://api.qa.${usDomain}`,
+          test: `https://api.test.${usDomain}`,
+          cn1: `https://api.${cnDomain}`,
+          'cn1-dev': `https://api.dev.${cnDomain}`,
+          'ali-platform': `https://api.platform.${cnDomain}`,
+          local: `https://api.local.${usDomain}`
         },
         { endpoint, env } = options
 
@@ -156,7 +164,7 @@ function guessEndpoint(options = {}) {
       if (aliasedEndpoints[endpointPart]) {
         out.endpoint = aliasedEndpoints[endpointPart]
       } else {
-        out.endpoint = `https://api.${endpointPart}.medable.com`
+        out.endpoint = `https://api-${endpointPart}.${usDomain}`
       }
     } else {
       if (endpoint) {
