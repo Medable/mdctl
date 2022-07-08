@@ -211,7 +211,7 @@ class Manifest extends ManifestStage {
       'env',
       'configs',
       'i18ns',
-      'scripts', 'views', 'templates',
+      'scripts', 'views', 'templates', 'expressions',
       'apps', 'roles', 'serviceAccounts', 'smsNumbers', 'policies', 'notifications', 'storageLocations']
   }
 

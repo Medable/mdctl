@@ -3,7 +3,7 @@ const pump = require('pump'),
       zlib = require('zlib'),
       { URL } = require('url'),
       {
-        isSet, pathTo, rFunction, rBool, rString
+        isSet, pathTo, rFunction, rBool, rString, isCustomName
       } = require('@medable/mdctl-core-utils/values'),
       { Transform } = require('stream'),
       { pluralize } = require('inflection'),
@@ -22,7 +22,7 @@ const pump = require('pump'),
 
           const resource = rString(input && input.resource),
                 parts = resource.split('.'),
-                objectName = pluralize(parts[0]),
+                objectName = isCustomName(parts[0]) ? parts[0] : pluralize(parts[0]),
                 name = parts.length > 1 ? parts.slice(1).join('.') : '*'
 
           manifest = { // eslint-disable-line no-param-reassign
@@ -31,8 +31,8 @@ const pump = require('pump'),
               ? [{ name, includes: ['*'] }]
               : { includes: [name] }
           }
-        }
 
+        }
 
         const options = isSet(input) ? input : {},
               client = options.client || new Client({ ...Config.global.client, ...options }),
