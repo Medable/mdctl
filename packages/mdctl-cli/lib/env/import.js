@@ -21,15 +21,32 @@ const pump = require('pump'),
         if (rString(input && input.resource)) {
 
           const resource = rString(input && input.resource),
-                parts = resource.split('.'),
-                objectName = isCustomName(parts[0]) ? parts[0] : pluralize(parts[0]),
-                name = parts.length > 1 ? parts.slice(1).join('.') : '*'
+                resources = resource.split(',').map(v => v.trim()).filter(v => v)
 
           manifest = { // eslint-disable-line no-param-reassign
-            object: 'manifest',
-            [objectName]: objectName === 'objects'
-              ? [{ name, includes: ['*'] }]
-              : { includes: [name] }
+            object: 'manifest'
+          }
+
+          for(const resource of  resources) {
+
+            const parts = resource.split('.'),
+              objectName = isCustomName(parts[0]) ? parts[0] : pluralize(parts[0]),
+              name = parts.length > 1 ? parts.slice(1).join('.') : '*',
+              isObject = objectName === 'objects'
+
+            if (isObject) {
+              if (!manifest.objects) {
+                manifest.objects = [{ name, includes: ['*'] }]
+              } else if (!manifest.objects.find(v => v.name === name)) {
+                manifest.objects.push({ name, includes: ['*'] })
+              }
+            } else {
+              if (!manifest[objectName]) {
+                manifest[objectName] = { includes: [name] }
+              } else {
+                manifest[objectName].includes.push(name)
+              }
+            }
           }
 
         }
