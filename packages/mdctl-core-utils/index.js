@@ -2,7 +2,7 @@ const _ = require('lodash'),
       { URL } = require('universal-url'),
       isPlainObject = require('lodash.isplainobject'),
       {
-        isSet, rString, naturalCmp, pathTo, pathParts
+        isSet, rString, naturalCmp, pathTo, pathParts, isCustomName
       } = require('./values')
 
 let Undefined
@@ -65,7 +65,8 @@ function validateEndpoint(endpoint) {
 }
 
 function validateApiKey(apiKey) {
-  if (rString(apiKey).indexOf('c_') === 0) {
+
+  if (isCustomName(apiKey)) {
     return true
   }
   if (/^([0-9a-z-A-Z]){22}$/i.test(rString(apiKey))) {

@@ -251,8 +251,20 @@ function resolveCallbackArguments(options, callback, ensure = true, once = true)
   return [optionsArgument, callbackArgument]
 }
 
-function isCustomName(name) {
-  return _.isString(name) && (name.indexOf('c_') === 0 || name.includes('__'))
+function isCustomName(name, prefix = 'c_', allowNs = true, pattern = false) { // more permissive custom name pattern here.
+
+  const prefixes = Array.isArray(prefix) ? prefix : [prefix]
+
+  return typeof name === 'string' &&
+    (
+      prefixes.some(prefix => name.indexOf(prefix) === 0) ||
+      (name.includes('__') && allowNs)
+    ) &&
+    (
+      !pattern ||
+      pattern.test(name)
+    )
+
 }
 
 function isUuidKeyFormat(name) {
