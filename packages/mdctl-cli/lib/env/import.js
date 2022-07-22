@@ -6,7 +6,7 @@ const pump = require('pump'),
         isSet, pathTo, rFunction, rBool, rString, isCustomName
       } = require('@medable/mdctl-core-utils/values'),
       { Transform } = require('stream'),
-      { pluralize } = require('inflection'),
+      { singularize, pluralize } = require('inflection'),
       { searchParamsToObject } = require('@medable/mdctl-core-utils'),
       { Config, Fault } = require('@medable/mdctl-core'),
       ImportStream = require('@medable/mdctl-core/streams/import_stream'),
@@ -27,12 +27,12 @@ const pump = require('pump'),
             object: 'manifest'
           }
 
-          for(const resource of  resources) {
+          for (const resource of resources) {
 
             const parts = resource.split('.'),
-              objectName = isCustomName(parts[0]) ? parts[0] : pluralize(parts[0]),
-              name = parts.length > 1 ? parts.slice(1).join('.') : '*',
-              isObject = objectName === 'objects'
+                  objectName = (isCustomName(parts[0]) || singularize(parts[0]) === 'env') ? singularize(parts[0]) : pluralize(parts[0]),
+                  name = parts.length > 1 ? parts.slice(1).join('.') : '*',
+                  isObject = objectName === 'objects'
 
             if (isObject) {
               if (!manifest.objects) {
@@ -40,12 +40,10 @@ const pump = require('pump'),
               } else if (!manifest.objects.find(v => v.name === name)) {
                 manifest.objects.push({ name, includes: ['*'] })
               }
+            } else if (!manifest[objectName]) {
+              manifest[objectName] = { includes: [name] }
             } else {
-              if (!manifest[objectName]) {
-                manifest[objectName] = { includes: [name] }
-              } else {
-                manifest[objectName].includes.push(name)
-              }
+              manifest[objectName].includes.push(name)
             }
           }
 
