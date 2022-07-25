@@ -211,7 +211,7 @@ class Manifest extends ManifestStage {
       'env',
       'configs',
       'i18ns',
-      'scripts', 'views', 'templates', 'expressions',
+      'scripts', 'views', 'templates', 'expressions', 'idps',
       'apps', 'roles', 'serviceAccounts', 'smsNumbers', 'policies', 'notifications', 'storageLocations', 'idps']
   }
 
@@ -274,6 +274,14 @@ class Manifest extends ManifestStage {
 
   get scripts() {
     return privatesAccessor(this, 'scripts')
+  }
+
+  get expressions() {
+    return privatesAccessor(this, 'expressions')
+  }
+
+  get idps() {
+    return privatesAccessor(this, 'idps')
   }
 
   get views() {
