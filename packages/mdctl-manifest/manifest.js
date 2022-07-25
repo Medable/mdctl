@@ -212,7 +212,7 @@ class Manifest extends ManifestStage {
       'configs',
       'i18ns',
       'scripts', 'views', 'templates', 'expressions',
-      'apps', 'roles', 'serviceAccounts', 'smsNumbers', 'policies', 'notifications', 'storageLocations']
+      'apps', 'roles', 'serviceAccounts', 'smsNumbers', 'policies', 'notifications', 'storageLocations', 'idps']
   }
 
   accept(path) {
