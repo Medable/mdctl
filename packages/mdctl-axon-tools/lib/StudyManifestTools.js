@@ -707,7 +707,7 @@ class StudyManifestTools {
         }
         case 'ec__document_template': {
           // Get the eConsents ID's from the study or the manifest
-          ids = (await this.getObjectIDsArray(org, key, property, values)).map(v => v._id)
+          ids = (await this.getObjectIDsArray(org, key, 'ec__study', values)).map(v => v._id)
           // Load the manifest for the current ID's and their dependencies
           objectAndDependencies = await this.getConsentManifestEntities(org, ids, orgReferenceProps)
           break

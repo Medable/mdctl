@@ -141,12 +141,12 @@ describe('ingestTransform', () => {
 
     it.each([
       // test, resource, memo, expected
-      ['should perform studyReferenceAdjustment', { object: 'c_some_object', c_study: '' }, { study: { c_key: 'abc' } }, { object: 'c_some_object', c_study: 'c_study.abc' }],
-      ['should perform studyAdjustments and add c_no_pii to false if it does not exist', { object: 'c_study' }, {}, { object: 'c_study', c_no_pii: false }],
-      ['should perform studyAdjustments and preserve c_no_pii if it does exist', { object: 'c_study', c_no_pii: true }, {}, { object: 'c_study', c_no_pii: true }],
-      ['should perform econsentDocumentTemplateAdjustments', { object: 'ec__document_template', ec__status: 'draft' }, {}, { object: 'ec__document_template', ec__status: 'draft', ec__sites: [] }],
+      ['should perform studyReferenceAdjustment', { object: 'c_some_object', c_study: '' }, { study: { c_key: 'abc' }, manifest: {} }, { object: 'c_some_object', c_study: 'c_study.abc' }],
+      ['should perform studyAdjustments and add c_no_pii to false if it does not exist', { object: 'c_study' }, { manifest: {} }, { object: 'c_study', c_no_pii: false }],
+      ['should perform studyAdjustments and preserve c_no_pii if it does exist', { object: 'c_study', c_no_pii: true }, { manifest: {} }, { object: 'c_study', c_no_pii: true }],
+      ['should perform econsentDocumentTemplateAdjustments', { object: 'ec__document_template', ec__status: 'draft' }, { manifest: {} }, { object: 'ec__document_template', ec__status: 'draft', ec__sites: [] }],
       // eslint-disable-next-line object-curly-newline
-      ['should not perform changes to manifest object', { object: 'manifest', c_study: {}, importOwner: false, exportOwner: false }, { study: { c_key: 'abc' } }, { object: 'manifest', c_study: {}, importOwner: false, exportOwner: false }]
+      ['should not perform changes to manifest object', { object: 'manifest', c_study: {}, importOwner: false, exportOwner: false }, { study: { c_key: 'abc' }, manifest: {} }, { object: 'manifest', c_study: {}, importOwner: false, exportOwner: false }]
     ])('%s', (test, resource, memo, expected) => {
 
       transform.beforeAll(memo)
