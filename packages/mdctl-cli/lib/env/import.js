@@ -13,10 +13,27 @@ const pump = require('pump'),
       ImportFileTreeAdapter = require('@medable/mdctl-import-adapter'),
       { Client } = require('@medable/mdctl-api'),
       LockUnlock = require('../lock_unlock'),
+      { compare, buildManifest } = require('./compare')
 
       importEnv = async(input) => {
 
         let manifest = input && input.manifest
+
+        const options = isSet(input) ? input : {},
+          client = options.client || new Client({ ...Config.global.client, ...options }),
+          inputDir = options.dir || process.cwd(),
+          progress = rFunction(options.progress),
+          memo = {},
+          url = new URL('/developer/environment/import', client.environment.url),
+          query = {
+            ...searchParamsToObject(url.searchParams),
+            preferUrls: rBool(options.preferUrls, false),
+            silent: rBool(options.silent, false),
+            backup: rBool(options.backup, false),
+            production: rBool(options.production, false),
+            triggers: rBool(options.triggers, false)
+          },
+          requestOptions = {}
 
         if (rString(input && input.resource)) {
 
@@ -33,23 +50,23 @@ const pump = require('pump'),
           }
         }
 
+        if (options.onlyChanges) {
+          // call compare
+          try {
+            const response = await compare(inputDir, client, {...options, object: true, color: false})
+            if (response && response.length > 0) {
+              manifest = buildManifest(response)
+            } else {
+              console.log('No changes with target, if you want to continue use without --only-changes.')
+              return { response: null, postImport: () => {}, memo }
+            }
+          } catch (ex) {
+            throw ex
+          }
+        }
 
-        const options = isSet(input) ? input : {},
-              client = options.client || new Client({ ...Config.global.client, ...options }),
-              inputDir = options.dir || process.cwd(),
-              progress = rFunction(options.progress),
-              memo = {},
-              url = new URL('/developer/environment/import', client.environment.url),
-              query = {
-                ...searchParamsToObject(url.searchParams),
-                preferUrls: rBool(options.preferUrls, false),
-                silent: rBool(options.silent, false),
-                backup: rBool(options.backup, false),
-                production: rBool(options.production, false),
-                triggers: rBool(options.triggers, false)
-              },
-              requestOptions = {},
-              fileAdapter = new ImportFileTreeAdapter(inputDir, options.format, manifest),
+
+        const fileAdapter = new ImportFileTreeAdapter(inputDir, options.format, manifest),
               importStream = new ImportStream(fileAdapter),
               ndjsonStream = ndjson.stringify(),
               streamList = [importStream, ndjsonStream],
