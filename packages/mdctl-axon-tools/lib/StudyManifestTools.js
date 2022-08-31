@@ -707,7 +707,9 @@ class StudyManifestTools {
         }
         case 'ec__document_template': {
           // Get the eConsents ID's from the study or the manifest
-          ids = (await this.getObjectIDsArray(org, key, 'ec__study', values)).map(v => v._id)
+          // econsent template properties are namespaced ec__, rather than c_
+          const ecProp = property === 'c_study' ? 'ec__study' : 'ec__key'
+          ids = (await this.getObjectIDsArray(org, key, ecProp, values)).map(v => v._id)
           // Load the manifest for the current ID's and their dependencies
           objectAndDependencies = await this.getConsentManifestEntities(org, ids, orgReferenceProps)
           break
