@@ -104,8 +104,8 @@ describe('ingestTransform', () => {
     const docErr = { code: 'kInvalidArgument', errCode: 'cortex.invalidArgument.updateDisabled', reason: 'An eConsent template in this import exists in the target and is not in draft', message: 'Document Key 2222, Document title "title"' }
     it.each([
       // test, resource, memo, expected
-      ['Consent that match the existing study should not change', { object: 'ec__document_template', ec__status: 'draft', ec__key: '1111', ec__study: 'c_study.abc' }, {}, { object: 'ec__document_template', ec__status: 'draft', ec__sites: [], ec__key: '1111', ec__study: 'c_study.abc' }],
-      ['Consent that don`t match the existing study should change to match', { object: 'ec__document_template', ec__status: 'draft', ec__key: '1111', ec__study: 'c_study.cba' }, {}, { object: 'ec__document_template', ec__status: 'draft', ec__sites: [], ec__key: '1111', ec__study: 'c_study.abc' }],
+      ['Consent that match the existing study should not change', { object: 'ec__document_template', ec__status: 'draft', ec__key: '1111', ec__study: 'c_study.abc' }, { manifest: {} }, { object: 'ec__document_template', ec__status: 'draft', ec__sites: [], ec__key: '1111', ec__study: 'c_study.abc' }],
+      ['Consent that don`t match the existing study should change to match', { object: 'ec__document_template', ec__status: 'draft', ec__key: '1111', ec__study: 'c_study.cba' }, { manifest: {} }, { object: 'ec__document_template', ec__status: 'draft', ec__sites: [], ec__key: '1111', ec__study: 'c_study.abc' }],
     ])('%s', (test, resource, memo, expected) => {
 
       let transformedResource
