@@ -1,6 +1,6 @@
 {
   "name": "@medable/mdctl-secrets",
-  "version": "1.0.66-alpha.1",
+  "version": "1.0.66-alpha.1", 
   "description": "Medable Developer Tools :: Secrets",
   "repository": {
     "type": "git",
