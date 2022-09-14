@@ -54,7 +54,10 @@ module.exports = class extends Transform {
   each(resource, memo) {
 
     // if it is the manifest we let it go as is
-    if (resource.object === 'manifest') return resource
+    if (resource.object === 'manifest') {
+      memo.manifest = resource
+      return resource
+    }
 
     this.checkIfDependenciesAvailable(resource, memo)
 
@@ -145,8 +148,9 @@ module.exports = class extends Transform {
             .grant(consts.accessLevels.read)
             .throwNotFound(false)
             .paths('ec__status', 'ec__title', 'ec__key', 'ec__identifier')
-            .execute()
-
+            .execute(),
+          manifest = memo.manifest
+    
     if (doc && doc.ec__status !== 'draft') {
       throw Fault.create('kInvalidArgument',
         {
@@ -183,13 +187,13 @@ module.exports = class extends Transform {
     if (doc && doc.ec__sites) {
       resource.ec__sites.push(...doc.ec__sites)
     }
-
-    // make sure sites array only contains sites that are in the target
+    const manifestSiteKeys = manifest.c_site && manifest.c_site.includes || []
+    // make sure sites array only contains sites that are in the target or in the manifest
     resource.ec__sites = resource.ec__sites.filter((v) => {
       const spl = v.split('.'),
             // eslint-disable-next-line camelcase
             c_key = spl[1]
-      return c_sites.find({ c_key }).hasNext()
+      return c_sites.find({ c_key }).skipAcl().grant(consts.accessLevels.read).hasNext() || manifestSiteKeys.includes(c_key)
     })
 
 
