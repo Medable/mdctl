@@ -1,6 +1,6 @@
 {
   "name": "@medable/mdctl-node-utils",
-  "version": "1.0.66-alpha.1",
+  "version": "1.0.66-alpha.1", 
   "description": "Medable Developer Node Tools :: Utils",
   "repository": {
     "type": "git",
