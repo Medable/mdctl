@@ -1,6 +1,6 @@
 {
   "name": "@medable/mdctl-axon-tools",
-  "version": "1.0.66-alpha.1",
+  "version": "1.0.67-alpha.0",
   "description": "Medable Axon Tools :: Tools For interaction with Axon orgs",
   "repository": {
     "type": "git",
