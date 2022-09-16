@@ -1,6 +1,6 @@
 {
   "name": "@medable/mdctl-docs",
-  "version": "1.0.67",
+  "version": "1.0.66-alpha.1",
   "description": "Medable Developer Client Tools :: Documentation",
   "repository": {
     "type": "git",
