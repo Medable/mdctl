@@ -130,5 +130,14 @@ describe('Db Driver Tests', () => {
     // TODO:
   })
 
+  it('test registeredObjects and registeredAliases', async() => {
+    const registeredObject = org.getRegisteredObjects(),
+          registeredAliases = org.getRegisteredAliases(),
+          expectedRegisteredObject = { c_geo_history: { name: 'c_geo_history' } },
+          expectedRegisteredAliases = { c_geo_history: 'c_geo_history', c_geo_histories: 'c_geo_history' }
+
+    assert.deepEqual(registeredObject, expectedRegisteredObject)
+    assert.deepEqual(registeredAliases, expectedRegisteredAliases)
+  })
 
 })
