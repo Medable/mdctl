@@ -3,6 +3,7 @@ const _ = require('lodash'),
       mime = require('mime'),
       uuid = require('uuid'),
       pluralize = require('pluralize'),
+      { hashCode } = require('@medable/mdctl-node-utils/crypto'),
       { isCustomName, isInteger } = require('@medable/mdctl-core-utils/values'),
       ENV_KEYS = {
         keys: ['app', 'config', 'notification', 'policy', 'role', 'smsNumber', 'serviceAccount', 'storageLocation', 'configuration', 'template', 'object', 'script', 'view', 'i18n'],
@@ -282,8 +283,25 @@ class ExportSection {
               objectPath.push(i)
               objectPath.push('data')
               if (cnt.data) {
+                let localeInName;
+
+                if (_.isArray(l.locale)){
+
+                  if(l.locale.length > 1) {
+                    localeInName = hashCode(l.locale.join())
+                  } else {
+                    if (_.isEqual(l.locale, ['*'])) {
+                      localeInName = 'anyLocale'
+                    } else {
+                      localeInName = l.locale[0]
+                    }
+                  }
+                } else {
+                  localeInName = l.locale
+                }
+                
                 privatesAccessor(this).templateFiles.push({
-                  name: `${name}.${l.locale}.${cnt.name}`,
+                  name: `${name}.${localeInName}.${cnt.name}`,
                   ext: TEMPLATES_EXT[content.type][cnt.name],
                   data: cnt.data,
                   remoteLocation: false,
