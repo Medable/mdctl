@@ -1,6 +1,7 @@
 /* eslint-disable class-methods-use-this */
 
 const _ = require('lodash'),
+      fs = require('fs'),
       jsyaml = require('js-yaml'),
       { rString, isSet } = require('@medable/mdctl-core-utils/values'),
       { StudyManifestTools } = require('@medable/mdctl-axon-tools'),
@@ -41,6 +42,10 @@ class Study extends Task {
       manifestOnly: {
         type: 'boolean',
         default: false
+      },
+      manifestObject: {
+        type: 'string',
+        default: ''
       }
     }
 
@@ -74,10 +79,15 @@ class Study extends Task {
   async 'study@export'(cli) {
     const client = await cli.getApiClient({ credentials: await cli.getAuthOptions() }),
           params = await cli.getArguments(this.optionKeys),
-          studyTools = new StudyManifestTools(client, params)
+          studyTools = new StudyManifestTools(client, params),
+          manifestObj = params.manifestObject
 
     try {
-      const { manifest } = await studyTools.getStudyManifest()
+      let manifestJSON
+      if (manifestObj) {
+        manifestJSON = this.validateManifest(manifestObj)
+      }
+      const { manifest } = await studyTools.getStudyManifest(manifestJSON)
 
       if (!params.manifestOnly) {
         const options = {
@@ -99,13 +109,12 @@ class Study extends Task {
 
   async 'study@import'(cli) {
     console.log('Starting Study Import')
-    const params = await cli.getArguments(this.optionKeys)
+    const params = await cli.getArguments(this.optionKeys),
+          env = new Env()
 
     params.triggers = false
     params.backup = false
 
-    const env = new Env()
-    
     await env['env@import'](cli)
   }
 
@@ -187,6 +196,35 @@ class Study extends Task {
 
   }
 
+  validateManifest(manifestObject) {
+    let manifestJSON
+    try {
+      manifestJSON = JSON.parse(manifestObject)
+    } catch (e) {
+      try {
+        if (!fs.existsSync(manifestObject)) {
+          throw Fault.create('kInvalidArgument', { reason: 'The manifest file does not exists' })
+        }
+        manifestJSON = JSON.parse(fs.readFileSync(manifestObject))
+      } catch (err) {
+        if (err instanceof SyntaxError) {
+          throw Fault.create('kInvalidArgument', { reason: 'The manifest is not a valid JSON' })
+        }
+        throw err
+      }
+    }
+    /*
+      Ignore any keys passed in other than Assignments and eConsents.
+      In future this will be removed but for now we will only support those 2 objects together
+    */
+    manifestJSON = _.pick(manifestJSON, ['c_task', 'ec__document_template', 'object'])
+    if (_.isEqual(manifestJSON, { object: 'manifest' })) {
+      // This means that the manifest passed does not contain Assignments or eConsents
+      throw Fault.create('kInvalidArgument', { reason: 'No Assignments or eConsents to export' })
+    }
+    return manifestJSON
+  }
+
   mergeJsonArgIf(options, arg) {
 
     const value = this.args(arg)
@@ -233,7 +271,7 @@ class Study extends Task {
     
     Usage: 
       
-      mdctl study [command]       
+      mdctl study [command] --manifestObject     
           
     Arguments:               
       
@@ -241,7 +279,32 @@ class Study extends Task {
         export - Exports the study from the current org
         import - Imports the study into the current org
         task [action] - Allows the select of tasks to export from the current org  
-        consent [action] - Allows the select of consent templates to export from the current org                                                                                                                                   
+        consent [action] - Allows the select of consent templates to export from the current org  
+        
+      Options 
+        
+        --manifestObject -  receives a valid manifest JSON object \x1b[4OR\x1b[0m the path to a manifest file to
+                            specify the entities to export (e.g. tasks and consents, etc...).
+                            The manifest can only contain object instances, other org config objects 
+                            can be exported through "mdctl env export" command
+      
+      Notes
+        
+        --manifestObject is \x1b[4monly available for "export" command and it currently supports ONLY Assignments and eConsents\x1b[0m; 
+                         it is expected to have the following format:
+        {
+          "<OBJECT_NAME_1>": {
+            "includes": [
+              "key_1", "key_2", etc...
+            ]
+          },
+          "<OBJECT_NAME_X>": {
+            "includes": [
+              "key_N", "key_N+1", etc...
+            ]
+          }
+          "object": "manifest"
+        }          
     `
   }
 
