@@ -196,7 +196,7 @@ class ExportFileTreeAdapter extends Writable {
         } else {
           // ensureDir(folder)
           chunk.extractScripts()
-          chunk.extractTemplates()
+          chunk.extractTemplatesGrouped()
           this.writeExtraFiles(folder, chunk)
         }
         if (chunk.isWritable) {

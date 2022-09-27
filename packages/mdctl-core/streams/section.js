@@ -40,6 +40,18 @@ const _ = require('lodash'),
       SectionsCreated = [],
       { privatesAccessor } = require('@medable/mdctl-core-utils/privates')
 
+let hashCode = function(str, seed = 0) {
+  let h1 = 0xdeadbeef ^ seed, h2 = 0x41c6ce57 ^ seed;
+  for (let i = 0, ch; i < str.length; i++) {
+      ch = str.charCodeAt(i);
+      h1 = Math.imul(h1 ^ ch, 2654435761);
+      h2 = Math.imul(h2 ^ ch, 1597334677);
+  }
+  h1 = Math.imul(h1 ^ (h1>>>16), 2246822507) ^ Math.imul(h2 ^ (h2>>>13), 3266489909);
+  h2 = Math.imul(h2 ^ (h2>>>16), 2246822507) ^ Math.imul(h1 ^ (h1>>>13), 3266489909);
+  return 4294967296 * (2097151 & h2) + (h1>>>0);
+};      
+
 class ExportSection {
 
   constructor(content, key = '') {
@@ -284,6 +296,54 @@ class ExportSection {
               if (cnt.data) {
                 privatesAccessor(this).templateFiles.push({
                   name: `${name}.${l.locale}.${cnt.name}`,
+                  ext: TEMPLATES_EXT[content.type][cnt.name],
+                  data: cnt.data,
+                  remoteLocation: false,
+                  pathTo: jp.stringify(objectPath),
+                  sectionId: this.id
+                })
+              }
+            })
+          })
+        })
+      }
+    }
+  }
+
+  extractTemplatesGrouped() {
+    const { key, content } = privatesAccessor(this)
+    if (key === 'template') {
+      if (_.isArray(content.localizations)) {
+        const name = `${content.object}.${content.type}.${content.name}`
+        content.localizations.forEach((l, locIdx) => {
+          const nodes = jp.nodes(l, '$..content')
+          nodes.forEach((n) => {
+            const parentPath = ['$', 'localizations', locIdx]
+            n.value.forEach((cnt, i) => {
+              const path = _.clone(n.path)
+              path.shift() 
+              const objectPath = _.clone(_.concat(parentPath, path))
+              objectPath.push(i)
+              objectPath.push('data')
+              if (cnt.data) {
+                let localeInName;
+
+                if (_.isArray(l.locale)){
+                  if (l.locale.length > 1) {
+                    localeInName = hashCode(l.locale.join())
+                  } else {
+                    if (_.isEqual(l.locale, ['*'])) {
+                      localeInName = 'anyLocale'
+                    } else {
+                      localeInName = l.locale[0]
+                    }
+                  }
+                } else {
+                  localeInName = l.locale
+                }
+                
+                privatesAccessor(this).templateFiles.push({
+                  name: `${name}.${localeInName}.${cnt.name}`,
                   ext: TEMPLATES_EXT[content.type][cnt.name],
                   data: cnt.data,
                   remoteLocation: false,
