@@ -3,7 +3,6 @@ const _ = require('lodash'),
       mime = require('mime'),
       uuid = require('uuid'),
       pluralize = require('pluralize'),
-      { hashCode } = require('@medable/mdctl-node-utils/crypto'),
       { isCustomName, isInteger } = require('@medable/mdctl-core-utils/values'),
       ENV_KEYS = {
         keys: ['app', 'config', 'notification', 'policy', 'role', 'smsNumber', 'serviceAccount', 'storageLocation', 'configuration', 'template', 'object', 'script', 'view', 'i18n'],
@@ -39,7 +38,8 @@ const _ = require('lodash'),
       },
       NON_WRITABLE_KEYS = ['facet'],
       SectionsCreated = [],
-      { privatesAccessor } = require('@medable/mdctl-core-utils/privates')
+      { privatesAccessor } = require('@medable/mdctl-core-utils/privates'),
+      hash = require('crypto').createHash('md5')
 
 class ExportSection {
 
@@ -284,11 +284,9 @@ class ExportSection {
               objectPath.push('data')
               if (cnt.data) {
                 let localeInName;
-
                 if (_.isArray(l.locale)){
-
                   if(l.locale.length > 1) {
-                    localeInName = hashCode(l.locale.join())
+                    localeInName = hash.update(l.locale.join()).digest('hex')
                   } else {
                     if (_.isEqual(l.locale, ['*'])) {
                       localeInName = 'anyLocale'
