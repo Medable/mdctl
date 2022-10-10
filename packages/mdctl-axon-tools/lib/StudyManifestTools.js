@@ -52,7 +52,7 @@ class StudyManifestTools {
           driver = new Driver(client),
           org = new Org(driver)
 
-    return org.objects.ec__document_templates.find().limit(false).paths('ec__title').toArray()
+    return org.objects.ec__document_templates.find().limit(false).paths('ec__title', 'ec__identifier').toArray()
   }
 
   async getOrgObjectInfo(org) {
