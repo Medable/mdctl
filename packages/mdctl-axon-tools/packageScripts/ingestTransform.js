@@ -108,13 +108,13 @@ module.exports = class extends Transform {
    */
   studyAdjustments(resource, memo) {
 
-    if ( memo.study && resource.c_key !== memo.study.c_key) {
+    if (memo.study && resource.c_key !== memo.study.c_key) {
       throw Fault.create('kInvalidArgument',
         {
           errCode: 'cortex.invalidArgument.updateDisabled',
           reason: 'Study you are importing does not match the study that exists in the target org'
         })
-      }
+    }
 
     // eslint-disable-next-line no-prototype-builtins
     if (!resource.hasOwnProperty('c_no_pii')) {
@@ -149,14 +149,14 @@ module.exports = class extends Transform {
             .throwNotFound(false)
             .paths('ec__status', 'ec__title', 'ec__key', 'ec__identifier')
             .execute(),
-          manifest = memo.manifest
-    
+          { manifest } = memo
+
     if (doc && doc.ec__status !== 'draft') {
       throw Fault.create('kInvalidArgument',
         {
           errCode: 'cortex.invalidArgument.updateDisabled',
           reason: 'An eConsent template in this import exists in the target and is not in draft',
-          message: `Document Key ${doc.ec__key}, Document title "${doc.ec__title}"`
+          message: `Template [${doc.ec__title}] ([${doc.ec__key}]) already exists in the target org and is not in DRAFT status, re-migration is not allowed`
         })
     }
 
@@ -171,7 +171,7 @@ module.exports = class extends Transform {
 
       if (docWithSameIdentifier) {
         // the last 5 digits of the ec__key to the ec__identifier to ensure unique ec__key
-        resource.ec__identifier = resource.ec__identifier + '-' + resource.ec__key.slice(-5)
+        resource.ec__identifier = `${resource.ec__identifier}-${resource.ec__key.slice(-5)}`
       }
     } else if (doc.ec__identifier !== resource.ec__identifier) {
       // might have same ec__key but different ec__identifier because it was initially migrated in having the same ec__key as an existing template
@@ -187,7 +187,8 @@ module.exports = class extends Transform {
     if (doc && doc.ec__sites) {
       resource.ec__sites.push(...doc.ec__sites)
     }
-    const manifestSiteKeys = manifest.c_site && manifest.c_site.includes || []
+    // eslint-disable-next-line one-var
+    const manifestSiteKeys = (manifest.c_site && manifest.c_site.includes) || []
     // make sure sites array only contains sites that are in the target or in the manifest
     resource.ec__sites = resource.ec__sites.filter((v) => {
       const spl = v.split('.'),
@@ -201,6 +202,8 @@ module.exports = class extends Transform {
     if (targetHasStudy && studyIsDifferent) {
       resource.ec__study = studyReference
     }
+    // Always set imported template status to draft
+    resource.ec__status = 'draft'
 
     // importing a new published doc? Set the published date as today.
     if (!doc && resource.ec__status === 'published') {

@@ -99,12 +99,13 @@ describe('ingestTransform', () => {
       global.org = defaultGlobals
     })
 
-    const docErr = { code: 'kInvalidArgument', errCode: 'cortex.invalidArgument.updateDisabled', reason: 'An eConsent template in this import exists in the target and is not in draft', message: 'Document Key 2222, Document title "title"' }
+    const docErr = { code: 'kInvalidArgument', errCode: 'cortex.invalidArgument.updateDisabled', reason: 'An eConsent template in this import exists in the target and is not in draft', message: 'Template [title] ([2222]) already exists in the target org and is not in DRAFT status, re-migration is not allowed' }
     it.each([
       // test, resource, memo, expected
       ['Draft consents should be imported ', { object: 'ec__document_template', ec__status: 'draft', ec__key: '1111' }, { manifest: {} }, { object: 'ec__document_template', ec__status: 'draft', ec__sites: [], ec__key: '1111' }],
-      ['Published docs not existing in target should be imported', { object: 'ec__document_template', ec__status: 'published', ec__key: '3333', ec__title: 'title' }, { manifest: {} }, { object: 'ec__document_template', ec__status: 'published', ec__sites: [], ec__key: '3333', ec__title: 'title' }],
+      ['Published docs not existing in target should be imported', { object: 'ec__document_template', ec__status: 'published', ec__key: '3333', ec__title: 'title' }, { manifest: {} }, { object: 'ec__document_template', ec__status: 'draft', ec__sites: [], ec__key: '3333', ec__title: 'title' }],
       ['Published docs existing should throw an error', { object: 'ec__document_template', ec__status: 'draft', ec__key: '2222', ec__title: 'title' }, { manifest: {} }, docErr],
+      ['Published docs no existing should be imported as draft', { object: 'ec__document_template', ec__status: 'published', ec__key: '4444', ec__title: 'title - 2' }, { manifest: {} }, { object: 'ec__document_template', ec__status: 'draft', ec__sites: [], ec__key: '4444', ec__title: 'title - 2' }],
     ])('%s', (test, resource, memo, expected) => {
 
       let transformedResource
