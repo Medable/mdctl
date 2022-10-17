@@ -18,9 +18,11 @@ mappings.forEach(({ path, mapTo }) => {
       isDocPropUpdate = !!rest.length,
       value = run(mapTo)
 
+  const prop = entity.startsWith('ec__') ? 'ec__key' : 'c_key'
+
   if (isDocPropUpdate) {
     const [entityResult] = org.objects[entity]
-      .find({ c_key: entityKey })
+      .find({ [prop]: entityKey })
       .paths(property)
       .limit(1)
       .toArray()
@@ -47,7 +49,7 @@ mappings.forEach(({ path, mapTo }) => {
 
   //normal prop update
   return org.objects[entity]
-    .updateOne({ c_key: entityKey }, { $set: { [property]: value }})
+    .updateOne({ [prop]: entityKey }, { $set: { [property]: value }})
     .execute()
 
 })`
