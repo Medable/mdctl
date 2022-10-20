@@ -46,6 +46,10 @@ class Study extends Task {
       manifestObject: {
         type: 'string',
         default: ''
+      },
+      preserveTemplateStatus: {
+        type: 'boolean',
+        default: false
       }
     }
 
@@ -115,7 +119,7 @@ class Study extends Task {
     params.triggers = false
     params.backup = false
 
-    await env['env@import'](cli)
+    await env['env@import'](cli, params.preserveTemplateStatus)
   }
 
   async 'study@tasks'(cli) {
@@ -290,6 +294,8 @@ class Study extends Task {
                             specify the entities to export (e.g. tasks and consents, etc...).
                             The manifest can only contain object instances, other org config objects 
                             can be exported through "mdctl env export" command
+
+        --preserveTemplateStatus - If set, keep template status as is while importing
       
       Notes
         
