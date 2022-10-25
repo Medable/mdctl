@@ -120,15 +120,43 @@ const { prompt } = require('inquirer'),
         return _.startsWith(result.saveCredentials.toLowerCase(), 'y')
       },
 
+      getDomainInfo = (inputArgs) => {
+        const { environment, username, apiKey } = inputArgs,
+              { host, env } = environment,
+              tempDomain = host.substring(0, host.indexOf('.medable')),
+              domain = (['api', 'api-eu1'].includes(tempDomain)) ? 'prod' : tempDomain.replace(/(api-|api.)/, '')
+
+        let server
+        if (host.indexOf('eu1') > 0) {
+          server = 'Europe'
+        } else if (host.endsWith('.com')) {
+          server = 'US'
+        } else {
+          server = 'China'
+        }
+
+        return {
+          server, domain, env, username, apiKey
+        }
+      },
+
       askUserToChooseCredentials = async(listOfSecrets) => {
-        const table = new Table({
-                head: ['Idx', 'URL', 'Email', 'ApiKey'],
-                colWidths: [5, 50, 20, 25]
-              }),
-              credentialsInRowFormat = _(listOfSecrets)
-              // This is a hack but the object comes in a way that prop can't be read
-                .map(s => JSON.parse(JSON.stringify(s)))
-                .map(({ url, email, apiKey }, idx) => [idx, url, email, apiKey]).value()
+        const credentialsInRowFormat = _(listOfSecrets).map(({
+                environment, username, apiKey
+              }) => getDomainInfo({ environment, username, apiKey })).map(({
+                server, domain, env, username, apiKey
+              }, idx) => [idx, server, domain.toUpperCase(), env, username, apiKey]).value(),
+              // Get the longest Org code and set the minimum to 15
+              maxEnvLength = (Math.max(...(credentialsInRowFormat
+                .map(el => el[3]).map(e => e.length))) + 4) || 15,
+              // Get the longest Email and set the minimum to 30
+              maxUsernameLength = (Math.max(...(credentialsInRowFormat
+                .map(el => el[4]).map(e => e.length))) + 4) || 30,
+              // Set the credentials table that will be displayed
+              table = new Table({
+                head: ['Idx', 'Server', 'Env', 'Org', 'Email', 'ApiKey'],
+                colWidths: [5, 10, 10, maxEnvLength, maxUsernameLength, 25]
+              })
 
         table.push(...credentialsInRowFormat)
 
@@ -201,5 +229,6 @@ module.exports = {
   askUserToSaveCredentials,
   askUserToChooseCredentials,
   askWorkspaceLock,
-  question
+  question,
+  getDomainInfo
 }
