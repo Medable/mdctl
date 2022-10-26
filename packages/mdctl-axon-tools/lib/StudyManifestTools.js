@@ -11,7 +11,7 @@ const fs = require('fs'),
       path = require('path'),
       packageFileDir = path.join(__dirname, '../packageScripts'),
       { Fault } = require('@medable/mdctl-core')
-const { isObject, isArray } = require('lodash')
+const { first, isObject, isArray } = require('lodash')
 const { getMappingScript } = require('./mappings')
 
 class StudyManifestTools {
@@ -42,17 +42,19 @@ class StudyManifestTools {
   async getTasks() {
     const { client } = privatesAccessor(this),
           driver = new Driver(client),
-          org = new Org(driver)
+          org = new Org(driver),
+          study = first(await org.objects.c_study.find().paths('_id').toArray())
 
-    return org.objects.c_tasks.find().limit(false).paths('c_name').toArray()
+    return study ? org.objects.c_tasks.find({ c_study: study._id }).limit(false).paths('c_name').toArray() : []
   }
 
   async getConsentTemplates() {
     const { client } = privatesAccessor(this),
           driver = new Driver(client),
-          org = new Org(driver)
+          org = new Org(driver),
+          study = first(await org.objects.c_study.find().paths('_id').toArray())
 
-    return org.objects.ec__document_templates.find().limit(false).paths('ec__title', 'ec__identifier').toArray()
+    return study ? org.objects.ec__document_templates.find({ ec__study: study._id }).limit(false).paths('ec__title', 'ec__identifier').toArray() : []
   }
 
   async getOrgObjectInfo(org) {
