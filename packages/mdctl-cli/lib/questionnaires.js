@@ -140,6 +140,13 @@ const { prompt } = require('inquirer'),
         }
       },
 
+      // Sort credentials by Org, Environment, Username and API Key
+      sortCredentials = existingPasswordSecrets => _.sortBy(existingPasswordSecrets, (p) => {
+        const { environment, username, apiKey } = p,
+              { server, domain, env } = getDomainInfo({ environment, username, apiKey })
+        return [server, domain, env, username, apiKey]
+      }),
+
       askUserToChooseCredentials = async(listOfSecrets) => {
         const credentialsInRowFormat = _(listOfSecrets).map(({
                 environment, username, apiKey
@@ -230,5 +237,6 @@ module.exports = {
   askUserToChooseCredentials,
   askWorkspaceLock,
   question,
-  getDomainInfo
+  getDomainInfo,
+  sortCredentials
 }
