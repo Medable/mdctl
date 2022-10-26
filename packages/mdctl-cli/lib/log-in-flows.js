@@ -5,6 +5,7 @@ const _ = require('lodash'),
       } = require('@medable/mdctl-node-utils'),
       Environment = require('@medable/mdctl-core/credentials/environment'),
       {
+        sortCredentials,
         askUserCredentials,
         askUserToSaveCredentials,
         askUserToChooseCredentials,
@@ -51,7 +52,8 @@ async function logInRequestingCredentialsFlow(cli, completedOptions) {
 }
 
 async function logInByChoosingCredentialsFlow(cli, completedOptions) {
-  const existingPasswordSecrets = await cli.credentialsProvider.list(completedOptions)
+  const existingPasswordSecrets = sortCredentials(await cli.credentialsProvider
+    .list(completedOptions))
 
   let result = false
 
