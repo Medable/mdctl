@@ -259,20 +259,20 @@ class ImportFileTreeAdapter extends EventEmitter {
           paths.push(`env/${k}.{json,yaml}`)
         } else if (isCustomName(k)) {
           if (includes[0] === '*') {
-            paths.push(`data/${pluralize(k)}/*.{json,yaml}`)
+            paths.push(`data/${pluralize(k)}/**/*.{json,yaml}`)
           } else {
             includes.forEach((inc) => {
-              paths.push(`data/${pluralize(k)}/${inc}.{json,yaml}`)
+              paths.push(`data/${pluralize(k)}/**/${inc}.{json,yaml}`)
             })
           }
         } else {
           includes.forEach((inc) => {
-            paths.push(`env/${k}/${inc}.{json,yaml}`)
+            paths.push(`env/${k}/**/${inc}.{json,yaml}`)
           })
         }
       } else if (manifestData[k] instanceof Array) {
         manifestData[k].forEach((o) => {
-          paths.push(`env/${k}/${o.name}.{json,yaml}`)
+          paths.push(`env/${k}/**/${o.name}.{json,yaml}`)
         })
       }
     }
