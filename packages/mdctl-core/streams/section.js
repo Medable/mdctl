@@ -38,7 +38,8 @@ const _ = require('lodash'),
       },
       NON_WRITABLE_KEYS = ['facet'],
       SectionsCreated = [],
-      { privatesAccessor } = require('@medable/mdctl-core-utils/privates')
+      { privatesAccessor } = require('@medable/mdctl-core-utils/privates'),
+      hash = require('crypto').createHash('md5')
 
 class ExportSection {
 
@@ -282,8 +283,23 @@ class ExportSection {
               objectPath.push(i)
               objectPath.push('data')
               if (cnt.data) {
+                let localeInName;
+                if (_.isArray(l.locale)){
+                  if(l.locale.length > 1) {
+                    localeInName = hash.update(l.locale.join()).digest('hex')
+                  } else {
+                    if (_.isEqual(l.locale, ['*'])) {
+                      localeInName = 'anyLocale'
+                    } else {
+                      localeInName = l.locale[0]
+                    }
+                  }
+                } else {
+                  localeInName = l.locale
+                }
+                
                 privatesAccessor(this).templateFiles.push({
-                  name: `${name}.${l.locale}.${cnt.name}`,
+                  name: `${name}.${localeInName}.${cnt.name}`,
                   ext: TEMPLATES_EXT[content.type][cnt.name],
                   data: cnt.data,
                   remoteLocation: false,
