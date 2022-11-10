@@ -85,7 +85,7 @@ class Study extends Task {
     try {
       let manifestJSON
       if (manifestObj) {
-        manifestJSON = this.validateManifest(manifestObj)
+        manifestJSON = this.validateManifest(manifestObj, studyTools.getAvailableObjectNames())
       }
       const { manifest } = await studyTools.getStudyManifest(manifestJSON)
 
@@ -196,7 +196,7 @@ class Study extends Task {
 
   }
 
-  validateManifest(manifestObject) {
+  validateManifest(manifestObject, validKeys) {
     let manifestJSON
     try {
       manifestJSON = JSON.parse(manifestObject)
@@ -214,13 +214,16 @@ class Study extends Task {
       }
     }
     /*
-      Ignore any keys passed in other than Assignments and eConsents.
-      In future this will be removed but for now we will only support those 2 objects together
+      We are allowing to export only "parent" objects, i.e. objects
+      that have dependencies
     */
-    manifestJSON = _.pick(manifestJSON, ['c_task', 'ec__document_template', 'object'])
+    manifestJSON = _.pick(manifestJSON, ['object', ...validKeys])
     if (_.isEqual(manifestJSON, { object: 'manifest' })) {
-      // This means that the manifest passed does not contain Assignments or eConsents
-      throw Fault.create('kInvalidArgument', { reason: 'No Assignments or eConsents to export' })
+      // This means that the manifest passed does not contain any object to export
+      throw Fault.create('kInvalidArgument', { reason: 'Nothing to export' })
+    }
+    if (!manifestJSON.object || manifestJSON.object !== 'manifest') {
+      throw Fault.create('kInvalidArgument', { reason: 'Invalid manifest. Please make sure it contains the right key/value ("object": "manifest")' })
     }
     return manifestJSON
   }

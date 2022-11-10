@@ -1,12 +1,15 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 const { assert, expect } = require('chai'),
+      { StudyManifestTools } = require('@medable/mdctl-axon-tools'),
       Study = require('../../tasks/study')
 
-let study
+let study,
+    studyManifest
 
 describe('MIG-85 - Test partial migrations in study.js module', () => {
   before(() => {
     study = new Study()
+    studyManifest = new StudyManifestTools()
   })
 
   it('Test validateManifest function - Invalid file path', () => {
@@ -45,10 +48,34 @@ describe('MIG-85 - Test partial migrations in study.js module', () => {
       .equal(res.reason, 'The manifest is not a valid JSON')
   })
 
+  it('Test validateManifest function - Invalid manifest', () => {
+    const manifest = `{
+            "c_group_task": {
+              "includes": [
+                "key-002"
+              ]
+            }
+          }`
+
+    let res
+    try {
+      res = study.validateManifest(manifest, studyManifest.getAvailableObjectNames())
+    } catch (err) {
+      res = err
+    }
+
+    assert
+      .equal(res.errCode, 'mdctl.invalidArgument.unspecified')
+    assert
+      .equal(res.code, 'kInvalidArgument')
+    assert
+      .equal(res.reason, 'Invalid manifest. Please make sure it contains the right key/value ("object": "manifest")')
+  })
+
   it('Test validateManifest function - No entities to export', () => {
     const manifest = `{
       "object": "manifest",
-      "c_group": {
+      "c_step": {
         "includes": [
           "key-014"
         ]
@@ -62,7 +89,7 @@ describe('MIG-85 - Test partial migrations in study.js module', () => {
 
     let res
     try {
-      res = study.validateManifest(manifest)
+      res = study.validateManifest(manifest, studyManifest.getAvailableObjectNames())
     } catch (err) {
       res = err
     }
@@ -72,11 +99,11 @@ describe('MIG-85 - Test partial migrations in study.js module', () => {
     assert
       .equal(res.code, 'kInvalidArgument')
     assert
-      .equal(res.reason, 'No Assignments or eConsents to export')
+      .equal(res.reason, 'Nothing to export')
 
   })
 
-  it('Test validateManifest function - Removed entities other than Assignments and eConsents', () => {
+  it('Test validateManifest function - Removed not allowed entities', () => {
     const manifest = `{
             "object": "manifest",
             "c_task": {
@@ -90,7 +117,7 @@ describe('MIG-85 - Test partial migrations in study.js module', () => {
               ]
             }
           }`,
-          res = study.validateManifest(manifest)
+          res = study.validateManifest(manifest, studyManifest.getAvailableObjectNames())
 
     expect(res)
       .to.deep.equal({
