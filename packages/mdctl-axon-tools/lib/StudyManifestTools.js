@@ -691,7 +691,7 @@ class StudyManifestTools {
     // eslint-disable-next-line no-restricted-syntax
     for await (const key of manifestKeys) {
       // Determine whether queriying by c_study or c_key
-      const property = (study) ? 'c_study' : 'c_key',
+      const property = (study) ? 'c_study' : first((await org.objects.object.find({ name: key }).paths('uniqueKey').toArray()).map(({ uniqueKey }) => uniqueKey)),
             // Use the study ID or the entities inside the "includes" array in the manifest
             values = (study) ? [study._id] : manifestObject[key].includes
 
@@ -710,7 +710,7 @@ class StudyManifestTools {
         case 'ec__document_template': {
           // Get the eConsents ID's from the study or the manifest
           // econsent template properties are namespaced ec__, rather than c_
-          const ecProp = property === 'c_study' ? 'ec__study' : 'ec__key'
+          const ecProp = property === 'c_study' ? 'ec__study' : property
           ids = (await this.getObjectIDsArray(org, key, ecProp, values)).map(v => v._id)
           // Load the manifest for the current ID's and their dependencies
           objectAndDependencies = await this.getConsentManifestEntities(org, ids, orgReferenceProps)
@@ -730,8 +730,12 @@ class StudyManifestTools {
           objectAndDependencies = await this.getGroupManifestEntities(org, ids, orgReferenceProps)
           break
         }
-        case 'c_site':
-        case 'c_anchor_date_template': {
+        // Altough c_fault has reference to c_study it will not be included in the below list since that reference is not used
+        // If we included it c_fault will not get exported in a full study export
+        case 'c_anchor_date_template':
+        case 'c_participant_schedule':
+        case 'c_patient_flag':
+        case 'c_site': {
           pluralName = this.mapObjectNameToPlural(key)
           // These objects seem not to have dependencies so we'll load them directly
           objectAndDependencies = await this.getExportObjects(org, pluralName, { [property]: { $in: values } }, orgReferenceProps)
@@ -744,8 +748,9 @@ class StudyManifestTools {
           } catch (e) {
             pluralName = key
           }
-          // Export the entire entity (no 'where' filter) if present
-          objectAndDependencies = await this.getExportObjects(org, pluralName, null, orgReferenceProps)
+          const where = property !== 'c_study' ? { [property]: { $in: values } } : null
+          // Allow to export individual instances (if specified) or all of them
+          objectAndDependencies = await this.getExportObjects(org, pluralName, where, orgReferenceProps)
           break
         }
       }
