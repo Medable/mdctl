@@ -34,8 +34,7 @@
     "lodash": "^4.17.14",
     "moment": "^2.29.1",
     "ndjson": "^1.5.0",
-    "pump": "^3.0.0",
-    "stream-to-iterator": "^3.0.2-0"
+    "pump": "^3.0.0"
   },
   "devDependencies": {
     "chai": "^4.1.2",
