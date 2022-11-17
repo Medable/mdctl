@@ -12,7 +12,7 @@ const fs = require('fs'),
       packageFileDir = path.join(__dirname, '../packageScripts'),
       { Fault } = require('@medable/mdctl-core')
 const { first, isObject, isArray } = require('lodash')
-const { getMappingScript } = require('./mappings')
+const { getMappingScript, getEcMappingScript } = require('./mappings')
 
 class StudyManifestTools {
 
@@ -39,19 +39,23 @@ class StudyManifestTools {
       .reduce((curr, key) => Object.assign(curr, { [key]: manifestJSON[key] }), {})
   }
 
-  async getTasks() {
+  getOrg() {
     const { client } = privatesAccessor(this),
           driver = new Driver(client),
-          org = new Org(driver),
+          org = new Org(driver)
+
+    return org
+  }
+
+  async getTasks() {
+    const org = this.getOrg(),
           study = first(await org.objects.c_study.find().paths('_id').toArray())
 
     return study ? org.objects.c_tasks.find({ c_study: study._id }).limit(false).paths('c_name').toArray() : []
   }
 
   async getConsentTemplates() {
-    const { client } = privatesAccessor(this),
-          driver = new Driver(client),
-          org = new Org(driver),
+    const org = this.getOrg(),
           study = first(await org.objects.c_study.find().paths('_id').toArray())
 
     return study ? org.objects.ec__document_templates.find({ ec__study: study._id }).limit(false).paths('ec__title', 'ec__identifier').toArray() : []
@@ -172,7 +176,6 @@ class StudyManifestTools {
 
   async buildManifestAndDependencies(manifestJSON) {
     let ignoreKeys = [],
-        mappingScript,
         cleanManifest,
         study
 
@@ -185,12 +188,12 @@ class StudyManifestTools {
       ignoreKeys = Object.keys(cleanManifest).map(key => this.mapObjectNameToPlural(key))
     } else {
       study = await this.getFirstStudy(org)
-      mappingScript = await getMappingScript(org)
     }
 
-    const allEntities = await this.getStudyManifestEntities(org, study, cleanManifest, orgReferenceProps)
-    const { manifest, removedEntities } = this
-      .validateAndCreateManifest(allEntities, orgReferenceProps, ignoreKeys)
+    const mappingScript = await getMappingScript(org),
+          allEntities = await this.getStudyManifestEntities(org, study, cleanManifest, orgReferenceProps),
+          { manifest, removedEntities } = this
+            .validateAndCreateManifest(allEntities, orgReferenceProps, ignoreKeys)
 
     return {
       manifest,
@@ -255,16 +258,24 @@ class StudyManifestTools {
   async getConsentsManifest(consentIds) {
     console.log('Building Manifest')
     const manifestAndDeps = await this.buildConsentManifestAndDependencies(consentIds)
-    this.writeToDisk('consent', manifestAndDeps.removedEntities)
+
+    let extraConfig
+
+    if (manifestAndDeps.mappingScript) {
+      extraConfig = this.writeInstallAfterScript(manifestAndDeps.mappingScript)
+    }
+
+    this.writeToDisk('consent', manifestAndDeps.removedEntities, extraConfig)
     return manifestAndDeps
   }
 
   async buildConsentManifestAndDependencies(consentIds) {
     const { org, orgReferenceProps } = await this.getOrgAndReferences(),
+          mappingScript = await getEcMappingScript(org),
           allEntities = await this.getConsentManifestEntities(org, consentIds, orgReferenceProps),
           { manifest, removedEntities } = this.validateAndCreateManifest(allEntities, orgReferenceProps, ['ec__document_templates'])
 
-    return { manifest, removedEntities }
+    return { manifest, removedEntities, mappingScript }
   }
 
   // This function is not used but it's handy to have for unit tests

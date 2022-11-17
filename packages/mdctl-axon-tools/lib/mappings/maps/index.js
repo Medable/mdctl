@@ -13,5 +13,13 @@ module.exports = {
       ...await reviewsTypesMap.getMappings(),
       ...await ecBuilderDataMap.getMappings()
     ]
+  },
+
+  async getEcMappings(org) {
+    const ecBuilderDataMap = new EcBuilderDataMap(org)
+
+    return [
+      ...await ecBuilderDataMap.getMappings()
+    ]
   }
 }
