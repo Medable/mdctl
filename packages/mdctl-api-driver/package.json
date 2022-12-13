@@ -1,6 +1,6 @@
 {
   "name": "@medable/mdctl-api-driver",
-  "version": "1.0.67",
+  "version": "1.0.68",
   "description": "Medable Developer Client Tools :: Api DB Driver",
   "repository": {
     "type": "git",
@@ -25,15 +25,14 @@
     "lint": "eslint *.js"
   },
   "dependencies": {
-    "@medable/mdctl-api": "^1.0.67",
-    "@medable/mdctl-core": "^1.0.67",
-    "@medable/mdctl-core-utils": "^1.0.67",
+    "@medable/mdctl-api": "^1.0.68",
+    "@medable/mdctl-core": "^1.0.68",
+    "@medable/mdctl-core-utils": "^1.0.68",
     "async-iter-stream": "^1.2.0",
     "inflection": "^1.12.0",
     "lodash": "^4.17.21",
     "ndjson": "^1.5.0",
-    "pump": "^3.0.0",
-    "stream-to-iterator": "^3.0.2-0"
+    "pump": "^3.0.0"
   },
   "devDependencies": {
     "chai": "^4.1.2",

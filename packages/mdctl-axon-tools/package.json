@@ -1,6 +1,6 @@
 {
   "name": "@medable/mdctl-axon-tools",
-  "version": "1.0.67",
+  "version": "1.0.68",
   "description": "Medable Axon Tools :: Tools For interaction with Axon orgs",
   "repository": {
     "type": "git",
@@ -25,17 +25,16 @@
     "lint": "eslint *.js"
   },
   "dependencies": {
-    "@medable/mdctl-api": "^1.0.67",
-    "@medable/mdctl-api-driver": "^1.0.67",
-    "@medable/mdctl-core": "^1.0.67",
-    "@medable/mdctl-core-utils": "^1.0.67",
+    "@medable/mdctl-api": "^1.0.68",
+    "@medable/mdctl-api-driver": "^1.0.68",
+    "@medable/mdctl-core": "^1.0.68",
+    "@medable/mdctl-core-utils": "^1.0.68",
     "async-iter-stream": "^1.2.0",
     "inflection": "^1.12.0",
     "lodash": "^4.17.14",
     "moment": "^2.29.1",
     "ndjson": "^1.5.0",
-    "pump": "^3.0.0",
-    "stream-to-iterator": "^3.0.2-0"
+    "pump": "^3.0.0"
   },
   "devDependencies": {
     "chai": "^4.1.2",
