@@ -1,7 +1,6 @@
 /* eslint-disable no-param-reassign, max-len, no-restricted-syntax */
 const { Transform } = require('stream'),
       pump = require('pump'),
-      streamToIterator = require('stream-to-iterator'),
       _ = require('lodash'),
       { privatesAccessor } = require('@medable/mdctl-core-utils/privates'),
       {
@@ -36,7 +35,7 @@ class BaseCursor extends Transform {
   }
 
   get iterator() {
-    return streamToIterator(this)
+    return this
   }
 
   stream(options) {
