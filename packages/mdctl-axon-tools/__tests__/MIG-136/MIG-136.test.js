@@ -1,8 +1,4 @@
-/* eslint-disable no-underscore-dangle */
-/* eslint-disable camelcase */
-/* eslint-disable no-tabs */
-const { Org } = require('@medable/mdctl-api-driver/lib/cortex.object'),
-      { pick } = require('lodash'),
+const { pick } = require('lodash'),
       StudyManifestTools = require('../../lib/StudyManifestTools'),
       existingStudy = [{
         _id: '1',
@@ -86,10 +82,11 @@ const { Org } = require('@medable/mdctl-api-driver/lib/cortex.object'),
         }
       }
 
-jest.mock('@medable/mdctl-api-driver/lib/cortex.object')
-jest.spyOn(Org.prototype, 'constructor').mockImplementation(() => org)
-
 describe('MIG-136 - Orphan records', () => {
+
+  beforeEach(() => {
+    jest.spyOn(StudyManifestTools.prototype, 'getOrg').mockImplementation(() => org)
+  })
 
   afterEach(() => {
     jest.clearAllMocks()
@@ -98,6 +95,7 @@ describe('MIG-136 - Orphan records', () => {
   it('Should returns only existing study Assignments', async() => {
     const studyManifestTools = new StudyManifestTools(),
           tasks = await studyManifestTools.getTasks(),
+          // eslint-disable-next-line no-underscore-dangle
           test = existingTasks.filter(t => t.c_study === existingStudy[0]._id)
             .map(t => pick(t, ['c_name']))
 

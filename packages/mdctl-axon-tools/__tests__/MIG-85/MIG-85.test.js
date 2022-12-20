@@ -5,8 +5,7 @@ jest.mock('@medable/mdctl-api-driver/lib/cortex.object', () => ({ Object: class 
 jest.mock('../../lib/mappings')
 
 const fs = require('fs'),
-      StudyManifestTools = require('../../lib/StudyManifestTools'),
-      study = require('../../../mdctl-cli/tasks/study')
+      StudyManifestTools = require('../../lib/StudyManifestTools')
 
 describe('MIG-85 - Test partial migrations in StudyManifestTools', () => {
 
@@ -102,6 +101,13 @@ describe('MIG-85 - Test partial migrations in StudyManifestTools', () => {
               find: () => ({
                 limit: () => ({
                   toArray: () => entities.filter(e => e.object === 'c_task')
+                })
+              })
+            },
+            object: {
+              find: () => ({
+                paths: () => ({
+                  toArray: () => [{ uniqueKey: 'c_key' }]
                 })
               })
             }
@@ -227,6 +233,7 @@ describe('MIG-85 - Test partial migrations in StudyManifestTools', () => {
           ingestTransform = fs.readFileSync(`${__dirname}/../../packageScripts/ingestTransform.js`).toString()
 
     jest.spyOn(StudyManifestTools.prototype, 'getOrgObjectInfo').mockImplementation(() => dummyReferences)
+    jest.spyOn(StudyManifestTools.prototype, 'getOrgAndReferences').mockImplementation(() => ({ org, dummyReferences }))
     jest.spyOn(StudyManifestTools.prototype, 'validateReferences').mockImplementation(() => entities)
     jest.spyOn(StudyManifestTools.prototype, 'createManifest').mockImplementation(() => manifest)
     jest.spyOn(StudyManifestTools.prototype, 'getObjectIDsArray').mockImplementation(() => entities.filter(o => o.object === 'c_task'))
