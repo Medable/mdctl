@@ -12,7 +12,7 @@ const fs = require('fs'),
       packageFileDir = path.join(__dirname, '../packageScripts'),
       { Fault } = require('@medable/mdctl-core')
 const { first, isObject, isArray } = require('lodash')
-const { getMappingScript } = require('./mappings')
+const { getMappingScript, getEcMappingScript } = require('./mappings')
 
 class StudyManifestTools {
 
@@ -39,19 +39,23 @@ class StudyManifestTools {
       .reduce((curr, key) => Object.assign(curr, { [key]: manifestJSON[key] }), {})
   }
 
-  async getTasks() {
+  getOrg() {
     const { client } = privatesAccessor(this),
           driver = new Driver(client),
-          org = new Org(driver),
+          org = new Org(driver)
+
+    return org
+  }
+
+  async getTasks() {
+    const org = this.getOrg(),
           study = first(await org.objects.c_study.find().paths('_id').toArray())
 
     return study ? org.objects.c_tasks.find({ c_study: study._id }).limit(false).paths('c_name').toArray() : []
   }
 
   async getConsentTemplates() {
-    const { client } = privatesAccessor(this),
-          driver = new Driver(client),
-          org = new Org(driver),
+    const org = this.getOrg(),
           study = first(await org.objects.c_study.find().paths('_id').toArray())
 
     return study ? org.objects.ec__document_templates.find({ ec__study: study._id }).limit(false).paths('ec__title', 'ec__identifier').toArray() : []
@@ -172,7 +176,6 @@ class StudyManifestTools {
 
   async buildManifestAndDependencies(manifestJSON) {
     let ignoreKeys = [],
-        mappingScript,
         cleanManifest,
         study
 
@@ -185,12 +188,12 @@ class StudyManifestTools {
       ignoreKeys = Object.keys(cleanManifest).map(key => this.mapObjectNameToPlural(key))
     } else {
       study = await this.getFirstStudy(org)
-      mappingScript = await getMappingScript(org)
     }
 
-    const allEntities = await this.getStudyManifestEntities(org, study, cleanManifest, orgReferenceProps)
-    const { manifest, removedEntities } = this
-      .validateAndCreateManifest(allEntities, orgReferenceProps, ignoreKeys)
+    const mappingScript = await getMappingScript(org),
+          allEntities = await this.getStudyManifestEntities(org, study, cleanManifest, orgReferenceProps),
+          { manifest, removedEntities } = this
+            .validateAndCreateManifest(allEntities, orgReferenceProps, ignoreKeys)
 
     return {
       manifest,
@@ -255,16 +258,24 @@ class StudyManifestTools {
   async getConsentsManifest(consentIds) {
     console.log('Building Manifest')
     const manifestAndDeps = await this.buildConsentManifestAndDependencies(consentIds)
-    this.writeToDisk('consent', manifestAndDeps.removedEntities)
+
+    let extraConfig
+
+    if (manifestAndDeps.mappingScript) {
+      extraConfig = this.writeInstallAfterScript(manifestAndDeps.mappingScript)
+    }
+
+    this.writeToDisk('consent', manifestAndDeps.removedEntities, extraConfig)
     return manifestAndDeps
   }
 
   async buildConsentManifestAndDependencies(consentIds) {
     const { org, orgReferenceProps } = await this.getOrgAndReferences(),
+          mappingScript = await getEcMappingScript(org),
           allEntities = await this.getConsentManifestEntities(org, consentIds, orgReferenceProps),
           { manifest, removedEntities } = this.validateAndCreateManifest(allEntities, orgReferenceProps, ['ec__document_templates'])
 
-    return { manifest, removedEntities }
+    return { manifest, removedEntities, mappingScript }
   }
 
   // This function is not used but it's handy to have for unit tests
@@ -691,7 +702,7 @@ class StudyManifestTools {
     // eslint-disable-next-line no-restricted-syntax
     for await (const key of manifestKeys) {
       // Determine whether queriying by c_study or c_key
-      const property = (study) ? 'c_study' : 'c_key',
+      const property = (study) ? 'c_study' : first((await org.objects.object.find({ name: key }).paths('uniqueKey').toArray()).map(({ uniqueKey }) => uniqueKey)),
             // Use the study ID or the entities inside the "includes" array in the manifest
             values = (study) ? [study._id] : manifestObject[key].includes
 
@@ -710,7 +721,7 @@ class StudyManifestTools {
         case 'ec__document_template': {
           // Get the eConsents ID's from the study or the manifest
           // econsent template properties are namespaced ec__, rather than c_
-          const ecProp = property === 'c_study' ? 'ec__study' : 'ec__key'
+          const ecProp = property === 'c_study' ? 'ec__study' : property
           ids = (await this.getObjectIDsArray(org, key, ecProp, values)).map(v => v._id)
           // Load the manifest for the current ID's and their dependencies
           objectAndDependencies = await this.getConsentManifestEntities(org, ids, orgReferenceProps)
@@ -730,8 +741,12 @@ class StudyManifestTools {
           objectAndDependencies = await this.getGroupManifestEntities(org, ids, orgReferenceProps)
           break
         }
-        case 'c_site':
-        case 'c_anchor_date_template': {
+        // Altough c_fault has reference to c_study it will not be included in the below list since that reference is not used
+        // If we included it c_fault will not get exported in a full study export
+        case 'c_anchor_date_template':
+        case 'c_participant_schedule':
+        case 'c_patient_flag':
+        case 'c_site': {
           pluralName = this.mapObjectNameToPlural(key)
           // These objects seem not to have dependencies so we'll load them directly
           objectAndDependencies = await this.getExportObjects(org, pluralName, { [property]: { $in: values } }, orgReferenceProps)
@@ -744,8 +759,9 @@ class StudyManifestTools {
           } catch (e) {
             pluralName = key
           }
-          // Export the entire entity (no 'where' filter) if present
-          objectAndDependencies = await this.getExportObjects(org, pluralName, null, orgReferenceProps)
+          const where = property !== 'c_study' ? { [property]: { $in: values } } : null
+          // Allow to export individual instances (if specified) or all of them
+          objectAndDependencies = await this.getExportObjects(org, pluralName, where, orgReferenceProps)
           break
         }
       }

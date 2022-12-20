@@ -22,7 +22,7 @@ const EventEmitter = require('events'),
 
 class ImportFileTreeAdapter extends EventEmitter {
 
-  constructor(inputDir, format = 'json', manifest = null, cache) {
+  constructor(inputDir, format = 'json', manifest = null, cache, preserveTemplateStatus = false) {
     super()
     Object.assign(privatesAccessor(this), {
       files: [],
@@ -39,7 +39,7 @@ class ImportFileTreeAdapter extends EventEmitter {
     })
 
     this.loadMetadata()
-    this.readPackageFile()
+    this.readPackageFile(preserveTemplateStatus)
     this.readManifest()
   }
 
@@ -174,7 +174,7 @@ class ImportFileTreeAdapter extends EventEmitter {
     })
   }
 
-  readPackageFile() {
+  readPackageFile(preserveTemplateStatus = false) {
 
     let packageData,
         script
@@ -225,6 +225,9 @@ class ImportFileTreeAdapter extends EventEmitter {
           const ingestPipe = path.join(input, packageData.pipes.ingest)
           if (fs.existsSync(ingestPipe)) {
             packageData.pipes.ingest = fs.readFileSync(ingestPipe).toString()
+            if (preserveTemplateStatus) {
+              packageData.pipes.ingest = `const preserveTemplateStatus = true\n${packageData.pipes.ingest}`
+            }
           }
         }
       }
