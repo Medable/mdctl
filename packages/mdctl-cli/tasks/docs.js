@@ -1,43 +1,31 @@
 /* eslint-disable class-methods-use-this */
 
-const MdctlDocs = require('@medable/mdctl-docs'),
+const { generate } = require('@medable/mdctl-docs'),
       Task = require('../lib/task')
 
 class Docs extends Task {
 
   constructor() {
 
-    const options = {
-      debug: {
-        default: false,
-        type: 'boolean'
+    const optionSpec = {
+      source: {
+        default: '.',
+        type: 'string'
       },
       destination: {
-        default: '',
+        default: 'docs',
         type: 'string'
-      },
-      module: {
-        default: '',
-        type: 'string'
-      },
-      source: {
-        default: '',
-        type: 'string'
-      },
-      verbose: {
-        default: false,
-        type: 'boolean'
       }
     }
 
-    super(options)
-    this.optionKeys = Object.keys(options)
+    super(optionSpec)
+    this.optionKeys = Object.keys(optionSpec)
 
   }
 
   async run(cli) {
-    const params = await cli.getArguments(this.optionKeys)
-    return MdctlDocs.generateDocumentation(params)
+    const options = await cli.getArguments(this.optionKeys)
+    return generate(options)
   }
 
   // ----------------------------------------------------------------------------------------------
@@ -60,12 +48,9 @@ class Docs extends Task {
     Arguments:
 
       options
-        
-        --debug - tool debugging output (WIP)
+
         --destination - output directory
-        --module - documentation module name
         --source - source directory
-        --verbose - detailed output (WIP)
 `
   }
 

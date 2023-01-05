@@ -1,0 +1,15 @@
+{{#if object.label}}
+{{ md_header object.label headerLevel}}
+{{else if object.name }}
+{{ md_header object.name headerLevel}}
+{{/if}}
+
+{{#each object}}
+{{#if (equals @key 'patterns')}}
+{{> md.set key=@key value=this }}
+{{else if (or (equals @key 'expression') (equals @key 'value') (equals @key 'properties'))}}
+{{> md.code language='javascript' code=(stringify this null 2) label=@key}}
+{{else}}
+{{> md.key-value key=@key value=this }}
+{{/if}}
+{{/each}}
