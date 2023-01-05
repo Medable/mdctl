@@ -22,7 +22,7 @@ function loadPartials(partials = []) {
   return Object.assign({}, TEMPLATES, util.array2Obj(partials, TEMPLATE_OBJ_OPTS))
 }
 
-handlebars.registerHelper('cammel_to_sentence', s => (typeof s === 'string' ? s.replace(/([A-Z])/g, match => ` ${match}`).replace(/^./, match => match.toUpperCase()) : s))
+handlebars.registerHelper('cammel_to_sentence', util.cammelToSentence)
 
 /**
  * TODO: Improve REGEX
@@ -36,16 +36,21 @@ handlebars.registerHelper('md_header', (s, level = 1) => (typeof s === 'string' 
 
 handlebars.registerHelper('delta', (n = 0, delta = 1) => n + delta)
 
-handlebars.registerHelper('if_or', (...args) => {
-  const options = args.pop()
+handlebars.registerHelper('or', (...args) => {
+  args.pop()
   return args.reduce((bool, arg) => bool || arg, false)
-    ? options.fn(this)
-    : options.inverse(this)
 })
 
 handlebars.registerHelper('capitalize', util.capitalize)
 
 handlebars.registerHelper('capitalize_first', util.capitalizeFirstCharacter)
+
+handlebars.registerHelper('stringify', util.stringify)
+
+handlebars.registerHelper('equals', (...args) => {
+  args.pop()
+  return args.every((arg => args[0] === arg))
+})
 
 loadPartials(PARTIALS)
 
