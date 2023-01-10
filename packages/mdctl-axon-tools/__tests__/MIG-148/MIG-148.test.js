@@ -154,7 +154,8 @@ describe('MIG-148 - Test StudyManifestTools ', () => {
           ec__version: '0.1',
           object: 'ec__document_template'
         },
-
+        exportableObject = ['ec__document_template', 'c_visit'],
+        keyName = 'c_key',
         mockGetExportedObjects = jest.fn(() => []),
         existingStudy = [{
           _id: '1',
@@ -294,6 +295,8 @@ describe('MIG-148 - Test StudyManifestTools ', () => {
       }
     }
 
+    jest.spyOn(StudyManifestTools.prototype, 'getExportableObjects').mockImplementation(() => exportableObject)
+    jest.spyOn(StudyManifestTools.prototype, 'getKeyName').mockImplementation(() => keyName)
     jest.spyOn(StudyManifestTools.prototype, 'getOrgObjectInfo').mockImplementation(() => dummyReferences)
     jest.spyOn(StudyManifestTools.prototype, 'getOrgAndReferences').mockImplementation(() => ({ org, dummyReferences }))
     jest.spyOn(StudyManifestTools.prototype, 'validateReferences').mockImplementation(() => entities)

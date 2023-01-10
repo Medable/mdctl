@@ -111,7 +111,9 @@ describe('MIG-109 - Test StudyManifestTools ', () => {
               })
             }
           }
-        }
+        },
+        exportableObject = ['c_task', 'c_visit'],
+        keyName = 'c_key'
 
   beforeAll(async() => {
     manifestTools = new StudyManifestTools({})
@@ -153,6 +155,8 @@ describe('MIG-109 - Test StudyManifestTools ', () => {
           },
           ingestTransform = fs.readFileSync(`${__dirname}/../../packageScripts/ingestTransform.js`).toString()
 
+    jest.spyOn(StudyManifestTools.prototype, 'getExportableObjects').mockImplementation(() => exportableObject)
+    jest.spyOn(StudyManifestTools.prototype, 'getKeyName').mockImplementation(() => keyName)
     jest.spyOn(StudyManifestTools.prototype, 'getFirstStudy').mockImplementation(() => org)
     jest.spyOn(StudyManifestTools.prototype, 'getOrgObjectInfo').mockImplementation(() => dummyReferences)
     jest.spyOn(StudyManifestTools.prototype, 'validateReferences').mockImplementation(() => entities)
