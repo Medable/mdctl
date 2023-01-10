@@ -5,9 +5,9 @@
 {{/if}}
 
 {{#each object}}
-{{#if (equals @key 'patterns')}}
+{{#if (or (equals @key 'patterns') (equals @key 'aclBlacklist') (equals @key 'aclWhitelist') (equals @key 'appWhitelist') (equals @key 'ipBlacklist') (equals @key 'ipWhitelist') (equals @key 'methods') (equals @key 'paths') (equals @key 'rateLimitElements') (equals @key 'blacklist') (equals @key 'cors') (equals @key 'whitelist') (equals @key 'shareAcl') (equals @key 'shareChain') (equals @key 'defaultAcl') (equals @key 'createAcl') (equals @key 'include') (equals @key 'scope') (equals @key 'paths'))}}
 {{> md.set key=@key value=this }}
-{{else if (or (equals @key 'expression') (equals @key 'value') (equals @key 'properties'))}}
+{{else if (or (equals @key 'expression') (equals @key 'value') (equals @key 'properties') (equals @key 'configuration') (equals @key 'expires') (equals @key 'auditing') (equals @key 'connectionOptions') (equals @key 'locales') (equals @key 'objectTypes') (equals @key 'localizations') (equals @key 'limit') (equals @key 'query') (equals @key 'skip') (equals @key 'principal') (equals @key 'endpoints'))}}
 {{> md.code language='javascript' code=(stringify this null 2) label=@key}}
 {{else}}
 {{> md.key-value key=@key value=this }}

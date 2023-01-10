@@ -10,7 +10,7 @@ function writeJSDocs(source, destination){
 
   return new Promise((resolve, reject) => {
     const jsdoc = path.join(__dirname, '../../node_modules/.bin/jsdoc'),
-          scriptDirectory = path.join(source, 'env/scripts/js'),
+          scriptDirectory = path.join(source, 'env'),
           outputDirectory = path.join(destination, 'jsdoc'),
           params = [
             scriptDirectory,
@@ -101,11 +101,11 @@ function writePackageSummary(manifest, destination){
   const links = Object.keys(manifest)
           .filter(key => !notTopLevelResource.includes(key))
           .map(key => ({
-            name: util.cammelToSentence(key),
+            name: key,
             uri: `./${key}.md`
           })),
         sections = [
-          {
+          manifest.objects && {
             label: 'Objects',
             links: Object.values(manifest.objects).map(({ name }) => ({
               name,
@@ -121,7 +121,7 @@ function writePackageSummary(manifest, destination){
               }
             ]
           }
-        ],
+        ].filter(section => section),
         content = TEMPLATES.GITBOOK_SUMMARY({
           links,
           sections,
