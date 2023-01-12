@@ -1,0 +1,23 @@
+name: 'publish alpha'
+on:
+  release:
+    types: [prereleased]
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3.3.0
+        with:
+          fetch-depth: 0
+      - uses: cachix/install-nix-action@v18
+        with:
+          extra_nix_config: |
+            experimental-features = nix-command flakes
+      - uses: cachix/cachix-action@v12
+        with:
+          name: medable
+          authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
+      - run: nix build -f .
+      - env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: nix-shell --run "_npm_publish_alpha --yes"
