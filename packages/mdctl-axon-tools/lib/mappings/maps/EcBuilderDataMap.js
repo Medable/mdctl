@@ -14,7 +14,10 @@ module.exports = class EcBuilderDataMap {
       .paths('ec__key', 'ec__builder_data', 'ec__requested_data', 'ec__requested_signatures', 'ec__knowledge_checks')
       .toArray()
 
-    ecTemplates = ecTemplates.filter(template => template.ec__builder_data && !!template.ec__builder_data['ck-widgets-data'].length)
+    ecTemplates = ecTemplates
+      .filter(template => template.ec__builder_data
+              && !!template.ec__builder_data['ck-widgets-data']
+              && !!template.ec__builder_data['ck-widgets-data'].length)
 
     // eslint-disable-next-line no-restricted-syntax
     for (const template of ecTemplates) {
