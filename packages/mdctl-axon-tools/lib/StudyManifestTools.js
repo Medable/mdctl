@@ -148,9 +148,9 @@ class StudyManifestTools {
     return privatesAccessor(this).orgObjects.find(v => v.pluralName === pluralName).name
   }
 
-  async getStudyManifest(manifestObject) {
+  async getStudyManifest(manifestObject, excludeTemplates = false) {
     console.log('Building Manifest')
-    const manifestAndDeps = await this.buildManifestAndDependencies(manifestObject)
+    const manifestAndDeps = await this.buildManifestAndDependencies(manifestObject, excludeTemplates)
     await this.writeStudyToDisk(manifestAndDeps)
     return manifestAndDeps
   }
@@ -176,7 +176,12 @@ class StudyManifestTools {
     return { manifest, removedEntities }
   }
 
-  async buildManifestAndDependencies(manifestJSON) {
+  // This function is to facilitate unit testing
+  async getMappings(org) {
+    return getMappingScript(org)
+  }
+
+  async buildManifestAndDependencies(manifestJSON, excludeTemplates = false) {
     let ignoreKeys = [],
         cleanManifest,
         study
@@ -192,8 +197,8 @@ class StudyManifestTools {
       study = await this.getFirstStudy(org)
     }
 
-    const mappingScript = await getMappingScript(org),
-          allEntities = await this.getStudyManifestEntities(org, study, cleanManifest, orgReferenceProps),
+    const mappingScript = await this.getMappings(org),
+          allEntities = await this.getStudyManifestEntities(org, study, cleanManifest, orgReferenceProps, excludeTemplates),
           { manifest, removedEntities } = this
             .validateAndCreateManifest(allEntities, orgReferenceProps, ignoreKeys)
 
@@ -300,15 +305,14 @@ class StudyManifestTools {
 
   createManifest(entities) {
     const manifest = {
-            object: 'manifest',
-            dependencies: false,
-            exportOwner: false,
-            importOwner: false
-          },
-          { orgObjects } = privatesAccessor(this)
+      object: 'manifest',
+      dependencies: false,
+      exportOwner: false,
+      importOwner: false
+    }
 
     entities.forEach((entity) => {
-      const { uniqueKey } = orgObjects.find(v => v.name === entity.object)
+      const uniqueKey = this.getKeyName(entity.object)
       if (!manifest[entity.object]) {
         manifest[entity.object] = {
           includes: []
@@ -703,11 +707,11 @@ class StudyManifestTools {
   }
 
   getKeyName(key) {
-    return first(privatesAccessor(this).orgObjects.find({ name: key }).map(({ uniqueKey }) => uniqueKey))
+    return privatesAccessor(this).orgObjects
+      .find(({ name }) => name === key).uniqueKey
   }
 
-  async getStudyManifestEntities(org, study, manifestObject, orgReferenceProps) {
-
+  async getStudyManifestEntities(org, study, manifestObject, orgReferenceProps, excludeTemplates = false) {
     const manifestEntities = [],
           // Get all objects that can be exported
           exportableObjects = this.getExportableObjects(),
@@ -736,12 +740,14 @@ class StudyManifestTools {
           break
         }
         case 'ec__document_template': {
-          // Get the eConsents ID's from the study or the manifest
-          // econsent template properties are namespaced ec__, rather than c_
-          const ecProp = property === 'c_study' ? 'ec__study' : property
-          ids = (await this.getObjectIDsArray(org, key, ecProp, values)).map(v => v._id)
-          // Load the manifest for the current ID's and their dependencies
-          objectAndDependencies = await this.getConsentManifestEntities(org, ids, orgReferenceProps)
+          if (!excludeTemplates) {
+            // Get the eConsents ID's from the study or the manifest
+            // econsent template properties are namespaced ec__, rather than c_
+            const ecProp = property === 'c_study' ? 'ec__study' : property
+            ids = (await this.getObjectIDsArray(org, key, ecProp, values)).map(v => v._id)
+            // Load the manifest for the current ID's and their dependencies
+            objectAndDependencies = await this.getConsentManifestEntities(org, ids, orgReferenceProps)
+          }
           break
         }
         case 'c_visit_schedule': {
@@ -788,7 +794,7 @@ class StudyManifestTools {
         }
       }
       // Push the deconstructed object
-      manifestEntities.push(...objectAndDependencies)
+      manifestEntities.push(...(objectAndDependencies || []))
     }
 
     return manifestEntities
