@@ -41,21 +41,24 @@ describe('MIG-154 - Check new methods', () => {
   })
 
   it('Test getKeyName', async() => {
-    const orgObjects = {
-      find: (filter) => {
-        const mockedObjects = [
-          {
-            name: 'c_task',
-            uniqueKey: 'c_key'
-          },
-          {
-            name: 'c_visit',
-            uniqueKey: ''
-          }
-        ]
-        return mockedObjects.filter(e => e.name === filter.name)
+    const orgObjects = [
+      {
+        name: 'c_fault',
+        uniqueKey: 'c_key'
+      },
+      {
+        name: 'c_group',
+        uniqueKey: 'c_key'
+      },
+      {
+        name: 'c_task',
+        uniqueKey: 'c_key'
+      },
+      {
+        name: 'c_visit',
+        uniqueKey: ''
       }
-    }
+    ]
 
     jest.mock('@medable/mdctl-core-utils/privates', () => ({ privatesAccessor: () => ({ orgObjects }) }))
     // eslint-disable-next-line global-require
