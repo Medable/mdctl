@@ -3,7 +3,6 @@
 {{else if object.name }}
 {{ md_header object.name headerLevel}}
 {{/if}}
-
 {{#each object}}
 {{#if (or (equals @key 'patterns') (equals @key 'aclBlacklist') (equals @key 'aclWhitelist') (equals @key 'appWhitelist') (equals @key 'ipBlacklist') (equals @key 'ipWhitelist') (equals @key 'methods') (equals @key 'paths') (equals @key 'rateLimitElements') (equals @key 'blacklist') (equals @key 'cors') (equals @key 'whitelist') (equals @key 'shareAcl') (equals @key 'shareChain') (equals @key 'defaultAcl') (equals @key 'createAcl') (equals @key 'include') (equals @key 'scope') (equals @key 'paths'))}}
 {{> md.set key=@key value=this }}
