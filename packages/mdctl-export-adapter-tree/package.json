@@ -2,6 +2,7 @@
   "name": "@medable/mdctl-export-adapter-tree",
   "version": "1.0.68",
   "description": "Medable Developer Client Tools :: Export Tree Adapter",
+  "types": "index.d.ts",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Medable/mdctl.git"
