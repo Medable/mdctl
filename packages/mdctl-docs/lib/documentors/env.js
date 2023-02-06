@@ -33,16 +33,6 @@ function writeJSDocs(source, destination){
 
 }
 
-function buildResource(opts) {
-  const options = Object.assign({}, { level: 1, resources: [] }, opts),
-        resources = options.resources
-          .map(resource => util.breakdownResource(resource, options.level + 1))
-  return TEMPLATES.MD_RESOURCE({
-    ...options,
-    resources,
-  })
-}
-
 function writeDocs(manifest, home, destination){
 
   for(const [resourceName, resourceManifest] of Object.entries(manifest).filter(([resourceName]) => !notTopLevelResource.includes(resourceName))){
