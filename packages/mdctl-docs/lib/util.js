@@ -32,10 +32,14 @@ function capitalize(s) {
     : s
 }
 
-function stringify(objOrArray, replacer, space) {
-  return isObject(objOrArray) || Array.isArray(objOrArray)
-    ? JSON.stringify(objOrArray, replacer, space)
-    : objOrArray
+function stringify(value, replacer, space) {
+  let stringified = ''
+  try {
+    stringified = JSON.stringify(value, replacer, space)
+  } catch(err) {
+    console.warn(err)
+  }
+  return stringified
 }
 
 /**
