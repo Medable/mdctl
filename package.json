@@ -11,7 +11,7 @@
     "eslint-plugin-promise": "^4.2.1",
     "eslint-plugin-standard": "^4.0.1",
     "istanbul": "^1.0.0-alpha",
-    "lerna": "^3.16.4",
+    "lerna": "^6.4.1",
     "lerna-update-wizard": "^0.16.0",
     "mocha": "^5.0.0",
     "sinon": "^7.4.2"
