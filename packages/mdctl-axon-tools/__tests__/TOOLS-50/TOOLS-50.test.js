@@ -35,8 +35,15 @@ describe('getStudyManifestEntities', () => {
     ['orac__form_questions'],
     ['orac__events']
   ])('should include %s', async(entity) => {
+
+    const exportableObject = ['c_site'],
+          keyName = 'c_key'
+
+    jest.spyOn(StudyManifestTools.prototype, 'getExportableObjects').mockImplementation(() => exportableObject)
+    jest.spyOn(StudyManifestTools.prototype, 'getKeyName').mockImplementation(() => keyName)
     jest.spyOn(StudyManifestTools.prototype, 'getObjectIDsArray').mockImplementation(() => [1])
     jest.spyOn(StudyManifestTools.prototype, 'mapObjectNameToPlural').mockImplementation(() => entity)
+    // eslint-disable-next-line one-var, no-unused-vars
     const entities = await manifestTools.getStudyManifestEntities({}, {}, {}),
           objectsRequested = mockGetExportedObjects
             .mock

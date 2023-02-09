@@ -50,6 +50,10 @@ class Study extends Task {
       preserveTemplateStatus: {
         type: 'boolean',
         default: false
+      },
+      excludeTemplates: {
+        type: 'boolean',
+        default: false
       }
     }
 
@@ -84,14 +88,15 @@ class Study extends Task {
     const client = await cli.getApiClient({ credentials: await cli.getAuthOptions() }),
           params = await cli.getArguments(this.optionKeys),
           studyTools = new StudyManifestTools(client, params),
-          manifestObj = params.manifestObject
+          manifestObj = params.manifestObject,
+          excludeTemplates = !!params.excludeTemplates
 
     try {
       let manifestJSON
       if (manifestObj) {
         manifestJSON = this.validateManifest(manifestObj, studyTools.getAvailableObjectNames())
       }
-      const { manifest } = await studyTools.getStudyManifest(manifestJSON)
+      const { manifest } = await studyTools.getStudyManifest(manifestJSON, excludeTemplates)
 
       if (!params.manifestOnly) {
         const options = {
@@ -104,7 +109,7 @@ class Study extends Task {
       }
 
       console.log('Study Export finished...!')
-
+      return manifest
 
     } catch (e) {
       throw e
@@ -278,7 +283,7 @@ class Study extends Task {
     
     Usage: 
       
-      mdctl study [command] --manifestObject     
+      mdctl study [command]     
           
     Arguments:               
       
@@ -296,6 +301,8 @@ class Study extends Task {
                             can be exported through "mdctl env export" command
 
         --preserveTemplateStatus - If set, keep template status as is while importing
+
+        --excludeTemplates - for study export: exclude eTemplates from manifest and export folder. Default false.  
       
       Notes
         
