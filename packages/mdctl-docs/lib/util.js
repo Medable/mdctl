@@ -103,8 +103,12 @@ function writeFiles(files, destination) {
 }
 
 function writeFile(file, destination) {
+
   const directory = path.join(destination, file.path),
         filePath = path.join(directory, file.name)
+
+  console.log(`Writing: ${filePath}`)
+
   ensureDir(directory)
   fs.writeFileSync(filePath, file.content)
 }
