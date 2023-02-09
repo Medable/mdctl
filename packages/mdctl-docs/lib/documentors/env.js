@@ -8,6 +8,8 @@ const path = require('path'),
 
 function writeJSDocs(source, destination){
 
+  console.log('Generating JSDocs')
+
   return new Promise((resolve, reject) => {
     const jsdoc = path.join(__dirname, '../../node_modules/.bin/jsdoc'),
           scriptDirectory = path.join(source, 'env'),
@@ -20,11 +22,13 @@ function writeJSDocs(source, destination){
 
     try {
 
+      console.log(`Writing: ${outputDirectory}`)
+
       const encoding = 'utf8',
             proc = spawn(jsdoc, params, { encoding })
 
-      proc.stdout.on('data', (data) => console.log(data.toString(encoding)))
-      proc.stderr.on('data', (data) => console.log(data.toString(encoding)))
+      proc.stdout.on('data', (data) => console.log(`jsdoc stdout: ${data.toString(encoding)}`))
+      proc.stderr.on('data', (data) => console.warn(`jsdoc stderr: ${data.toString(encoding)}`))
       proc.on('close', () => resolve())
 
     } catch (err) {
@@ -35,6 +39,8 @@ function writeJSDocs(source, destination){
 }
 
 function writeDocs(manifest, home, destination){
+
+  console.log('Generating env documentation')
 
   for(const [resourceName, resourceManifest] of Object.entries(manifest).filter(([resourceName]) => !notTopLevelResource.includes(resourceName))){
     if(fs.existsSync(path.join(home, 'env', resourceName))){
@@ -128,12 +134,16 @@ function writePackageSummary(manifest, destination){
 
 async function generate(source, destination){
 
+  console.log('Beginning documentation generation')
+
   const home = path.resolve(process.cwd(), source),
         manifest = util.readJson(path.join(home, 'manifest.json'))
 
   writeDocs(manifest, home, destination)
 
   await writeJSDocs(source, destination)
+
+  console.log('Documentation generation complete')
 
 }
 
