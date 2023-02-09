@@ -20,10 +20,11 @@ function writeJSDocs(source, destination){
 
     try {
 
-      const proc = spawn(jsdoc, params, { encoding: 'utf8' })
+      const encoding = 'utf8',
+            proc = spawn(jsdoc, params, { encoding })
 
-      proc.stdout.on('data', (data) => console.log(data.toString('utf8')))
-      proc.stderr.on('data', (data) => console.log(data.toString('utf8')))
+      proc.stdout.on('data', (data) => console.log(data.toString(encoding)))
+      proc.stderr.on('data', (data) => console.log(data.toString(encoding)))
       proc.on('close', () => resolve())
 
     } catch (err) {
