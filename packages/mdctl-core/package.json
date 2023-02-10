@@ -1,6 +1,6 @@
 {
   "name": "@medable/mdctl-core",
-  "version": "1.0.68",
+  "version": "1.0.69",
   "description": "Medable Developer Client Tools :: Core",
   "types": "index.d.ts",
   "repository": {
@@ -26,8 +26,8 @@
     "lint": "eslint *.js test"
   },
   "dependencies": {
-    "@medable/mdctl-core-utils": "^1.0.68",
-    "@medable/mdctl-secrets": "^1.0.68",
+    "@medable/mdctl-core-utils": "^1.0.69",
+    "@medable/mdctl-secrets": "^1.0.69",
     "clone": "^2.1.2",
     "create-hmac": "^1.1.7",
     "jsonpath": "^1.1.1",
