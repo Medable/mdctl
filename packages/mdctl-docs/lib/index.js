@@ -1,62 +1,18 @@
-const path = require('path'),
-      util = require('./util'),
-      handlebars = require('./handlebars'),
-      parsers = require('./parsers'),
-      modules = require('./modules')
+const { env } = require('./documentors')
 
-async function extractAst(options, parser = 'jsdoc') {
-  if (Object.keys(parsers).includes(parser)) {
-    return parsers[parser](options)
-  }
-  throw new Error('Unknown parser')
-}
+async function generate(options = {}) {
 
-function loadModule(module) {
-  const isPath = !!path.parse(module).dir
-  if (isPath) {
-    // eslint-disable-next-line global-require, import/no-dynamic-require
-    return require(module)
-  }
-  if (Object.keys(modules).includes(module)) {
-    return modules[module]
-  }
+  const { source, destination } = Object.assign({
+    destination: 'docs',
+    source: '.'
+  }, options)
 
-  throw new Error('Unknown module')
+  await env.generate(source, destination)
+
+  return true
 
 }
-
-async function generateDocumentation(opts) {
-
-  const options = Object.assign({}, this.generateDocumentation.default, opts),
-
-        config = util.readJson(path.join(process.cwd(), 'config.json')),
-        configModule = config
-          && config.docs
-          && config.docs.module
-          && path.join(process.cwd(), config.docs.module),
-        resolvedModule = options.module || configModule
-
-  if (resolvedModule) {
-    const moduleObj = loadModule(resolvedModule),
-          ast = await extractAst(options, moduleObj.parser),
-          result = moduleObj.generate(ast, options)
-
-    console.log('Finished generating documentation')
-    return result
-  }
-
-  throw new Error('Module not specified')
-
-}
-
-generateDocumentation.default = Object.freeze({
-  destination: 'docs',
-  source: '.',
-  verbose: false,
-})
 
 module.exports = {
-  generateDocumentation,
-  handlebars,
-  util
+  generate
 }
