@@ -27,14 +27,14 @@ export class Client {
     }
   })
 
-  put<R = unknown, P = unknown>(url: string, params: P): Promise<R>
-  delete<R = unknown>(url: string): Promise<R>
-  post<R = unknown, P = unknown, P2 = unknown>(
+  put<R = unknown, O = unknown>(url: string, options?: O): Promise<R>
+  delete<R = unknown, O = unknown>(url: string, options?: O): Promise<R>
+  post<R = unknown, B = unknown, O = unknown>(
     url: string,
-    params: P,
-    param?: P2
+    body: B,
+    options?: O
   ): Promise<R>
-
-  get<R = unknown, P = unknown>(url: string, params?: P): Promise<R>
+  get<R = unknown, O = unknown>(url: string, options?: O): Promise<R>
+  patch<R = unknown, O = unknown>(url: string, options?: O): Promise<R>
 
 }
