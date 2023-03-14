@@ -5,7 +5,7 @@ const _ = require('lodash'),
       pluralize = require('pluralize'),
       { isCustomName, isInteger } = require('@medable/mdctl-core-utils/values'),
       ENV_KEYS = {
-        keys: ['app', 'config', 'notification', 'policy', 'role', 'smsNumber', 'serviceAccount', 'storageLocation', 'configuration', 'template', 'object', 'script', 'view', 'i18n'],
+        keys: ['app', 'config', 'notification', 'policy', 'role', 'smsNumber', 'serviceAccount', 'storageLocation', 'configuration', 'template', 'object', 'script', 'view', 'i18n', 'expression'],
         folder: 'env'
       },
       DATA_KEYS = {
