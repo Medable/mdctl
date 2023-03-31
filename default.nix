@@ -1,17 +1,19 @@
 { medable ? import
     (fetchTarball {
-      name = "medable-2023-01-12";
-      url = "https://github.com/Medable/nix/archive/611ef8d5bcbf2a4d2fa7441907fec8d017512ae3.tar.gz";
-      sha256 = "08qgscc8w4nzjclp78w4cvli8aw2pr278l578d62v6vgl7gy38jk";
+      name = "medable-2023-03-10";
+      url = "https://github.com/Medable/nix/archive/59e6219a0dce236beffdde5b0a3d4ca25d9298e0.tar.gz";
+      sha256 = "0klf6vkg9bb6w2pp8rravqafgibn3lg3gs53g0771bv350d6fdv7";
     })
     { }
-, pkgs ? medable.pkgs
-, jacobi ? medable.jacobi
+, nixpkgs ? medable.jacobi
 }:
 let
-  node = jacobi.nodejs-16_x;
+  inherit (nixpkgs.lib) flatten;
 
-  tools = with jacobi; {
+  name = "mdctl";
+  node = nixpkgs.nodejs-16_x;
+
+  tools = with nixpkgs; {
     cli = [ ];
     deps = [
       gcc
@@ -52,9 +54,10 @@ let
       ];
   };
 
-  shell = pkgs.mkShell {
-    name = "mdctl";
-    packages = jacobi._toolset tools;
+  paths = flatten [ (flatten (builtins.attrValues tools)) ];
+  shell = nixpkgs.mkShell {
+    inherit name;
+    packages = paths;
   };
 in
 shell
