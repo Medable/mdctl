@@ -10,7 +10,8 @@ const _ = require('lodash'),
       Task = require('../lib/task'),
       {
         askSelectTasks,
-        askSelectConsentTemplates
+        askSelectConsentTemplates,
+        askSelectDtConfigs
       } = require('../lib/studyQuestions'),
       Env = require('./env')
 
@@ -142,7 +143,6 @@ class Study extends Task {
       const tasks = await studyTools.getTasks(),
             selectedTasks = await askSelectTasks({ tasks })
       if (!selectedTasks.length) throw Fault.create('kInvalidArgument', { reason: 'No Tasks selected' })
-      // eslint-disable-next-line one-var
       const { manifest } = await studyTools.getTasksManifest(selectedTasks)
 
 
@@ -182,9 +182,7 @@ class Study extends Task {
             selectedConsents = await askSelectConsentTemplates({ consents })
       if (!selectedConsents.length) throw Fault.create('kInvalidArgument', { reason: 'No Consents selected' })
 
-      // eslint-disable-next-line one-var
       const { manifest } = await studyTools.getConsentsManifest(selectedConsents)
-
       if (!params.manifestOnly) {
         const options = {
           format: 'json',
@@ -202,6 +200,35 @@ class Study extends Task {
       throw e
     }
 
+
+  }
+
+  async 'study@data-transfer'(cli) {
+
+    const authOptions = await cli.getAuthOptions(),
+      client = await cli.getApiClient({ credentials: authOptions }),
+      params = await cli.getArguments(this.optionKeys),
+      studyTools = new StudyManifestTools(client, params)
+
+    try {
+      const dtConfigs = await studyTools.getDtConfigs(),
+            selectedDtConfigs = await askSelectDtConfigs(dtConfigs)
+      if (!selectedDtConfigs.length) throw Fault.create('kInvalidArgument', { reason: 'No Configs selected' })
+      const { manifest } = await studyTools.getDtConfigsManifest(selectedDtConfigs)
+      if (!params.manifestOnly) {
+        const options = {
+          format: 'json',
+          manifest,
+          ...params
+        }
+        console.log('Starting Study Data Export')
+        await exportEnv({ client, ...options })
+      }
+
+      console.log('Export finished...!')
+    } catch (e) {
+      throw e
+    }
 
   }
 
@@ -278,35 +305,35 @@ class Study extends Task {
 
   static help() {
 
-    return `    
+    return `
     Study Tools
-    
-    Usage: 
-      
-      mdctl study [command]     
-          
-    Arguments:               
-      
-      Command                        
+
+    Usage:
+
+      mdctl study [command]
+
+    Arguments:
+
+      Command
         export - Exports the study from the current org
         import - Imports the study into the current org
-        task [action] - Allows the select of tasks to export from the current org  
-        consent [action] - Allows the select of consent templates to export from the current org  
-        
-      Options 
-        
+        task [action] - Allows the select of tasks to export from the current org
+        consent [action] - Allows the select of consent templates to export from the current org
+
+      Options
+
         --manifestObject -  receives a valid manifest JSON object \x1b[4OR\x1b[0m the path to a manifest file to
                             specify the entities to export (e.g. tasks and consents, etc...).
-                            The manifest can only contain object instances, other org config objects 
+                            The manifest can only contain object instances, other org config objects
                             can be exported through "mdctl env export" command
 
         --preserveTemplateStatus - If set, keep template status as is while importing
 
-        --excludeTemplates - for study export: exclude eTemplates from manifest and export folder. Default false.  
-      
+        --excludeTemplates - for study export: exclude eTemplates from manifest and export folder. Default false.
+
       Notes
-        
-        --manifestObject is \x1b[4monly available for "export" command and it currently supports ONLY Assignments and eConsents\x1b[0m; 
+
+        --manifestObject is \x1b[4monly available for "export" command and it currently supports ONLY Assignments and eConsents\x1b[0m;
                          it is expected to have the following format:
         {
           "<OBJECT_NAME_1>": {
@@ -320,7 +347,7 @@ class Study extends Task {
             ]
           }
           "object": "manifest"
-        }          
+        }
     `
   }
 
