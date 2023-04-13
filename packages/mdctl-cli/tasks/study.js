@@ -319,6 +319,7 @@ class Study extends Task {
         import - Imports the study into the current org
         task [action] - Allows the select of tasks to export from the current org
         consent [action] - Allows the select of consent templates to export from the current org
+        data-transfer - Allows the select of data transfer configs to export from the current org
 
       Options
 
