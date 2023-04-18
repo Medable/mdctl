@@ -1,5 +1,4 @@
 const { prompt } = require('inquirer'),
-      _ = require('lodash'),
 
       askSelectTasks = async(inputArgs) => {
         // eslint-disable-next-line no-underscore-dangle
@@ -25,9 +24,23 @@ const { prompt } = require('inquirer'),
               }])
 
         return result.selectedConsents
+      },
+
+      askSelectDtConfigs = async(dtConfigs) => {
+        // eslint-disable-next-line no-underscore-dangle
+        const choices = dtConfigs.map(v => ({ name: v.dt__name, value: v._id })),
+              result = await prompt([{
+                type: 'checkbox',
+                name: 'selectedDtConfigs',
+                message: 'Please Select the Configs you wish to export',
+                choices
+              }])
+
+        return result.selectedDtConfigs
       }
 
 module.exports = {
   askSelectTasks,
-  askSelectConsentTemplates
+  askSelectConsentTemplates,
+  askSelectDtConfigs
 }
