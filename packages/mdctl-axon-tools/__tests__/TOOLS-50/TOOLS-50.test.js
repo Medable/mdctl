@@ -26,14 +26,14 @@ describe('getStudyManifestEntities', () => {
     ['c_sites'],
     ['c_anchor_date_templates'],
     ['c_looker_integration_records'],
-    ['int__vendor_integration_records'],
-    ['int__model_mappings'],
-    ['int__pipelines'],
-    ['orac__studies'],
-    ['orac__sites'],
-    ['orac__forms'],
-    ['orac__form_questions'],
-    ['orac__events']
+    ['int__vendor'],
+    ['int__pipeline'],
+    ['int__task'],
+    ['int__expression'],
+    ['int__secret'],
+    ['int__form'],
+    ['int__question'],
+    ['int__site']
   ])('should include %s', async(entity) => {
 
     const exportableObject = ['c_site'],
