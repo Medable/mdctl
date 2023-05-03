@@ -120,7 +120,7 @@ It is also possible to provide a path to a file with this information by using  
 Use `mdctl credentials logout` to end the session.
 
 #### Check current session
-Use `mdclt credentials whoami` to get the current authorization state.
+Use `mdctl credentials whoami` to get the current authorization state.
 
 #### Clear all credentials
 Use `mdctl credentials flush` to remove everything.

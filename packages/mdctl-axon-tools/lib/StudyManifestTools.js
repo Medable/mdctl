@@ -56,6 +56,11 @@ class StudyManifestTools {
     return study ? org.objects.c_tasks.find({ c_study: study._id }).limit(false).paths('c_name').toArray() : []
   }
 
+  getDtConfigs() {
+    const org = this.getOrg()
+    return org.objects.dt__config.find().limit(false).paths('dt__name').toArray()
+  }
+
   async getConsentTemplates() {
     const org = this.getOrg(),
           study = first(await org.objects.c_study.find().paths('_id').toArray())
@@ -253,10 +258,25 @@ class StudyManifestTools {
     return manifestAndDeps
   }
 
+  async getDtConfigsManifest(dtConfigIds) {
+    const manifestAndDeps = await this.buildDtConfigManifestAndDependencies(dtConfigIds)
+    this.writeToDisk('dt__config', manifestAndDeps.removedEntities)
+    return manifestAndDeps
+  }
+
   async buildTaskManifestAndDependencies(taskIds) {
     const { org, orgReferenceProps } = await this.getOrgAndReferences(),
           allEntities = await this.getTaskManifestEntities(org, taskIds, orgReferenceProps),
           { manifest, removedEntities } = this.validateAndCreateManifest(allEntities, orgReferenceProps, ['c_tasks'])
+
+    return { manifest, removedEntities }
+
+  }
+
+  async buildDtConfigManifestAndDependencies(dtConfigIds) {
+    const { org, orgReferenceProps } = await this.getOrgAndReferences(),
+        allEntities = await this.getDtConfigManifestEntities(org, dtConfigIds, orgReferenceProps),
+        { manifest, removedEntities } = this.validateAndCreateManifest(allEntities, orgReferenceProps, ['dt__configs', 'dt__exports'])
 
     return { manifest, removedEntities }
 
@@ -813,6 +833,14 @@ class StudyManifestTools {
     return [...tasks, ...steps, ...branches]
   }
 
+  async getDtConfigManifestEntities(org, dtConfigIds, orgReferenceProps) {
+
+    const dtConfigs = await this.getExportObjects(org, 'dt__configs', { _id: { $in: dtConfigIds } }, orgReferenceProps),
+        dtExecutions = await this.getExportObjects(org, 'dt__executions', { dt__config: { $in: dtConfigs.map(v => v._id) } }, orgReferenceProps),
+        dtExports = await this.getExportObjects(org, 'dt__exports', { dt__config: { $in: dtConfigs.map(v => v._id) } }, orgReferenceProps)
+    return [...dtConfigs, ...dtExecutions, ...dtExports]
+  }
+
   async getConsentManifestEntities(org, consentId, orgReferenceProps) {
 
     const documentTemplates = await this.getExportObjects(org, 'ec__document_templates', { _id: { $in: consentId } }, orgReferenceProps),
@@ -871,9 +899,14 @@ class StudyManifestTools {
         packageFile.description = 'An export of task or multiple tasks'
         break
       }
+      case 'dt__config': {
+        packageFile.name = 'Config export'
+        packageFile.description = 'An export of dt config or multiple dt configs'
+        break
+      }
       case 'consent': {
         packageFile.name = 'Consent export'
-        packageFile.description = 'An export of task or multiple consent templates'
+        packageFile.description = 'An export of consent template or multiple consent templates'
         break
       }
     }
