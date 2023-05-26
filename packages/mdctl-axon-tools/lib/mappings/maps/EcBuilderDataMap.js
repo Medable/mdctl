@@ -5,14 +5,22 @@ module.exports = class EcBuilderDataMap {
     this.org = org
   }
 
-  async getEcBuilderDataMaps() {
-
+  async getEcBuilderDataMaps(consentIds = []) {
     const mapping = []
-
-    let ecTemplates = await this.org.objects.ec__document_templates
-      .find({ ec__status: 'draft' })
-      .paths('ec__key', 'ec__builder_data', 'ec__requested_data', 'ec__requested_signatures', 'ec__knowledge_checks')
-      .toArray()
+    let ecTemplates
+    if (consentIds && consentIds.length) {
+      ecTemplates = await this.org.objects.ec__document_templates
+        .find({ _id: { $in: consentIds } })
+        .limit(false)
+        .paths('ec__key', 'ec__builder_data', 'ec__requested_data', 'ec__requested_signatures', 'ec__knowledge_checks')
+        .toArray()
+    } else {
+      ecTemplates = await this.org.objects.ec__document_templates
+        .find()
+        .limit(false)
+        .paths('ec__key', 'ec__builder_data', 'ec__requested_data', 'ec__requested_signatures', 'ec__knowledge_checks')
+        .toArray()
+    }
 
     ecTemplates = ecTemplates
       .filter(template => template.ec__builder_data
@@ -54,11 +62,8 @@ module.exports = class EcBuilderDataMap {
                       as: 'entry',
                       in: {
                         $object: {
-                          data: '$$entry',
-                          id: '$$entry.ec__key',
-                          type: {
-                            $literal: 'signature'
-                          }
+                          ec__key: '$$entry.ec__key',
+                          _id: '$$entry._id'
                         }
                       }
                     }
@@ -68,11 +73,8 @@ module.exports = class EcBuilderDataMap {
                       as: 'entry',
                       in: {
                         $object: {
-                          data: '$$entry',
-                          id: '$$entry.ec__key',
-                          type: {
-                            $literal: 'knowledgeCheck'
-                          }
+                          ec__key: '$$entry.ec__key',
+                          _id: '$$entry._id'
                         }
                       }
                     }
@@ -82,22 +84,8 @@ module.exports = class EcBuilderDataMap {
                       as: 'entry',
                       in: {
                         $object: {
-                          data: '$$entry',
-                          id: '$$entry.ec__key',
-                          type: {
-                            $cond: [
-                              '$$entry.ec__allow_multiple', {
-                                $literal: 'checkboxGroup'
-                              }, {
-                                $cond: [{
-                                  $eq: ['$$entry.ec__allow_multiple', false]
-                                }, {
-                                  $literal: 'radioGroup'
-                                }, {
-                                  $literal: 'input'
-                                }]
-                              }]
-                          }
+                          ec__key: '$$entry.ec__key',
+                          _id: '$$entry._id'
                         }
                       }
                     }
@@ -112,9 +100,9 @@ module.exports = class EcBuilderDataMap {
     return mapping
   }
 
-  async getMappings() {
+  async getMappings(consentIds = []) {
     return [
-      ...await this.getEcBuilderDataMaps()
+      ...await this.getEcBuilderDataMaps(consentIds)
     ]
   }
 
