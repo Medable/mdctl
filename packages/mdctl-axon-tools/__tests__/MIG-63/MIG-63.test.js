@@ -483,8 +483,10 @@ const MenuConfigMap = require('../../lib/mappings/maps/MenuConfigMap'),
           },
           ec__document_templates: {
             find: () => ({
-              paths: () => ({
-                toArray: () => ([ecDocTemplate])
+              limit: () => ({
+                paths: () => ({
+                  toArray: () => ([ecDocTemplate])
+                })
               })
             })
           }
@@ -670,11 +672,8 @@ describe('MIG-126: econsentDocumentTemplateAdjustments', () => {
                         as: 'entry',
                         in: {
                           $object: {
-                            data: '$$entry',
-                            id: '$$entry.ec__key',
-                            type: {
-                              $literal: 'signature'
-                            }
+                            _id: '$$entry._id',
+                            ec__key: '$$entry.ec__key'
                           }
                         }
                       }
@@ -684,11 +683,8 @@ describe('MIG-126: econsentDocumentTemplateAdjustments', () => {
                         as: 'entry',
                         in: {
                           $object: {
-                            data: '$$entry',
-                            id: '$$entry.ec__key',
-                            type: {
-                              $literal: 'knowledgeCheck'
-                            }
+                            _id: '$$entry._id',
+                            ec__key: '$$entry.ec__key'
                           }
                         }
                       }
@@ -698,22 +694,8 @@ describe('MIG-126: econsentDocumentTemplateAdjustments', () => {
                         as: 'entry',
                         in: {
                           $object: {
-                            data: '$$entry',
-                            id: '$$entry.ec__key',
-                            type: {
-                              $cond: [
-                                '$$entry.ec__allow_multiple', {
-                                  $literal: 'checkboxGroup'
-                                }, {
-                                  $cond: [{
-                                    $eq: ['$$entry.ec__allow_multiple', false]
-                                  }, {
-                                    $literal: 'radioGroup'
-                                  }, {
-                                    $literal: 'input'
-                                  }]
-                                }]
-                            }
+                            _id: '$$entry._id',
+                            ec__key: '$$entry.ec__key'
                           }
                         }
                       }
