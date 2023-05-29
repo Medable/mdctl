@@ -212,23 +212,26 @@ describe('MIG-148 - Test StudyManifestTools ', () => {
             },
             ec__document_templates: {
               find: () => ({
-                paths: () => ({
-                  toArray: () => ([ecDocTemplate])
+                limit: () => ({
+                  paths: () => ({
+                    toArray: () => ([ecDocTemplate])
+                  })
                 })
               })
             }
           }
         },
         installAfterScript = `
+    import _ from 'lodash'
     const { run } = require('expressions')
 
-    const mappings = [{"path":"ec__document_template.8c16e1ad-f3b4-41c8-a6fb-a68d1d28f188.ec__builder_data","mapTo":{"$let":{"vars":{"originalTemplate":{"$dbNext":{"object":"ec__document_template","operation":"cursor","where":{"ec__key":"8c16e1ad-f3b4-41c8-a6fb-a68d1d28f188"},"expand":["ec__knowledge_checks"],"passive":true}}},"in":{"$object":{"ck-widgets-data":{"$concatArrays":[{"$map":{"input":"$$originalTemplate.ec__requested_signatures","as":"entry","in":{"$object":{"data":"$$entry","id":"$$entry.ec__key","type":{"$literal":"signature"}}}}},{"$map":{"input":"$$originalTemplate.ec__knowledge_checks.data","as":"entry","in":{"$object":{"data":"$$entry","id":"$$entry.ec__key","type":{"$literal":"knowledgeCheck"}}}}},{"$map":{"input":"$$originalTemplate.ec__requested_data","as":"entry","in":{"$object":{"data":"$$entry","id":"$$entry.ec__key","type":{"$cond":["$$entry.ec__allow_multiple",{"$literal":"checkboxGroup"},{"$cond":[{"$eq":["$$entry.ec__allow_multiple",false]},{"$literal":"radioGroup"},{"$literal":"input"}]}]}}}}}]}}}}}}]
+    const mappings = [{"path":"ec__document_template.8c16e1ad-f3b4-41c8-a6fb-a68d1d28f188.ec__builder_data","mapTo":{"$let":{"vars":{"originalTemplate":{"$dbNext":{"object":"ec__document_template","operation":"cursor","where":{"ec__key":"8c16e1ad-f3b4-41c8-a6fb-a68d1d28f188"},"expand":["ec__knowledge_checks"],"passive":true}}},"in":{"$object":{"ck-widgets-data":{"$concatArrays":[{"$map":{"input":"$$originalTemplate.ec__requested_signatures","as":"entry","in":{"$object":{"ec__key":"$$entry.ec__key","_id":"$$entry._id"}}}},{"$map":{"input":"$$originalTemplate.ec__knowledge_checks.data","as":"entry","in":{"$object":{"ec__key":"$$entry.ec__key","_id":"$$entry._id"}}}},{"$map":{"input":"$$originalTemplate.ec__requested_data","as":"entry","in":{"$object":{"ec__key":"$$entry.ec__key","_id":"$$entry._id"}}}}]}}}}}}]
 
     mappings.forEach(({ path, mapTo }) => {
 
       const [entity, entityKey, property, ...rest] = path.split('.'),
-          isDocPropUpdate = !!rest.length,
-          value = run(mapTo)
+          isDocPropUpdate = !!rest.length
+      let value = run(mapTo)
 
       const prop = entity.startsWith('ec__') ? 'ec__key' : 'c_key'
 
@@ -257,6 +260,30 @@ describe('MIG-148 - Test StudyManifestTools ', () => {
           .updateOne({ c_key: entityKey })
           .pathUpdate(property + '/' + idToUpdate + '/' + docProp , value)
 
+      }
+
+      if (entity === 'ec__document_template' && prop === 'ec__key' && property === 'ec__builder_data') {
+
+        const idMapping = _.keyBy(value['ck-widgets-data'], 'ec__key')
+        const { 
+          ec__builder_data: { "ck-widgets-data": originalBuilderData }, 
+          ec__status 
+        } = org.objects.ec__document_templates.find({ ec__key: entityKey })
+               .paths('ec__builder_data', 'ec__status')
+               .next()
+
+        //We can update only draft templates
+        if (ec__status !== 'draft') {
+          return
+        }
+
+        //Map ids between builder_data and corresponding entities
+        let new_builder_data = originalBuilderData.map((obd) => {
+            const updatedId = _.get(idMapping, obd.id +'._id')
+            _.set(obd, 'data._id', updatedId)
+            return obd
+        })
+        value = { "ck-widgets-data": new_builder_data }
       }
 
       //normal prop update
