@@ -495,6 +495,10 @@ const MenuConfigMap = require('../../lib/mappings/maps/MenuConfigMap'),
 
 describe('Export Mappings', () => {
 
+  afterEach(() => {
+    jest.clearAllMocks()
+  })
+
   it('menuConfigMapping', async() => {
     const menuConfigMapping = new MenuConfigMap(org),
           mappings = await menuConfigMapping.getMappings()
