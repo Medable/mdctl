@@ -45,12 +45,13 @@ function getScript(mappings) {
       if (entity === 'ec__document_template' && prop === 'ec__key' && property === 'ec__builder_data') {
 
         const idMapping = _.keyBy(value['ck-widgets-data'], 'ec__key')
-        const { 
-          ec__builder_data: { "ck-widgets-data": originalBuilderData }, 
-          ec__status 
+        const {
+          _id: template_id,
+          ec__builder_data: { "ck-widgets-data": originalBuilderData },
+          ec__status, creator, owner, updater
         } = org.objects.ec__document_templates.find({ ec__key: entityKey })
-               .paths('ec__builder_data', 'ec__status')
-               .next()
+              .paths('ec__builder_data', 'ec__status', 'creator', 'owner', 'updater')
+              .next()
 
         //We can update only draft templates
         if (ec__status !== 'draft') {
@@ -59,8 +60,13 @@ function getScript(mappings) {
 
         //Map ids between builder_data and corresponding entities
         let new_builder_data = originalBuilderData.map((obd) => {
-            const updatedId = _.get(idMapping, obd.id +'._id')
+            const updatedId = _.get(idMapping, obd.id + '._id')
             _.set(obd, 'data._id', updatedId)
+            _.get(obd, 'data.ec__document_template._id', false) && _.set(obd, 'data.ec__document_template._id', template_id)
+            _.get(obd, 'data.ec__document_template.path', false) && _.set(obd, 'data.ec__document_template.path', '/ec__document_templates/' + template_id)
+            _.get(obd, 'data.creator', false) && _.set(obd, 'data.creator', creator)
+            _.get(obd, 'data.owner', false) && _.set(obd, 'data.owner', owner)
+            _.get(obd, 'data.updater', false) && _.set(obd, 'data.updater', updater)
             return obd
         })
         value = { "ck-widgets-data": new_builder_data }
