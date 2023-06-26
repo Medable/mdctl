@@ -1,0 +1,11 @@
+{
+  "task": "Waarmerking",
+  "password": "Wagwoord",
+  "parent": "Waarmerkingsvorm-stap",
+  "email": "E-pos",
+  "name.first": "Voornaam",
+  "name.last": "Van",
+  "mobile": "Telefoonnommer",
+  "username": "Gebruikersnaam",
+  "dob": "Geboortedatum"
+}

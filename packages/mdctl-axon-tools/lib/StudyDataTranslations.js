@@ -5,7 +5,8 @@ const globby = require('globby'),
       _ = require('lodash'),
       { privatesAccessor } = require('@medable/mdctl-core-utils/privates'),
       { Driver } = require('@medable/mdctl-api-driver'),
-      { Org } = require('@medable/mdctl-api-driver/lib/cortex.object')
+      { Org } = require('@medable/mdctl-api-driver/lib/cortex.object'),
+      { Fault } = require('@medable/mdctl-core')
 
 class StudyDataTranslations {
 
@@ -33,10 +34,17 @@ class StudyDataTranslations {
       }
     }
 
+    if (manifestData.studyDataTranslations && !_.has(manifestData, 'i18ns')) {
+      throw Fault.create('mdctl.kInvalidArgument.missingI18nObjects', {
+        message: 'The manifest is missing "i18ns" objects',
+        reason: 'Incase of using "studyDataTranslations" option. The manifest file must include "i18ns" objects.'
+      })
+    }
+
     return manifestData.studyDataTranslations
   }
 
-  async writeStudyDataTranslationsToDisk({ input = process.cwd(), format }) {
+  async writeStudyDataTranslationsToDisk({ input = process.cwd(), format = 'json' }) {
     const location = globby.sync(['i18ns/**/*.{json,yaml}'], { cwd: input }),
           tasks = await this.readAuthenticationTasks(),
           keys = _.concat(
