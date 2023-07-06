@@ -49,13 +49,7 @@ const pump = require('pump'),
                 triggers: rBool(options.triggers, false)
               },
               requestOptions = {},
-              fileAdapter = new ImportFileTreeAdapter(
-                inputDir,
-                options.format,
-                manifest,
-                null,
-                input.preserveTemplateStatus
-              ),
+              fileAdapter = new ImportFileTreeAdapter(inputDir, options.format, manifest),
               importStream = new ImportStream(fileAdapter),
               ndjsonStream = ndjson.stringify(),
               streamList = [importStream, ndjsonStream],
