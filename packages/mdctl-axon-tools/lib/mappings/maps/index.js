@@ -15,11 +15,11 @@ module.exports = {
     ]
   },
 
-  async getEcMappings(org, consentIds = []) {
+  async getEcMappings(org) {
     const ecBuilderDataMap = new EcBuilderDataMap(org)
 
     return [
-      ...await ecBuilderDataMap.getMappings(consentIds)
+      ...await ecBuilderDataMap.getMappings()
     ]
   }
 }
