@@ -25,7 +25,7 @@ class StudyDataTranslations {
     return org
   }
 
-  isStudyDataTranslations({ input = process.cwd(), manifest }) {
+  isAuthTaskTranslations({ input = process.cwd(), manifest }) {
     let manifestData = manifest
     if (!manifestData) {
       const location = globby.sync(['manifest.{json,yaml}'], { cwd: input })
@@ -34,17 +34,17 @@ class StudyDataTranslations {
       }
     }
 
-    if (manifestData.studyDataTranslations && !_.has(manifestData, 'i18ns')) {
+    if (manifestData.authenticationTaskTranslations && !_.has(manifestData, 'i18ns')) {
       throw Fault.create('mdctl.kInvalidArgument.missingI18nObjects', {
         message: 'The manifest is missing "i18ns" objects',
-        reason: 'Incase of using "studyDataTranslations" option. The manifest file must include "i18ns" objects.'
+        reason: 'Incase of using "authenticationTaskTranslations" option. The manifest file must include "i18ns" objects.'
       })
     }
 
-    return manifestData.studyDataTranslations
+    return manifestData.authenticationTaskTranslations
   }
 
-  async writeStudyDataTranslationsToDisk({ input = process.cwd(), format = 'json' }) {
+  async writeAuthTaskTranslationsToDisk({ input = process.cwd(), format = 'json' }) {
     const location = globby.sync(['i18ns/**/*.{json,yaml}'], { cwd: input }),
           tasks = await this.readAuthenticationTasks(),
           keys = _.concat(
@@ -60,9 +60,9 @@ class StudyDataTranslations {
     if (!location.length) return
 
     if (!fs.existsSync(
-      path.join(input, 'env/i18ns/data')
+      path.join(input, 'env/i18ns/authTasks')
     )) {
-      fs.mkdirSync(path.join(input, 'env/i18ns/data'), { recursive: true })
+      fs.mkdirSync(path.join(input, 'env/i18ns/authTasks'), { recursive: true })
     }
 
     location.forEach((l) => {
@@ -95,10 +95,10 @@ class StudyDataTranslations {
     const locale = lang.replace(/-/g, '_'),
           content = {
             locale,
-            name: `axon__${locale}_data`,
+            name: `axon__${locale}_authTasks`,
             namespace: 'axon',
             object: 'i18n',
-            tags: ['data'],
+            tags: ['authTasks'],
             weight: 0,
             data: {}
           }
@@ -133,7 +133,7 @@ class StudyDataTranslations {
     })
 
     fs.writeFileSync(
-      path.join(input, `env/i18ns/data/axon_data_${lang}.json`),
+      path.join(input, `env/i18ns/authTasks/axon_data_${lang}.json`),
       JSON.stringify(content, null, 2)
     )
   }

@@ -49,14 +49,14 @@ describe('MIG-166', () => {
     studyTranslations = new StudyDataTranslations({})
   })
 
-  it('can read the new manifest option "studyDataTranslations".', () => {
-    const studyDataTranslations = studyTranslations.isStudyDataTranslations({
+  it('can read the new manifest option "authenticationTaskTranslations".', () => {
+    const studyDataTranslations = studyTranslations.isAuthTaskTranslations({
       manifest: {
         object: 'manifest',
         i18ns: {
           includes: ['*']
         },
-        studyDataTranslations: true
+        authenticationTaskTranslations: true
       }
     })
 
@@ -68,10 +68,10 @@ describe('MIG-166', () => {
   it('should throw an error if the manifest file is missing "i18ns".', () => {
     let err
     try {
-      studyTranslations.isStudyDataTranslations({
+      studyTranslations.isAuthTaskTranslations({
         manifest: {
           object: 'manifest',
-          studyDataTranslations: true
+          authenticationTaskTranslations: true
         }
       })
     } catch (error) {
@@ -85,11 +85,11 @@ describe('MIG-166', () => {
   it('should write the required i18n files.', async() => {
     jest.spyOn(StudyDataTranslations.prototype, 'getOrg').mockImplementation(() => org)
 
-    await studyTranslations.writeStudyDataTranslationsToDisk(
+    await studyTranslations.writeAuthTaskTranslationsToDisk(
       { input: __dirname }
     )
 
-    const output = path.join(__dirname, './env/i18ns/data/axon_data_af-ZA.json'),
+    const output = path.join(__dirname, './env/i18ns/authTasks/axon_data_af-ZA.json'),
           data = JSON.parse(fs.readFileSync(output))
 
     expect(fs.existsSync(output))
@@ -98,11 +98,11 @@ describe('MIG-166', () => {
     expect(data)
       .to.deep.equal({
         locale: 'af_ZA',
-        name: 'axon__af_ZA_data',
+        name: 'axon__af_ZA_authTasks',
         namespace: 'axon',
         object: 'i18n',
         tags: [
-          'data'
+          'authTasks'
         ],
         weight: 0,
         data: {
