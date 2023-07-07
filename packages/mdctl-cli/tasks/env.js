@@ -109,8 +109,9 @@ class Env extends Task {
   }
 
   async 'env@import'(cli) {
+
     const client = await cli.getApiClient({ credentials: await cli.getAuthOptions() }),
-          params = await cli.getArguments([...this.optionKeys, 'preserveTemplateStatus']),
+          params = await cli.getArguments(this.optionKeys),
           format = this.args('format')
 
     function outputResult(data) {
