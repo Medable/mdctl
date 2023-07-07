@@ -117,11 +117,11 @@ class Env extends Task {
           studyDataTranslations = new StudyDataTranslations(client, params)
 
     if (
-      studyDataTranslations.isStudyDataTranslations(
+      studyDataTranslations.isAuthTaskTranslations(
         { input: params.dir || process.cwd(), ...params }
       )
     ) {
-      await studyDataTranslations.writeStudyDataTranslationsToDisk({
+      await studyDataTranslations.writeAuthTaskTranslationsToDisk({
         input: params.dir || process.cwd(), ...params
       })
     }

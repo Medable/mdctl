@@ -74,4 +74,4 @@ scratch
 # nix
 .direnv
 result
-packages/mdctl-axon-tools/__tests__/MIG-166/env/i18ns/data/
+packages/mdctl-axon-tools/__tests__/MIG-166/env/i18ns/authTasks/
