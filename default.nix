@@ -1,8 +1,8 @@
 { medable ? import
     (fetchTarball {
-      name = "medable-2023-03-10";
-      url = "https://github.com/Medable/nix/archive/59e6219a0dce236beffdde5b0a3d4ca25d9298e0.tar.gz";
-      sha256 = "0klf6vkg9bb6w2pp8rravqafgibn3lg3gs53g0771bv350d6fdv7";
+      name = "medable-2023-07-17";
+      url = "https://github.com/Medable/nix/archive/4f940f1e514103271ac27116cdf7077679f3928d.tar.gz";
+      sha256 = "0si61d31sjxd3nzz7mlh3694fckmnjqz3c88pdmfnw91k59g7c6a";
     })
     { }
 , nixpkgs ? medable.jacobi
