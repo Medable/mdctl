@@ -1,4 +1,9 @@
+
 describe('MIG-154 - Check new methods', () => {
+
+  afterEach(() => {
+    jest.clearAllMocks()
+  })
 
   beforeEach(() => {
     /*

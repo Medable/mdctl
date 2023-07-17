@@ -48,10 +48,6 @@ class Study extends Task {
         type: 'string',
         default: ''
       },
-      preserveTemplateStatus: {
-        type: 'boolean',
-        default: false
-      },
       excludeTemplates: {
         type: 'boolean',
         default: false
@@ -125,7 +121,7 @@ class Study extends Task {
     params.triggers = false
     params.backup = false
 
-    await env['env@import'](cli, params.preserveTemplateStatus)
+    await env['env@import'](cli)
   }
 
   async 'study@tasks'(cli) {
@@ -206,9 +202,9 @@ class Study extends Task {
   async 'study@data-transfer'(cli) {
 
     const authOptions = await cli.getAuthOptions(),
-      client = await cli.getApiClient({ credentials: authOptions }),
-      params = await cli.getArguments(this.optionKeys),
-      studyTools = new StudyManifestTools(client, params)
+          client = await cli.getApiClient({ credentials: authOptions }),
+          params = await cli.getArguments(this.optionKeys),
+          studyTools = new StudyManifestTools(client, params)
 
     try {
       const dtConfigs = await studyTools.getDtConfigs(),
@@ -327,8 +323,6 @@ class Study extends Task {
                             specify the entities to export (e.g. tasks and consents, etc...).
                             The manifest can only contain object instances, other org config objects
                             can be exported through "mdctl env export" command
-
-        --preserveTemplateStatus - If set, keep template status as is while importing
 
         --excludeTemplates - for study export: exclude eTemplates from manifest and export folder. Default false.
 
