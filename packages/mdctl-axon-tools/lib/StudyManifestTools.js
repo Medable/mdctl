@@ -12,7 +12,7 @@ const fs = require('fs'),
       packageFileDir = path.join(__dirname, '../packageScripts'),
       { Fault } = require('@medable/mdctl-core'),
       {
-        first, intersection, isObject, isArray
+        first, intersection, isObject, isArray, get: getProperty
       } = require('lodash'),
       { getMappingScript, getEcMappingScript } = require('./mappings')
 
@@ -25,11 +25,18 @@ class StudyManifestTools {
     })
   }
 
+  async isWorkflowSupported() {
+    const {org} = await this.getOrgAndReferences()
+    const client = org.driver.client
+    const workflowVersion = await client.get('/config/workflow__version')
+    return !!getProperty(workflowVersion, 'version')
+  }
+
   getAvailableObjectNames() {
     return ['c_study', 'c_task', 'c_visit_schedule', 'ec__document_template', 'c_group', 'c_query_rule',
       'c_anchor_date_template', 'c_fault', 'c_dmweb_report', 'c_site', 'c_task_assignment', 'c_participant_schedule',
       'c_patient_flag', 'c_looker_integration_record', 'int__vendor_integration_record', 'int__model_mapping',
-      'int__pipeline', 'orac__studies', 'orac__sites', 'orac__forms', 'orac__form_questions', 'orac__events']
+      'int__pipeline', 'orac__studies', 'orac__sites', 'orac__forms', 'orac__form_questions', 'orac__events', 'wf__workflow']
   }
 
   validateAndCleanManifest(manifestJSON) {
@@ -54,6 +61,10 @@ class StudyManifestTools {
           study = first(await org.objects.c_study.find().paths('_id').toArray())
 
     return study ? org.objects.c_tasks.find({ c_study: study._id }).limit(false).paths('c_name').toArray() : []
+  }
+  async getWorkflows() {
+    const org = this.getOrg()
+    return org.objects.wf__workflow.find().limit(false).paths('wf__meta.wf__name').toArray()
   }
 
   getDtConfigs() {
@@ -206,7 +217,7 @@ class StudyManifestTools {
           allEntities = await this.getStudyManifestEntities(org, study, cleanManifest, orgReferenceProps, excludeTemplates),
           { manifest, removedEntities } = this
             .validateAndCreateManifest(allEntities, orgReferenceProps, ignoreKeys)
-
+    await this.updateWorkflowDependenciesInManifest(org, orgReferenceProps, manifest)
     return {
       manifest,
       removedEntities,
@@ -257,6 +268,12 @@ class StudyManifestTools {
     this.writeToDisk('task', manifestAndDeps.removedEntities)
     return manifestAndDeps
   }
+  async getWorkflowsManifest(workflowIds) {
+    console.log('Building workflows Manifest')
+    const manifestAndDeps = await this.buildWorkflowManifestAndDependencies(workflowIds)
+    this.writeToDisk('workflow', manifestAndDeps.removedEntities)
+    return manifestAndDeps
+  }
 
   async getDtConfigsManifest(dtConfigIds) {
     const manifestAndDeps = await this.buildDtConfigManifestAndDependencies(dtConfigIds)
@@ -271,6 +288,17 @@ class StudyManifestTools {
 
     return { manifest, removedEntities }
 
+  }
+
+  async buildWorkflowManifestAndDependencies(workflowIds) {
+    const {org, orgReferenceProps} = await this.getOrgAndReferences()
+    const allEntities = await this.getWorkflowManifestEntities(org, workflowIds, orgReferenceProps)
+    const {
+      manifest,
+      removedEntities
+    } = this.validateAndCreateManifest(allEntities, orgReferenceProps, ['wf__workflows', 'c_tasks'])
+    await this.updateWorkflowDependenciesInManifest(org, orgReferenceProps, manifest)
+    return {manifest, removedEntities}
   }
 
   async buildDtConfigManifestAndDependencies(dtConfigIds) {
@@ -655,6 +683,14 @@ class StudyManifestTools {
     return data
   }
 
+  async getWorkflowNotifications(org, notificationNames) {
+    if (!notificationNames || !notificationNames.length) {
+      return []
+    }
+    const orgDetails = await org.driver.list('org')
+    return getProperty(orgDetails, 'data[0].configuration.notifications', []).filter(n => notificationNames.includes(n.name))
+  }
+
   async getExportArray(org, object, where, paths) {
 
     switch (object) {
@@ -759,6 +795,15 @@ class StudyManifestTools {
           objectAndDependencies = await this.getTaskManifestEntities(org, ids, orgReferenceProps)
           break
         }
+        case 'wf__workflow': {
+          if(!(await this.isWorkflowSupported())){
+            break
+          }
+          // Get all the workflow ID's from the org
+          ids = await this.getAllObjectIDsArray(org, key)
+          objectAndDependencies = await this.getWorkflowManifestEntities(org, ids, orgReferenceProps)
+          break
+        }
         case 'ec__document_template': {
           if (!excludeTemplates) {
             // Get the eConsents ID's from the study or the manifest
@@ -824,6 +869,10 @@ class StudyManifestTools {
     return org.objects[key].find({ [property]: { $in: values } }).limit(false).toArray()
   }
 
+  async getAllObjectIDsArray(org, key) {
+    return (await org.objects[key].find().paths('_id').limit(false).toArray()).map(wf => wf._id)
+  }
+
   async getTaskManifestEntities(org, taskIds, orgReferenceProps) {
 
     const tasks = await this.getExportObjects(org, 'c_tasks', { _id: { $in: taskIds } }, orgReferenceProps),
@@ -831,6 +880,31 @@ class StudyManifestTools {
           branches = await this.getExportObjects(org, 'c_branches', { c_task: { $in: tasks.map(v => v._id) } }, orgReferenceProps)
 
     return [...tasks, ...steps, ...branches]
+  }
+
+  async getWorkflowManifestEntities(org, workflowIds, orgReferenceProps) {
+    const workflowObjects = await org.objects.wf__workflow.find({_id: {$in: workflowIds}}).limit(false).toArray();
+    const workflowTaskKeys = workflowObjects.map(v => getProperty(v, 'wf__start.wf__params.wf__tasks')).flat()
+    const workflows = await this.getExportObjects(org, 'wf__workflows', {_id: {$in: workflowIds}}, orgReferenceProps)
+    const taskIds = await org.objects.c_task.find({c_key: {$in: workflowTaskKeys}}).paths('_id').limit(false).toArray()
+    const tasks = await this.getTaskManifestEntities(org, taskIds.map(t => t._id), orgReferenceProps)
+
+    return [...workflows, ...tasks]
+  }
+
+  async updateWorkflowDependenciesInManifest(org, orgReferenceProps, manifest) {
+    const workflowKeys = getProperty(manifest, 'wf__workflow.includes', [])
+    if(!workflowKeys.length){
+      return
+    }
+    const workflowObjects = await org.objects.wf__workflow.find({wf__key: {$in: workflowKeys}}).toArray();
+    const notificationNames = workflowObjects.map(wf => getProperty(wf, 'wf__actions', []).map(a => getProperty(a, 'wf__params.wf__notification_name')).filter(e => !!e)).flat()
+    const notifications = await this.getWorkflowNotifications(org, notificationNames, orgReferenceProps)
+    if (notifications && notifications.length) {
+      manifest.notifications = {includes: notifications.map(n => n.name)}
+      const endpoints = notifications.map(n => n.endpoints).flat()
+      manifest.templates = {includes: endpoints.map(ep => `${ep.name}.${ep.template}`)}
+    }
   }
 
   async getDtConfigManifestEntities(org, dtConfigIds, orgReferenceProps) {
@@ -907,6 +981,11 @@ class StudyManifestTools {
       case 'consent': {
         packageFile.name = 'Consent export'
         packageFile.description = 'An export of consent template or multiple consent templates'
+        break
+      }
+      case 'workflow': {
+        packageFile.name = 'Workflow export'
+        packageFile.description = 'An export of workflow or multiple workflows'
         break
       }
     }
