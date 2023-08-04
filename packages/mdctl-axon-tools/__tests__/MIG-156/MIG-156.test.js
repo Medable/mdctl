@@ -202,6 +202,9 @@ describe('MIG-156 - Test eTemplate exclusion in StudyManifestTools', () => {
     jest.spyOn(StudyManifestTools.prototype, 'getConsentManifestEntities').mockImplementation(() => entities.filter(o => ['ec__document_template', 'ec__default_document_css', 'ec__knowledge_check'].includes(o.object)))
     jest.spyOn(StudyManifestTools.prototype, 'getObjectIDsArray').mockImplementation(key => entities.filter(o => o.object === key))
     jest.spyOn(StudyManifestTools.prototype, 'mapObjectNameToPlural').mockImplementation(key => `${key}s`)
+    jest.spyOn(StudyManifestTools.prototype, 'getAllObjectIDsArray').mockImplementation(key => entities.filter(o => o.object === key).map(e => e._id))
+    jest.spyOn(StudyManifestTools.prototype, 'isWorkflowSupported').mockImplementation(() => true)
+    jest.spyOn(StudyManifestTools.prototype, 'getWorkflowManifestEntities').mockImplementation(() => [])
     // eslint-disable-next-line one-var, max-len
     const manifestEntities = await manifestTools.getStudyManifestEntities(org, existingStudy, {}, dummyReferences, false)
 
@@ -241,6 +244,9 @@ describe('MIG-156 - Test eTemplate exclusion in StudyManifestTools', () => {
     jest.spyOn(StudyManifestTools.prototype, 'getConsentManifestEntities').mockImplementation(() => entities.filter(o => ['ec__document_template', 'ec__default_document_css', 'ec__knowledge_check'].includes(o.object)))
     jest.spyOn(StudyManifestTools.prototype, 'getObjectIDsArray').mockImplementation(key => entities.filter(o => o.object === key))
     jest.spyOn(StudyManifestTools.prototype, 'mapObjectNameToPlural').mockImplementation(key => `${key}s`)
+    jest.spyOn(StudyManifestTools.prototype, 'getAllObjectIDsArray').mockImplementation(key => entities.filter(o => o.object === key).map(e => e._id))
+    jest.spyOn(StudyManifestTools.prototype, 'isWorkflowSupported').mockImplementation(() => true)
+    jest.spyOn(StudyManifestTools.prototype, 'getWorkflowManifestEntities').mockImplementation(() => [])
     // eslint-disable-next-line one-var, max-len
     const manifestEntities = await manifestTools.getStudyManifestEntities(org, existingStudy, {}, dummyReferences, true)
 
