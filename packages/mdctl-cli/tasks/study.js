@@ -11,7 +11,8 @@ const _ = require('lodash'),
       {
         askSelectTasks,
         askSelectConsentTemplates,
-        askSelectDtConfigs
+        askSelectDtConfigs,
+        askSelectWorkflows
       } = require('../lib/studyQuestions'),
       Env = require('./env')
 
@@ -144,6 +145,48 @@ class Study extends Task {
             selectedTasks = await askSelectTasks({ tasks })
       if (!selectedTasks.length) throw Fault.create('kInvalidArgument', { reason: 'No Tasks selected' })
       const { manifest } = await studyTools.getTasksManifest(selectedTasks)
+
+
+      if (!params.manifestOnly) {
+        const options = {
+          format: 'json',
+          manifest,
+          ...params
+        }
+        console.log('Starting Study Data Export')
+        await exportEnv({ client, ...options })
+      }
+
+      console.log('Export finished...!')
+
+
+    } catch (e) {
+      throw e
+    }
+
+
+  }
+  async 'study@workflows'(cli) {
+    const client = await cli.getApiClient({ credentials: await cli.getAuthOptions() }),
+          params = await cli.getArguments(this.optionKeys),
+          studyTools = new StudyManifestTools(client, params),
+          action = this.args('2')
+    if (!(await studyTools.isWorkflowSupported())) {
+      throw Fault.create('kInvalidArgument', {reason: 'Target environment has not installed Workflow Package, please install Workflow Package and try again'})
+    }
+
+    if (!action) {
+      throw Fault.create('kInvalidArgument', { reason: 'You must provide an action (import or export)' })
+    }
+
+    try {
+      const workflows = await studyTools.getWorkflows()
+      if (workflows && workflows.length && workflows[0].object === 'fault') {
+        throw workflows[0]
+      }
+      const selectedWorkflows = await askSelectWorkflows({ workflows })
+      if (!selectedWorkflows.length) throw Fault.create('kInvalidArgument', { reason: 'No Workflows selected' })
+      const { manifest } = await studyTools.getWorkflowsManifest(selectedWorkflows)
 
 
       if (!params.manifestOnly) {
@@ -319,6 +362,7 @@ class Study extends Task {
         import - Imports the study into the current org
         task [action] - Allows the select of tasks to export from the current org
         consent [action] - Allows the select of consent templates to export from the current org
+        workflow [action] - Allows the select of workflow templates to export from the current org
         data-transfer - Allows the select of data transfer configs to export from the current org
 
       Options
