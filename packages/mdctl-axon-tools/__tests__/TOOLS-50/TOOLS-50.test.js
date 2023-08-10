@@ -34,6 +34,13 @@ describe('getStudyManifestEntities', () => {
     ['orac__forms'],
     ['orac__form_questions'],
     ['orac__events']
+    ['int__vendors'],
+    ['int__tasks'],
+    ['int__expressions'],
+    ['int__secrets'],
+    ['int__forms'],
+    ['int__questions'],
+    ['int__sites']
   ])('should include %s', async(entity) => {
 
     const exportableObject = ['c_site'],
