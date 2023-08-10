@@ -36,7 +36,7 @@ class StudyManifestTools {
     return ['c_study', 'c_task', 'c_visit_schedule', 'ec__document_template', 'c_group', 'c_query_rule',
       'c_anchor_date_template', 'c_fault', 'c_dmweb_report', 'c_site', 'c_task_assignment', 'c_participant_schedule',
       'c_patient_flag', 'c_looker_integration_record', 'int__vendor_integration_record', 'int__model_mapping',
-      'int__pipeline', 'orac__studies', 'orac__sites', 'orac__forms', 'orac__form_questions', 'orac__events', 'wf__workflow']
+      'int__pipeline', 'orac__studies', 'orac__sites', 'orac__forms', 'orac__form_questions', 'orac__events', 'wf__workflow', 'c_review_type']
   }
 
   validateAndCleanManifest(manifestJSON) {
@@ -775,7 +775,6 @@ class StudyManifestTools {
           availableKeys = study ? this.getAvailableObjectNames() : Object.keys(manifestObject),
           // Amongst the available keys, retrieve the ones that can actually be exported depending on the study
           manifestKeys = intersection(availableKeys, exportableObjects)
-
     // eslint-disable-next-line no-restricted-syntax
     for await (const key of manifestKeys) {
       // Determine whether queriying by c_study or c_key
