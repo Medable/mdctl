@@ -882,44 +882,53 @@ class StudyManifestTools {
     return [...tasks, ...steps, ...branches]
   }
 
-  async getWorkflowManifestEntities(org, workflowIds, orgReferenceProps) {
-    const workflowObjects = await org.objects.wf__workflow.find({_id: {$in: workflowIds}}).limit(false).toArray();
-    const workflowTaskKeys = uniq(workflowObjects.map(v => getProperty(v, 'wf__start.wf__params.wf__tasks')).flat())
-    const workflows = await this.getExportObjects(org, 'wf__workflows', {_id: {$in: workflowIds}}, orgReferenceProps)
-
-    // Checking task-reference presence
-    const taskIds = await org.objects.c_task.find({c_key: {$in: workflowTaskKeys}}).paths('_id').limit(false).toArray()
-    if (taskIds.length !== workflowTaskKeys.length) {
-      throw Fault.create('kInvalidArgument', {
-        message: 'Workflow Tasks not found',
-        reason: `Tasks not found for the task keys: ${difference(workflowTaskKeys, taskIds.map(t => t.c_key)).join(', ')}`
-      })
-    }
-
-    // Checking notification presence
+  async validateWorkflowNotificationsPresentInOrg(org, workflowObjects) {
     const notificationsList = await org.objects.org.find().paths('configuration.notifications').limit(false).toArray()
     const notificationsObjectList = notificationsList[0].configuration.notifications
     const notificationsNamesList = notificationsObjectList.map(item => { return item.name;})
     const notificationsInWorkflow = uniq(workflowObjects.map(wf => getProperty(wf, 'wf__actions', []).map(a => getProperty(a, 'wf__params.wf__notification_name')).filter(e => !!e)).flat())
-    for (const workflowNotificationName of notificationsInWorkflow) {
-      if (!notificationsNamesList.includes(workflowNotificationName)) {
-        throw Fault.create('kInvalidArgument', {
-          message: `Workflow ID notification not present: ${workflowNotificationName}`
-        })
-      }
-    }
 
-    // Checking step-reference presence
+    const missingNotificationNames = difference(notificationsInWorkflow, notificationsNamesList)
+    if (missingNotificationNames.length > 0) {
+      throw Fault.create('kInvalidArgument', {
+        message: `Workflow ID notification not present: ${missingNotificationNames.join(', ')}`
+      })
+    }
+  }
+
+  async validateWorkflowStepReferencePresentInOrg(org, workflowObjects) {
     const conditionInclusionStepNames = workflowObjects.map(wf => getProperty(wf, 'wf__conditions_inclusion', []).map(a => getProperty(a, 'wf__params.wf__step')).filter(e => !!e)).flat()
     const conditionExclusionStepNames = workflowObjects.map(wf => getProperty(wf, 'wf__conditions_exclusion', []).map(a => getProperty(a, 'wf__params.wf__step')).filter(e => !!e)).flat()
     const stepKeys = uniq(conditionInclusionStepNames.concat(conditionExclusionStepNames))
     const stepIds = await org.objects.c_step.find({c_key: {$in: stepKeys}}).paths('_id').limit(false).toArray()
+
     if (stepIds.length !== stepKeys.length) {
       throw Fault.create('kInvalidArgument', {
         message: 'Workflow Step not found',
         reason: `Step not found for the step keys: ${difference(stepKeys, stepIds.map(s => s.c_key)).join(', ')}`
       })
     }
+  }
+
+  async validateWorkflowTasksPresentInOrg(taskIds, workflowTaskKeys) {
+    if (taskIds.length !== workflowTaskKeys.length) {
+      throw Fault.create('kInvalidArgument', {
+        message: 'Workflow Tasks not found',
+        reason: `Tasks not found for the task keys: ${difference(workflowTaskKeys, taskIds.map(t => t.c_key)).join(', ')}`
+      })
+    }
+  }
+
+  async getWorkflowManifestEntities(org, workflowIds, orgReferenceProps) {
+    const workflowObjects = await org.objects.wf__workflow.find({_id: {$in: workflowIds}}).limit(false).toArray();
+    const workflowTaskKeys = uniq(workflowObjects.map(v => getProperty(v, 'wf__start.wf__params.wf__tasks')).flat())
+    const workflows = await this.getExportObjects(org, 'wf__workflows', {_id: {$in: workflowIds}}, orgReferenceProps)
+
+    const taskIds = await org.objects.c_task.find({c_key: {$in: workflowTaskKeys}}).paths('_id').limit(false).toArray()
+
+    await this.validateWorkflowTasksPresentInOrg(taskIds, workflowTaskKeys)
+    await this.validateWorkflowNotificationsPresentInOrg(org, workflowObjects)
+    await this.validateWorkflowStepReferencePresentInOrg(org, workflowObjects)
 
     const tasks = await this.getTaskManifestEntities(org, taskIds.map(t => t._id), orgReferenceProps)
 
