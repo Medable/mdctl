@@ -12,7 +12,7 @@ const fs = require('fs'),
       packageFileDir = path.join(__dirname, '../packageScripts'),
       { Fault } = require('@medable/mdctl-core'),
       {
-        first, intersection, isObject, isArray, get: getProperty
+        first, intersection, isObject, isArray, get: getProperty, uniq, difference
       } = require('lodash'),
       { getMappingScript, getEcMappingScript } = require('./mappings')
 
@@ -881,12 +881,55 @@ class StudyManifestTools {
     return [...tasks, ...steps, ...branches]
   }
 
+  async validateWorkflowNotificationsPresentInOrg(org, workflowObjects) {
+    const notificationsList = await org.objects.org.find().paths('configuration.notifications').limit(false).toArray()
+    const notificationsObjectList = notificationsList[0].configuration.notifications
+    const notificationsNamesList = notificationsObjectList.map(item => { return item.name;})
+    const notificationsInWorkflow = uniq(workflowObjects.map(wf => getProperty(wf, 'wf__actions', []).map(a => getProperty(a, 'wf__params.wf__notification_name')).filter(e => !!e)).flat())
+
+    const missingNotificationNames = difference(notificationsInWorkflow, notificationsNamesList)
+    if (missingNotificationNames.length > 0) {
+      throw Fault.create('kInvalidArgument', {
+        message: `Workflow ID notification not present: ${missingNotificationNames.join(', ')}`
+      })
+    }
+  }
+
+  async validateWorkflowStepReferencePresentInOrg(org, workflowObjects) {
+    const conditionInclusionStepNames = workflowObjects.map(wf => getProperty(wf, 'wf__conditions_inclusion', []).map(a => getProperty(a, 'wf__params.wf__step')).filter(e => !!e)).flat()
+    const conditionExclusionStepNames = workflowObjects.map(wf => getProperty(wf, 'wf__conditions_exclusion', []).map(a => getProperty(a, 'wf__params.wf__step')).filter(e => !!e)).flat()
+    const stepKeys = uniq(conditionInclusionStepNames.concat(conditionExclusionStepNames))
+    const stepKeysInOrg = await org.objects.c_step.find({c_key: {$in: stepKeys}}).paths('c_key').limit(false).toArray()
+
+    if (stepKeysInOrg.length !== stepKeys.length) {
+      throw Fault.create('kInvalidArgument', {
+        message: 'Workflow Step not found',
+        reason: `Step not found for the step keys: ${difference(stepKeys, stepKeysInOrg.map(s => s.c_key)).join(', ')}`
+      })
+    }
+  }
+
+  async validateWorkflowTasksPresentInOrg(taskData, workflowTaskKeys) {
+    if (taskData.length !== workflowTaskKeys.length) {
+      throw Fault.create('kInvalidArgument', {
+        message: 'Workflow Tasks not found',
+        reason: `Tasks not found for the task keys: ${difference(workflowTaskKeys, taskData.map(t => t.c_key)).join(', ')}`
+      })
+    }
+  }
+
   async getWorkflowManifestEntities(org, workflowIds, orgReferenceProps) {
     const workflowObjects = await org.objects.wf__workflow.find({_id: {$in: workflowIds}}).limit(false).toArray();
-    const workflowTaskKeys = workflowObjects.map(v => getProperty(v, 'wf__start.wf__params.wf__tasks')).flat()
+    const workflowTaskKeys = uniq(workflowObjects.map(v => getProperty(v, 'wf__start.wf__params.wf__tasks')).flat())
     const workflows = await this.getExportObjects(org, 'wf__workflows', {_id: {$in: workflowIds}}, orgReferenceProps)
-    const taskIds = await org.objects.c_task.find({c_key: {$in: workflowTaskKeys}}).paths('_id').limit(false).toArray()
-    const tasks = await this.getTaskManifestEntities(org, taskIds.map(t => t._id), orgReferenceProps)
+
+    const taskData = await org.objects.c_task.find({c_key: {$in: workflowTaskKeys}}).paths('_id', 'c_key').limit(false).toArray()
+
+    await this.validateWorkflowTasksPresentInOrg(taskData, workflowTaskKeys)
+    await this.validateWorkflowNotificationsPresentInOrg(org, workflowObjects)
+    await this.validateWorkflowStepReferencePresentInOrg(org, workflowObjects)
+
+    const tasks = await this.getTaskManifestEntities(org, taskData.map(t => t._id), orgReferenceProps)
 
     return [...workflows, ...tasks]
   }
