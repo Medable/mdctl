@@ -26,12 +26,18 @@ module.exports = class extends Transform {
 
     memo.availableApps = this.getAvailableApps()
 
-    if (!studySchemaCursor.hasNext()) return
+    if (!studySchemaCursor.hasNext()) {
+      memo.cleanOrg = true
+      return
+    }
 
     memo.studySchema = studySchemaCursor.next()
   }
 
   before(memo) {
+    if (memo.cleanOrg) {
+      return
+    }
     const {
       // eslint-disable-next-line camelcase
       org: { objects: { c_study } }
@@ -53,6 +59,9 @@ module.exports = class extends Transform {
 
   each(resource, memo) {
 
+    if(memo.cleanOrg) {
+      return resource
+    }
     // if it is the manifest we let it go as is
     if (resource.object === 'manifest') {
       memo.manifest = resource
