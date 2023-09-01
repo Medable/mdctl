@@ -274,9 +274,14 @@ class ImportFileTreeAdapter extends EventEmitter {
           })
         }
       } else if (manifestData[k] instanceof Array) {
-        manifestData[k].forEach((o) => {
-          paths.push(`env/${k}/**/${o.name}.{json,yaml}`)
-        })
+        if(k === 'includes' && manifestData[k][0] === '*') {
+          // adding all resources availables inside env/ folder
+          paths.push('env/**/*.{json,yaml}')
+        } else {
+          manifestData[k].forEach((o) => {
+            paths.push(`env/${k}/**/${o.name}.{json,yaml}`)
+          })
+        }
       }
     }
     this.walkFiles(input, paths)
