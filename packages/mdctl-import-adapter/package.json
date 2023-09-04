@@ -1,6 +1,6 @@
 {
   "name": "@medable/mdctl-import-adapter",
-  "version": "1.0.71-alpha.3",
+  "version": "1.0.71-alpha.4",
   "description": "Medable Developer Client Tools :: Import Adapter",
   "repository": {
     "type": "git",
