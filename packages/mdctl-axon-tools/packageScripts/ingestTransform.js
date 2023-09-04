@@ -27,7 +27,6 @@ module.exports = class extends Transform {
     memo.availableApps = this.getAvailableApps()
 
     if (!studySchemaCursor.hasNext()) {
-      memo.cleanOrg = true
       return
     }
 
@@ -35,7 +34,7 @@ module.exports = class extends Transform {
   }
 
   before(memo) {
-    if (memo.cleanOrg) {
+    if (!memo.studySchema) {
       return
     }
     const {
@@ -59,7 +58,7 @@ module.exports = class extends Transform {
 
   each(resource, memo) {
 
-    if(memo.cleanOrg) {
+    if(!memo.studySchema) {
       return resource
     }
     // if it is the manifest we let it go as is
