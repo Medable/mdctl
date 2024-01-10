@@ -119,4 +119,16 @@ describe('MIG-166', () => {
         }
       })
   })
+
+  it('should print "mdctl.kManifestNotFound.error" in case of missing manifest file.', async() => {
+    let err
+    try {
+      studyTranslations.isAuthTaskTranslations({})
+    } catch (error) {
+      err = error
+    }
+
+    expect(err.errCode)
+      .to.equal('mdctl.kManifestNotFound.error')
+  })
 })
