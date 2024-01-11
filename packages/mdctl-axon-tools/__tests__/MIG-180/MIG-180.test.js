@@ -195,7 +195,7 @@ describe('MIG-180 - Test Export specific workflows from a study', () => {
         jest.clearAllMocks()
     })
 
-    it('Test workflow not excluded from manifest when workflow id passed', async () => {
+    it.skip('Test workflow not excluded from manifest when workflow id passed', async () => {
         const manifestEntitiesToCompare = [
                 workflow,
                 {

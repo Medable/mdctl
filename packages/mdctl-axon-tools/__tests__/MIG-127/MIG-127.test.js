@@ -71,7 +71,7 @@ describe('econsentDocumentTemplateAdjustments', () => {
   it('should delete sites from ec__sites not present in the manifest or the org', () => {
     // manifest includes site abc, org includes site def, so should remove site ghi
     const resource = { object: 'ec__document_template', ec__status: 'draft', ec__sites: ['c_site.abc', 'c_site.def', 'c_site.ghi'] },
-      memo = { availableApps: { eConsentConfig: '1.0' }, manifest: { c_site: { includes: ['abc'] } } }
+      memo = { studySchema: {}, availableApps: { eConsentConfig: '1.0' }, manifest: { c_site: { includes: ['abc'] } } }
 
     global.org.objects.c_sites = {
       find: ({ c_key }) => {
