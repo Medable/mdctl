@@ -103,7 +103,7 @@ describe('ingestTransform', () => {
 
     it('should read available study if present', () => {
       const transform = new Transform(),
-            memo = {}
+            memo = { studySchema: {} }
 
       transform.before(memo)
 
