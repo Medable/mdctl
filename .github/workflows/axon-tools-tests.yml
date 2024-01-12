@@ -26,5 +26,5 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
-    - run: npm ci
+    - run: lerna bootstrap
     - run: lerna run test --scope=@medable/mdctl-axon-tools
