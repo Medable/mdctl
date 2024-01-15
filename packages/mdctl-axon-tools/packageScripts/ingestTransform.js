@@ -210,13 +210,8 @@ module.exports = class extends Transform {
     if (targetHasStudy && studyIsDifferent) {
       resource.ec__study = studyReference
     }
-
-    // Set imported template status to draft
-    // preserveTemplateStatus - will be ingected (preppended to the script file) by
-    // mdctl-import-adapter during import, when the flag --preserveTemplateStatus is set to true in cli
-    if (typeof preserveTemplateStatus === 'undefined' || preserveTemplateStatus === false) {
-      resource.ec__status = 'draft'
-    }
+    // Always set imported template status to draft
+    resource.ec__status = 'draft'
 
     // importing a new published doc? Set the published date as today.
     if (!doc && resource.ec__status === 'published') {
