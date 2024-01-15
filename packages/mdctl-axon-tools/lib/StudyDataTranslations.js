@@ -34,6 +34,10 @@ class StudyDataTranslations {
       }
     }
 
+    if (!manifestData) {
+      throw Fault.create('mdctl.kManifestNotFound.error', { reason: 'There is no manifest set as a parameter, nor is one found in the directory."' })
+    }
+
     if (manifestData.authenticationTaskTranslations && !_.has(manifestData, 'i18ns')) {
       throw Fault.create('mdctl.kInvalidArgument.missingI18nObjects', {
         message: 'The manifest is missing "i18ns" objects',
