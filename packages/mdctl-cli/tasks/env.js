@@ -7,6 +7,7 @@ const _ = require('lodash'),
       { Fault } = require('@medable/mdctl-core'),
       { isSet } = require('@medable/mdctl-core-utils/values'),
       { pathTo } = require('@medable/mdctl-core-utils'),
+      { StudyDataTranslations } = require('@medable/mdctl-axon-tools'),
       exportEnv = require('../lib/env/export'),
       importEnv = require('../lib/env/import'),
       Task = require('../lib/task'),
@@ -109,9 +110,21 @@ class Env extends Task {
   }
 
   async 'env@import'(cli) {
+
     const client = await cli.getApiClient({ credentials: await cli.getAuthOptions() }),
-          params = await cli.getArguments([...this.optionKeys, 'preserveTemplateStatus']),
-          format = this.args('format')
+          params = await cli.getArguments(this.optionKeys),
+          format = this.args('format'),
+          studyDataTranslations = new StudyDataTranslations(client, params)
+
+    if (
+      studyDataTranslations.isAuthTaskTranslations(
+        { input: params.dir || process.cwd(), ...params }
+      )
+    ) {
+      await studyDataTranslations.writeAuthTaskTranslationsToDisk({
+        input: params.dir || process.cwd(), ...params
+      })
+    }
 
     function outputResult(data) {
       const formatted = Task.formatOutput(data, format),
