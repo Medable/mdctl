@@ -1,3 +1,5 @@
+const { Transform } = require('stream')
+
 const fs = require('fs'),
       pump = require('pump'),
       ndjson = require('ndjson'),
@@ -150,8 +152,17 @@ const fs = require('fs'),
           inputStream = options.stream.pipe(ndjson.parse())
         }
 
+        const logStream = new Transform({
+          objectMode: true,
+          transform(chunk, encoding, cb) {
+            console.log(`[${new Date().toISOString()}] Exporting ${chunk.key}: ${chunk.name || chunk.id}`)
+            this.push(chunk);
+            cb();
+          }
+        })
+
         return new Promise((resolve, reject) => {
-          const resultStream = pump(inputStream, streamTransform, adapter, async(err) => {
+          const resultStream = pump(inputStream, streamTransform, logStream, adapter, async(err) => {
 
             try {
               await postExport({

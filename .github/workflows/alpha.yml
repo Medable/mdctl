@@ -1,23 +1,23 @@
-name: 'publish'
+name: 'publish alpha'
 on:
   release:
-    types: [created]
+    types: [prereleased]
 jobs:
   tests:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2.4.0
+      - uses: actions/checkout@v3.5.3
         with:
           fetch-depth: 0
-      - uses: cachix/install-nix-action@v16
+      - uses: cachix/install-nix-action@v22
         with:
           extra_nix_config: |
             experimental-features = nix-command flakes
-      - uses: cachix/cachix-action@v10
+      - uses: cachix/cachix-action@master
         with:
           name: medable
           authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
       - run: nix build -f .
       - env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: nix-shell --run "_npm_setup && lerna version && lerna publish from-package --dist-tag=@alpha --yes"
+        run: nix-shell --run "_npm_publish_alpha --yes"

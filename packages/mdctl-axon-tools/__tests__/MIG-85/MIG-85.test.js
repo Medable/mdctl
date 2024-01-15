@@ -268,7 +268,7 @@ describe('MIG-85 - Test partial migrations in StudyManifestTools', () => {
           expectedObjects = ['c_study', 'c_task', 'c_visit_schedule', 'ec__document_template', 'c_group', 'c_query_rule',
             'c_anchor_date_template', 'c_fault', 'c_dmweb_report', 'c_site', 'c_task_assignment', 'c_participant_schedule',
             'c_patient_flag', 'c_looker_integration_record', 'int__vendor_integration_record', 'int__model_mapping',
-            'int__pipeline', 'orac__studies', 'orac__sites', 'orac__forms', 'orac__form_questions', 'orac__events', 'int__vendor',
+            'int__pipeline', 'orac__studies', 'orac__sites', 'orac__forms', 'orac__form_questions', 'orac__events', 'wf__workflow', 'c_review_type', 'int__vendor',
             'int__task', 'int__expression', 'int__secret', 'int__form', 'int__question', 'int__site']
 
     expect(availableObjects)

@@ -1,0 +1,23 @@
+name: 'publish latest'
+on:
+  release:
+    types: [released]
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3.5.3
+        with:
+          fetch-depth: 0
+      - uses: cachix/install-nix-action@v22
+        with:
+          extra_nix_config: |
+            experimental-features = nix-command flakes
+      - uses: cachix/cachix-action@master
+        with:
+          name: medable
+          authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
+      - run: nix build -f .
+      - env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: nix-shell --run "_npm_publish_latest --yes"
