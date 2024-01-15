@@ -247,7 +247,7 @@ class ImportFileTreeAdapter extends EventEmitter {
         manifestData = JSON.parse(fs.readFileSync(`${input}/${location[0]}`))
         paths.push(KNOWN_FILES.manifest)
       } else {
-        throw Fault.create('mdctl.kManifestNotFound.error', { reason: 'There is no manifest set as parameter neither found in directory' })
+        throw Fault.create('mdctl.kManifestNotFound.error', { reason: 'There is no manifest set as a parameter, nor is one found in the directory."' })
       }
     }
     /* eslint-disable one-var */
