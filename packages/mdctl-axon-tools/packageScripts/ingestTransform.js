@@ -26,12 +26,17 @@ module.exports = class extends Transform {
 
     memo.availableApps = this.getAvailableApps()
 
-    if (!studySchemaCursor.hasNext()) return
+    if (!studySchemaCursor.hasNext()) {
+      return
+    }
 
     memo.studySchema = studySchemaCursor.next()
   }
 
   before(memo) {
+    if (!memo.studySchema) {
+      return
+    }
     const {
       // eslint-disable-next-line camelcase
       org: { objects: { c_study } }
@@ -53,6 +58,9 @@ module.exports = class extends Transform {
 
   each(resource, memo) {
 
+    if(!memo.studySchema) {
+      return resource
+    }
     // if it is the manifest we let it go as is
     if (resource.object === 'manifest') {
       memo.manifest = resource
@@ -219,16 +227,19 @@ module.exports = class extends Transform {
           televisitKey = 'tv__config.version',
           integrationsKey = 'int__version.version',
           oracleKey = 'orac__version.version',
+          workflowKey = 'workflow__version.version',
           eConsentConfig = config.get(eConsentKey),
           televisitConfig = config.get(televisitKey),
           integrationsConfig = config.get(integrationsKey),
-          oracleConfig = config.get(oracleKey)
+          oracleConfig = config.get(oracleKey),
+          workflowConfig = config.get(workflowKey)
 
     return {
       eConsentConfig,
       televisitConfig,
       integrationsConfig,
-      oracleConfig
+      oracleConfig,
+      workflowConfig
     }
   }
 
@@ -245,7 +256,9 @@ module.exports = class extends Transform {
           isIntegrationsSpecfic = resource.object.startsWith('int__'),
           isIntegrationsInstalled = !!memo.availableApps.integrationsConfig,
           isOracleSpecific = resource.object.startsWith('orac__'),
-          isOracleInstalled = memo.availableApps.oracleConfig
+          isOracleInstalled = memo.availableApps.oracleConfig,
+          isWorkflowSpecific = resource.object.startsWith('wf__'),
+          isWorkflowInstalled = memo.availableApps.workflowConfig
 
     if (isEconsentSpecific && !isEconsentInstalled) {
       // eslint-disable-next-line no-undef
@@ -265,6 +278,10 @@ module.exports = class extends Transform {
     if (isOracleSpecific && !isOracleInstalled) {
       // eslint-disable-next-line no-undef
       throw Fault.create('kInvalidArgument', { reason: 'Target environment has not installed Oracle Integration, please install Oracle Integration and try again' })
+    }
+    if (isWorkflowSpecific && !isWorkflowInstalled) {
+      // eslint-disable-next-line no-undef
+      throw Fault.create('kInvalidArgument', { reason: 'Target environment has not installed Workflow Package, please install Workflow Package and try again' })
     }
 
     return true
