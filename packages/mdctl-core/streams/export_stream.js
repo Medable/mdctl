@@ -11,6 +11,11 @@ class ExportStream extends Transform {
       objectMode: true
     }, options))
     this.runtimes = []
+    this.completed = false
+  }
+
+  complete() {
+    return this.completed
   }
 
   checkKeys(name) {
@@ -24,6 +29,9 @@ class ExportStream extends Transform {
     } else if (chunk.object === 'fault') {
       callback(Fault.from(chunk))
     } else {
+      if (chunk.object === 'manifest-exports') {
+        this.completed = true
+      }
       if (this.checkKeys(chunk.object)) {
         const section = new ExportSection(chunk, chunk.object)
         this.push(section)
