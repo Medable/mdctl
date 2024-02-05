@@ -46,7 +46,15 @@ const fs = require('fs'),
               adapter = options.adapter || new ExportFileTreeAdapter(outputDir, streamOptions),
               // eslint-disable-next-line max-len
               lockUnlock = new LockUnlock(outputDir, client.environment.endpoint, client.environment.env),
-              memo = {}
+              memo = {},
+              logStream = new Transform({
+                objectMode: true,
+                transform(chunk, encoding, cb) {
+                  console.log(`[${new Date().toISOString()}] Exporting ${chunk.key}: ${chunk.name || chunk.id}`)
+                  this.push(chunk)
+                  cb()
+                }
+              })
 
         let manifestFile,
             inputStream,
@@ -152,15 +160,6 @@ const fs = require('fs'),
           inputStream = options.stream.pipe(ndjson.parse())
         }
 
-        const logStream = new Transform({
-          objectMode: true,
-          transform(chunk, encoding, cb) {
-            console.log(`[${new Date().toISOString()}] Exporting ${chunk.key}: ${chunk.name || chunk.id}`)
-            this.push(chunk);
-            cb();
-          }
-        })
-
         return new Promise((resolve, reject) => {
           const resultStream = pump(inputStream, streamTransform, logStream, adapter, async(err) => {
 
@@ -174,6 +173,10 @@ const fs = require('fs'),
 
             if (err) {
               return reject(err)
+            }
+
+            if (!streamTransform.complete()) {
+              return reject(new Error('Export not complete!'))
             }
 
             if (options.docs) {
