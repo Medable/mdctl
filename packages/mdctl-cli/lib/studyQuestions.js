@@ -1,5 +1,5 @@
 const { prompt } = require('inquirer'),
-      _ = require('lodash')
+      _ = require('lodash'),
 
       askSelectTasks = async(inputArgs) => {
         // eslint-disable-next-line no-underscore-dangle
