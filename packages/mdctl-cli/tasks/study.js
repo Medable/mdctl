@@ -360,7 +360,7 @@ class Study extends Task {
       Command
         export - Exports the study from the current org
         import - Imports the study into the current org
-        task [action] - Allows the select of tasks to export from the current org
+        tasks [action] - Allows the select of tasks to export from the current org
         consent [action] - Allows the select of consent templates to export from the current org
         workflow [action] - Allows the select of workflow templates to export from the current org
         data-transfer - Allows the select of data transfer configs to export from the current org
