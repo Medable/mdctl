@@ -1,3 +1,4 @@
+/* eslint-disable one-var */
 /* eslint-disable class-methods-use-this */
 
 const _ = require('lodash'),
@@ -162,13 +163,14 @@ class Study extends Task {
 
 
   }
+
   async 'study@workflows'(cli) {
     const client = await cli.getApiClient({ credentials: await cli.getAuthOptions() }),
           params = await cli.getArguments(this.optionKeys),
           studyTools = new StudyManifestTools(client, params),
           action = this.args('2')
     if (!(await studyTools.isWorkflowSupported())) {
-      throw Fault.create('kInvalidArgument', {reason: 'Target environment has not installed Workflow Package, please install Workflow Package and try again'})
+      throw Fault.create('kInvalidArgument', { reason: 'Target environment has not installed Workflow Package, please install Workflow Package and try again' })
     }
 
     if (!action) {
@@ -181,7 +183,9 @@ class Study extends Task {
         throw workflows[0]
       }
       const selectedWorkflows = await askSelectWorkflows({ workflows })
-      if (!selectedWorkflows.length) throw Fault.create('kInvalidArgument', { reason: 'No Workflows selected' })
+      if (!selectedWorkflows.length) {
+        throw Fault.create('kInvalidArgument', { reason: 'No Workflows selected' })
+      }
       const { manifest } = await studyTools.getWorkflowsManifest(selectedWorkflows)
 
 
