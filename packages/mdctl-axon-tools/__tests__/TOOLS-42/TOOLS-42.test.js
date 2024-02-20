@@ -218,7 +218,7 @@ describe('StudyManifestTools', () => {
     [
       'consent',
       {
-        object: 'package', name: 'Consent export', version: '0.0.1', description: 'An export of consent template or multiple consent templates', pipes: { ingest: 'ingestTransform.js' }
+        object: 'package', name: 'Consent export', version: '0.0.1', description: 'An export of task or multiple consent templates', pipes: { ingest: 'ingestTransform.js' }
       }
     ],
   ])('should writePackage for: %s', (packageType, expected) => {

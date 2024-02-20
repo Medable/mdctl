@@ -326,7 +326,7 @@ class StudyManifestTools {
 
   async buildConsentManifestAndDependencies(consentIds) {
     const { org, orgReferenceProps } = await this.getOrgAndReferences(),
-          mappingScript = await getEcMappingScript(org, consentIds),
+          mappingScript = await getEcMappingScript(org),
           allEntities = await this.getConsentManifestEntities(org, consentIds, orgReferenceProps),
           { manifest, removedEntities } = this.validateAndCreateManifest(allEntities, orgReferenceProps, ['ec__document_templates'])
 
@@ -1050,4 +1050,3 @@ class StudyManifestTools {
 }
 
 module.exports = StudyManifestTools
-
