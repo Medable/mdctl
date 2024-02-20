@@ -76,6 +76,7 @@ class Fault extends Error {
     return this.reason || ''
   }
 
+  // eslint-disable-next-line max-len
   static normalizeOptions(input, msg, statusCode, name, reason, path, faults, trace, index, resource) {
 
     let obj,

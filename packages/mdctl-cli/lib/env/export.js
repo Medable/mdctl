@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 const { Transform } = require('stream')
 
 const fs = require('fs'),
