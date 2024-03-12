@@ -22,6 +22,13 @@ module.exports = {
       publicPath: './reports',
       filename: 'report.html',
       stripSkippedTest: true,
+      customInfos: [{
+        title: 'Ref',
+        value: process.env.GITHUB_REF_NAME
+      }, {
+        title: 'Commit #',
+        value: process.env.GITHUB_SHA
+      }]
     }]]
 
 }

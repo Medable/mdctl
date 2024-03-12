@@ -5,7 +5,7 @@ name: Axon Tools Tests
 
 on:
   push:
-    branches: [ "main", "reporting" ]
+    branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
 
@@ -30,5 +30,5 @@ jobs:
     - run: npm run test --workspace=@medable/mdctl-axon-tools
     - uses: actions/upload-artifact@v4
       with:
-        name: mdctl-axon-tools-report
+        name: mdctl-axon-tools-report-{{ matrix.node-version }}
         path: ./packages/mdctl-axon-tools/reports
