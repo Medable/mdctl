@@ -15,4 +15,13 @@ module.exports = {
 
   // Automatically restore mock state and implementation before every test
   restoreMocks: true,
+
+  // Custom reporters
+  reporters: ['default',
+    ['jest-html-reporters', {
+      publicPath: './reports',
+      filename: 'report.html',
+      stripSkippedTest: true,
+    }]]
+
 }
