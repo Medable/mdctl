@@ -26,6 +26,10 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
+    - name: Set ENV variables
+      id: vars
+      run: |
+        echo "CI_COMMIT_SHORT_SHA=$(git rev-parse --short ${{ github.sha }})" >> "$GITHUB_ENV"
     - run: npm ci
     - run: npm run test --workspace=@medable/mdctl-axon-tools
     - uses: actions/upload-artifact@v4

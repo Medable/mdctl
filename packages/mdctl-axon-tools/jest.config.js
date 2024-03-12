@@ -24,10 +24,10 @@ module.exports = {
       stripSkippedTest: true,
       customInfos: [{
         title: 'Ref',
-        value: process.env.GITHUB_REF_NAME
+        value: process.env.GITHUB_HEAD_REF
       }, {
         title: 'Commit #',
-        value: process.env.GITHUB_SHA
+        value: process.env.CI_COMMIT_SHORT_SHA
       }]
     }]]
 
