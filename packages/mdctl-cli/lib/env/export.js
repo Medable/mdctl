@@ -1,4 +1,5 @@
 /* eslint-disable max-len */
+const { ExportSection } = require('@medable/mdctl-core/streams/section')
 const { Transform } = require('stream')
 
 const fs = require('fs'),
@@ -179,6 +180,8 @@ const fs = require('fs'),
             if (!streamTransform.complete()) {
               return reject(new Error('Export not complete!'))
             }
+
+            ExportSection.clearSectionsWithResources()
 
             if (options.docs) {
               console.log('Documenting env')
