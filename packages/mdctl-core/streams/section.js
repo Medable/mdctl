@@ -37,17 +37,17 @@ const _ = require('lodash'),
         },
       },
       NON_WRITABLE_KEYS = ['facet'],
-      sectionsWithResources = [],
       { privatesAccessor } = require('@medable/mdctl-core-utils/privates'),
       crypto = require('crypto')
 
 class ExportSection {
 
-  constructor(content, key = '') {
+  constructor(content, key = '', sectionsWithResources) {
 
     Object.assign(privatesAccessor(this), {
       content,
       key,
+      sectionsWithResources,
       scriptFiles: [],
       extraFiles: [],
       templateFiles: [],
@@ -59,15 +59,11 @@ class ExportSection {
     }
     if (this.isWritable) {
       const nodes = jp.nodes(content, '$..resourceId')
-      if (nodes.length > 0) {
+      if (Array.isArray(sectionsWithResources) && nodes.length > 0) {
         privatesAccessor(this).resourcePaths.push(...nodes)
         sectionsWithResources.push(this)
       }
     }
-  }
-
-  static clearSectionsWithResources() {
-    sectionsWithResources.length = 0
   }
 
   get id() {
@@ -194,7 +190,8 @@ class ExportSection {
   }
 
   extractAssets() {
-    const facet = privatesAccessor(this).content
+    const facet = privatesAccessor(this).content,
+          { sectionsWithResources } = privatesAccessor(this)
     let itemSource = null
     for (let i = 0; i < sectionsWithResources.length; i += 1) {
       const sc = sectionsWithResources[i],
