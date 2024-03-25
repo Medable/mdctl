@@ -15,4 +15,20 @@ module.exports = {
 
   // Automatically restore mock state and implementation before every test
   restoreMocks: true,
+
+  // Custom reporters
+  reporters: ['default',
+    ['jest-html-reporters', {
+      publicPath: './reports',
+      filename: 'report.html',
+      stripSkippedTest: true,
+      customInfos: [{
+        title: 'Ref',
+        value: process.env.GITHUB_HEAD_REF
+      }, {
+        title: 'Commit #',
+        value: process.env.CI_COMMIT_SHORT_SHA
+      }]
+    }]]
+
 }
