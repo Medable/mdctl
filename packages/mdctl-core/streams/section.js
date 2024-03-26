@@ -42,7 +42,7 @@ const _ = require('lodash'),
 
 class ExportSection {
 
-  constructor(content, key = '', sectionsWithResources) {
+  constructor(content, key = '', sectionsWithResources = []) {
 
     Object.assign(privatesAccessor(this), {
       content,
