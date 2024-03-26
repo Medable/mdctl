@@ -26,5 +26,14 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
+    - name: Set ENV variables
+      id: vars
+      run: |
+        echo "CI_COMMIT_SHORT_SHA=$(git rev-parse --short ${{ github.sha }})" >> "$GITHUB_ENV"    
+        echo "MOCHAWESOME_REPORTFILENAME: "mdctl-core test report. Commit: #$CI_COMMIT_SHORT_SHA" >> "$GITHUB_ENV"
     - run: npm ci
     - run: npm run test --workspace=@medable/mdctl-core
+    - uses: actions/upload-artifact@v4
+      with:
+        name: mdctl-core-report-${{ matrix.node-version }}
+        path: ./packages/mdctl-core/mochawesome-report

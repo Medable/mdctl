@@ -12,6 +12,7 @@ class ExportStream extends Transform {
     }, options))
     this.runtimes = []
     this.completed = false
+    this.sectionsWithResources = []
   }
 
   complete() {
@@ -33,7 +34,7 @@ class ExportStream extends Transform {
         this.completed = true
       }
       if (this.checkKeys(chunk.object)) {
-        const section = new ExportSection(chunk, chunk.object)
+        const section = new ExportSection(chunk, chunk.object, this.sectionsWithResources)
         this.push(section)
       } else if (chunk.object === 'stream') {
         const section = new StreamChunk(chunk, chunk.object)

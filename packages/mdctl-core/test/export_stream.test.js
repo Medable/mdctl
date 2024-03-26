@@ -1,4 +1,4 @@
-/* eslint-disable no-underscore-dangle */
+/* eslint-disable no-underscore-dangle, max-len */
 const assert = require('assert'),
       sinon = require('sinon'),
       ExportStream = require('../streams/export_stream'),
@@ -14,6 +14,7 @@ describe('ExportStream', () => {
 
   it('should initialize with empty runtimes array and completed set to false', () => {
     assert.deepStrictEqual(exportStream.runtimes, [])
+    assert.deepStrictEqual(exportStream.sectionsWithResources, [])
     assert.strictEqual(exportStream.completed, false)
   })
 
@@ -37,7 +38,7 @@ describe('ExportStream', () => {
 
     exportStream._transform(chunk, null, () => {})
 
-    sinon.assert.calledWith(pushSpy, new ExportSection(chunk, chunk.object))
+    sinon.assert.calledWith(pushSpy, new ExportSection(chunk, chunk.object, exportStream.sectionsWithResources))
   })
 
   it('should transform and push StreamChunk when the object is "stream"', () => {
