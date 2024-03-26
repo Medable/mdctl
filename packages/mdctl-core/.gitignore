@@ -68,3 +68,5 @@ typings/
 output*/
 
 manifest.json
+
+mochawesome-report

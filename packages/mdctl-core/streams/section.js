@@ -37,27 +37,32 @@ const _ = require('lodash'),
         },
       },
       NON_WRITABLE_KEYS = ['facet'],
-      SectionsCreated = [],
       { privatesAccessor } = require('@medable/mdctl-core-utils/privates'),
       crypto = require('crypto')
 
 class ExportSection {
 
-  constructor(content, key = '') {
+  constructor(content, key = '', sectionsWithResources = []) {
 
     Object.assign(privatesAccessor(this), {
       content,
       key,
+      sectionsWithResources,
       scriptFiles: [],
       extraFiles: [],
       templateFiles: [],
+      resourcePaths: [],
       id: uuid.v4()
     })
     if (new.target === ExportSection) {
       Object.seal(this)
     }
     if (this.isWritable) {
-      SectionsCreated.push(this)
+      const nodes = jp.nodes(content, '$..resourceId')
+      if (Array.isArray(sectionsWithResources) && nodes.length > 0) {
+        privatesAccessor(this).resourcePaths.push(...nodes)
+        sectionsWithResources.push(this)
+      }
     }
   }
 
@@ -83,6 +88,10 @@ class ExportSection {
 
   get templateFiles() {
     return privatesAccessor(this).templateFiles
+  }
+
+  get resourcePaths() {
+    return privatesAccessor(this).resourcePaths
   }
 
   get name() {
@@ -181,12 +190,12 @@ class ExportSection {
   }
 
   extractAssets() {
-    const facet = privatesAccessor(this).content
+    const facet = privatesAccessor(this).content,
+          { sectionsWithResources } = privatesAccessor(this)
     let itemSource = null
-    for (let i = 0; i < SectionsCreated.length; i += 1) {
-      const sc = SectionsCreated[i],
-            nodes = jp.nodes(sc.content, '$..resourceId'),
-            item = _.find(nodes, n => n.value === facet.resourceId)
+    for (let i = 0; i < sectionsWithResources.length; i += 1) {
+      const sc = sectionsWithResources[i],
+            item = _.find(sc.resourcePaths, n => n.value === facet.resourceId)
       if (item) {
         // replace last path
         const ETagPathItem = _.clone(item.path)

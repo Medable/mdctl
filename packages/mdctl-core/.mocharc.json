@@ -1,0 +1,9 @@
+    
+  {
+    "spec": "test/**/*.js",
+    "exit": true,
+    "ui": "bdd",
+    "recursive": true,
+    "timeout": 5000,
+    "reporter": "mochawesome"
+  }
