@@ -238,7 +238,7 @@ class ExportSection {
           nodes = jp.nodes(content, '$..script')
 
     // Exclude script extraction to all instance data.
-    if (isCustomName(content.object)) {
+    if (isCustomName(content.object) || content.object === 'i18n') {
       return
     }
 
