@@ -11,16 +11,19 @@ const { assert } = require('chai'),
 describe('Environment Export', () => {
 
   let blob,
+      i18nBlob,
       streamedBlob = null
 
   beforeEach(() => {
     blob = fs.createReadStream(`${__dirname}/data/blob.ndjson`)
     streamedBlob = fs.createReadStream(`${__dirname}/data/blob_with_streams.ndjson`)
+    i18nBlob = fs.createReadStream(`${__dirname}/data/i18ns.ndjson`)
   })
 
   afterEach(() => {
     blob = null
     streamedBlob = null
+    i18nBlob = null
   })
 
   it('export using file adapter with default layout', async() => {
@@ -122,6 +125,41 @@ describe('Environment Export', () => {
     })).catch((e) => {
       rimraf.sync(tempDir)
       return Promise.reject(e)
+    })
+  })
+
+  it('should not process scripts for i18n objects ', async() => {
+    const tempDir = path.join(process.cwd(), `output-${new Date().getTime()}`),
+          client = new Client({
+            strictSSL: false,
+            environment: {
+              endpoint: 'https://localhost',
+              env: 'test'
+            },
+            credentials: {
+              type: 'password',
+              apiKey: 'abcdefghijklmnopqrstuv',
+              username: 'test@medable.com',
+              password: 'password'
+            }
+          })
+    return exportEnv({
+      client,
+      stream: i18nBlob,
+      dir: tempDir,
+      format: 'yaml'
+    }).then(() => new Promise((resolve, reject) => {
+      glob('**/*.{js}', { cwd: tempDir }, (err, files) => {
+        rimraf.sync(tempDir)
+        if (err) {
+          return reject(err)
+        }
+        assert(files.length === 0, 'there are some files created that should not be there')
+        return resolve()
+      })
+    })).catch((e) => {
+      rimraf.sync(tempDir)
+      return e
     })
   })
 
