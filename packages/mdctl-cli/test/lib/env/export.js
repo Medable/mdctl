@@ -128,7 +128,7 @@ describe('Environment Export', () => {
     })
   })
 
-  it('should not process scripts for i18n objects ', async() => {
+  it('should not process scripts for i18n objects - MIG-207', async() => {
     const tempDir = path.join(process.cwd(), `output-${new Date().getTime()}`),
           client = new Client({
             strictSSL: false,

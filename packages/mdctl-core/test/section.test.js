@@ -131,7 +131,7 @@ describe('ExportSection', () => {
   })
 
   describe('extractScripts', () => {
-    it('should not process scripts if the object is i18n', () => {
+    it('should not process scripts if the object is i18n - MIG-207', () => {
       const section = new ExportSection({
         object: 'i18n',
         resourceId: 'resource1',
