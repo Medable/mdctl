@@ -129,4 +129,22 @@ describe('ExportSection', () => {
     })
 
   })
+
+  describe('extractScripts', () => {
+    it('should not process scripts if the object is i18n - MIG-207', () => {
+      const section = new ExportSection({
+        object: 'i18n',
+        resourceId: 'resource1',
+        data: {
+          script: {
+            invalidArgument: {
+              message: 'Invalid script.'
+            }
+          }
+        }
+      }, 'i18n', [])
+      section.extractScripts()
+      assert.strictEqual(section.scriptFiles.length, 0)
+    })
+  })
 })
