@@ -7,7 +7,7 @@ const EventEmitter = require('events'),
       _ = require('lodash'),
       pluralize = require('pluralize'),
       { ImportSection } = require('@medable/mdctl-core/streams/section'),
-      { parseString, isCustomName } = require('@medable/mdctl-core-utils/values'),
+      { isSet, parseString, isCustomName } = require('@medable/mdctl-core-utils/values'),
       { md5FileHash } = require('@medable/mdctl-node-utils/crypto'),
       { privatesAccessor } = require('@medable/mdctl-core-utils/privates'),
       { OutputStream } = require('@medable/mdctl-core/streams/chunk-stream'),
@@ -102,8 +102,11 @@ class ImportFileTreeAdapter extends EventEmitter {
 
   async loadPackageFromObject() {
     const { packageData, input, format } = privatesAccessor(this),
-          section = new ImportSection(packageData, 'package', `package.${format}`, input)
-    return { results: [section.content], blobResults: [] }
+          { content } = new ImportSection(packageData, 'package', `package.${format}`, input)
+    if (!isSet(content.object)) {
+      content.object = 'package'
+    }
+    return { results: [content], blobResults: [] }
   }
 
   async loadFileContent(f) {
