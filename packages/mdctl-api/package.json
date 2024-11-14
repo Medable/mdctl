@@ -1,6 +1,6 @@
 {
   "name": "@medable/mdctl-api",
-  "version": "1.0.73-alpha.0",
+  "version": "1.0.74-alpha.0",
   "description": "Medable Developer Client Tools :: API",
   "repository": {
     "type": "git",
@@ -10,7 +10,7 @@
     "url": "https://github.com/Medable/mdctl/issues"
   },
   "engines": {
-    "node": ">=12 <17",
+    "node": ">=12",
     "npm": ">=6"
   },
   "scripts": {
