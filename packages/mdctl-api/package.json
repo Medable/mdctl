@@ -25,8 +25,8 @@
   "author": "Medable, Inc. <mdctl@medable.com>",
   "license": "MIT",
   "dependencies": {
-    "@medable/mdctl-core": "^1.0.73-alpha.0",
-    "@medable/mdctl-core-utils": "^1.0.73-alpha.0",
+    "@medable/mdctl-core": "^1.0.74-alpha.0",
+    "@medable/mdctl-core-utils": "^1.0.74-alpha.0",
     "axios": "^0.21.1",
     "axios-cookiejar-support": "^0.5.0",
     "clone": "^2.1.2",
