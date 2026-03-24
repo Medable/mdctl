@@ -15,6 +15,7 @@ const fs = require('fs'),
       {
         searchParamsToObject
       } = require('@medable/mdctl-core-utils'),
+      os = require('os'),
       { Config, Fault } = require('@medable/mdctl-core'),
       ExportStream = require('@medable/mdctl-core/streams/export_stream'),
       ExportFileTreeAdapter = require('@medable/mdctl-export-adapter-tree'),
@@ -24,9 +25,12 @@ const fs = require('fs'),
       exportEnv = async(input) => {
 
         const options = isSet(input) ? input : {},
-              { manifest: optionsManifest } = options,
-              client = options.client || new Client({ ...Config.global.client, ...options }),
-              outputDir = options.dir || process.cwd(),
+      { manifest: optionsManifest } = options
+
+let manifest = {}   // ✅ MOVE HERE (TOP)
+
+const client = options.client || new Client({ ...Config.global.client, ...options }),
+      outputDir = options.dir || process.cwd(),
               packageFile = options.package || `${outputDir}/package.${options.format || 'json'}`,
               // stream = ndjson.parse(),
               url = new URL('/developer/environment/export', client.environment.url),
@@ -44,10 +48,43 @@ const fs = require('fs'),
                 clearOutput: options.clear
               },
               streamTransform = new ExportStream(),
-              adapter = options.adapter || new ExportFileTreeAdapter(outputDir, streamOptions),
+              adapter = options.adapter || new ExportFileTreeAdapter(outputDir, streamOptions, manifest)
               // eslint-disable-next-line max-len
               lockUnlock = new LockUnlock(outputDir, client.environment.endpoint, client.environment.env),
-              memo = {},
+              memo = {}
+              const manifestFilter = new Transform({
+  objectMode: true,
+  transform(chunk, encoding, cb) {
+    try {
+      if (!manifest || Object.keys(manifest).length === 0) {
+        return cb(null, chunk)
+      }
+
+      const { object, name } = chunk
+      const key = object === 'object' ? 'objects' : object
+
+      if (manifest[key]) {
+        const config = manifest[key]
+
+        if (Array.isArray(config)) {
+          const match = config.find(item => {
+            return item.name === name || item.name === '*'
+          })
+          if (match) return cb(null, chunk)
+        } else if (config.includes) {
+          if (config.includes.includes('*') || config.includes.includes(name)) {
+            return cb(null, chunk)
+          }
+        }
+      }
+
+      return cb()
+
+    } catch (err) {
+      return cb(err)
+    }
+  }
+})
               logStream = new Transform({
                 objectMode: true,
                 transform(chunk, encoding, cb) {
@@ -58,7 +95,8 @@ const fs = require('fs'),
               })
 
         let manifestFile,
-            inputStream,
+            inputStream
+            manifest = {},
             preExport = () => {},
             postExport = () => {}
 
@@ -72,8 +110,7 @@ const fs = require('fs'),
         if (!options.stream) {
 
           let pkg,
-              script,
-              manifest = {}
+              script
 
           const getScript = (...params) => {
             for (const param of params) { // eslint-disable-line no-restricted-syntax
@@ -132,13 +169,26 @@ const fs = require('fs'),
             }
           }
 
-          if (optionsManifest) {
-            manifest = optionsManifest
-          } else if (pkg && pkg.manifest) {
+         if (optionsManifest) {
+  const expandedManifest = optionsManifest.startsWith('~')
+    ? path.join(os.homedir(), optionsManifest.slice(1))
+    : optionsManifest
+
+  manifestFile = path.isAbsolute(expandedManifest)
+    ? expandedManifest
+    : path.join(outputDir, expandedManifest)
+
+  if (!fs.existsSync(manifestFile)) {
+    throw Fault.create('kNotFound', { reason: `Manifest file not found: ${manifestFile}` })
+  }
+
+  manifest = JSON.parse(fs.readFileSync(manifestFile, 'utf8'))
+} else if (pkg && pkg.manifest) {
             manifestFile = `${outputDir}/${pkg.manifest}`
           } else if (fs.existsSync(`${outputDir}/manifest.${options.format || 'json'}`)) {
             manifestFile = `${outputDir}/manifest.${options.format || 'json'}`
-          }
+          } 
+          console.log('Using manifest:', JSON.stringify(manifest, null, 2))
 
           if (fs.existsSync(manifestFile)) {
             try {
@@ -160,9 +210,40 @@ const fs = require('fs'),
         } else {
           inputStream = options.stream.pipe(ndjson.parse())
         }
+const ALWAYS_PASS_KEYS = new Set(['manifest', 'manifest-exports', 'manifest-dependencies', 'package', 'stream'])
 
+const manifestKeys = Object.keys(manifest).filter(k => k !== 'object')
+
+const filterStream = new Transform({
+  objectMode: true,
+  transform(chunk, encoding, cb) {
+    const { key, name, code } = chunk
+
+    if (ALWAYS_PASS_KEYS.has(key) || !manifestKeys.length) {
+      this.push(chunk)
+      return cb()
+    }
+
+    if (key === 'object') {
+      if (manifest.objects instanceof Array && manifest.objects.some(o => o.name === name)) {
+        this.push(chunk)
+      }
+      return cb()
+    }
+
+    const entry = manifest[key]
+    if (entry && entry.includes instanceof Array) {
+      const inc = entry.includes
+      if (inc[0] === '*' || inc.includes(name || code)) {
+        this.push(chunk)
+      }
+    }
+
+    return cb()
+  }
+})
         return new Promise((resolve, reject) => {
-          const resultStream = pump(inputStream, streamTransform, logStream, adapter, async(err) => {
+          const resultStream = pump(inputStream, streamTransform, filterStream, logStream, adapter, async(err) => {
 
             try {
               await postExport({
