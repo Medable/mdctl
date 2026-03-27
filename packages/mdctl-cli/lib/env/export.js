@@ -27,7 +27,7 @@ const fs = require('fs'),
         const options = isSet(input) ? input : {},
       { manifest: optionsManifest } = options
 
-let manifest = {}   // ✅ MOVE HERE (TOP)
+let manifest = {}   
 
 const client = options.client || new Client({ ...Config.global.client, ...options }),
       outputDir = options.dir || process.cwd(),
@@ -48,43 +48,11 @@ const client = options.client || new Client({ ...Config.global.client, ...option
                 clearOutput: options.clear
               },
               streamTransform = new ExportStream(),
-              adapter = options.adapter || new ExportFileTreeAdapter(outputDir, streamOptions, manifest)
+              adapter = options.adapter || new ExportFileTreeAdapter(outputDir, streamOptions)
               // eslint-disable-next-line max-len
               lockUnlock = new LockUnlock(outputDir, client.environment.endpoint, client.environment.env),
               memo = {}
-              const manifestFilter = new Transform({
-  objectMode: true,
-  transform(chunk, encoding, cb) {
-    try {
-      if (!manifest || Object.keys(manifest).length === 0) {
-        return cb(null, chunk)
-      }
 
-      const { object, name } = chunk
-      const key = object === 'object' ? 'objects' : object
-
-      if (manifest[key]) {
-        const config = manifest[key]
-
-        if (Array.isArray(config)) {
-          const match = config.find(item => {
-            return item.name === name || item.name === '*'
-          })
-          if (match) return cb(null, chunk)
-        } else if (config.includes) {
-          if (config.includes.includes('*') || config.includes.includes(name)) {
-            return cb(null, chunk)
-          }
-        }
-      }
-
-      return cb()
-
-    } catch (err) {
-      return cb(err)
-    }
-  }
-})
               logStream = new Transform({
                 objectMode: true,
                 transform(chunk, encoding, cb) {
@@ -96,7 +64,6 @@ const client = options.client || new Client({ ...Config.global.client, ...option
 
         let manifestFile,
             inputStream
-            manifest = {},
             preExport = () => {},
             postExport = () => {}
 
@@ -188,9 +155,9 @@ const client = options.client || new Client({ ...Config.global.client, ...option
           } else if (fs.existsSync(`${outputDir}/manifest.${options.format || 'json'}`)) {
             manifestFile = `${outputDir}/manifest.${options.format || 'json'}`
           } 
-          console.log('Using manifest:', JSON.stringify(manifest, null, 2))
+          // console.log('Using manifest:', JSON.stringify(manifest, null, 2))
 
-          if (fs.existsSync(manifestFile)) {
+          if (manifestFile && !optionsManifest && fs.existsSync(manifestFile)) {
             try {
               manifest = parseString(fs.readFileSync(manifestFile), options.format)
             } catch (e) {
@@ -210,40 +177,9 @@ const client = options.client || new Client({ ...Config.global.client, ...option
         } else {
           inputStream = options.stream.pipe(ndjson.parse())
         }
-const ALWAYS_PASS_KEYS = new Set(['manifest', 'manifest-exports', 'manifest-dependencies', 'package', 'stream'])
 
-const manifestKeys = Object.keys(manifest).filter(k => k !== 'object')
-
-const filterStream = new Transform({
-  objectMode: true,
-  transform(chunk, encoding, cb) {
-    const { key, name, code } = chunk
-
-    if (ALWAYS_PASS_KEYS.has(key) || !manifestKeys.length) {
-      this.push(chunk)
-      return cb()
-    }
-
-    if (key === 'object') {
-      if (manifest.objects instanceof Array && manifest.objects.some(o => o.name === name)) {
-        this.push(chunk)
-      }
-      return cb()
-    }
-
-    const entry = manifest[key]
-    if (entry && entry.includes instanceof Array) {
-      const inc = entry.includes
-      if (inc[0] === '*' || inc.includes(name || code)) {
-        this.push(chunk)
-      }
-    }
-
-    return cb()
-  }
-})
         return new Promise((resolve, reject) => {
-          const resultStream = pump(inputStream, streamTransform, filterStream, logStream, adapter, async(err) => {
+          const resultStream = pump(inputStream, streamTransform, logStream, adapter, async(err) => {
 
             try {
               await postExport({
