@@ -1,0 +1,470 @@
+{
+  "aliases": [],
+  "assets": [],
+  "data": {
+    "account": {
+      "errors": {
+        "unauthenticated": "You must be logged in to access this page."
+      },
+      "timezoneDialog": {
+        "actions": {
+          "ignore": "Ignore",
+          "update": "Update"
+        },
+        "description": "We’ve detected a change in your time zone.",
+        "question": "Update to current time zone?",
+        "title": "Time Zone"
+      },
+      "title": "My Account",
+      "toast": {
+        "passwordUpdateSuccess": "Your account password has been updated.",
+        "updated": "updated"
+      },
+      "updatePassword": {
+        "action": "Update Password",
+        "fields": {
+          "currentPassword": "Current Password",
+          "newPassword": "New Password",
+          "reEnterPassword": "Re-enter Password"
+        },
+        "title": "Update Password"
+      }
+    },
+    "actions": {
+      "cancel": "Cancel",
+      "create": "Create",
+      "delete": "Delete",
+      "edit": "Edit",
+      "ok": "Ok",
+      "refresh": "Refresh",
+      "save": "Save"
+    },
+    "components": {
+      "barcodeScanner": {
+        "errors": {
+          "notAllowed": "Permission denied",
+          "unavailable": "Camera unavailable, please allow device to use the camera in order to capture a photo."
+        }
+      },
+      "camera": {
+        "actions": {
+          "capture": "Capture",
+          "recapture": "Recapture"
+        },
+        "errors": {
+          "notAllowed": "Permission denied",
+          "unavailable": "Camera unavailable, please allow device to use the camera in order to capture a photo."
+        }
+      },
+      "date": {
+        "datePlaceholder": "Enter a date",
+        "timePlaceholder": "Enter a time"
+      },
+      "documentArray": {
+        "newItemLabel": "Add new item"
+      },
+      "dropdown": {
+        "noItemsSelected": "Make a selection"
+      },
+      "field": {
+        "boolean": {
+          "notSpecified": "Not specified"
+        }
+      },
+      "fileManager": {
+        "uploadStates": {
+          "failed": "Upload Failed",
+          "processing": "Processing",
+          "queued": "Queued",
+          "succeeded": "Completed",
+          "uploading": "Uploading"
+        }
+      },
+      "filterBar": {
+        "advancedLogic": "Use advanced logic",
+        "basicLogic": "Use basic logic",
+        "emptyPlaceholderLabel": "Select a filter or enter a search term",
+        "placeholderLabel": "Select a filter"
+      },
+      "layout": {
+        "actions": {
+          "logout": "Log Out"
+        }
+      },
+      "list": {
+        "actions": {
+          "create": "Create",
+          "delete": "Delete",
+          "edit": "Edit",
+          "export": "Preview & Export",
+          "refresh": " ",
+          "view": "View"
+        },
+        "export": {
+          "labels": {
+            "close": "Close",
+            "download": "Download",
+            "title": "Export List in CSV Format"
+          }
+        },
+        "labels": {
+          "rowsPerPage": "Rows per page:"
+        }
+      },
+      "referenceField": {
+        "searchPlaceholder": "Search"
+      },
+      "table": {
+        "emptyMessage": "No data available",
+        "reorderableColumns": {
+          "firstColumnLabel": "Visible columns - reorder by dragging",
+          "secondColumnLabel": "Unused columns",
+          "title": "Configure Columns"
+        }
+      },
+      "toast": {
+        "errors": {
+          "retrying": "{{errorMessage}} (Retrying...)"
+        }
+      }
+    },
+    "copyright": "Copyright © 2020 Medable, Inc. All rights reserved.",
+    "dialogs": {
+      "delete": {
+        "content": "Are you sure you want to delete this {{label}}?",
+        "title": "Delete {{schema.label}}"
+      }
+    },
+    "errorDetail": {
+      "generic": {
+        "contactMessage": "If the problem persists, please contact {{medableSupport}}.",
+        "errorOccurred": "An error has occurred. You may be using an unsupported browser. Medable supports the most recent versions of the following browsers:",
+        "medableSupport": "Medable support"
+      },
+      "title": "Oops! Something went wrong.",
+      "unknownMessage": "But we're not sure what it was."
+    },
+    "errorPage": {
+      "403": {
+        "code": "403",
+        "goBack": "Go Back",
+        "goHome": "Go Home",
+        "message": "You don’t have sufficient permissions to access this page.",
+        "options": "You can",
+        "or": "or",
+        "status": "Forbidden"
+      },
+      "404": {
+        "code": "404",
+        "goBack": "Go Back",
+        "goHome": "Go Home",
+        "message": "Unfortunately, this page does not exist.",
+        "options": "You can",
+        "or": "or",
+        "status": "Page not found"
+      }
+    },
+    "filter": {
+      "clear": "Clear",
+      "labels": {
+        "startsWith": "starts with"
+      },
+      "placeholder": {
+        "filter": "Add a filter",
+        "search": "Search"
+      }
+    },
+    "forgotPassword": {
+      "actions": {
+        "back": "Back"
+      },
+      "alerts": {
+        "instructionsSent": "Instructions for resetting the password have been sent to {{email}}"
+      },
+      "instructions": {
+        "both": "Enter your email or mobile below and we’ll attempt to send you instructions on how you can reset your password.",
+        "email": "Enter your email below and we’ll attempt to send you instructions on how you can reset your password.",
+        "mobile": "Enter your mobile below and we’ll attempt to send you instructions on how you can reset your password."
+      },
+      "labels": {
+        "email": "Email",
+        "mobile": "Mobile",
+        "retrievePassword": "Retrieve password",
+        "send": "Send"
+      },
+      "placeholders": {
+        "mobile": "Enter mobile number"
+      },
+      "resetSent": {
+        "action": {
+          "label": "Return to Sign In"
+        },
+        "description": "If we recognize your information, we will send instructions on how to sign in.",
+        "title": "Request received!"
+      },
+      "validations": {
+        "email": "Email is required",
+        "mobile": "Mobile number is required"
+      }
+    },
+    "forgotUsername": {
+      "actions": {
+        "back": "Back",
+        "signin": "Return to Sign In"
+      },
+      "alerts": {
+        "success": "If we recognize your information, we will send instructions on how to sign in."
+      },
+      "instructions": {
+        "both": "Enter either your email or mobile number below and we’ll attempt to send you your username.",
+        "email": "Enter your email address below and we’ll attempt to send you your username.",
+        "mobile": "Enter your mobile number below and we’ll attempt to send you your username."
+      },
+      "labels": {
+        "email": "Email",
+        "mobile": "Mobile",
+        "request": "Request Received!",
+        "send": "Send",
+        "username": "Retrieve username"
+      },
+      "placeholders": {
+        "email": "name@example.com",
+        "mobile": "Enter mobile number"
+      }
+    },
+    "identity": {
+      "locale": "en_US",
+      "version": "1.1.1"
+    },
+    "labels": {
+      "created": "The entry was created.",
+      "deleted": "The entry was deleted.",
+      "notChanged": "The entry was not changed.",
+      "updated": "The entry was updated."
+    },
+    "languageSelection": {
+      "actions": {
+        "next": "Next"
+      },
+      "instructions": {
+        "select": "Please select your preferred language"
+      },
+      "labels": {
+        "language": "Language"
+      }
+    },
+    "login": {
+      "actions": {
+        "changeOrg": "Change organization",
+        "forgotPassword": "Forgot password",
+        "forgotUsername": "Forgot username",
+        "login": "Log In",
+        "loginWithSSO": "Login with SSO",
+        "register": "Sign up",
+        "setPassword": "Set New Password",
+        "signup": "Use invite code"
+      },
+      "instructions": {
+        "login": "Log in to {{orgName}}",
+        "verificationCode": "An SMS verification code has been sent to the number associated to the email entered above."
+      },
+      "labels": {
+        "confirmPassword": "Confirm Password",
+        "email": "Email",
+        "newPassword": "New Password",
+        "oldPassword": "Old Password",
+        "or": "Or",
+        "password": "Password",
+        "remember": "Remember this device",
+        "username": "Username",
+        "verificationCode": "Verification Code"
+      },
+      "placeholders": {
+        "email": "name@example.com",
+        "password": "Password",
+        "username": "Username",
+        "verificationCode": "Verification Code"
+      }
+    },
+    "loginMethod": {
+      "credentials": "Credentials",
+      "credentialsOrSso": "Credentials or SSO",
+      "sso": "SSO",
+      "title": "Login method"
+    },
+    "orgSelect": {
+      "actions": {
+        "back": "Back",
+        "change": "Change",
+        "select": "Select"
+      },
+      "headings": {
+        "change": "Change Org",
+        "select": "Select Org"
+      },
+      "instructions": {
+        "select": "Enter the name of the org you would like to log in to."
+      },
+      "labels": {
+        "orgName": "Org Name"
+      }
+    },
+    "privacy": {
+      "headings": {
+        "quickInfo": "Quick Info",
+        "resources": "Resources"
+      }
+    },
+    "profile": {
+      "actions": {
+        "done": "Done"
+      },
+      "gender": {
+        "female": "Female",
+        "male": "Male",
+        "neither": "Neither",
+        "other": "Other",
+        "transgender": "Transgender",
+        "unspecified": "Unspecified"
+      },
+      "headings": {
+        "label": "Profile"
+      },
+      "labels": {
+        "birthDate": "Date of Birth",
+        "email": "Email",
+        "gender": "Gender",
+        "locale": "Locale",
+        "mobile": "Mobile Number",
+        "name": "Name",
+        "subject": "Subject ID",
+        "tz": "Timezone",
+        "username": "Username"
+      },
+      "languageSelection": {
+        "label": "Preferred Language"
+      }
+    },
+    "registration": {
+      "actions": {
+        "register": "Register"
+      },
+      "instructions": {
+        "register": "Register for {{orgName}}",
+        "verificationCode": "An SMS verification code has been sent to the number entered above."
+      },
+      "labels": {
+        "confirmPassword": "Confirm Password",
+        "email": "Email Address",
+        "firstname": "First Name",
+        "lastname": "Last Name",
+        "mobileNumber": "Mobile Number",
+        "password": "Password"
+      },
+      "placeholders": {
+        "email": "your-email@medable.com",
+        "firstname": "First Name",
+        "lastname": "Last Name",
+        "mobileNumber": "0000000000",
+        "password": "Password"
+      }
+    },
+    "resetPassword": {
+      "actions": {
+        "cancel": "Cancel",
+        "submit": "Submit"
+      },
+      "alerts": {
+        "resetSuccess": "Your password has been set. You may now log in using your new password."
+      },
+      "instructions": {
+        "create": "Create new password",
+        "description": "Your password has been temporarily reset and we need you to create new one."
+      },
+      "labels": {
+        "confirmPassword": "Confirm Password",
+        "newPassword": "New Password"
+      }
+    },
+    "stringArray": {
+      "placeholder": "Add a string text and hit enter..."
+    },
+    "televisit": {
+      "alerts": {
+        "reScheduleSuccess": "Call rescheduled to {{dateTime}}",
+        "scheduleSuccess": "Call scheduled"
+      },
+      "descriptions": {
+        "audio_input": "Talk now. If the meter lights up, your microphone is working.",
+        "audio_input_error": "We are unable to detect your available microphones. This is likely due to a privacy setting in your browser. If the meter lights up, your microphone is working. If not, click on the camera icon in your browser address bar, enable access to camera and mic, and refresh your browser.",
+        "audio_input_help": "Check that your volume input is turned all the way up. You can check this in your computer settings or device settings. You will see a visual indicator on the previous page when you speak into the microphone.",
+        "audio_output": "If you can hear the test sound, your speakers are working.",
+        "audio_output_error": "We are unable to detect your available speakers. This is likely due to a privacy setting in your browser. However, if you can hear the test sound, your speakers are still working.",
+        "audio_output_help": "Check that your speaker volume is turned all the way up. You can check this in your computer settings or device settings. You can test the sound by clicking the “play test sound” button on the previous page.",
+        "audio_output_test": "The test sound is playing. If you cannot hear it, check that your speaker volume is turned up.",
+        "cancel": "Are you sure you want to cancel the visit?",
+        "schedule": "Schedule a televisit with the participant.",
+        "scheduled": "Your televisit is scheduled for {{start}}",
+        "video": "If you can see yourself, your camera is active.",
+        "video_help": "If you cannot see your camera working, you may need to allow access. In your browsers address bar, click the camera blocked icon and allow access. You may need to refresh your browser afterward. On tablet or mobile devices, you will need to allow access in your device settings or via the dialog that appears when you open the video call link.",
+        "waiting": "It’s time for your televisit. Please join the waiting room and we’ll be right with you."
+      },
+      "headers": {
+        "call_ready": "Your call is ready to begin.",
+        "settings": "Settings",
+        "televisit": "Televisit",
+        "waiting": "Waiting for other participants..."
+      },
+      "labels": {
+        "appointment_date": "Date and Time",
+        "audio_play": "Play Test Audio",
+        "audio_stop": "Stop Test Audio",
+        "camera": "Camera",
+        "cancel": "Cancel",
+        "cancel_visit": "Cancel Visit",
+        "close": "Close",
+        "done": "Done",
+        "help": "Need Help",
+        "join": "Join Now",
+        "join_call": "Join Call",
+        "join_waiting": "Join Waiting Room",
+        "microphone": "Microphone",
+        "reschedule": "Reschedule",
+        "schedule": "Schedule",
+        "schedule_call": "Schedule a Call",
+        "speaker": "Speaker",
+        "test": "Test Audio/Video",
+        "title": "Title"
+      },
+      "placeholders": {
+        "audio_input": "Unable to Detect Microphone",
+        "audio_output": "Unable to Detect Speaker",
+        "video": "Your camera is not enabled. Click on the camera icon in your browser address bar, enable access to camera and mic, and refresh your browser.",
+        "video_setting": "Unable to Detect Camera"
+      },
+      "values": {
+        "default_title": "Televisit"
+      }
+    },
+    "users": {
+      "alerts": {
+        "deleteSuccess": "User deleted"
+      },
+      "headings": {
+        "details": "User Details",
+        "list": "Users List",
+        "newUser": "New User",
+        "users": "Users"
+      }
+    }
+  },
+  "dirty": true,
+  "extensible": true,
+  "locale": "en_US",
+  "name": "web__framework_en_US_framework",
+  "namespace": "framework",
+  "object": "i18n",
+  "overridable": true,
+  "tags": [],
+  "weight": 0
+}

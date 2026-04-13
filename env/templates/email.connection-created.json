@@ -1,0 +1,29 @@
+{
+  "description": "Connection created for context.",
+  "label": "Connection Created",
+  "localizations": [
+    {
+      "locale": [
+        "en_US"
+      ],
+      "content": [
+        {
+          "data": "/env/templates/tpl/template.email.connection-created.en_US.html.html",
+          "name": "html"
+        },
+        {
+          "data": "/env/templates/tpl/template.email.connection-created.en_US.plain.txt",
+          "name": "plain"
+        },
+        {
+          "data": "/env/templates/tpl/template.email.connection-created.en_US.subject.txt",
+          "name": "subject"
+        }
+      ]
+    }
+  ],
+  "name": "connection-created",
+  "object": "template",
+  "partial": false,
+  "type": "email"
+}

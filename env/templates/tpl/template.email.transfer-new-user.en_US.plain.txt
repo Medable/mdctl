@@ -1,0 +1,1 @@
+A {{{i18n transfer.context.object}}} has been transferred to you. To sign up and accept, go to {{{transfer.url}}}

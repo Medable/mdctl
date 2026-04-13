@@ -1,0 +1,361 @@
+{
+  "aliases": [],
+  "assets": [],
+  "data": {
+    "account": {
+      "alerts": {
+        "locked": "Account locked",
+        "unlocked": "Account unlocked"
+      },
+      "labels": {
+        "lock": "Lock",
+        "unlock": "Unlock"
+      }
+    },
+    "components": {
+      "layout": {
+        "actions": {
+          "logout": "Log Out"
+        }
+      }
+    },
+    "documents": {
+      "actions": {
+        "cancel": "Cancel",
+        "create": "Create"
+      },
+      "documentStatuses": {
+        "voided": "Voided"
+      },
+      "errors": {
+        "email": "Email is not valid",
+        "failedSignerLink": "Unable to obtain link for signer"
+      },
+      "labels": {
+        "completionDate": "Completion date",
+        "completionDateAndTime": "Completion Date & Time",
+        "created": "created",
+        "documentTemplate": "Document Template",
+        "documentUploaded": "Document Uploaded",
+        "id": "ID",
+        "reasonForCancellation": "Reason for void document",
+        "signedUploadedDocument": "Signed uploaded document",
+        "status": "status"
+      },
+      "landing": {
+        "buttonText": "Send the first consent",
+        "heading": "Welcome to the Medable Consent Manager.",
+        "message": "No consents have been sent."
+      },
+      "manage": {
+        "actionsPopoverButton": "Actions",
+        "assignOrResend": "Assign or Resend",
+        "assignSigner": "Assign Signer",
+        "breadcrumbs": {
+          "consents": "Documents",
+          "manageConsent": "...",
+          "newConsent": "New document"
+        },
+        "cancelButton": "Cancel",
+        "cancelReason": "User requested",
+        "downloadDocumentButton": "Download",
+        "invitationSent": "Invitation sent",
+        "reasonForCancellation": {
+          "charactersRemaining": "{{REMAINING_CHARACTERS}} characters remaining.",
+          "exceededBy": "exceeded by {{CHARACTERS_EXCEEDED}}",
+          "fieldValidationLabel": "Reason",
+          "maxCharacters": "{{CHAR_LIMIT}} max characters",
+          "name": "Reason for cancellation",
+          "no": "No",
+          "placeholder": "Enter the reason for voiding the document (required)",
+          "title": "Would you like to continue with voiding your document?",
+          "yes": "Yes"
+        },
+        "resendInvite": "Resend Invite",
+        "sendDocumentButton": "Send Document",
+        "sendingDocumentButton": "Sending Document",
+        "sentDocumentButton": "Document Sent",
+        "signNowButton": "Sign Now",
+        "signatureComplete": {
+          "dateInstructions": "Select the date the participant signed the document",
+          "dateLabel": "Date",
+          "datePlaceholder": "Select a date",
+          "title": "Signature Complete",
+          "uploadDocNotice": "You are not required to upload a document at this time for a participant to consent"
+        },
+        "signatureCompleteButton": "Signature Complete",
+        "tabViewDigitalDocument": "View Digital Document",
+        "tabViewDocument": "View Document",
+        "tabVoid": "Void",
+        "tabVoidDocument": "Void Document",
+        "templateSelect": {
+          "downloadDocument": "Download Document",
+          "dropdownSelectText": "{{TEMPLATE_NAME}} - published - {{PUBLISHED_DATE}}",
+          "eSignature": "E-signature",
+          "emptyText": "Select document template",
+          "participantSearchText": "Search Participant Name, ID, Email",
+          "participantSelectText": "Select Participant Name, ID, Email",
+          "printToSign": "Print to sign",
+          "signatureTypeLabel": "Signature Type",
+          "templateLabel": "Document Template",
+          "title": "New Document"
+        },
+        "uploadNewDocumentButton": "Upload New Document",
+        "voidCancelButton": "Cancel",
+        "voidDialog": {
+          "content": "Are you sure you want to void this document?",
+          "title": "Confirm Void Document?"
+        },
+        "voidProcessButton": "Void"
+      },
+      "percentageRead": "Read",
+      "signers": {
+        "title": "Signers"
+      },
+      "sourceDocument": "Source document:",
+      "title": "Documents",
+      "titleBuilder": "Builder View"
+    },
+    "download": {
+      "buttonText": "PDF Copy",
+      "heading": "Download a copy"
+    },
+    "generic": {
+      "cancel": "Cancel",
+      "leave": "Leave"
+    },
+    "identity": {
+      "locale": "en_US",
+      "version": "1.0.0"
+    },
+    "invite": {
+      "label": {
+        "cancel": "Cancel",
+        "send": "Send"
+      }
+    },
+    "leavePage": {
+      "description": "Changes you made may not be saved.",
+      "title": "Leave page?"
+    },
+    "menu": {
+      "applications": "Applications",
+      "documents": "Documents",
+      "messages": {
+        "userOrgNotInstalled": "Please contact your Administrator to request User and Site Management access."
+      },
+      "participants": "Participant",
+      "templates": "Templates",
+      "users": "Users"
+    },
+    "participant": {
+      "descriptions": {
+        "autoParticipantIdInfo": "Study is configured to generate Participant ID automatically",
+        "piiCommsAcknowledgement": "Participant acknowledges email address may be used for study-related communications"
+      },
+      "documents": {
+        "actions": {
+          "add": "Add Document"
+        },
+        "columns": {
+          "updated": "Updated"
+        }
+      },
+      "headings": {
+        "create": "New Participant",
+        "documents": "Documents",
+        "participant": "Participant",
+        "read": "Profile"
+      },
+      "labels": {
+        "email": "Email",
+        "language": "Language",
+        "participantGroup": "Participant Group",
+        "participantId": "Participant ID",
+        "status": "Status"
+      },
+      "tabHeadings": {
+        "visitSchedule": "Visit Schedule"
+      },
+      "validation": {
+        "email": "Must be a valid email"
+      },
+      "visitSchedule": {
+        "columns": {
+          "tasks": "Tasks",
+          "visit": "Visit"
+        }
+      }
+    },
+    "participants": {
+      "actions": {
+        "create": "New Participant"
+      },
+      "headings": {
+        "created": "Created",
+        "name": "Name",
+        "participantList": "Participant List",
+        "participants": "Participants"
+      }
+    },
+    "profile": {
+      "actions": {
+        "changePassword": "Change Password",
+        "done": "done"
+      },
+      "labels": {
+        "email": "email",
+        "mobile": "mobile phone number"
+      },
+      "languageSelection": {
+        "label": "preferred language"
+      }
+    },
+    "registration": {
+      "actions": {
+        "submitRegistration": "Done"
+      },
+      "instructions": {
+        "mobileNumber": "Please include your country code. For example, +1 for the US: +1 212-555-1212",
+        "register": "Register Now",
+        "rememberPassword": "You will need to enter this again when you sign - so be sure to remember it"
+      },
+      "labels": {
+        "confirmPassword": "Confirm Password",
+        "edit": "edit",
+        "email": "Email Address",
+        "firstname": "First Name",
+        "gender": "gender",
+        "lastname": "Last Name",
+        "mobileNumber": "Mobile Number",
+        "participantId": "Participant Id",
+        "password": "Password",
+        "phoneNumber": "phone number",
+        "status": "status",
+        "timeZone": "time zone",
+        "visitSchedule": "Visit Schedule"
+      },
+      "validations": {
+        "validPhoneNumber": "Please enter a valid phone number. Numbers must include your country/area codes. For example, +1 for the US: +1 212-555-1212"
+      }
+    },
+    "resetPassword": {
+      "actions": {
+        "cancel": "Cancel",
+        "resetPassword": "Reset Password",
+        "sendLink": "Send Reset Link",
+        "setPassword": "Set Password"
+      },
+      "alerts": {
+        "resetLinkSent": "A password reset link has been sent to {{email}}.",
+        "setSuccess": "The password has been successfully set."
+      },
+      "labels": {
+        "newPassword": "New Password",
+        "requireChange": "Require change at next log in",
+        "resetPassword": "Reset Password"
+      }
+    },
+    "site": {
+      "actions": {
+        "cancel": "Cancel",
+        "change": "change",
+        "select": "Select"
+      },
+      "errors": {
+        "selectSite": "Select a site"
+      },
+      "headings": {
+        "selectSite": "Select Site"
+      },
+      "labels": {
+        "site": "Site"
+      }
+    },
+    "study": {
+      "labels": {
+        "name": "Study",
+        "protocol": "Protocol",
+        "sponsoredBy": "Sponsored By"
+      }
+    },
+    "televisit": {
+      "actions": {
+        "joinCall": "JOIN CALL",
+        "reschedule": "Reschedule",
+        "testAudioAndVideo": "TEST AUDIO & VIDEO"
+      },
+      "messages": {
+        "scheduledForToday": "A televisit with the participant is scheduled {{time}} minutes ago.",
+        "scheduledForToday_plural": "A televisit with the participant is scheduled {{time}} minutes ago.",
+        "waitingMessage": "The participant joined the call."
+      }
+    },
+    "templates": {
+      "config": {
+        "actions": {
+          "save": "Save"
+        },
+        "labels": {
+          "eSign": "Digital Document",
+          "printToSign": "Printed Document"
+        },
+        "printToSign": {
+          "uploadDocumentDialog": {
+            "fields": {
+              "description": "Select the section above to upload a document. File formats accepted: PDF, JPEG. Max file size: {{file_size_limit}}MB.",
+              "label": "Upload From Device",
+              "uploadText": "Upload a document"
+            },
+            "fileUploadError": "Error: File size greater than {{file_size_limit}}MB limit",
+            "fileUploadExtError": "Wrong file type: The file you selected could not be uploaded. Only files with extensions PDF and JPEG are allowed."
+          }
+        }
+      },
+      "editor": {
+        "components": {
+          "input": {
+            "widgetTemplate": {
+              "inputError": "Invalid Input"
+            }
+          }
+        }
+      }
+    },
+    "users": {
+      "headings": {
+        "details": "User Details",
+        "list": "Users",
+        "newUser": "New User",
+        "users": "Users"
+      },
+      "sites": {
+        "actions": {
+          "assign": "Assign",
+          "cancel": "Cancel",
+          "unassign": "Unassign"
+        },
+        "alerts": {
+          "assigned": "Site(s) assigned successfully",
+          "unassigned": "Site unassigned successfully"
+        },
+        "labels": {
+          "selectSite": "Select Site"
+        },
+        "title": "Assign Sites"
+      }
+    },
+    "visits": {
+      "title": "Visits"
+    }
+  },
+  "dirty": true,
+  "extensible": true,
+  "locale": "en_US",
+  "name": "web__econsent_tool_v2_en_US_main",
+  "namespace": "econsent-tool-v2-main",
+  "object": "i18n",
+  "overridable": true,
+  "tags": [],
+  "weight": 0
+}

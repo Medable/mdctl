@@ -1,0 +1,64 @@
+{
+  "isPublic": false,
+  "name": "ec__linked_fields_config",
+  "object": "config",
+  "value": [
+    {
+      "ec__key": "c_number",
+      "ec__placeholder": "site_number",
+      "ec__optional": true
+    },
+    {
+      "ec__key": "c_name",
+      "ec__placeholder": "site_name",
+      "ec__optional": true
+    },
+    {
+      "ec__key": "c_email",
+      "ec__placeholder": "site_email",
+      "ec__optional": true
+    },
+    {
+      "ec__key": "c_pi_name",
+      "ec__placeholder": "site_pi_name",
+      "ec__optional": true
+    },
+    {
+      "ec__key": "c_site_address.c_address_line",
+      "ec__placeholder": "site_address_line",
+      "ec__optional": true
+    },
+    {
+      "ec__key": "c_site_address.c_city",
+      "ec__placeholder": "site_address_city_town",
+      "ec__optional": true
+    },
+    {
+      "ec__key": "c_site_address.c_state",
+      "ec__placeholder": "site_address_state_province_region",
+      "ec__optional": true
+    },
+    {
+      "ec__key": "c_site_address.c_zip_code",
+      "ec__placeholder": "site_address_zip_postal_code",
+      "ec__optional": true
+    },
+    {
+      "ec__key": "c_site_address.c_country",
+      "ec__placeholder": "site_address_country",
+      "ec__optional": true
+    },
+    {
+      "ec__key": "c_contacts",
+      "ec__placeholder": "site_phonenumber_24hour",
+      "ec__label": "24-Hour Phone Number",
+      "ec__optional": true
+    },
+    {
+      "ec__key": "c_contacts",
+      "ec__placeholder": "site_phonenumber_daytime",
+      "ec__label": "Daytime Phone Number",
+      "ec__optional": true
+    }
+  ]
+}

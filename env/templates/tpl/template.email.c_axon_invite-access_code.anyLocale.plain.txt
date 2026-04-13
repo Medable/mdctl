@@ -1,0 +1,13 @@
+{{{i18n "axon:template.email.c_axon_invite-access_code.title" study_name=study_name}}}
+
+{{i18n "axon:template.email.c_axon_invite-access_code.instructions"}}
+
+* {{i18n "axon:template.email.c_axon_invite-access_code.email"}} {{email}}
+* {{i18n "axon:template.email.c_axon_invite-access_code.accessCode"}} {{access_code}}
+
+{{#if downloadText}}{{i18n "axon:template.email.c_axon_invite-access_code.downloadText"}}
+{{#if appleStore}}* {{i18n "axon:template.email.c_axon_invite-access_code.appleStore"}} {{appleStore_url}} {{/if}}
+{{#if googleStore}}* {{i18n "axon:template.email.c_axon_invite-access_code.googleStore"}} {{googleStore_url}} {{/if}}
+{{/if}}
+
+{{i18n "axon:template.email.c_axon_invite-access_code.browserLink"}} {{paweb_url}}

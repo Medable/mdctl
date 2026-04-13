@@ -1,0 +1,11 @@
+{{{i18n "axon:template.sms.c_axon_sms-invite_users.message_1" study_name=study_name}}}
+
+{{{i18n "axon:template.sms.c_axon_sms-invite_users.instructionsOne"}}}
+
+{{{i18n "axon:template.sms.c_axon_sms-invite_users.credentials" email=email username=username mobile=mobile access_code=access_code}}}
+
+{{{i18n "axon:template.sms.c_axon_sms-invite_users.instructionsTwo"}}}
+{{{i18n "axon:template.sms.c_axon_sms-invite_users.appStoreLink"}}}
+{{{i18n "axon:template.sms.c_axon_sms-invite_users.googlePlayLink"}}}
+
+{{{i18n "axon:template.sms.c_axon_sms-invite_users.webLink" paweb_url=paweb_url}}}

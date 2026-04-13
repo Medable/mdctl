@@ -1,0 +1,5 @@
+{{i18n "axon:template.email.account-auth-locked.hello" account=account}}
+
+{{i18n "axon:template.email.account-auth-locked.attempts" attempts=attempts}}
+
+{{{i18n "axon:template.email.account-auth-locked.duration" durationMinutes=durationMinutes}}}

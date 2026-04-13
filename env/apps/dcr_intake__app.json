@@ -1,0 +1,26 @@
+{
+  "allowNameMapping": true,
+  "authDuration": 4000,
+  "blacklist": [],
+  "cors": [
+    "https://datachange-m6269.alpha-latest.medable.com"
+  ],
+  "csrf": false,
+  "enabled": true,
+  "expires": null,
+  "expose": false,
+  "label": "DCR Intake App",
+  "maxTokensPerPrincipal": 10,
+  "name": "dcr_intake__app",
+  "object": "app",
+  "readOnly": false,
+  "sessions": true,
+  "urls": {
+    "connection": "",
+    "resetPassword": "",
+    "createPassword": "",
+    "activateAccount": "",
+    "verifyAccount": ""
+  },
+  "whitelist": []
+}

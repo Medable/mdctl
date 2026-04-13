@@ -1,0 +1,18 @@
+{
+  "duplicates": false,
+  "endpoints": [
+    {
+      "configurable": true,
+      "defaultUserState": 0,
+      "label": "Email",
+      "name": "email",
+      "state": "Enabled",
+      "template": "dt__execution_status",
+      "type": "email"
+    }
+  ],
+  "label": "Email notification for data transfer execution status",
+  "name": "dt__execution_status",
+  "object": "notification",
+  "persists": false
+}

@@ -1,0 +1,8 @@
+{
+  "isPublic": true,
+  "name": "cdb__featureFlagMobile",
+  "object": "config",
+  "value": {
+    "connectedDevices": true
+  }
+}

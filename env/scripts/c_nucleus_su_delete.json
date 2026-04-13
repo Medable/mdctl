@@ -1,0 +1,20 @@
+{
+  "active": true,
+  "configuration": {
+    "event": "delete.before",
+    "inline": false,
+    "object": "c_site_user",
+    "paths": []
+  },
+  "description": "Removing the users connection to the site",
+  "environment": "*",
+  "label": "Nucleus - SU Delete",
+  "language": "javascript/es6",
+  "name": "c_nucleus_su_delete",
+  "object": "script",
+  "optimized": false,
+  "principal": "serviceAccount.c_system_user",
+  "script": "/env/scripts/js/trigger.c_nucleus_su_delete.js",
+  "type": "trigger",
+  "weight": 0
+}

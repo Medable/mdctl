@@ -1,0 +1,26 @@
+{
+  "active": true,
+  "configuration": {
+    "event": "update.after",
+    "inline": false,
+    "object": "c_event",
+    "paths": []
+  },
+  "description": "Sends emails for rescheduled and canceled events.",
+  "environment": "*",
+  "if": {
+    "$eq": [
+      "$$ROOT.type",
+      "c_televisit_event"
+    ]
+  },
+  "label": "Axon - c_event after Update",
+  "language": "javascript/es6",
+  "name": "c_axon_c_event_after_update",
+  "object": "script",
+  "optimized": false,
+  "principal": "serviceAccount.c_system_user",
+  "script": "/env/scripts/js/trigger.c_axon_c_event_after_update.js",
+  "type": "trigger",
+  "weight": 0
+}

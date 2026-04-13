@@ -1,0 +1,2 @@
+{{i18n "axon:template.push.c_axon_virtual_visit_missed.hello" account=account}}
+{{i18n "axon:template.push.c_axon_virtual_visit_missed.message_1"}}

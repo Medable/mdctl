@@ -1,0 +1,16 @@
+{
+  "active": true,
+  "configuration": {
+    "export": "ab__c_public_user_visit_schedule"
+  },
+  "environment": "*",
+  "label": "AB - Public User Visit Schedule Update",
+  "language": "javascript/es6",
+  "name": "ab__c_public_user_visit_schedule",
+  "object": "script",
+  "optimized": false,
+  "principal": null,
+  "script": "/env/scripts/js/library.ab__c_public_user_visit_schedule.js",
+  "type": "library",
+  "weight": 0
+}

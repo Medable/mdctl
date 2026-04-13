@@ -1,0 +1,29 @@
+{
+  "description": "This is sent to providers once they are verified",
+  "label": "Provider Verification Complete",
+  "localizations": [
+    {
+      "locale": [
+        "en_US"
+      ],
+      "content": [
+        {
+          "data": "/env/templates/tpl/template.email.account-provider-verification-verified.en_US.html.html",
+          "name": "html"
+        },
+        {
+          "data": "/env/templates/tpl/template.email.account-provider-verification-verified.en_US.plain.txt",
+          "name": "plain"
+        },
+        {
+          "data": "/env/templates/tpl/template.email.account-provider-verification-verified.en_US.subject.txt",
+          "name": "subject"
+        }
+      ]
+    }
+  ],
+  "name": "account-provider-verification-verified",
+  "object": "template",
+  "partial": false,
+  "type": "email"
+}

@@ -1,0 +1,279 @@
+{
+  "aliases": [],
+  "assets": [],
+  "data": {
+    "identity": {
+      "locale": "en_US",
+      "version": "1.11.0"
+    },
+    "template": {
+      "email": {
+        "account-auth-locked": {
+          "attempts": "Your account has been locked due to {{attempts}} consecutive sign-in failure(s).",
+          "duration": "Your account will be locked {{#if durationMinutes}}for the next {{IntlNumberFormat durationMinutes style='unit' unit='minute' unitDisplay='long'}}{{/if}}{{#unless durationMinutes}}indefinitely{{/unless}}.",
+          "hello": "Hi {{account.name.first}},",
+          "subject": "Your {{{org.name}}} account has been locked due to unauthorized access.",
+          "title": "Your {{org.name}} account has been locked!"
+        },
+        "account-provisioned": {
+          "buttonText": "Create Password",
+          "clickAction": "Click the button below to create your password",
+          "clickActionPlain": "To create your password, please go to {{{createPassword.url}}}",
+          "hello": "Hi {{account.name.first}},",
+          "subject": "Create your password on {{{org.name}}}",
+          "title": "Create your password on {{org.name}}"
+        },
+        "c_axon_invite-access_code": {
+          "accessCode": "Invite Code:",
+          "appleStore": "Apple App Store:",
+          "browserLink": "To access the study on a desktop or mobile web browser:",
+          "downloadText": "Click here to download the study app on your mobile phone:",
+          "email": "Email:",
+          "googleStore": "Google Play Store:",
+          "instructions": "When prompted by the app, please enter the email/username that you were invited with along with the following invite code:",
+          "mobile": "Mobile:",
+          "subject": "You have been invited to the \"{{{study_name}}}\" study.",
+          "title": "You have been invited to participate in the \"{{{study_name}}}\" study.",
+          "username": "Username:"
+        },
+        "c_axon_invite-expired": {
+          "instructions": "Please contact your study facilitator to renew your invite",
+          "subject": "Invite to the \"{{{study_name}}}\" study: Information.",
+          "title": "It appears that your invite to the \"{{{study_name}}}\" study has expired."
+        },
+        "c_axon_invite-forgot_username": {
+          "subject": "Important information from {{{studyName}}}",
+          "title": "Important information from {{studyName}}",
+          "username": "Your username for <b>{{studyName}}</b> is:"
+        },
+        "c_axon_invite-pin_expired": {
+          "instructions": "Please contact your study facilitator to renew your invite",
+          "subject": "Invite to the \"{{{study_name}}}\" study: Information.",
+          "title": "It appears that your invite code to the \"{{{study_name}}}\" study has expired."
+        },
+        "c_axon_invite-pin_only": {
+          "accessCode": "Invite Code:",
+          "appleStore": "Apple App Store:",
+          "browserLink": "To access the study on a desktop or mobile web browser:",
+          "downloadText": "Click here to download the study app on your mobile phone:",
+          "email": "Email:",
+          "googleStore": "Google Play Store:",
+          "instructions": "When prompted by the app, please enter the email that you were invited with along with the following invite code:",
+          "subject": "You have been invited to the \"{{{study_name}}}\" study.",
+          "title": "You have been invited to participate in the \"{{{study_name}}}\" study."
+        },
+        "c_axon_leave_study": {
+          "accountId": "Account ID:",
+          "instructions": "Please unenroll them through the Axon web interface.",
+          "studyCode": "Code Name:",
+          "studyId": "Study ID:",
+          "studyInformation": "Study info:",
+          "studyName": "Name:",
+          "subject": "{{org.name}} Axon - \"{{{study_name}}}\" Leave Request for: {{{account_id}}}",
+          "title": "This participant in the \"{{{org.name}}}\" organization is requesting to leave the study \"{{{study_name}}}\":"
+        },
+        "c_axon_leave_study_mgmt": {
+          "instructionOne": "Please reach out to this participant as soon as possible.",
+          "instructionTwo": "Click the link below to access their participant record.",
+          "subject": "Participant #{{{participant_id}}} would like to leave {{{study_name}}}",
+          "title": "Participant #{{{participant_id}}} has indicated that they would like to leave \"{{{study_name}}}\""
+        },
+        "c_axon_new_caregiver_invite": {
+          "accessCode": "Invite Code",
+          "appleStore": "Apple App Store:",
+          "browserLink": "To access the study on a desktop or mobile web browser:",
+          "codeInstructions": "When prompted by the app, please enter the invite code below:",
+          "downloadText": "Click here to download the study app on your mobile phone:",
+          "googleStore": "Google Play Store:",
+          "mobileInstructions": "You have been invited to participate in the <b>{{{study_name}}}</b> study. Click below to download the study app on your mobile phone:",
+          "pushNotificationsInstructions": "Once you download the app, it is recommended to turn on push notifications and auto updates to ensure the best experience.",
+          "subject": "You have been invited to the {{{study_name}}} study.",
+          "thankYou": "Thank you for shaping the future of health.",
+          "title": "You are invited.",
+          "webButtonText": "Go to study",
+          "webInstructions": "You have been invited to participate in the <b>{{{study_name}}}</b> study. Click the link below to access the study:"
+        },
+        "c_axon_new_participant_invite": {
+          "accessCode": "Invite Code",
+          "appleStore": "Apple App Store:",
+          "browserLink": "To access the study on a desktop or mobile web browser:",
+          "codeInstructions": "When prompted by the app, please enter the invite code below:",
+          "downloadText": "Click here to download the study app on your mobile phone:",
+          "googleStore": "Google Play Store:",
+          "mobileInstructions": "You have been invited to participate in the <b>{{{study_name}}}</b> study. Click below to download the study app on your mobile phone:",
+          "pushNotificationsInstructions": "Once you download the app, it is recommended to turn on push notifications and auto updates to ensure the best experience.",
+          "studyCode": "Study Code",
+          "subject": "You have been invited to the {{{study_name}}} study.",
+          "thankYou": "Thank you for shaping the future of health.",
+          "title": "You are invited.",
+          "webButtonText": "Go to study",
+          "webInstructions": "You have been invited to participate in the <b>{{{study_name}}}</b> study. Click the link below to access the study:"
+        },
+        "c_axon_virtual_visit_15min_reminder": {
+          "hello": "Hi {{{account.name.first}}},",
+          "instructionThree": "If you need to reschedule or you miss your visit time, please contact us.",
+          "instructionsOne": "Before the visit begins, please make sure you are in a quiet and private place.",
+          "instructionsTwo": "If using a mobile app, you will receive a notification on your mobile device 5 minutes before the start of your virtual visit. When it’s time for your televisit, please log in to your study app and press  ‘Join Waiting Room.’",
+          "subject": "Your virtual visit starts in 15 minutes!",
+          "visitStarts": "Your virtual visit starts in 15 minutes."
+        },
+        "c_axon_virtual_visit_5min_reminder": {
+          "hello": "Hi {{{account.name.first}}},",
+          "instructionThree": "If you need to reschedule or you miss your visit time, please contact us.",
+          "instructionsOne": "Before the visit begins, please make sure you are in a quiet and private place.",
+          "instructionsTwo": "If using a mobile app, you will receive a notification on your mobile device 5 minutes before the start of your virtual visit. When it’s time for your televisit, please log in to your study app and press ‘Join Waiting Room.’",
+          "subject": "Your virtual visit starts in 5 minutes!",
+          "visitStarts": "Your virtual visit starts in 5 minutes."
+        },
+        "c_axon_virtual_visit_canceled": {
+          "hello": "Hi {{{account.name.first}}} {{{account.name.last}}},",
+          "instruction": "If you need to reschedule, please contact us.",
+          "subject": "Your virtual visit has been canceled!",
+          "title": "We canceled your virtual visit scheduled for {{date}} at {{time}} {{timezone}}."
+        },
+        "c_axon_virtual_visit_new": {
+          "hello": "Hi {{{account.name.first}}} {{{account.name.last}}},",
+          "instructionOne": "Before the visit begins, please make sure you are in a quiet and private place.",
+          "instructionThree": "Best of luck with your virtual visit! If you need to reschedule, please contact us.",
+          "instructionTwo": "If using a mobile app, you will receive a notification on your mobile device 5 minutes before the start of your virtual visit. When it’s time for your televisit, please log in to your study app and press ‘Join Waiting Room.’",
+          "subject": "We’ve scheduled your virtual visit!",
+          "title": "We scheduled your virtual visit for {{date}} at {{time}} {{timezone}}."
+        },
+        "c_axon_virtual_visit_reminder": {
+          "hello": "Hi {{{account.name.first}}} {{{account.name.last}}},",
+          "instructionOne": "Before the visit begins, please make sure you are in a quiet and private place.",
+          "instructionThree": "If you need to reschedule or you miss your visit time, please contact us.",
+          "instructionTwo": "If using a mobile app,you will receive a notification on your mobile device 15 minutes before the start of your virtual visit. When it’s time for your televisit, please log in to your study app and click ‘Join Waiting Room.’",
+          "subject": "Your virtual visit is coming up!",
+          "title": "We scheduled your virtual visit for {{date}} at {{time}} {{timezone}}."
+        },
+        "c_axon_virtual_visit_rescheduled": {
+          "hello": "Hi {{{account.name.first}}} {{{account.name.last}}},",
+          "instructionOne": "Before the visit begins, please make sure you are in a quiet and private place.",
+          "instructionThree": "If you need to reschedule or you miss your visit time, please contact us.",
+          "instructionTwo": "If using a mobile app, you will receive a notification on your mobile device 5 minutes before the start of your virtual visit. When it’s time for your televisit, please log in to your study app and press ‘Join Waiting Room.’",
+          "subject": "Your virtual visit is rescheduled!",
+          "title": "We rescheduled your virtual visit for {{date}} at {{time}} {{timezone}}."
+        },
+        "c_pi_oversight_digest": {
+          "footer": "Please sign in to review and sign off on participant data.",
+          "greeting": "Hi {{{pi_name}}},",
+          "intro": "The following participants in study \"{{{study_name}}}\" at site \"{{{site_name}}}\" require your oversight review and signature:",
+          "signin_cta": "Sign In",
+          "signin_prompt": "Please sign in to review.",
+          "subject": "PI Oversight: Participants Requiring Review",
+          "title": "PI Oversight Digest"
+        },
+        "c_send_signed_doc": {
+          "subject": "Your consent document.",
+          "title": "Here is your consent document:"
+        },
+        "gcm-regid-reassigned": {
+          "hello": "Hi {{account.name.first}},",
+          "instructions": "Someone has signed-in on an Android device you have previously used. You won't receive push notifications to that device until the next time you sign-in on it.",
+          "subject": "{{{org.name}}} device change",
+          "title": "{{org.name}} device change"
+        },
+        "ios-token-reassigned": {
+          "hello": "Hi {{account.name.first}},",
+          "instructions": "Someone has signed-in on an iOS device you have previously used. You won't receive push notifications to that device until the next time you sign-in on it.",
+          "subject": "{{{org.name}}} device change",
+          "title": "{{org.name}} device change"
+        },
+        "layout": {
+          "alt": "logo",
+          "copyright": "{{org.name}} © Copyright {{formatDate \"YYYY\"}} ."
+        },
+        "lost-password": {
+          "buttonText": "Reset Password",
+          "hello": "Hi {{account.name.first}},",
+          "instructions": "Click the button below to reset your password",
+          "plainInstructions": "To reset your password, please go to {{{reset.url}}}",
+          "subject": "Reset your password on {{{org.name}}}",
+          "title": "Reset your password on {{org.name}}"
+        },
+        "mobile-change-notification": {
+          "hello": "Hi {{account.name.first}},",
+          "instructions": "Your {{org.name}} mobile number has been changed.",
+          "subject": "Your mobile number has changed",
+          "title": "Your mobile number has changed"
+        },
+        "password-change-notification": {
+          "hello": "Hi {{account.name.first}},",
+          "instructions": "Your {{{org.name}}} account password has been changed.",
+          "subject": "Your password has changed",
+          "title": "Your password has changed"
+        }
+      },
+      "push": {
+        "c_axon_virtual_visit_15m_reminder": {
+          "hello": "Hi {{{account.name.first}}},",
+          "message": "Hi {{{account.name.first}}},\nYour virtual visit starts in 15 minutes.",
+          "message_1": "Your virtual visit starts in 15 minutes."
+        },
+        "c_axon_virtual_visit_missed": {
+          "hello": "Hi {{{account.name.first}}},",
+          "message": "Hi {{{account.name.first}}},\nSorry, we missed you! Please contact us to reschedule your virtual visit.",
+          "message_1": "Sorry, we missed you! Please contact us to reschedule your virtual visit."
+        }
+      },
+      "sms": {
+        "c_axon_lost_password": {
+          "hello": "Hi {{{account.name.first}}},",
+          "message": "Hi {{{account.name.first}}},\n\nTo reset your password, please go to {{{reset.url}}}",
+          "message_1": "To reset your password, please go to {{{reset.url}}}"
+        },
+        "c_axon_sms-invite_expired": {
+          "instructions": "Please contact your study facilitator to renew your invite",
+          "message": "It appears that your invite to the \"{{{study_name}}}\" study has expired.\n\nPlease contact your study facilitator to renew your invite ",
+          "message_1": "It appears that your invite to the \"{{{study_name}}}\" study has expired."
+        },
+        "c_axon_sms-invite_pin_only": {
+          "appStoreLink": "* Apple App Store: https://itunes.apple.com/us/app/axon-prod/id1160464791?ls=1&mt=8",
+          "code": "* Invite Code: {{{access_code}}}",
+          "email": "* Email: {{{email}}}",
+          "googlePlayLink": "* Google Play Store: https://play.google.com/store/apps/details?id=com.medable.axon.flask",
+          "instructionsOne": "When prompted by the app, please enter the email address that you were invited with and this invite code:",
+          "instructionsTwo": "Click here to download the study app on your mobile phone:",
+          "message": "You have been invited to participate in the \"{{{study_name}}}\" study.\n\nWhen prompted by the app, please enter the email address that you were invited with and this invite code:\n\n* Email: {{{email}}}\n* Invite Code: {{{access_code}}}\n\nClick here to download the study app on your mobile phone: \n* Apple App Store: https://itunes.apple.com/us/app/axon-prod/id1160464791?ls=1&mt=8\n* Google Play Store: https://play.google.com/store/apps/details?id=com.medable.axon.flask\n\nTo access the study on a desktop or mobile web browser: {{{paweb_url}}}",
+          "message_1": "You have been invited to participate in the \"{{{study_name}}}\" study.",
+          "webLink": "To access the study on a desktop or mobile web browser: {{{paweb_url}}}"
+        },
+        "c_axon_sms-invite_users": {
+          "appStoreLink": "* Apple App Store: https://itunes.apple.com/us/app/axon-prod/id1160464791?ls=1&mt=8",
+          "credentials": "{{#if email}}* Email: {{{email}}}\n{{/if}}{{#if username}}* Username: {{{username}}}\n{{/if}}{{#if mobile}}* Mobile: {{{mobile}}}\n{{/if}}* Invite Code: {{{access_code}}}",
+          "googlePlayLink": "* Google Play Store: https://play.google.com/store/apps/details?id=com.medable.axon.flask",
+          "instructionsOne": "When prompted by the app, please enter the email address that you were invited with and this invite code:",
+          "instructionsTwo": "Click here to download the study app on your mobile phone:",
+          "message": "You have been invited to participate in the \"{{{study_name}}}\" study.\n\nWhen prompted by the app, please enter the email address that you were invited with and this invite code:\n\n{{#if email}}* Email: {{{email}}}{{/if}}\n{{#if username}}* Username: {{{username}}}{{/if}}\n{{#if mobile}}* Mobile: {{{mobile}}}{{/if}}\n* Invite Code: {{{access_code}}}\n\nClick here to download the study app on your mobile phone: \n* Apple App Store: https://itunes.apple.com/us/app/axon-prod/id1160464791?ls=1&mt=8\n* Google Play Store: https://play.google.com/store/apps/details?id=com.medable.axon.flask\n\nTo access the study on a desktop or mobile web browser: {{{paweb_url}}}",
+          "message_1": "You have been invited to participate in the \"{{{study_name}}}\" study.",
+          "webLink": "To access the study on a desktop or mobile web browser: {{{paweb_url}}}"
+        },
+        "c_axon_sms-pin_expired": {
+          "instructions": "Please contact your study facilitator to renew your invite.",
+          "message": "It appears that your invite code to the \"{{{study_name}}}\" study has expired.\n\nPlease contact your study facilitator to renew your invite ",
+          "message_1": "It appears that your invite code to the \"{{{study_name}}}\" study has expired."
+        },
+        "c_forgot-username": {
+          "message": "Your username for {{{studyName}}} is:\n\n{{{username}}}",
+          "message_1": "Your username for {{{studyName}}} is:",
+          "username": "{{{username}}}"
+        },
+        "location-verification": {
+          "message": "Your {{{org.name}}} verification code is {{{code}}}"
+        }
+      }
+    }
+  },
+  "dirty": true,
+  "extensible": true,
+  "locale": "en_US",
+  "name": "axon__en_US_templates",
+  "namespace": "axon",
+  "object": "i18n",
+  "overridable": true,
+  "tags": [
+    "template"
+  ],
+  "weight": 0
+}

@@ -1,0 +1,10 @@
+{
+  "isPublic": false,
+  "name": "scheduler__configs",
+  "object": "config",
+  "value": {
+    "queue": "dct.scheduler",
+    "worker": "scheduler-service",
+    "daysToCheck": 3
+  }
+}

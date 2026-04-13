@@ -1,0 +1,5 @@
+{{i18n "econsent:template.email.ec__document_complete.document_completed" c_study=c_study}}
+
+{{i18n "econsent:template.email.ec__document_complete.link_instruction"}}
+
+{{baseUrl}}/{{documentPath}}/{{ec__signed_document._id}}?org={{orgCode}}

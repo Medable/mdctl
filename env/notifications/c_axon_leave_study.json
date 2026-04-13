@@ -1,0 +1,18 @@
+{
+  "duplicates": false,
+  "endpoints": [
+    {
+      "configurable": true,
+      "defaultUserState": 0,
+      "label": "Email",
+      "name": "email",
+      "state": "User",
+      "template": "c_axon_leave_study",
+      "type": "email"
+    }
+  ],
+  "label": "Axon Leave Study",
+  "name": "c_axon_leave_study",
+  "object": "notification",
+  "persists": false
+}

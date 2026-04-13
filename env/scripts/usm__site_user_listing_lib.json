@@ -1,0 +1,17 @@
+{
+  "active": true,
+  "configuration": {
+    "export": "usm__site_user_listing_lib"
+  },
+  "description": "Library to list the site users and their details",
+  "environment": "*",
+  "label": "USM - Site User Listing Library",
+  "language": "javascript/es6",
+  "name": "usm__site_user_listing_lib",
+  "object": "script",
+  "optimized": false,
+  "principal": null,
+  "script": "/env/scripts/js/library.usm__site_user_listing_lib.js",
+  "type": "library",
+  "weight": 0
+}

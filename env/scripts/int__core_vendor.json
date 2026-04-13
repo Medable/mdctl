@@ -1,0 +1,17 @@
+{
+  "active": true,
+  "configuration": {
+    "export": "int__core_vendor"
+  },
+  "description": "Core Wrapper",
+  "environment": "*",
+  "label": "Integrations: Core Wrapper",
+  "language": "javascript/es6",
+  "name": "int__core_vendor",
+  "object": "script",
+  "optimized": false,
+  "principal": null,
+  "script": "/env/scripts/js/library.int__core_vendor.js",
+  "type": "library",
+  "weight": 0
+}

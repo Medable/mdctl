@@ -1,0 +1,17 @@
+{
+  "active": true,
+  "configuration": {
+    "export": "c_caregiver_library"
+  },
+  "description": "The library for the managing caregivers",
+  "environment": "*",
+  "label": "Caregiver Library",
+  "language": "javascript/es6",
+  "name": "c_caregiver_library",
+  "object": "script",
+  "optimized": false,
+  "principal": null,
+  "script": "/env/scripts/js/library.c_caregiver_library.js",
+  "type": "library",
+  "weight": 0
+}

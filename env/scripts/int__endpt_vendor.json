@@ -1,0 +1,17 @@
+{
+  "active": true,
+  "configuration": {
+    "export": "int__endpt_vendor"
+  },
+  "description": "Endpoint Wrapper",
+  "environment": "*",
+  "label": "Integrations: Endpoint Wrapper",
+  "language": "javascript/es6",
+  "name": "int__endpt_vendor",
+  "object": "script",
+  "optimized": false,
+  "principal": null,
+  "script": "/env/scripts/js/library.int__endpt_vendor.js",
+  "type": "library",
+  "weight": 0
+}

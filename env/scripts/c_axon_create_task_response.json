@@ -1,0 +1,26 @@
+{
+  "active": false,
+  "configuration": {
+    "acl": [
+      "account.anonymous"
+    ],
+    "apiKey": null,
+    "authValidation": "all",
+    "method": "post",
+    "path": "create_task_response",
+    "plainText": false,
+    "priority": 0,
+    "system": false,
+    "urlEncoded": false
+  },
+  "environment": "*",
+  "label": "Axon - Create Task Response",
+  "language": "javascript/es6",
+  "name": "c_axon_create_task_response",
+  "object": "script",
+  "optimized": false,
+  "principal": null,
+  "script": "/env/scripts/js/route.c_axon_create_task_response.js",
+  "type": "route",
+  "weight": 0
+}

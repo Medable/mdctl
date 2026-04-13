@@ -1,0 +1,414 @@
+{
+  "allowConnections": true,
+  "auditing": {
+    "enabled": true
+  },
+  "canCascadeDelete": false,
+  "connectionOptions": {
+    "requireAccept": true,
+    "requiredAccess": 5,
+    "sendNotifications": true
+  },
+  "createAcl": [
+    "role.administrator",
+    "role.c_data_manager",
+    "role.c_principal_data_manager"
+  ],
+  "defaultAcl": [
+    "owner.update",
+    "role.administrator.delete",
+    "role.c_data_export.read",
+    "role.c_data_manager.update",
+    "role.c_data_reviewer.read",
+    "role.c_principal_data_manager.update",
+    "role.c_site_investigator.read",
+    "role.c_site_monitor.read"
+  ],
+  "defaultType": null,
+  "description": "An object used to lock objects in Axon",
+  "favorite": false,
+  "hasETag": false,
+  "hasOwner": true,
+  "isDeletable": true,
+  "isUnmanaged": false,
+  "isVersioned": false,
+  "label": "Lock",
+  "localized": true,
+  "name": "c_lock",
+  "object": "object",
+  "objectTypes": [],
+  "properties": [
+    {
+      "acl": [],
+      "aclOverride": false,
+      "array": false,
+      "auditable": true,
+      "canPull": true,
+      "canPush": true,
+      "creatable": false,
+      "defaultValue": [
+        {
+          "type": "static",
+          "value": true
+        }
+      ],
+      "dependencies": [],
+      "history": true,
+      "include": [],
+      "indexed": true,
+      "label": "Active",
+      "maxItems": 100,
+      "maxShift": false,
+      "minItems": 0,
+      "name": "c_active",
+      "optional": false,
+      "readAccess": "read",
+      "readable": true,
+      "removable": false,
+      "type": "Boolean",
+      "unique": false,
+      "uniqueValues": false,
+      "validators": [],
+      "writable": true,
+      "writeAccess": "update",
+      "writeOnCreate": true
+    },
+    {
+      "acl": [],
+      "aclOverride": false,
+      "array": false,
+      "auditable": false,
+      "canPull": true,
+      "canPush": true,
+      "creatable": false,
+      "defaultValue": [],
+      "dependencies": [],
+      "history": false,
+      "include": [],
+      "indexed": true,
+      "label": "Item",
+      "localization": {
+        "acl": [],
+        "aclOverride": false,
+        "enabled": false,
+        "fallback": true,
+        "fixed": "",
+        "namespace": "axon",
+        "readAccess": "read",
+        "strict": true,
+        "valid": [],
+        "writeAccess": "update"
+      },
+      "lowercase": false,
+      "maxItems": 100,
+      "maxShift": false,
+      "minItems": 0,
+      "name": "c_item",
+      "optional": false,
+      "readAccess": "read",
+      "readable": true,
+      "removable": false,
+      "trim": false,
+      "type": "String",
+      "unique": false,
+      "uniqueValues": false,
+      "uppercase": false,
+      "validators": [
+        {
+          "name": "required"
+        },
+        {
+          "definition": {
+            "min": 0,
+            "max": 512
+          },
+          "name": "string"
+        }
+      ],
+      "writable": true,
+      "writeAccess": "update",
+      "writeOnCreate": true
+    },
+    {
+      "acl": [],
+      "aclOverride": false,
+      "array": false,
+      "auditable": false,
+      "canPull": true,
+      "canPush": true,
+      "cascadeDelete": false,
+      "creatable": true,
+      "defaultValue": [],
+      "dependencies": [],
+      "history": false,
+      "include": [],
+      "indexed": true,
+      "label": "Locked Object Id",
+      "maxItems": 100,
+      "maxShift": false,
+      "minItems": 0,
+      "name": "c_locked_object_id",
+      "optional": false,
+      "readAccess": "read",
+      "readable": true,
+      "removable": false,
+      "type": "ObjectId",
+      "unique": false,
+      "uniqueValues": false,
+      "validators": [
+        {
+          "name": "required"
+        }
+      ],
+      "writable": true,
+      "writeAccess": "update",
+      "writeOnCreate": true
+    },
+    {
+      "acl": [],
+      "aclOverride": false,
+      "array": false,
+      "auditable": false,
+      "canPull": true,
+      "canPush": true,
+      "creatable": true,
+      "defaultValue": [],
+      "dependencies": [],
+      "history": false,
+      "include": [],
+      "indexed": true,
+      "label": "Locked Object Type",
+      "localization": {
+        "acl": [],
+        "aclOverride": false,
+        "enabled": false,
+        "fallback": true,
+        "fixed": "",
+        "namespace": "axon",
+        "readAccess": "read",
+        "strict": true,
+        "valid": [],
+        "writeAccess": "update"
+      },
+      "lowercase": false,
+      "maxItems": 100,
+      "maxShift": false,
+      "minItems": 0,
+      "name": "c_locked_object_type",
+      "optional": false,
+      "readAccess": "read",
+      "readable": true,
+      "removable": false,
+      "trim": false,
+      "type": "String",
+      "unique": false,
+      "uniqueValues": false,
+      "uppercase": false,
+      "validators": [
+        {
+          "name": "required"
+        },
+        {
+          "definition": {
+            "min": 0,
+            "max": 512
+          },
+          "name": "string"
+        },
+        {
+          "definition": {
+            "values": [
+              {
+                "value": "study",
+                "label": "study"
+              },
+              {
+                "value": "site",
+                "label": "site"
+              },
+              {
+                "value": "subject",
+                "label": "subject"
+              },
+              {
+                "value": "step_response",
+                "label": "step_response"
+              }
+            ]
+          },
+          "name": "options"
+        }
+      ],
+      "writable": true,
+      "writeAccess": "update",
+      "writeOnCreate": true
+    },
+    {
+      "accessTransforms": [],
+      "acl": [],
+      "aclOverride": false,
+      "auditable": false,
+      "autoCreate": false,
+      "cascadeDelete": false,
+      "creatable": false,
+      "defaultAcl": [
+        "role.c_axon_site_auditor.read",
+        "role.c_axon_site_investigator.read",
+        "role.c_axon_site_monitor.read",
+        "role.c_axon_site_user.read"
+      ],
+      "defaultAclOverride": false,
+      "defaultValue": [],
+      "dependencies": [],
+      "expandable": true,
+      "grant": "none",
+      "history": false,
+      "include": [],
+      "indexed": true,
+      "inheritInstanceRoles": false,
+      "inheritPropertyAccess": true,
+      "label": "Site",
+      "name": "c_site",
+      "optional": false,
+      "pacl": [],
+      "paths": [],
+      "readAccess": "read",
+      "readable": true,
+      "referenceAccess": "share",
+      "removable": false,
+      "roles": [],
+      "sourceObject": "c_site",
+      "type": "Reference",
+      "unique": false,
+      "updateOnWriteThrough": false,
+      "validateReference": true,
+      "validators": [],
+      "writable": true,
+      "writeAccess": "update",
+      "writeThrough": false
+    },
+    {
+      "acl": [],
+      "aclOverride": false,
+      "array": false,
+      "auditable": false,
+      "canPull": true,
+      "canPush": true,
+      "creatable": false,
+      "dateOnly": false,
+      "defaultValue": [],
+      "dependencies": [],
+      "history": false,
+      "include": [],
+      "indexed": false,
+      "label": "Snapshot Date",
+      "maxItems": 100,
+      "maxShift": false,
+      "minItems": 0,
+      "name": "c_snapshot_date",
+      "optional": false,
+      "readAccess": "read",
+      "readable": true,
+      "removable": false,
+      "type": "Date",
+      "unique": false,
+      "uniqueValues": false,
+      "validators": [],
+      "writable": true,
+      "writeAccess": "update",
+      "writeOnCreate": true
+    },
+    {
+      "acl": [],
+      "aclOverride": false,
+      "array": false,
+      "auditable": false,
+      "canPull": true,
+      "canPush": true,
+      "creatable": false,
+      "defaultValue": [],
+      "dependencies": [],
+      "history": false,
+      "include": [],
+      "indexed": true,
+      "label": "Type",
+      "localization": {
+        "acl": [],
+        "aclOverride": false,
+        "enabled": false,
+        "fallback": true,
+        "fixed": "",
+        "namespace": "axon",
+        "readAccess": "read",
+        "strict": true,
+        "valid": [],
+        "writeAccess": "update"
+      },
+      "lowercase": false,
+      "maxItems": 100,
+      "maxShift": false,
+      "minItems": 0,
+      "name": "c_type",
+      "optional": false,
+      "readAccess": "read",
+      "readable": true,
+      "removable": false,
+      "trim": false,
+      "type": "String",
+      "unique": false,
+      "uniqueValues": false,
+      "uppercase": false,
+      "validators": [
+        {
+          "name": "required"
+        },
+        {
+          "definition": {
+            "min": 0,
+            "max": 512
+          },
+          "name": "string"
+        },
+        {
+          "definition": {
+            "values": [
+              {
+                "value": "hard",
+                "label": "hard"
+              },
+              {
+                "value": "soft",
+                "label": "soft"
+              },
+              {
+                "value": "snapshot",
+                "label": "snapshot"
+              },
+              {
+                "value": "unlock",
+                "label": "unlock"
+              }
+            ]
+          },
+          "name": "options"
+        }
+      ],
+      "writable": true,
+      "writeAccess": "update",
+      "writeOnCreate": true
+    }
+  ],
+  "reporting": {
+    "enabled": false
+  },
+  "shareAcl": [],
+  "shareChain": [
+    "share",
+    "read",
+    "connected"
+  ],
+  "uniqueKey": "",
+  "useBuildVersion": false,
+  "useBundles": true,
+  "validateOwner": true
+}

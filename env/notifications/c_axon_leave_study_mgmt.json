@@ -1,0 +1,18 @@
+{
+  "duplicates": false,
+  "endpoints": [
+    {
+      "configurable": true,
+      "defaultUserState": 0,
+      "label": "Email",
+      "name": "email",
+      "state": "Enabled",
+      "template": "c_axon_leave_study_mgmt",
+      "type": "email"
+    }
+  ],
+  "label": "Axon - Participant Self Deactivation",
+  "name": "c_axon_leave_study_mgmt",
+  "object": "notification",
+  "persists": false
+}

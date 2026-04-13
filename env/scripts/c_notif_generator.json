@@ -1,0 +1,17 @@
+{
+  "active": true,
+  "configuration": {
+    "export": "c_axon_notif_generator"
+  },
+  "description": "Creates notifications",
+  "environment": "*",
+  "label": "Notification Generator",
+  "language": "javascript/es6",
+  "name": "c_notif_generator",
+  "object": "script",
+  "optimized": false,
+  "principal": null,
+  "script": "/env/scripts/js/library.c_notif_generator.js",
+  "type": "library",
+  "weight": 0
+}

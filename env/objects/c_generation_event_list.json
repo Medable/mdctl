@@ -1,0 +1,220 @@
+{
+  "allowConnections": false,
+  "auditing": {
+    "enabled": false
+  },
+  "canCascadeDelete": false,
+  "connectionOptions": {
+    "requireAccept": true,
+    "requiredAccess": 5,
+    "sendNotifications": true
+  },
+  "createAcl": [
+    "account.public"
+  ],
+  "defaultAcl": [
+    "owner.delete"
+  ],
+  "defaultType": null,
+  "favorite": false,
+  "hasETag": false,
+  "hasOwner": true,
+  "isDeletable": true,
+  "isUnmanaged": true,
+  "isVersioned": false,
+  "label": "Generation Event List",
+  "localized": false,
+  "name": "c_generation_event_list",
+  "object": "object",
+  "objectTypes": [],
+  "properties": [
+    {
+      "acl": [],
+      "aclOverride": false,
+      "array": false,
+      "auditable": false,
+      "canPull": true,
+      "canPush": true,
+      "creatable": false,
+      "defaultValue": [
+        {
+          "type": "static",
+          "value": true
+        }
+      ],
+      "dependencies": [],
+      "description": "Is generation active",
+      "history": false,
+      "include": [],
+      "indexed": true,
+      "label": "Active",
+      "maxItems": 100,
+      "maxShift": false,
+      "minItems": 0,
+      "name": "c_active",
+      "optional": false,
+      "readAccess": "read",
+      "readable": true,
+      "removable": false,
+      "type": "Boolean",
+      "unique": false,
+      "uniqueValues": false,
+      "validators": [],
+      "writable": true,
+      "writeAccess": "update",
+      "writeOnCreate": true
+    },
+    {
+      "acl": [],
+      "aclOverride": false,
+      "array": false,
+      "auditable": false,
+      "canPull": true,
+      "canPush": true,
+      "creatable": false,
+      "defaultValue": [
+        {
+          "type": "static",
+          "value": false
+        }
+      ],
+      "dependencies": [],
+      "description": "Should we allow events to be listed event though generation is still ongoing",
+      "history": false,
+      "include": [],
+      "indexed": true,
+      "label": "Enable Events List",
+      "maxItems": 100,
+      "maxShift": false,
+      "minItems": 0,
+      "name": "c_enable_events_list",
+      "optional": false,
+      "readAccess": "read",
+      "readable": true,
+      "removable": false,
+      "type": "Boolean",
+      "unique": false,
+      "uniqueValues": false,
+      "validators": [],
+      "writable": true,
+      "writeAccess": "update",
+      "writeOnCreate": true
+    },
+    {
+      "acl": [],
+      "aclOverride": false,
+      "array": false,
+      "auditable": false,
+      "canPull": true,
+      "canPush": true,
+      "creatable": false,
+      "defaultValue": [],
+      "dependencies": [],
+      "history": false,
+      "include": [],
+      "label": "Events List",
+      "maxItems": 100,
+      "maxShift": false,
+      "maxSize": 0,
+      "minItems": 0,
+      "name": "c_events_list",
+      "optional": false,
+      "readAccess": "read",
+      "readable": true,
+      "removable": false,
+      "serializeData": false,
+      "type": "Any",
+      "validators": [],
+      "writable": true,
+      "writeAccess": "update",
+      "writeOnCreate": true
+    },
+    {
+      "acl": [],
+      "aclOverride": false,
+      "array": false,
+      "auditable": false,
+      "canPull": true,
+      "canPush": true,
+      "cascadeDelete": false,
+      "creatable": false,
+      "defaultValue": [],
+      "dependencies": [],
+      "description": "Id of the public user",
+      "history": false,
+      "include": [],
+      "indexed": true,
+      "label": "Participant",
+      "maxItems": 100,
+      "maxShift": false,
+      "minItems": 0,
+      "name": "c_public_user",
+      "optional": false,
+      "readAccess": "read",
+      "readable": true,
+      "removable": false,
+      "type": "ObjectId",
+      "unique": false,
+      "uniqueValues": false,
+      "validators": [],
+      "writable": true,
+      "writeAccess": "update",
+      "writeOnCreate": true
+    },
+    {
+      "acl": [],
+      "aclOverride": false,
+      "array": false,
+      "auditable": false,
+      "canPull": true,
+      "canPush": true,
+      "creatable": false,
+      "defaultValue": [
+        {
+          "type": "static",
+          "value": 0
+        }
+      ],
+      "dependencies": [],
+      "history": false,
+      "include": [],
+      "indexed": false,
+      "label": "Retries",
+      "maxItems": 100,
+      "maxShift": false,
+      "minItems": 0,
+      "name": "c_retries",
+      "optional": false,
+      "readAccess": "read",
+      "readable": true,
+      "removable": false,
+      "type": "Number",
+      "unique": false,
+      "uniqueValues": false,
+      "validators": [
+        {
+          "definition": {
+            "allowDecimal": false
+          },
+          "name": "number"
+        }
+      ],
+      "writable": true,
+      "writeAccess": "update",
+      "writeOnCreate": true
+    }
+  ],
+  "reporting": {
+    "enabled": false
+  },
+  "shareAcl": [],
+  "shareChain": [
+    "share",
+    "read",
+    "connected"
+  ],
+  "uniqueKey": "",
+  "useBuildVersion": false,
+  "useBundles": false,
+  "validateOwner": true
+}

@@ -1,0 +1,18 @@
+{
+  "duplicates": false,
+  "endpoints": [
+    {
+      "configurable": true,
+      "defaultUserState": 0,
+      "label": "Email",
+      "name": "email",
+      "state": "Enabled",
+      "template": "c_axon_invite-forgot_username",
+      "type": "email"
+    }
+  ],
+  "label": "Axon Forgot Username",
+  "name": "c_axon_invite-forgot_username",
+  "object": "notification",
+  "persists": false
+}

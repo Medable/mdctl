@@ -1,0 +1,34 @@
+{
+  "aliases": [],
+  "assets": [],
+  "data": {
+    "___taskGroup__taskCountFormat___task_count___one___": "%d task",
+    "___taskGroup__taskCountFormat___task_count___other___": "%d tasks",
+    "___taskGroup__taskCountFormat___task_count___zero___": "%d tasks",
+    "___timeRemaining__hourForHoursAndMinutesRemaining___hour_for_hour_and_minutes_remaining___one___": "%d hour and ",
+    "___timeRemaining__hourForHoursAndMinutesRemaining___hour_for_hour_and_minutes_remaining___other___": "%d hours and ",
+    "___timeRemaining__hourForHoursAndMinutesRemaining___hour_for_hour_and_minutes_remaining___zero___": "%d hours and ",
+    "___timeRemaining__hours___hours_remaining___one___": "%d hour remaining",
+    "___timeRemaining__hours___hours_remaining___other___": "%d hours remaining",
+    "___timeRemaining__hours___hours_remaining___zero___": "%d hours remaining",
+    "___timeRemaining__minutes___minutes_remaining___one___": "%d minute remaining",
+    "___timeRemaining__minutes___minutes_remaining___other___": "%d minutes remaining",
+    "___timeRemaining__minutes___minutes_remaining___zero___": "%d minutes remaining",
+    "___timeRemaining__minutesForHoursAndMinutesRemaining___minute_for_hour_and_minutes_remaining___one___": "%d minute remaining",
+    "___timeRemaining__minutesForHoursAndMinutesRemaining___minute_for_hour_and_minutes_remaining___other___": "%d minutes remaining",
+    "___timeRemaining__minutesForHoursAndMinutesRemaining___minute_for_hour_and_minutes_remaining___zero___": "%d minutes remaining",
+    "identity": {
+      "locale": "en_US",
+      "version": "1.19.0"
+    }
+  },
+  "dirty": true,
+  "extensible": true,
+  "locale": "en_US",
+  "name": "ios__en_US_PATLocalizable_stringsdict",
+  "namespace": "ios",
+  "object": "i18n",
+  "overridable": true,
+  "tags": [],
+  "weight": 0
+}

@@ -1,0 +1,29 @@
+{
+  "description": "Axon invitation email with access code",
+  "label": "Axon Invite (Access Code)",
+  "localizations": [
+    {
+      "locale": [
+        "*"
+      ],
+      "content": [
+        {
+          "data": "/env/templates/tpl/template.email.c_axon_invite-access_code.anyLocale.html.html",
+          "name": "html"
+        },
+        {
+          "data": "/env/templates/tpl/template.email.c_axon_invite-access_code.anyLocale.plain.txt",
+          "name": "plain"
+        },
+        {
+          "data": "/env/templates/tpl/template.email.c_axon_invite-access_code.anyLocale.subject.txt",
+          "name": "subject"
+        }
+      ]
+    }
+  ],
+  "name": "c_axon_invite-access_code",
+  "object": "template",
+  "partial": false,
+  "type": "email"
+}

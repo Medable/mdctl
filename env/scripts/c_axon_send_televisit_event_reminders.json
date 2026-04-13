@@ -1,0 +1,17 @@
+{
+  "active": false,
+  "configuration": {
+    "cron": "* * * * *"
+  },
+  "description": "Sends televisit event reminders every minute.",
+  "environment": "*",
+  "label": "Axon - Send Televisit Event Reminders",
+  "language": "javascript/es6",
+  "name": "c_axon_send_televisit_event_reminders",
+  "object": "script",
+  "optimized": false,
+  "principal": "serviceAccount.c_system_user",
+  "script": "/env/scripts/js/job.c_axon_send_televisit_event_reminders.js",
+  "type": "job",
+  "weight": 0
+}

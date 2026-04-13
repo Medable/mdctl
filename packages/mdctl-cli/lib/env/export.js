@@ -179,38 +179,44 @@ const client = options.client || new Client({ ...Config.global.client, ...option
         }
 
         return new Promise((resolve, reject) => {
-          const resultStream = pump(inputStream, streamTransform, logStream, adapter, async(err) => {
 
-            try {
-              await postExport({
-                client, err, options, memo
-              })
-            } catch (e) {
-              return reject(e)
-            }
+  const isConsoleAdapter =
+    adapter && adapter.constructor && adapter.constructor.name === 'ExportConsoleAdapter'
 
-            if (err) {
-              return reject(err)
-            }
+  let resultStream
 
-            if (!streamTransform.complete()) {
-              return reject(new Error('Export not complete!'))
-            }
+  if (isConsoleAdapter) {
+    resultStream = pump(inputStream, logStream, adapter, async (err) => {
+      if (err) return reject(err)
 
-            if (options.docs) {
-              console.log('Documenting env')
-              return Docs.generateDocumentation({
-                destination: path.join(outputDir, 'docs'),
-                source: path.join(outputDir),
-                module: 'env',
-              }).then(() => {
-                resolve(resultStream)
-              })
-            }
-            return resolve(resultStream)
-
-          })
-        })
+      try {
+        await postExport({ client, err, options, memo })
+      } catch (e) {
+        return reject(e)
       }
+
+      return resolve(resultStream)
+    })
+  } else {
+    resultStream = pump(inputStream, streamTransform, logStream, adapter, async (err) => {
+      if (err) return reject(err)
+
+      try {
+        await postExport({ client, err, options, memo })
+      } catch (e) {
+        return reject(e)
+      }
+
+      if (!streamTransform.complete()) {
+        return reject(new Error('Export not complete!'))
+      }
+
+      return resolve(resultStream)
+    })
+  }
+
+})   
+
+}   
 
 module.exports = exportEnv

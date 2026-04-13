@@ -1,0 +1,21 @@
+{
+  "description": "Resend pin to user",
+  "label": "Axon SMS invite pin only",
+  "localizations": [
+    {
+      "locale": [
+        "*"
+      ],
+      "content": [
+        {
+          "data": "/env/templates/tpl/template.sms.c_axon_sms-invite_pin_only.anyLocale.message.txt",
+          "name": "message"
+        }
+      ]
+    }
+  ],
+  "name": "c_axon_sms-invite_pin_only",
+  "object": "template",
+  "partial": false,
+  "type": "sms"
+}

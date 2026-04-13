@@ -1,0 +1,21 @@
+{
+  "description": "Connection Request",
+  "label": "Connection Request",
+  "localizations": [
+    {
+      "locale": [
+        "en_US"
+      ],
+      "content": [
+        {
+          "data": "/env/templates/tpl/template.push.invitation.en_US.message.txt",
+          "name": "message"
+        }
+      ]
+    }
+  ],
+  "name": "invitation",
+  "object": "template",
+  "partial": false,
+  "type": "push"
+}

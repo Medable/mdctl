@@ -1,0 +1,7 @@
+{{i18n "axon:template.email.c_axon_leave_study_mgmt.title" participant_id=participant_id study_name=study_name}}
+
+{{i18n "axon:template.email.c_axon_leave_study_mgmt.instructionOne"}}
+
+{{i18n "axon:template.email.c_axon_leave_study_mgmt.instructionTwo"}}
+
+{{participant_url}}

@@ -1,0 +1,20 @@
+{
+  "active": true,
+  "configuration": {
+    "event": "participant.after",
+    "inline": false,
+    "object": "room",
+    "paths": []
+  },
+  "description": "Handles participant events in rooms.",
+  "environment": "*",
+  "label": "Axon room onParticipantEvent",
+  "language": "javascript/es6",
+  "name": "c_axon_room_onParticipantEvent",
+  "object": "script",
+  "optimized": false,
+  "principal": null,
+  "script": "/env/scripts/js/trigger.c_axon_room_onParticipantEvent.js",
+  "type": "trigger",
+  "weight": 0
+}

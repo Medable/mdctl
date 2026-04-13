@@ -1,0 +1,3 @@
+{{i18n "econsent:template.sms.ec__signature_invite_sms.message" }}
+
+{{url}}

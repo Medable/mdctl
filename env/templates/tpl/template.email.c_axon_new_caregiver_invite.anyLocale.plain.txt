@@ -1,0 +1,55 @@
+
+{{i18n "axon:template.email.c_axon_new_caregiver_invite.title"}}
+
+{{#if isMobileOnlyStudy}}
+    {{i18n "axon:template.email.c_axon_new_caregiver_invite.mobileInstructions"}}
+
+    {{#if appleStore}}
+        {{i18n "axon:template.email.c_axon_new_caregiver_invite.appleStore"}} {{appleStore_url}}
+    {{/if}}
+    {{#if googleStore}}
+        {{i18n "axon:template.email.c_axon_new_caregiver_invite.googleStore"}} {{googleStore_url}}
+    {{/if}}
+
+
+    {{i18n "axon:template.email.c_axon_new_caregiver_invite.codeInstructions"}}
+
+    {{i18n "axon:template.email.c_axon_new_caregiver_invite.accessCode"}}
+    {{access_code}}
+
+    {{i18n "axon:template.email.c_axon_new_caregiver_invite.pushNotificationsInstructions"}}
+
+    {{i18n "axon:template.email.c_axon_new_caregiver_invite.thankYou"}}
+{{else if isWebOnlyStudy}}
+    {{i18n "axon:template.email.c_axon_new_caregiver_invite.webInstructions"}}
+    {{i18n "axon:template.email.c_axon_new_caregiver_invite.webButtonText"}} {{paweb_url}}
+
+    {{i18n "axon:template.email.c_axon_new_caregiver_invite.codeInstructions"}}
+
+    {{i18n "axon:template.email.c_axon_new_caregiver_invite.accessCode"}}
+    {{access_code}}
+
+
+    {{i18n "axon:template.email.c_axon_new_caregiver_invite.browserLink"}} {{paweb_url}}
+
+    {{i18n "axon:template.email.c_axon_new_caregiver_invite.thankYou"}}
+{{else}}
+    {{i18n "axon:template.email.c_axon_new_caregiver_invite.mobileInstructions"}}
+
+    {{#if appleStore}}
+        {{i18n "axon:template.email.c_axon_new_caregiver_invite.appleStore"}} {{appleStore_url}}
+    {{/if}}
+    {{#if googleStore}}
+        {{i18n "axon:template.email.c_axon_new_caregiver_invite.googleStore"}} {{googleStore_url}}
+    {{/if}}
+
+    {{i18n "axon:template.email.c_axon_new_caregiver_invite.codeInstructions"}}
+
+    {{i18n "axon:template.email.c_axon_new_caregiver_invite.accessCode"}} {{access_code}}
+
+    {{i18n "axon:template.email.c_axon_new_caregiver_invite.pushNotificationsInstructions"}}
+
+    {{i18n "axon:template.email.c_axon_new_caregiver_invite.browserLink"}} {{paweb_url}}
+
+    {{i18n "axon:template.email.c_axon_new_caregiver_invite.thankYou"}}
+{{/if}}

@@ -1,0 +1,18 @@
+{
+  "duplicates": false,
+  "endpoints": [
+    {
+      "configurable": true,
+      "defaultUserState": 0,
+      "label": "Email",
+      "name": "email",
+      "state": "Enabled",
+      "template": "int__queue_failed",
+      "type": "email"
+    }
+  ],
+  "label": "Integrations Platform Queue Failed",
+  "name": "int__queue_failed",
+  "object": "notification",
+  "persists": false
+}

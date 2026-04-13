@@ -1,0 +1,572 @@
+{
+  "aliases": [],
+  "assets": [],
+  "data": {
+    "identity": {
+      "locale": "en_US",
+      "version": "1.14.0"
+    },
+    "object": {
+      "account": {
+        "properties": {
+          "ec__site_documents": {
+            "label": "Site Documents"
+          },
+          "ec__site_signers": {
+            "label": "Site Signers"
+          },
+          "ec__site_templates": {
+            "label": "EC Site Templates"
+          }
+        }
+      },
+      "c_event": {
+        "objectTypes": {
+          "c_televisit_event": {
+            "properties": {
+              "ec__signed_document": {
+                "label": "Signed Document"
+              }
+            }
+          }
+        }
+      },
+      "c_public_user": {
+        "properties": {
+          "ec__documents": {
+            "label": "Documents"
+          }
+        }
+      },
+      "c_site": {
+        "properties": {
+          "ec__document_templates": {
+            "label": "Document Templates"
+          },
+          "ec__signature_types": {
+            "label": "Signature Type"
+          },
+          "ec__signed_documents": {
+            "label": "Signed Documents"
+          }
+        }
+      },
+      "c_study": {
+        "properties": {
+          "ec__document_templates": {
+            "label": "EC Document Templates"
+          },
+          "ec__econsent_format_spec": {
+            "label": "eConsent Format Specifiers",
+            "properties": {
+              "c_signed_doc": {
+                "label": "Signed Documents"
+              },
+              "c_template": {
+                "label": "Template"
+              }
+            }
+          },
+          "ec__signed_documents": {
+            "label": "EC Signed Documents"
+          }
+        }
+      },
+      "ec__document_datum": {
+        "label": "EC Document Data",
+        "objectTypes": {
+          "ec__boolean": {
+            "label": "Boolean",
+            "properties": {
+              "ec__value": {
+                "label": "Value"
+              }
+            }
+          },
+          "ec__continuous_scale": {
+            "label": "Continuous Scale",
+            "properties": {
+              "ec__value": {
+                "label": "Value"
+              }
+            }
+          },
+          "ec__date": {
+            "label": "Date",
+            "properties": {
+              "ec__value": {
+                "label": "Value"
+              }
+            }
+          },
+          "ec__datetime": {
+            "label": "Datetime",
+            "properties": {
+              "ec__value": {
+                "label": "Value"
+              }
+            }
+          },
+          "ec__email": {
+            "label": "Email",
+            "properties": {
+              "ec__value": {
+                "label": "Value"
+              }
+            }
+          },
+          "ec__knowledge_check": {
+            "label": "Knowledge Check",
+            "properties": {
+              "ec__value": {
+                "label": "Value"
+              }
+            }
+          },
+          "ec__numeric": {
+            "label": "Numeric",
+            "properties": {
+              "ec__value": {
+                "label": "Value"
+              }
+            }
+          },
+          "ec__text": {
+            "label": "Text",
+            "properties": {
+              "ec__value": {
+                "label": "Value"
+              }
+            }
+          },
+          "ec__text_choice": {
+            "label": "Text Choice",
+            "properties": {
+              "ec__value": {
+                "label": "Value"
+              }
+            }
+          }
+        },
+        "properties": {
+          "ec__custom_data": {
+            "label": "Custom Data"
+          },
+          "ec__identifier": {
+            "label": "Identifier"
+          },
+          "ec__signed_document": {
+            "label": "Signed Document"
+          }
+        }
+      },
+      "ec__document_invite": {
+        "label": "EC Document Invite",
+        "properties": {
+          "ec__document_template": {
+            "label": "Document Template"
+          },
+          "ec__email": {
+            "label": "Email"
+          },
+          "ec__order": {
+            "label": "Order"
+          },
+          "ec__pin": {
+            "label": "PIN"
+          },
+          "ec__signed_document": {
+            "label": "Signed Documents"
+          },
+          "ec__signer_role": {
+            "label": "Signer Role"
+          },
+          "ec__status": {
+            "label": "Status"
+          },
+          "ec__valid": {
+            "label": "Valid"
+          }
+        }
+      },
+      "ec__document_template": {
+        "label": "EC Document Template",
+        "properties": {
+          "ec__assets": {
+            "label": "Assets",
+            "properties": {
+              "ec__file": {
+                "label": "file"
+              },
+              "ec__filename": {
+                "label": "Filename"
+              },
+              "ec__key": {
+                "label": "Key"
+              },
+              "ec__type": {
+                "label": "Type"
+              }
+            }
+          },
+          "ec__builder_data": {
+            "label": "Builder Data"
+          },
+          "ec__committee_approved_version": {
+            "label": "Source Version"
+          },
+          "ec__committee_approved_version_date": {
+            "label": "Version Date"
+          },
+          "ec__committee_approved_version_label": {
+            "label": "Source Label"
+          },
+          "ec__completion_screen": {
+            "description": "Completion Screen",
+            "label": "Completion Screen"
+          },
+          "ec__css": {
+            "description": "The CSS added by the template editor",
+            "label": "CSS"
+          },
+          "ec__custom_data": {
+            "label": "Custom Data",
+            "properties": {
+              "ec__key": {
+                "label": "Key"
+              },
+              "ec__label": {
+                "label": "Label"
+              },
+              "ec__type": {
+                "label": "Type"
+              },
+              "ec__value": {
+                "label": "Value"
+              }
+            }
+          },
+          "ec__delayed_signing": {
+            "label": "Delayed Signing"
+          },
+          "ec__description": {
+            "label": "Description"
+          },
+          "ec__econsent_version": {
+            "description": "Version of econsent when the org was created",
+            "label": "EConsent Version"
+          },
+          "ec__enroll_subject": {
+            "label": "Enroll Subject"
+          },
+          "ec__errors": {
+            "label": "Linked Fields Publishing Errors"
+          },
+          "ec__html": {
+            "description": "The main HTML body of the document",
+            "label": "HTML"
+          },
+          "ec__identifier": {
+            "label": "Identifier"
+          },
+          "ec__instruction_screen": {
+            "description": "Instruction Screen",
+            "label": "Instruction Screen"
+          },
+          "ec__key": {
+            "label": "Key"
+          },
+          "ec__knowledge_checks": {
+            "label": "Knowledge Checks"
+          },
+          "ec__language": {
+            "label": "Language"
+          },
+          "ec__parent_template": {
+            "label": "Parent Template"
+          },
+          "ec__pts_document": {
+            "label": "Printed Document"
+          },
+          "ec__pts_only": {
+            "label": "Printed Document"
+          },
+          "ec__pts_set": {
+            "label": "Print To Sign Set"
+          },
+          "ec__published": {
+            "label": "Published"
+          },
+          "ec__publishing": {
+            "label": "Template is Publishing"
+          },
+          "ec__requested_data": {
+            "label": "Requested Data",
+            "properties": {
+              "ec__allow_multiple": {
+                "label": "Allow Multiple"
+              },
+              "ec__custom_data": {
+                "label": "Custom Data"
+              },
+              "ec__description": {
+                "label": "Description"
+              },
+              "ec__key": {
+                "label": "Key"
+              },
+              "ec__optional": {
+                "label": "Optional"
+              },
+              "ec__selection_options": {
+                "label": "Selection Options"
+              },
+              "ec__signer_role": {
+                "label": "Signer Role"
+              },
+              "ec__title": {
+                "label": "Title"
+              },
+              "ec__type": {
+                "label": "Type"
+              }
+            }
+          },
+          "ec__requested_signatures": {
+            "label": "Requested Signatures",
+            "properties": {
+              "ec__custom_data": {
+                "label": "Custom Data"
+              },
+              "ec__description": {
+                "label": "Description"
+              },
+              "ec__initials": {
+                "label": "Initials"
+              },
+              "ec__key": {
+                "label": "Key"
+              },
+              "ec__label": {
+                "label": "Label"
+              },
+              "ec__optional": {
+                "label": "Optional"
+              },
+              "ec__order": {
+                "label": "Order"
+              },
+              "ec__signer_role": {
+                "label": "Signer Role"
+              },
+              "ec__title": {
+                "label": "Title"
+              }
+            }
+          },
+          "ec__signer_roles": {
+            "label": "Signer Roles",
+            "properties": {
+              "ec__key": {
+                "label": "Key"
+              },
+              "ec__order": {
+                "label": "Order"
+              },
+              "ec__primary_participant": {
+                "label": "Primary Participant"
+              },
+              "ec__required": {
+                "label": "Role Required"
+              },
+              "ec__role": {
+                "label": "Role"
+              },
+              "ec__signer_type": {
+                "label": "Signer Type"
+              }
+            }
+          },
+          "ec__sites": {
+            "label": "Sites"
+          },
+          "ec__src_doc_filename": {
+            "description": "The filename of the original source document",
+            "label": "Source Document Filename"
+          },
+          "ec__status": {
+            "label": "Status"
+          },
+          "ec__study": {
+            "label": "Study"
+          },
+          "ec__televisit": {
+            "label": "Televisit"
+          },
+          "ec__title": {
+            "label": "Title"
+          },
+          "ec__version": {
+            "label": "Version"
+          }
+        }
+      },
+      "ec__knowledge_check": {
+        "label": "Knowledge Check",
+        "properties": {
+          "ec__answer_context": {
+            "label": "Answer Context"
+          },
+          "ec__description": {
+            "label": "Description"
+          },
+          "ec__document_template": {
+            "label": "Document Template"
+          },
+          "ec__identifier": {
+            "label": "Identifier"
+          },
+          "ec__key": {
+            "label": "Key"
+          },
+          "ec__label": {
+            "label": "Label"
+          },
+          "ec__optional": {
+            "label": "Optional"
+          },
+          "ec__options": {
+            "label": "Options"
+          },
+          "ec__options_answer": {
+            "label": "Options Answer"
+          },
+          "ec__question": {
+            "label": "Question"
+          },
+          "ec__signer_role": {
+            "label": "Signer Role"
+          },
+          "ec__type": {
+            "label": "Type"
+          }
+        }
+      },
+      "ec__signed_document": {
+        "label": "EC Signed Document",
+        "properties": {
+          "_id": {
+            "label": "ID"
+          },
+          "created": {
+            "label": "Created Date"
+          },
+          "ec__accepted_signers": {
+            "label": "Accepted Signers",
+            "properties": {
+              "ec__account": {
+                "label": "Account"
+              },
+              "ec__active": {
+                "label": "Active"
+              },
+              "ec__completion_time": {
+                "label": "Completion Time"
+              },
+              "ec__signer_role": {
+                "label": "Signer Role"
+              },
+              "ec__status": {
+                "label": "Status"
+              }
+            }
+          },
+          "ec__applied_signers": {
+            "label": "Applied Signers"
+          },
+          "ec__can_sign_document": {
+            "label": "Can Sign Document"
+          },
+          "ec__cancellation_reason": {
+            "label": "Reason"
+          },
+          "ec__completion_time": {
+            "description": "Date of the e-signed document, in UTC",
+            "label": "Completion Time"
+          },
+          "ec__custom_data": {
+            "label": "Custom Data",
+            "properties": {
+              "ec__key": {
+                "label": "Key"
+              },
+              "ec__label": {
+                "label": "Label"
+              },
+              "ec__type": {
+                "label": "Type"
+              },
+              "ec__value": {
+                "label": "Value"
+              }
+            }
+          },
+          "ec__document_template": {
+            "label": "Document Template"
+          },
+          "ec__final_document": {
+            "label": "Final Document"
+          },
+          "ec__identifier": {
+            "label": "Identifier"
+          },
+          "ec__primary_participant": {
+            "label": "Primary Participant"
+          },
+          "ec__pts": {
+            "label": "Printed Document"
+          },
+          "ec__pts_document_uploaded": {
+            "label": "Printed Document Uploaded"
+          },
+          "ec__pts_signature_date_wallclock": {
+            "description": "Date of the PTS signature, in wallclock time",
+            "label": "PTS Signature Date Wallclock"
+          },
+          "ec__required_data": {
+            "label": "Required Data"
+          },
+          "ec__required_signers": {
+            "label": "Required Signers"
+          },
+          "ec__signature_invites": {
+            "label": "Signature Invites"
+          },
+          "ec__signatures": {
+            "label": "Signatures"
+          },
+          "ec__site": {
+            "label": "Site"
+          },
+          "ec__status": {
+            "label": "Status"
+          },
+          "ec__study": {
+            "label": "Study"
+          }
+        }
+      }
+    }
+  },
+  "dirty": true,
+  "extensible": true,
+  "locale": "en_US",
+  "name": "econsent__en_US_schema",
+  "namespace": "cortex",
+  "object": "i18n",
+  "overridable": true,
+  "tags": [
+    "object"
+  ],
+  "weight": 0
+}

@@ -1,0 +1,12 @@
+{{#extend "layout"}}
+
+{{#replace "title"}}
+Alert: Unusual Measurement Recorded
+{{/replace}}
+
+{{#replace "body"}}
+
+The user with subject number {{subject_number}} at site number {{site_number}} has recorded a {{measure.type}} reading of {{measure.value}} {{measure.unit}} at {{measure.date}} via {{measure.device.name}}.
+{{/replace}}
+
+{{/extend}}

@@ -1,0 +1,29 @@
+{
+  "description": "Template for Axon Send Signed Document email",
+  "label": "Axon Send Signed Document",
+  "localizations": [
+    {
+      "locale": [
+        "*"
+      ],
+      "content": [
+        {
+          "data": "/env/templates/tpl/template.email.c_send_signed_doc.anyLocale.html.html",
+          "name": "html"
+        },
+        {
+          "data": "/env/templates/tpl/template.email.c_send_signed_doc.anyLocale.plain.txt",
+          "name": "plain"
+        },
+        {
+          "data": "/env/templates/tpl/template.email.c_send_signed_doc.anyLocale.subject.txt",
+          "name": "subject"
+        }
+      ]
+    }
+  ],
+  "name": "c_send_signed_doc",
+  "object": "template",
+  "partial": false,
+  "type": "email"
+}

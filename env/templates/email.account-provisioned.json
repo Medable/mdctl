@@ -1,0 +1,29 @@
+{
+  "description": "Account Provisioned email",
+  "label": "Account Provisioned",
+  "localizations": [
+    {
+      "locale": [
+        "*"
+      ],
+      "content": [
+        {
+          "data": "/env/templates/tpl/template.email.account-provisioned.anyLocale.html.html",
+          "name": "html"
+        },
+        {
+          "data": "/env/templates/tpl/template.email.account-provisioned.anyLocale.plain.txt",
+          "name": "plain"
+        },
+        {
+          "data": "/env/templates/tpl/template.email.account-provisioned.anyLocale.subject.txt",
+          "name": "subject"
+        }
+      ]
+    }
+  ],
+  "name": "account-provisioned",
+  "object": "template",
+  "partial": false,
+  "type": "email"
+}

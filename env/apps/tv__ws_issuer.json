@@ -1,0 +1,24 @@
+{
+  "allowNameMapping": true,
+  "authDuration": 86400,
+  "blacklist": [],
+  "cors": [],
+  "csrf": false,
+  "enabled": true,
+  "expires": null,
+  "expose": true,
+  "label": "Televisit WS Issuer",
+  "maxTokensPerPrincipal": 10,
+  "name": "tv__ws_issuer",
+  "object": "app",
+  "readOnly": false,
+  "sessions": true,
+  "urls": {
+    "connection": "",
+    "resetPassword": "",
+    "createPassword": "",
+    "activateAccount": "",
+    "verifyAccount": ""
+  },
+  "whitelist": []
+}

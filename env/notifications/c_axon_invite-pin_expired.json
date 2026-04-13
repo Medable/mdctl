@@ -1,0 +1,18 @@
+{
+  "duplicates": false,
+  "endpoints": [
+    {
+      "configurable": true,
+      "defaultUserState": 0,
+      "label": "Email",
+      "name": "email",
+      "state": "Enabled",
+      "template": "c_axon_invite-pin_expired",
+      "type": "email"
+    }
+  ],
+  "label": "Axon Invite (Pin Expired)",
+  "name": "c_axon_invite-pin_expired",
+  "object": "notification",
+  "persists": false
+}

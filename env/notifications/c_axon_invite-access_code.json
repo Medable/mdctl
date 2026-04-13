@@ -1,0 +1,18 @@
+{
+  "duplicates": false,
+  "endpoints": [
+    {
+      "configurable": true,
+      "defaultUserState": 0,
+      "label": "Email",
+      "name": "email",
+      "state": "Enabled",
+      "template": "c_axon_invite-access_code",
+      "type": "email"
+    }
+  ],
+  "label": "Axon Invite (Access Code)",
+  "name": "c_axon_invite-access_code",
+  "object": "notification",
+  "persists": false
+}

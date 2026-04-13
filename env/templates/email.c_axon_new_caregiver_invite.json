@@ -1,0 +1,29 @@
+{
+  "description": "Axon new Caregiver invitation email",
+  "label": "Axon New Caregiver Invite (Study Code)",
+  "localizations": [
+    {
+      "locale": [
+        "*"
+      ],
+      "content": [
+        {
+          "data": "/env/templates/tpl/template.email.c_axon_new_caregiver_invite.anyLocale.html.html",
+          "name": "html"
+        },
+        {
+          "data": "/env/templates/tpl/template.email.c_axon_new_caregiver_invite.anyLocale.plain.txt",
+          "name": "plain"
+        },
+        {
+          "data": "/env/templates/tpl/template.email.c_axon_new_caregiver_invite.anyLocale.subject.txt",
+          "name": "subject"
+        }
+      ]
+    }
+  ],
+  "name": "c_axon_new_caregiver_invite",
+  "object": "template",
+  "partial": false,
+  "type": "email"
+}

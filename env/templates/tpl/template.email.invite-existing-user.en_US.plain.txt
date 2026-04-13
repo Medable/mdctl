@@ -1,0 +1,3 @@
+Hi {{{account.name.first}}},
+
+ You've been invited to connect at {{{org.name}}}! To accept, go to {{{connection.url}}}

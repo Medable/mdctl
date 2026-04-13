@@ -1,0 +1,229 @@
+{
+  "allowConnections": true,
+  "auditing": {
+    "enabled": false
+  },
+  "canCascadeDelete": false,
+  "connectionOptions": {
+    "requireAccept": true,
+    "requiredAccess": 5,
+    "sendNotifications": true
+  },
+  "createAcl": [
+    "account.public"
+  ],
+  "defaultAcl": [
+    "account.public.read",
+    "owner.delete",
+    "role.administrator.delete"
+  ],
+  "defaultType": null,
+  "favorite": false,
+  "hasETag": false,
+  "hasOwner": true,
+  "isDeletable": true,
+  "isUnmanaged": false,
+  "isVersioned": false,
+  "label": "EC Default Document CSS",
+  "localized": false,
+  "name": "ec__default_document_css",
+  "object": "object",
+  "objectTypes": [],
+  "properties": [
+    {
+      "acl": [],
+      "aclOverride": false,
+      "array": false,
+      "auditable": true,
+      "canPull": true,
+      "canPush": true,
+      "creatable": false,
+      "defaultValue": [],
+      "dependencies": [],
+      "history": false,
+      "include": [],
+      "label": "CSS File",
+      "localization": {
+        "acl": [],
+        "aclOverride": false,
+        "enabled": false,
+        "fallback": true,
+        "fixed": "",
+        "namespace": "econsent",
+        "readAccess": "read",
+        "strict": true,
+        "valid": [],
+        "writeAccess": "update"
+      },
+      "maxItems": 100,
+      "maxShift": false,
+      "minItems": 0,
+      "name": "ec__css_file",
+      "optional": false,
+      "processors": [
+        {
+          "allowUpload": true,
+          "label": "Content",
+          "maxFileSize": 10000000,
+          "mimes": [
+            "*"
+          ],
+          "name": "content",
+          "passMimes": false,
+          "private": false,
+          "required": true,
+          "source": "content",
+          "type": "passthru"
+        }
+      ],
+      "readAccess": "read",
+      "readable": true,
+      "removable": false,
+      "type": "File",
+      "uniqueValues": false,
+      "urlExpirySeconds": null,
+      "validators": [
+        {
+          "name": "required"
+        }
+      ],
+      "writable": true,
+      "writeAccess": "update",
+      "writeOnCreate": true
+    },
+    {
+      "acl": [],
+      "aclOverride": false,
+      "array": false,
+      "auditable": false,
+      "canPull": true,
+      "canPush": true,
+      "creatable": false,
+      "defaultValue": [
+        {
+          "type": "static",
+          "value": "ec__default_doc_css"
+        }
+      ],
+      "dependencies": [],
+      "history": false,
+      "include": [],
+      "indexed": true,
+      "label": "Key",
+      "localization": {
+        "acl": [],
+        "aclOverride": false,
+        "enabled": false,
+        "fallback": true,
+        "fixed": "",
+        "namespace": "econsent",
+        "readAccess": "read",
+        "strict": true,
+        "valid": [],
+        "writeAccess": "update"
+      },
+      "lowercase": false,
+      "maxItems": 100,
+      "maxShift": false,
+      "minItems": 0,
+      "name": "ec__key",
+      "optional": false,
+      "readAccess": "read",
+      "readable": true,
+      "removable": false,
+      "trim": false,
+      "type": "String",
+      "unique": true,
+      "uniqueValues": false,
+      "uppercase": false,
+      "validators": [
+        {
+          "name": "customName"
+        },
+        {
+          "name": "required"
+        },
+        {
+          "definition": {
+            "values": [
+              "ec__default_doc_css"
+            ]
+          },
+          "name": "stringEnum"
+        }
+      ],
+      "writable": true,
+      "writeAccess": "update",
+      "writeOnCreate": true
+    },
+    {
+      "acl": [],
+      "aclOverride": false,
+      "array": false,
+      "auditable": false,
+      "canPull": true,
+      "canPush": true,
+      "creatable": false,
+      "defaultValue": [],
+      "dependencies": [],
+      "history": false,
+      "include": [],
+      "indexed": false,
+      "label": "Version",
+      "localization": {
+        "acl": [],
+        "aclOverride": false,
+        "enabled": false,
+        "fallback": true,
+        "fixed": "",
+        "namespace": "econsent",
+        "readAccess": "read",
+        "strict": true,
+        "valid": [],
+        "writeAccess": "update"
+      },
+      "lowercase": false,
+      "maxItems": 100,
+      "maxShift": false,
+      "minItems": 0,
+      "name": "ec__version",
+      "optional": false,
+      "readAccess": "read",
+      "readable": true,
+      "removable": false,
+      "trim": false,
+      "type": "String",
+      "unique": false,
+      "uniqueValues": false,
+      "uppercase": false,
+      "validators": [
+        {
+          "name": "required"
+        },
+        {
+          "definition": {
+            "min": 0,
+            "max": 512
+          },
+          "name": "string"
+        }
+      ],
+      "writable": true,
+      "writeAccess": "update",
+      "writeOnCreate": true
+    }
+  ],
+  "reporting": {
+    "enabled": false
+  },
+  "shareAcl": [],
+  "shareChain": [
+    "share",
+    "read",
+    "connected"
+  ],
+  "uniqueKey": "ec__key",
+  "useBuildVersion": false,
+  "useBundles": false,
+  "validateOwner": true
+}

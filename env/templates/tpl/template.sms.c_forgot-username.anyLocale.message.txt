@@ -1,0 +1,3 @@
+{{i18n "axon:template.sms.c_forgot-username.message_1" studyName=studyName}}
+
+{{i18n "axon:template.sms.c_forgot-username.username" username=username}}

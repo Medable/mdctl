@@ -1,0 +1,29 @@
+{
+  "description": "Email to notify about failed queue jobs",
+  "label": "Integrations Platform Queue Failed",
+  "localizations": [
+    {
+      "locale": [
+        "en_US"
+      ],
+      "content": [
+        {
+          "data": "/env/templates/tpl/template.email.int__queue_failed.en_US.html.html",
+          "name": "html"
+        },
+        {
+          "data": "",
+          "name": "plain"
+        },
+        {
+          "data": "/env/templates/tpl/template.email.int__queue_failed.en_US.subject.txt",
+          "name": "subject"
+        }
+      ]
+    }
+  ],
+  "name": "int__queue_failed",
+  "object": "template",
+  "partial": false,
+  "type": "email"
+}

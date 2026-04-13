@@ -1,0 +1,17 @@
+{
+  "active": true,
+  "configuration": {
+    "export": "c_integrations"
+  },
+  "description": "Groups all the logic related to integrations",
+  "environment": "*",
+  "label": "Integrations related logic",
+  "language": "javascript/es6",
+  "name": "c_integrations",
+  "object": "script",
+  "optimized": false,
+  "principal": null,
+  "script": "/env/scripts/js/library.c_integrations.js",
+  "type": "library",
+  "weight": 0
+}

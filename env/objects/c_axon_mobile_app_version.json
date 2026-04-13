@@ -1,0 +1,184 @@
+{
+  "allowConnections": false,
+  "auditing": {
+    "enabled": true
+  },
+  "canCascadeDelete": false,
+  "connectionOptions": {
+    "requireAccept": true,
+    "requiredAccess": 5,
+    "sendNotifications": true
+  },
+  "createAcl": [
+    "role.administrator"
+  ],
+  "defaultAcl": [
+    "owner.delete",
+    "role.administrator.delete"
+  ],
+  "defaultType": null,
+  "favorite": false,
+  "hasETag": false,
+  "hasOwner": true,
+  "isDeletable": true,
+  "isUnmanaged": false,
+  "isVersioned": false,
+  "label": "Mobile Application Version",
+  "localized": false,
+  "name": "c_axon_mobile_app_version",
+  "object": "object",
+  "objectTypes": [],
+  "properties": [
+    {
+      "acl": [],
+      "aclOverride": false,
+      "array": false,
+      "auditable": true,
+      "canPull": true,
+      "canPush": true,
+      "creatable": false,
+      "defaultValue": [],
+      "dependencies": [],
+      "history": true,
+      "include": [],
+      "indexed": true,
+      "label": "Application",
+      "localization": {
+        "acl": [],
+        "aclOverride": false,
+        "enabled": false,
+        "fallback": true,
+        "fixed": "",
+        "namespace": "cortex",
+        "readAccess": "read",
+        "strict": true,
+        "valid": [],
+        "writeAccess": "update"
+      },
+      "lowercase": true,
+      "maxItems": 100,
+      "maxShift": false,
+      "minItems": 0,
+      "name": "c_application",
+      "optional": false,
+      "readAccess": "read",
+      "readable": true,
+      "removable": false,
+      "trim": true,
+      "type": "String",
+      "unique": false,
+      "uniqueValues": false,
+      "uppercase": false,
+      "validators": [
+        {
+          "name": "required"
+        },
+        {
+          "definition": {
+            "min": 0,
+            "max": 32
+          },
+          "name": "string"
+        }
+      ],
+      "writable": true,
+      "writeAccess": "update",
+      "writeOnCreate": true
+    },
+    {
+      "acl": [],
+      "aclOverride": false,
+      "array": false,
+      "auditable": true,
+      "canPull": true,
+      "canPush": true,
+      "creatable": false,
+      "defaultValue": [],
+      "dependencies": [],
+      "history": true,
+      "include": [],
+      "indexed": true,
+      "label": "Minimally Required Version",
+      "maxItems": 100,
+      "maxShift": false,
+      "minItems": 0,
+      "name": "c_required_version",
+      "optional": false,
+      "readAccess": "read",
+      "readable": true,
+      "removable": false,
+      "type": "Boolean",
+      "unique": false,
+      "uniqueValues": false,
+      "validators": [],
+      "writable": true,
+      "writeAccess": "update",
+      "writeOnCreate": true
+    },
+    {
+      "acl": [],
+      "aclOverride": false,
+      "array": false,
+      "auditable": true,
+      "canPull": true,
+      "canPush": true,
+      "creatable": false,
+      "defaultValue": [],
+      "dependencies": [],
+      "history": true,
+      "include": [],
+      "indexed": true,
+      "label": "Version",
+      "localization": {
+        "acl": [],
+        "aclOverride": false,
+        "enabled": false,
+        "fallback": true,
+        "fixed": "",
+        "namespace": "cortex",
+        "readAccess": "read",
+        "strict": true,
+        "valid": [],
+        "writeAccess": "update"
+      },
+      "lowercase": false,
+      "maxItems": 100,
+      "maxShift": false,
+      "minItems": 0,
+      "name": "c_version",
+      "optional": false,
+      "readAccess": "read",
+      "readable": true,
+      "removable": false,
+      "trim": true,
+      "type": "String",
+      "unique": false,
+      "uniqueValues": false,
+      "uppercase": false,
+      "validators": [
+        {
+          "name": "required"
+        },
+        {
+          "definition": {
+            "min": 0,
+            "max": 256
+          },
+          "name": "string"
+        }
+      ],
+      "writable": true,
+      "writeAccess": "update",
+      "writeOnCreate": true
+    }
+  ],
+  "reporting": {
+    "enabled": false
+  },
+  "shareAcl": [],
+  "shareChain": [],
+  "uniqueKey": "",
+  "useBuildVersion": false,
+  "useBundles": false,
+  "validateOwner": true
+}

@@ -1,0 +1,1 @@
+Provider verification verified for {{{fullname account.name}}} in {{{org.name}}}

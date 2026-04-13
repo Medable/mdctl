@@ -1,0 +1,29 @@
+{
+  "description": "Participant leave study email sent to all site users/investigators associated to the participant's site",
+  "label": "Axon Leave Study - Management",
+  "localizations": [
+    {
+      "locale": [
+        "*"
+      ],
+      "content": [
+        {
+          "data": "/env/templates/tpl/template.email.c_axon_leave_study_mgmt.anyLocale.html.html",
+          "name": "html"
+        },
+        {
+          "data": "/env/templates/tpl/template.email.c_axon_leave_study_mgmt.anyLocale.plain.txt",
+          "name": "plain"
+        },
+        {
+          "data": "/env/templates/tpl/template.email.c_axon_leave_study_mgmt.anyLocale.subject.txt",
+          "name": "subject"
+        }
+      ]
+    }
+  ],
+  "name": "c_axon_leave_study_mgmt",
+  "object": "template",
+  "partial": false,
+  "type": "email"
+}

@@ -1,0 +1,17 @@
+{
+  "active": true,
+  "configuration": {
+    "export": "int__pipeline"
+  },
+  "description": "Pipeline Library",
+  "environment": "*",
+  "label": "Integrations: Pipeline Library",
+  "language": "javascript/es6",
+  "name": "int__pipeline",
+  "object": "script",
+  "optimized": false,
+  "principal": null,
+  "script": "/env/scripts/js/library.int__pipeline.js",
+  "type": "library",
+  "weight": 0
+}

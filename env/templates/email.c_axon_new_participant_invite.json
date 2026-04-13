@@ -1,0 +1,29 @@
+{
+  "description": "Axon new participant invitation email",
+  "label": "Axon New Participant Invite (Study Code)",
+  "localizations": [
+    {
+      "locale": [
+        "*"
+      ],
+      "content": [
+        {
+          "data": "/env/templates/tpl/template.email.c_axon_new_participant_invite.anyLocale.html.html",
+          "name": "html"
+        },
+        {
+          "data": "/env/templates/tpl/template.email.c_axon_new_participant_invite.anyLocale.plain.txt",
+          "name": "plain"
+        },
+        {
+          "data": "/env/templates/tpl/template.email.c_axon_new_participant_invite.anyLocale.subject.txt",
+          "name": "subject"
+        }
+      ]
+    }
+  ],
+  "name": "c_axon_new_participant_invite",
+  "object": "template",
+  "partial": false,
+  "type": "email"
+}

@@ -1,0 +1,29 @@
+{
+  "description": "EC Document Complete",
+  "label": "EC Document Complete",
+  "localizations": [
+    {
+      "locale": [
+        "*"
+      ],
+      "content": [
+        {
+          "data": "/env/templates/tpl/template.email.ec__document_complete.anyLocale.html.html",
+          "name": "html"
+        },
+        {
+          "data": "/env/templates/tpl/template.email.ec__document_complete.anyLocale.plain.txt",
+          "name": "plain"
+        },
+        {
+          "data": "/env/templates/tpl/template.email.ec__document_complete.anyLocale.subject.txt",
+          "name": "subject"
+        }
+      ]
+    }
+  ],
+  "name": "ec__document_complete",
+  "object": "template",
+  "partial": false,
+  "type": "email"
+}

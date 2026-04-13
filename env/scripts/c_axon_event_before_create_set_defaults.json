@@ -1,0 +1,26 @@
+{
+  "active": true,
+  "configuration": {
+    "event": "create.before",
+    "inline": false,
+    "object": "c_event",
+    "paths": []
+  },
+  "description": "Sets default properties on Axon events when they are created.",
+  "environment": "*",
+  "if": {
+    "$eq": [
+      "$$ROOT.type",
+      "c_televisit_event"
+    ]
+  },
+  "label": "Axon - c_event Before Create set defaults",
+  "language": "javascript/es6",
+  "name": "c_axon_event_before_create_set_defaults",
+  "object": "script",
+  "optimized": false,
+  "principal": null,
+  "script": "/env/scripts/js/trigger.c_axon_event_before_create_set_defaults.js",
+  "type": "trigger",
+  "weight": 0
+}

@@ -1,0 +1,29 @@
+{
+  "description": "The is a template for the invite pin only",
+  "label": "Axon Invite: Pin Only",
+  "localizations": [
+    {
+      "locale": [
+        "*"
+      ],
+      "content": [
+        {
+          "data": "/env/templates/tpl/template.email.c_axon_invite-pin_only.anyLocale.html.html",
+          "name": "html"
+        },
+        {
+          "data": "/env/templates/tpl/template.email.c_axon_invite-pin_only.anyLocale.plain.txt",
+          "name": "plain"
+        },
+        {
+          "data": "/env/templates/tpl/template.email.c_axon_invite-pin_only.anyLocale.subject.txt",
+          "name": "subject"
+        }
+      ]
+    }
+  ],
+  "name": "c_axon_invite-pin_only",
+  "object": "template",
+  "partial": false,
+  "type": "email"
+}

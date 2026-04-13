@@ -1,0 +1,4 @@
+{{i18n "axon:template.email.mobile-change-notification.hello" account=account}}
+
+
+{{i18n "axon:template.email.mobile-change-notification.instructions" org=org}}

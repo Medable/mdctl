@@ -1,0 +1,3 @@
+{{i18n "axon:template.email.ios-token-reassigned.hello" account=account}}
+
+{{i18n "axon:template.email.ios-token-reassigned.instructions"}}

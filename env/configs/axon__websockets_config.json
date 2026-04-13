@@ -1,0 +1,69 @@
+{
+  "isPublic": false,
+  "name": "axon__websockets_config",
+  "object": "config",
+  "value": {
+    "issuer": "c_websocket_issuer",
+    "endpoint": null,
+    "tokenExpirySeconds": 86400,
+    "endpoints": [
+      {
+        "server": "*",
+        "url": "api-ws.medable.com"
+      },
+      {
+        "server": [
+          "api.dev.medable.com"
+        ],
+        "url": "api-ws-dev.medable.com"
+      },
+      {
+        "server": [
+          "api.medable.cn"
+        ],
+        "url": "api-ws.medable.cn"
+      },
+      {
+        "server": [
+          "api.dev.medable.cn"
+        ],
+        "url": "api-ws.medable.cn"
+      },
+      {
+        "server": [
+          "api-eu1.medable.com"
+        ],
+        "url": "api-ws-eu1.medable.com"
+      },
+      {
+        "server": [
+          "api-eu1-dev.medable.com"
+        ],
+        "url": "api-ws-eu1-dev.medable.com"
+      },
+      {
+        "server": [
+          "api.edge.medable.com",
+          "api-int-dev.medable.com",
+          "api.demo.medable.com",
+          "api.qa.medable.com",
+          "api.test.medable.com",
+          "api-int-dev.medable.com"
+        ],
+        "url": "api-ws-edge.medable.com"
+      },
+      {
+        "server": [
+          "api.local.medable.com"
+        ],
+        "url": "ws.local.medable.com"
+      },
+      {
+        "server": [
+          "api-m6269.alpha-latest.medable.com"
+        ],
+        "url": "https://api-ws-m6269.alpha-latest.medable.com"
+      }
+    ]
+  }
+}

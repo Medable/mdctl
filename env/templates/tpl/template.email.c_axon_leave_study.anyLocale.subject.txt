@@ -1,0 +1,1 @@
+{{{i18n "axon:template.email.c_axon_leave_study.subject" org=org study_name=study_name account_id=account_id}}}

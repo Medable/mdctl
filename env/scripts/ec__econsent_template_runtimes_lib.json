@@ -1,0 +1,17 @@
+{
+  "active": true,
+  "configuration": {
+    "export": "ec__econsent_template_runtimes_lib"
+  },
+  "description": "Library to manage eConsents Runtime Templates Routes/Triggers",
+  "environment": "*",
+  "label": "eConsent - eConsent Templates Runtime Routes/Triggers Management Library",
+  "language": "javascript/es6",
+  "name": "ec__econsent_template_runtimes_lib",
+  "object": "script",
+  "optimized": false,
+  "principal": null,
+  "script": "/env/scripts/js/library.ec__econsent_template_runtimes_lib.js",
+  "type": "library",
+  "weight": 0
+}

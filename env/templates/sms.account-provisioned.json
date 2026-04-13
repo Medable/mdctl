@@ -1,0 +1,21 @@
+{
+  "description": "Account Provisioned Sms",
+  "label": "Account Provisioned",
+  "localizations": [
+    {
+      "locale": [
+        "en_US"
+      ],
+      "content": [
+        {
+          "data": "/env/templates/tpl/template.sms.account-provisioned.en_US.message.txt",
+          "name": "message"
+        }
+      ]
+    }
+  ],
+  "name": "account-provisioned",
+  "object": "template",
+  "partial": false,
+  "type": "sms"
+}

@@ -1,0 +1,29 @@
+{{#extend "layout"}}
+
+    {{#replace "title"}}
+        You're invited
+    {{/replace}}
+
+    {{#replace "body"}}
+        You've been invited to join {{org.name}}<br/><br/>
+
+        Click the button below to sign up.
+    {{/replace}}
+
+    {{#replace "button"}}
+        <tr>
+            <td height="15"></td>
+        </tr>
+        <tr>
+            <td align="center">
+                <table>
+                    <tbody>
+                        <tr>
+                            <td align="center" width="300" bgcolor="#467bbe" class="button" style="background: #467bbe; padding: 10px; -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; color: #fff; font-weight: bold; text-decoration: none; font-family: Helvetica, Arial, sans-serif; display: block;"><a href="{{connection.url}}" style="color: #fff; text-decoration: none;">Sign Up</a></td>
+                        </tr>
+                    </tbody>
+                </table>  
+            </td>
+        </tr>
+    {{/replace}}
+{{/extend}}

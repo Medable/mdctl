@@ -1,0 +1,3 @@
+Hi {{{account.name.first}}},
+
+Welcome to {{{org.name}}}! {{{org.name}}} is currently in private beta. We can't wait for you to be able to use it, but there is a line! Don't worry though, the line is moving pretty fast and you will get an email as soon as your account is activated. Keep an eye out!

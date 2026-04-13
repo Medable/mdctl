@@ -1,0 +1,29 @@
+{
+  "aliases": [],
+  "assets": [
+    {
+      "key": "61ab83dd-856e-486e-83e1-f340ec875291.c_html_bundle",
+      "value": [
+        [
+          {
+            "filename": "export.zip",
+            "name": "content",
+            "mime": "application/zip",
+            "object": "facet",
+            "filePath": "/env/i18ns/assets/i18n.ecoa__rafael_feb_20_local_dev_en_us_i18n_task.assets.0.value.0.content.zip",
+            "ETag": "99ecf9bc68685e06f14f34e545e304d1"
+          }
+        ]
+      ]
+    }
+  ],
+  "dirty": true,
+  "extensible": true,
+  "locale": "en_US",
+  "name": "ecoa__rafael_feb_20_local_dev_en_us_i18n_task",
+  "namespace": "ecoa",
+  "object": "i18n",
+  "overridable": true,
+  "tags": [],
+  "weight": 1
+}

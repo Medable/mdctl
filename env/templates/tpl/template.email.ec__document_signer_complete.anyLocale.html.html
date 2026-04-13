@@ -1,0 +1,31 @@
+{{#extend "layout"}}
+
+    {{#replace "title"}}
+        {{i18n "econsent:template.email.ec__document_signer_complete.title"}}
+    {{/replace}}
+
+    {{#replace "body"}}
+    {{i18n "econsent:template.email.ec__document_signer_complete.study_signed" c_study=c_study}}
+	
+    {{i18n "econsent:template.email.ec__document_signer_complete.link_instructions"}}
+
+    {{/replace}}
+    {{#replace "button"}}
+        <tr>
+            <td height="15"></td>
+        </tr>
+        <tr>
+            <td>
+                <table align="center" border="0" cellpadding="0" cellspacing="0" style="background-color: #6445D7; -webkit-border-radius: 6px; -moz-border-radius: 6px; border-radius: 6px;">
+                    <tbody>
+                        <tr>
+                            <td align="center" valign="middle" class="button" style="color: #ffffff; font-weight: bold; font-family: Helvetica, Arial, sans-serif; letter-spacing: 0.1px; line-height:22px; padding-top:9px; padding-right:17px; padding-bottom:9px; padding-left:17px;">
+                                <a href="{{baseUrl}}/{{documentPath}}/{{c_signed_document._id}}?org={{orgCode}}" target="_blank" style="color: #ffffff; text-decoration: none;">{{i18n "econsent:template.email.ec__document_signer_complete.link_text"}}</a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>  
+            </td>
+        </tr>
+    {{/replace}}
+{{/extend}}

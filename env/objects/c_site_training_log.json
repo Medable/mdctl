@@ -1,0 +1,490 @@
+{
+  "allowConnections": true,
+  "auditing": {
+    "enabled": false
+  },
+  "canCascadeDelete": false,
+  "connectionOptions": {
+    "requireAccept": false,
+    "requiredAccess": 5,
+    "sendNotifications": false
+  },
+  "createAcl": [
+    "role.c_axon_site_investigator",
+    "role.c_axon_site_monitor",
+    "role.c_axon_site_user",
+    "role.c_site_investigator",
+    "role.c_site_monitor",
+    "role.c_site_user"
+  ],
+  "defaultAcl": [
+    "role.administrator.update",
+    "role.c_axon_site_auditor.update",
+    "role.c_axon_site_investigator.update",
+    "role.c_axon_site_monitor.update",
+    "role.c_axon_site_user.update",
+    "role.c_data_manager.read",
+    "role.c_data_reviewer.read",
+    "role.c_site_investigator.update",
+    "role.c_site_monitor.update",
+    "role.c_site_user.update"
+  ],
+  "defaultType": null,
+  "favorite": false,
+  "hasETag": false,
+  "hasOwner": true,
+  "isDeletable": true,
+  "isUnmanaged": false,
+  "isVersioned": false,
+  "label": "Site Training Log",
+  "localized": true,
+  "name": "c_site_training_log",
+  "object": "object",
+  "objectTypes": [],
+  "properties": [
+    {
+      "accessTransforms": [],
+      "acl": [],
+      "aclOverride": false,
+      "auditable": false,
+      "autoCreate": false,
+      "cascadeDelete": false,
+      "creatable": false,
+      "defaultAcl": [],
+      "defaultAclOverride": false,
+      "defaultValue": [],
+      "dependencies": [],
+      "expandable": true,
+      "grant": "read",
+      "history": false,
+      "include": [],
+      "indexed": true,
+      "inheritInstanceRoles": false,
+      "inheritPropertyAccess": false,
+      "label": "Account",
+      "name": "c_account",
+      "optional": false,
+      "pacl": [],
+      "paths": [],
+      "readAccess": "read",
+      "readable": true,
+      "referenceAccess": "none",
+      "removable": false,
+      "roles": [],
+      "sourceObject": "account",
+      "type": "Reference",
+      "unique": false,
+      "updateOnWriteThrough": false,
+      "validateReference": true,
+      "validators": [
+        {
+          "name": "required"
+        }
+      ],
+      "writable": true,
+      "writeAccess": "update",
+      "writeThrough": false
+    },
+    {
+      "acl": [],
+      "aclOverride": false,
+      "array": false,
+      "auditable": false,
+      "canPull": true,
+      "canPush": true,
+      "creatable": false,
+      "defaultValue": [],
+      "dependencies": [],
+      "history": false,
+      "include": [],
+      "indexed": false,
+      "label": "Training Code",
+      "localization": {
+        "acl": [],
+        "aclOverride": false,
+        "enabled": false,
+        "fallback": true,
+        "fixed": "",
+        "namespace": "axon",
+        "readAccess": "read",
+        "strict": true,
+        "valid": [],
+        "writeAccess": "update"
+      },
+      "lowercase": false,
+      "maxItems": 100,
+      "maxShift": false,
+      "minItems": 0,
+      "name": "c_code",
+      "optional": false,
+      "readAccess": "read",
+      "readable": true,
+      "removable": true,
+      "trim": false,
+      "type": "String",
+      "unique": false,
+      "uniqueValues": false,
+      "uppercase": false,
+      "validators": [
+        {
+          "definition": {
+            "min": 0,
+            "max": 512
+          },
+          "name": "string"
+        },
+        {
+          "name": "required"
+        }
+      ],
+      "writable": true,
+      "writeAccess": "update",
+      "writeOnCreate": true
+    },
+    {
+      "acl": [],
+      "aclOverride": false,
+      "array": false,
+      "auditable": false,
+      "canPull": true,
+      "canPush": true,
+      "creatable": false,
+      "defaultValue": [],
+      "dependencies": [],
+      "history": false,
+      "include": [],
+      "indexed": false,
+      "label": "Completion Status",
+      "localization": {
+        "acl": [],
+        "aclOverride": false,
+        "enabled": false,
+        "fallback": true,
+        "fixed": "",
+        "namespace": "axon",
+        "readAccess": "read",
+        "strict": true,
+        "valid": [],
+        "writeAccess": "update"
+      },
+      "lowercase": false,
+      "maxItems": 100,
+      "maxShift": false,
+      "minItems": 0,
+      "name": "c_completion_status",
+      "optional": false,
+      "readAccess": "read",
+      "readable": true,
+      "removable": true,
+      "trim": false,
+      "type": "String",
+      "unique": false,
+      "uniqueValues": false,
+      "uppercase": false,
+      "validators": [
+        {
+          "definition": {
+            "min": 0,
+            "max": 512
+          },
+          "name": "string"
+        },
+        {
+          "name": "required"
+        }
+      ],
+      "writable": true,
+      "writeAccess": "update",
+      "writeOnCreate": true
+    },
+    {
+      "acl": [],
+      "aclOverride": false,
+      "array": false,
+      "auditable": false,
+      "canPull": true,
+      "canPush": true,
+      "creatable": false,
+      "defaultValue": [],
+      "dependencies": [],
+      "history": false,
+      "include": [],
+      "indexed": false,
+      "label": "Device",
+      "localization": {
+        "acl": [],
+        "aclOverride": false,
+        "enabled": false,
+        "fallback": true,
+        "fixed": "",
+        "namespace": "axon",
+        "readAccess": "read",
+        "strict": true,
+        "valid": [],
+        "writeAccess": "update"
+      },
+      "lowercase": false,
+      "maxItems": 100,
+      "maxShift": false,
+      "minItems": 0,
+      "name": "c_device",
+      "optional": false,
+      "readAccess": "read",
+      "readable": true,
+      "removable": true,
+      "trim": false,
+      "type": "String",
+      "unique": false,
+      "uniqueValues": false,
+      "uppercase": false,
+      "validators": [
+        {
+          "definition": {
+            "min": 0,
+            "max": 512
+          },
+          "name": "string"
+        },
+        {
+          "name": "required"
+        }
+      ],
+      "writable": true,
+      "writeAccess": "update",
+      "writeOnCreate": true
+    },
+    {
+      "acl": [],
+      "aclOverride": false,
+      "array": false,
+      "auditable": false,
+      "canPull": true,
+      "canPush": true,
+      "creatable": false,
+      "defaultValue": [],
+      "dependencies": [],
+      "history": false,
+      "include": [],
+      "indexed": false,
+      "label": "Locale",
+      "localization": {
+        "acl": [],
+        "aclOverride": false,
+        "enabled": false,
+        "fallback": true,
+        "fixed": "",
+        "namespace": "axon",
+        "readAccess": "read",
+        "strict": true,
+        "valid": [],
+        "writeAccess": "update"
+      },
+      "lowercase": false,
+      "maxItems": 100,
+      "maxShift": false,
+      "minItems": 0,
+      "name": "c_locale",
+      "optional": false,
+      "readAccess": "read",
+      "readable": true,
+      "removable": true,
+      "trim": false,
+      "type": "String",
+      "unique": false,
+      "uniqueValues": false,
+      "uppercase": false,
+      "validators": [
+        {
+          "definition": {
+            "min": 0,
+            "max": 512
+          },
+          "name": "string"
+        },
+        {
+          "name": "required"
+        }
+      ],
+      "writable": true,
+      "writeAccess": "update",
+      "writeOnCreate": true
+    },
+    {
+      "acl": [],
+      "aclOverride": false,
+      "array": false,
+      "auditable": false,
+      "canPull": true,
+      "canPush": true,
+      "creatable": false,
+      "defaultValue": [],
+      "dependencies": [],
+      "history": false,
+      "include": [],
+      "indexed": false,
+      "label": "Training Module ID",
+      "localization": {
+        "acl": [],
+        "aclOverride": false,
+        "enabled": false,
+        "fallback": true,
+        "fixed": "",
+        "namespace": "axon",
+        "readAccess": "read",
+        "strict": true,
+        "valid": [],
+        "writeAccess": "update"
+      },
+      "lowercase": false,
+      "maxItems": 100,
+      "maxShift": false,
+      "minItems": 0,
+      "name": "c_module_id",
+      "optional": false,
+      "readAccess": "read",
+      "readable": true,
+      "removable": true,
+      "trim": false,
+      "type": "String",
+      "unique": false,
+      "uniqueValues": false,
+      "uppercase": false,
+      "validators": [
+        {
+          "definition": {
+            "min": 0,
+            "max": 512
+          },
+          "name": "string"
+        },
+        {
+          "name": "required"
+        }
+      ],
+      "writable": true,
+      "writeAccess": "update",
+      "writeOnCreate": true
+    },
+    {
+      "acl": [],
+      "aclOverride": false,
+      "array": false,
+      "auditable": false,
+      "canPull": true,
+      "canPush": true,
+      "creatable": false,
+      "defaultValue": [],
+      "dependencies": [],
+      "history": false,
+      "include": [],
+      "indexed": false,
+      "label": "Training Module Name",
+      "localization": {
+        "acl": [],
+        "aclOverride": false,
+        "enabled": false,
+        "fallback": true,
+        "fixed": "",
+        "namespace": "axon",
+        "readAccess": "read",
+        "strict": true,
+        "valid": [],
+        "writeAccess": "update"
+      },
+      "lowercase": false,
+      "maxItems": 100,
+      "maxShift": false,
+      "minItems": 0,
+      "name": "c_module_name",
+      "optional": false,
+      "readAccess": "read",
+      "readable": true,
+      "removable": true,
+      "trim": false,
+      "type": "String",
+      "unique": false,
+      "uniqueValues": false,
+      "uppercase": false,
+      "validators": [
+        {
+          "definition": {
+            "min": 0,
+            "max": 512
+          },
+          "name": "string"
+        },
+        {
+          "name": "required"
+        }
+      ],
+      "writable": true,
+      "writeAccess": "update",
+      "writeOnCreate": true
+    },
+    {
+      "acl": [],
+      "aclOverride": false,
+      "array": false,
+      "auditable": false,
+      "canPull": true,
+      "canPush": true,
+      "creatable": false,
+      "defaultValue": [],
+      "dependencies": [],
+      "history": false,
+      "include": [],
+      "indexed": false,
+      "label": "Vendor",
+      "localization": {
+        "acl": [],
+        "aclOverride": false,
+        "enabled": false,
+        "fallback": true,
+        "fixed": "",
+        "namespace": "axon",
+        "readAccess": "read",
+        "strict": true,
+        "valid": [],
+        "writeAccess": "update"
+      },
+      "lowercase": false,
+      "maxItems": 100,
+      "maxShift": false,
+      "minItems": 0,
+      "name": "c_vendor",
+      "optional": false,
+      "readAccess": "read",
+      "readable": true,
+      "removable": true,
+      "trim": false,
+      "type": "String",
+      "unique": false,
+      "uniqueValues": false,
+      "uppercase": false,
+      "validators": [
+        {
+          "definition": {
+            "min": 0,
+            "max": 512
+          },
+          "name": "string"
+        },
+        {
+          "name": "required"
+        }
+      ],
+      "writable": true,
+      "writeAccess": "update",
+      "writeOnCreate": true
+    }
+  ],
+  "reporting": {
+    "enabled": false
+  },
+  "shareAcl": [],
+  "shareChain": [],
+  "uniqueKey": "",
+  "useBuildVersion": false,
+  "useBundles": true,
+  "validateOwner": true
+}

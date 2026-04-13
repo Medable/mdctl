@@ -1,0 +1,19 @@
+{
+  "active": false,
+  "configuration": {
+    "event": "create.before",
+    "inline": false,
+    "object": "c_query",
+    "paths": []
+  },
+  "environment": "*",
+  "label": "Nucleus - Restrict Sys Query Create",
+  "language": "javascript/es6",
+  "name": "c_nucleus_restrict_sys_query_create",
+  "object": "script",
+  "optimized": false,
+  "principal": "serviceAccount.c_system_user",
+  "script": "/env/scripts/js/trigger.c_nucleus_restrict_sys_query_create.js",
+  "type": "trigger",
+  "weight": 0
+}

@@ -1,0 +1,18 @@
+{
+  "duplicates": false,
+  "endpoints": [
+    {
+      "configurable": true,
+      "defaultUserState": 0,
+      "label": "Email",
+      "name": "email",
+      "state": "Enabled",
+      "template": "ec__pts_document_invite",
+      "type": "email"
+    }
+  ],
+  "label": "pts document invite",
+  "name": "c_pts_document_invite",
+  "object": "notification",
+  "persists": true
+}

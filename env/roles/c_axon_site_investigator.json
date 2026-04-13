@@ -1,0 +1,9 @@
+{
+  "code": "c_axon_site_investigator",
+  "include": [
+    "c_axon_site_user"
+  ],
+  "name": "Axon Site Investigator",
+  "object": "role",
+  "scope": []
+}

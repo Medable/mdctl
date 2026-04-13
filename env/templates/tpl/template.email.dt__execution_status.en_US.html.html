@@ -1,0 +1,13 @@
+{{#extend "layout"}}
+    {{#replace "title"}}
+        Data Transfer - {{studyName}} - {{transferName}} ({{id}})
+    {{/replace}}
+    {{#replace "body"}}
+        {{#if completed}}
+            <p>Your transfer has been executed successfully.</p>
+        {{else}}
+            <p>There was an error executing the transfer.</p>
+            <p>{{{details}}}</p>
+        {{/if}}
+    {{/replace}}
+{{/extend}}

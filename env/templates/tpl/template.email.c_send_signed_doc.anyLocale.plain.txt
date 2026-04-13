@@ -1,0 +1,2 @@
+{{i18n "axon:template.email.c_send_signed_doc.title"}}
+{{doc}}

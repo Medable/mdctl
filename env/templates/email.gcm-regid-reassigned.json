@@ -1,0 +1,29 @@
+{
+  "description": "Email notification for device change",
+  "label": "GCM Registration Id Reassigned",
+  "localizations": [
+    {
+      "locale": [
+        "*"
+      ],
+      "content": [
+        {
+          "data": "/env/templates/tpl/template.email.gcm-regid-reassigned.anyLocale.html.html",
+          "name": "html"
+        },
+        {
+          "data": "/env/templates/tpl/template.email.gcm-regid-reassigned.anyLocale.plain.txt",
+          "name": "plain"
+        },
+        {
+          "data": "/env/templates/tpl/template.email.gcm-regid-reassigned.anyLocale.subject.txt",
+          "name": "subject"
+        }
+      ]
+    }
+  ],
+  "name": "gcm-regid-reassigned",
+  "object": "template",
+  "partial": false,
+  "type": "email"
+}

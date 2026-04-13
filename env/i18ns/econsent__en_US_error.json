@@ -1,0 +1,80 @@
+{
+  "aliases": [],
+  "assets": [],
+  "data": {
+    "econsent": {
+      "accessDenied": {
+        "passwordAuthFailed": "Password authentication failed"
+      },
+      "invalidArgument": {
+        "cannotUpdateParticipantSigners": "You cannot update the invites for Participant signers",
+        "cannotUpdateSigners": "You cannot update a signer if they have contributed to a document",
+        "documentAlreadyVoided": "This document is already voided",
+        "emailMustMatchInvite": "The email you use to register must match the one you were invited with",
+        "invalidInvite": "Provided Invite is not valid",
+        "invalidSsoCode": "SSO code provided is invalid.",
+        "noResendComplete": "We cannot resend an invite where the signer is complete",
+        "noResendEndedDocuments": "You can't resend invites for documents in \"Complete\", \"Voided\" or \"Cancelled\" status",
+        "onlyInviteToPublishedDocuments": "You may only used published templates for invites",
+        "referencedInviteDoesNotExist": "The referenced invite does not exist",
+        "signerRoleExists": "This signer role already exists on this document",
+        "templateCannotRevertToDraft": "Templates cannot revert to draft",
+        "validInviteIdRequired": "You must provide a valid document invite Id to resend an invite",
+        "validTemplateId": "You must provide a valid template ID for cloning"
+      },
+      "validationError": {
+        "TemplateDoesNotBelongToCurrentSite": "The template does not belong to the current site",
+        "allRequiredRolesRequired": "You must provide and invite for all required signer roles",
+        "cannotEditPublishedTemplate": "You cannot update a template that has been published",
+        "cannotPublishArchivedTemplate": "You cannot published an archived template",
+        "cannotUpdateCanSignProperty": "You cannot modify the value of ec__can_sign_document after it has already been set",
+        "cannotUpdateCompletedSigner": "You cannot update a completed signer",
+        "committeeApprovedVersionUnpublished": "Committee approved version should only be assigned to Unpublished templates.",
+        "credentialsDoNoTMatchLoggedInUser": "Invalid username and password for the current logged in user",
+        "dateMustBeValid": "The provided completion time is invalid",
+        "docTemplateRequired": "You must provide a valid document template for invites",
+        "documentManagerCanOnlyAccessPTSDocuments": "Document managers can only upload final document for Print-to-Sign (PTS) documents",
+        "duplicateEmailsInInvite": "An email address cannot be used more than once in the same invite",
+        "duplicateTemplateTitle": "There is already a template with that name, please use a different name.",
+        "invalidLinkedFieldPlaceholder": "A linked field is invalid. Correct the invalid field before publishing",
+        "inviteAlreadyExists": "An active invite already exists for this person on this document",
+        "inviteSignerRoleMatchInvite": "The invited signer role must match one specified in the template",
+        "missingAxonCommonTranslations": "Axon common translations package is not deployed to the current study.",
+        "missingLinkedFieldValue": "Missing linked field value. Please ensure the site fields is complete in Study Builder.",
+        "noAccessToSignedDocument": "You do not have access to the provided signed document",
+        "noDocumentInviteToDeactivatedParticipant": "A document invite cannot be sent to a deactivated participant",
+        "noMatchingDataId": "Identifier does not match any requested info",
+        "oneInvitePerSignerRole": "Only one invite can be sent per signer role",
+        "oneInviteRequired": "You must provide at least one invite",
+        "oneParticipantPerTemplate": "Templates can only have one participant role",
+        "onlyOneInstanceAllowed": "Only one instance allowed to be created.",
+        "reasonForChangeRequired": "A reason for change is required in order to update the completion time",
+        "requiredDataRemains": "You cannot complete this signer while required data remains to be provided",
+        "signDocumentIsAlreadyCompleted": "The provided signed document is already in completed status",
+        "signDocumentMustBePrintToSign": "The provided signed document must be a Print to Sign (PTS) document",
+        "signedDocHasNoSite": "Error while rendering linked fields. The signed document has no site assinged.",
+        "signedDocIdMustBeValid": "Provided Signed Document Id must be valid",
+        "templateSignerRoleInUse": "Role Associated With Custom Component: To proceed, first remove the custom component from the template, or the role associated with custom component",
+        "userNotAcceptedSigner": "Current user is not an accepted signer of this document",
+        "userNotCorrectRole": "Current user is not the correct signer role for this data",
+        "validEmailForInvite": "A valid email is required for all document signing invites",
+        "voidingReasonRequired": "You must provide a reason for voiding the document"
+      }
+    },
+    "identity": {
+      "locale": "en_US",
+      "version": "1.14.0"
+    }
+  },
+  "dirty": true,
+  "extensible": true,
+  "locale": "en_US",
+  "name": "econsent__en_US_error",
+  "namespace": "econsent",
+  "object": "i18n",
+  "overridable": true,
+  "tags": [
+    "fault"
+  ],
+  "weight": 0
+}

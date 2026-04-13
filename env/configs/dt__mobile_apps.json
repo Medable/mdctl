@@ -1,0 +1,19 @@
+{
+  "isPublic": false,
+  "name": "dt__mobile_apps",
+  "object": "config",
+  "value": {
+    "apps": {
+      "patient": [
+        "c_ios_patient_app",
+        "c_android_patient_app",
+        "c_mystudy",
+        "c_axon_demo_app"
+      ],
+      "site": [
+        "c_site_app_demo",
+        "c_ios_site_app"
+      ]
+    }
+  }
+}

@@ -1,0 +1,35 @@
+{{#extend "layout"}}
+
+  {{#replace "title"}}
+    <span style="font-weight: 300; font-size: 32px">{{i18n "axon:template.email.c_pi_oversight_digest.title"}}</span>
+  {{/replace}}
+
+  {{#replace "body"}}
+    <div style="font-size: 14px">
+      <p>{{{i18n "axon:template.email.c_pi_oversight_digest.intro" study_name=study_name site_name=site_name}}}</p>
+      
+      <br />
+      
+      <table width="100%" cellpadding="0" cellspacing="0">
+        {{#each participants}}
+          <tr>
+            <td style="padding:8px 0;">
+              <strong style="font-size: 16px;">{{this.c_number}}</strong>
+              <span style="{{this.style}}">{{this.status}}</span>
+            </td>
+          </tr>
+        {{/each}}
+      </table>
+      
+      <br /><br />
+      
+      <p>{{i18n "axon:template.email.c_pi_oversight_digest.signin_prompt"}}</p>
+      
+      <br />
+      
+      <a href="{{signin_url}}" style="background:#5C3BFE;color:#fff;border-radius:8px;padding:12px 20px;text-decoration:none;display:inline-block;font-weight:bold;">{{i18n "axon:template.email.c_pi_oversight_digest.signin_cta"}}</a>
+    </div>
+  {{/replace}}
+
+{{/extend}}
+

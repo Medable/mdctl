@@ -1,0 +1,8 @@
+{
+  "isPublic": false,
+  "name": "vtp__version",
+  "object": "config",
+  "value": {
+    "version": "1.0.0"
+  }
+}

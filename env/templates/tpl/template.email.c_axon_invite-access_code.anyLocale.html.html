@@ -1,0 +1,30 @@
+{{#extend "layout"}}
+
+    {{#replace "title"}}
+        {{i18n "axon:template.email.c_axon_invite-access_code.title" study_name=study_name}}
+    {{/replace}}
+
+    {{#replace "body"}}
+        {{i18n "axon:template.email.c_axon_invite-access_code.instructions"}}
+        <ul>
+            {{#if email}}<li>{{i18n "axon:template.email.c_axon_invite-access_code.email"}} {{email}}</li>{{/if}}
+            {{#if username}}<li>{{i18n "axon:template.email.c_axon_invite-access_code.username"}} {{username}}</li>{{/if}}
+            {{#if mobile}}<li>{{i18n "axon:template.email.c_axon_invite-access_code.mobile"}} {{mobile}}</li>{{/if}}
+            <li>{{i18n "axon:template.email.c_axon_invite-access_code.accessCode"}} {{access_code}}</li>
+        </ul>
+        {{#if downloadText}}<br>{{i18n "axon:template.email.c_axon_invite-access_code.downloadText"}}
+        <ul>
+            {{#if appleStore}}<li>{{i18n "axon:template.email.c_axon_invite-access_code.appleStore"}} <a href="{{appleStore_url}}">{{appleStore_url}}</a></li>{{/if}}
+            {{#if googleStore}}
+            <li>{{i18n "axon:template.email.c_axon_invite-access_code.googleStore"}} <a href="{{googleStore_url}}">
+            {{googleStore_url}}
+            </a>
+            </li>{{/if}}
+        </ul>
+        {{/if}}
+        <br>
+        {{i18n "axon:template.email.c_axon_invite-access_code.browserLink"}} <a href="{{paweb_url}}">{{paweb_url}}</a>
+    {{/replace}}
+
+{{/extend}}
+

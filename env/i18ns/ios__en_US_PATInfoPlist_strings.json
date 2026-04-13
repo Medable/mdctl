@@ -1,0 +1,32 @@
+{
+  "aliases": [],
+  "assets": [],
+  "data": {
+    "NSBluetoothAlwaysUsageDescription": "This app will connect to medical devices that are required by some of the tasks in the study.",
+    "NSBluetoothPeripheralUsageDescription": "This app will connect to medical devices that are required by some of the tasks in the study.",
+    "NSCameraUsageDescription": "Camera access is needed to submit photos and video in response to questions about your health and medications.",
+    "NSFaceIDUsageDescription": "This app uses biometric authentication to log you in after your first successful login.",
+    "NSHealthShareUsageDescription": "This is a medical research application, health data will be used to share with researchers once you have consented to participate in the study.",
+    "NSHealthUpdateUsageDescription": "As part of ResearchKit, the framework might update HealthKit data while you are responding to surveys.",
+    "NSLocationAlwaysAndWhenInUseUsageDescription": "This app will use your location to allow you to respond to location questions contained in the study.",
+    "NSLocationAlwaysUsageDescription": "This app will use your location to allow you to respond to location questions contained in the study.",
+    "NSLocationWhenInUseUsageDescription": "This app will use your location to allow you to respond to location questions contained in the study.",
+    "NSMicrophoneUsageDescription": "The application will use the microphone when the study you are running includes a voice task from ResearchKit.",
+    "NSMotionUsageDescription": "ResearchKit might access motion usage to upload active task results to the Medable cloud.",
+    "NSPhotoLibraryUsageDescription": "The application will use the photo library so you can pick images to include them in private conversation between you, your health providers and caregivers.",
+    "NSSpeechRecognitionUsageDescription": "This app uses speech recognition to respond to certain questions contained in the study.",
+    "identity": {
+      "locale": "en_US",
+      "version": "1.19.0"
+    }
+  },
+  "dirty": true,
+  "extensible": true,
+  "locale": "en_US",
+  "name": "ios__en_US_PATInfoPlist_strings",
+  "namespace": "ios",
+  "object": "i18n",
+  "overridable": true,
+  "tags": [],
+  "weight": 0
+}

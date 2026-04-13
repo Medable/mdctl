@@ -1,0 +1,17 @@
+{
+  "active": true,
+  "configuration": {
+    "export": "c_step_response_trigger"
+  },
+  "description": "Library that contains triggers associated with step responses",
+  "environment": "*",
+  "label": "Step response triggers",
+  "language": "javascript/es6",
+  "name": "c_step_response_trigger",
+  "object": "script",
+  "optimized": false,
+  "principal": null,
+  "script": "/env/scripts/js/library.c_step_response_trigger.js",
+  "type": "library",
+  "weight": 0
+}

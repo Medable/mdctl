@@ -1,0 +1,69 @@
+{
+  "aliases": [],
+  "assets": [],
+  "data": {
+    "plurals": {
+      "email_subject_consent_documents": {
+        "zero": "Send Consent Documents",
+        "one": "Send Consent Document",
+        "two": "Send Consent Documents",
+        "few": "Send Consent Documents",
+        "many": "Send Consent Documents",
+        "other": "Send Consent Documents"
+      },
+      "sub_header_title": {
+        "zero": "%d Days Remaining",
+        "one": "%d Day Remaining",
+        "two": "%d Days Remaining",
+        "few": "%d Days Remaining",
+        "many": "%d Days Remaining",
+        "other": "%d Days Remaining"
+      },
+      "hour_for_hour_and_minutes_remaining": {
+        "zero": "%d hours and ",
+        "one": "%d hour and ",
+        "two": "%d hours and ",
+        "few": "%d hours and ",
+        "many": "%d hours and ",
+        "other": "%d hours and "
+      },
+      "minute_for_hour_and_minutes_remaining": {
+        "zero": "%d minutes remaining",
+        "one": "%d minute remaining",
+        "two": "%d minutes remaining",
+        "few": "%d minutes remaining",
+        "many": "%d minutes remaining",
+        "other": "%d minutes remaining"
+      },
+      "minutes_remaining": {
+        "zero": "%d minutes remaining",
+        "one": "%d minute remaining",
+        "two": "%d minutes remaining",
+        "few": "%d minutes remaining",
+        "many": "%d minutes remaining",
+        "other": "%d minutes remaining"
+      },
+      "hours_remaining": {
+        "zero": "%d hours remaining",
+        "one": "%d hour remaining",
+        "two": "%d hours remaining",
+        "few": "%d hours remaining",
+        "many": "%d hours remaining",
+        "other": "%d hours remaining"
+      }
+    },
+    "identity": {
+      "locale": "en_US",
+      "version": "1.10.0"
+    }
+  },
+  "dirty": true,
+  "extensible": true,
+  "locale": "en_US",
+  "name": "android__en_US_plurals",
+  "namespace": "android",
+  "object": "i18n",
+  "overridable": true,
+  "tags": [],
+  "weight": 0
+}

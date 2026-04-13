@@ -1,0 +1,7 @@
+{
+  "code": "c_site_user",
+  "include": [],
+  "name": "Site User",
+  "object": "role",
+  "scope": []
+}

@@ -1,0 +1,148 @@
+{
+  "isPublic": false,
+  "name": "ec__app_config",
+  "object": "config",
+  "value": {
+    "patientAppDocumentPath": "documents",
+    "siteAppDocumentPath": "documents",
+    "signeeAppDocumentPath": "documents",
+    "patientAppUrls": [
+      {
+        "env": "api.local.medable.com",
+        "url": "mystudy-int-dev.medable.com"
+      },
+      {
+        "env": "api-int-dev.medable.com",
+        "url": "mystudy-int-dev.medable.com"
+      },
+      {
+        "env": "api.qa.medable.com",
+        "url": "mystudy.qa.medable.com"
+      },
+      {
+        "env": "api.test.medable.com",
+        "url": "mystudy-test.medable.com"
+      },
+      {
+        "env": "api.dev.medable.com",
+        "url": "mystudy.dev.medable.com"
+      },
+      {
+        "env": "api.medable.com",
+        "url": "mystudy.medable.com"
+      },
+      {
+        "env": "api.dev.medable.cn",
+        "url": "mystudy-dev.medable.cn"
+      },
+      {
+        "env": "api.medable.cn",
+        "url": "mystudy.medable.cn"
+      },
+      {
+        "env": "api-eu1-dev.medable.com",
+        "url": "mystudy-eu1-dev.medable.com"
+      },
+      {
+        "env": "api-eu1.medable.com",
+        "url": "mystudy-eu1.medable.com"
+      },
+      {
+        "env": "api-m6269.alpha-latest.medable.com",
+        "url": "mystudy-m6269.alpha-latest.medable.com"
+      }
+    ],
+    "siteAppUrls": [
+      {
+        "env": "api.local.medable.com",
+        "url": "site-int-dev.medable.com"
+      },
+      {
+        "env": "api-int-dev.medable.com",
+        "url": "site-int-dev.medable.com"
+      },
+      {
+        "env": "api.qa.medable.com",
+        "url": "site-qa.medable.com"
+      },
+      {
+        "env": "api.test.medable.com",
+        "url": "site-test.medable.com"
+      },
+      {
+        "env": "api.dev.medable.com",
+        "url": "site-dev.medable.com"
+      },
+      {
+        "env": "api.medable.com",
+        "url": "site.medable.com"
+      },
+      {
+        "env": "api.dev.medable.cn",
+        "url": "site-dev.medable.cn"
+      },
+      {
+        "env": "api.medable.cn",
+        "url": "site.medable.cn"
+      },
+      {
+        "env": "api-eu1-dev.medable.com",
+        "url": "site-eu1-dev.medable.com"
+      },
+      {
+        "env": "api-eu1.medable.com",
+        "url": "site-eu1.medable.com"
+      },
+      {
+        "env": "api-m6269.alpha-latest.medable.com",
+        "url": "site-m6269.alpha-latest.medable.com"
+      }
+    ],
+    "signeeAppUrls": [
+      {
+        "env": "api.local.medable.com",
+        "url": "consent-int-dev.medable.com"
+      },
+      {
+        "env": "api-int-dev.medable.com",
+        "url": "consent-int-dev.medable.com"
+      },
+      {
+        "env": "api.qa.medable.com",
+        "url": "consent-qa.medable.com"
+      },
+      {
+        "env": "api.test.medable.com",
+        "url": "consent-test.medable.com"
+      },
+      {
+        "env": "api.dev.medable.com",
+        "url": "consent-dev.medable.com"
+      },
+      {
+        "env": "api.medable.com",
+        "url": "consent.medable.com"
+      },
+      {
+        "env": "api.dev.medable.cn",
+        "url": "consent-dev.medable.cn"
+      },
+      {
+        "env": "api.medable.cn",
+        "url": "consent.medable.cn"
+      },
+      {
+        "env": "api-eu1-dev.medable.com",
+        "url": "consent-eu1-dev.medable.com"
+      },
+      {
+        "env": "api-eu1.medable.com",
+        "url": "consent-eu1.medable.com"
+      },
+      {
+        "env": "api-m6269.alpha-latest.medable.com",
+        "url": "consent-m6269.alpha-latest.medable.com"
+      }
+    ]
+  }
+}

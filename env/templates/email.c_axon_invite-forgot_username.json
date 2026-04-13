@@ -1,0 +1,29 @@
+{
+  "description": "Email notification for forgot username",
+  "label": "Axon Forgot Username",
+  "localizations": [
+    {
+      "locale": [
+        "*"
+      ],
+      "content": [
+        {
+          "data": "/env/templates/tpl/template.email.c_axon_invite-forgot_username.anyLocale.html.html",
+          "name": "html"
+        },
+        {
+          "data": "/env/templates/tpl/template.email.c_axon_invite-forgot_username.anyLocale.plain.txt",
+          "name": "plain"
+        },
+        {
+          "data": "/env/templates/tpl/template.email.c_axon_invite-forgot_username.anyLocale.subject.txt",
+          "name": "subject"
+        }
+      ]
+    }
+  ],
+  "name": "c_axon_invite-forgot_username",
+  "object": "template",
+  "partial": false,
+  "type": "email"
+}

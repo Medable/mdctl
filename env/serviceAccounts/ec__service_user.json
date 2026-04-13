@@ -1,0 +1,9 @@
+{
+  "label": "EC Service User",
+  "locked": false,
+  "name": "ec__service_user",
+  "object": "serviceAccount",
+  "roles": [
+    "administrator"
+  ]
+}

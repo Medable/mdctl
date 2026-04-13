@@ -1,0 +1,21 @@
+{
+  "description": "SMS for forgot username",
+  "label": "Forgot Username",
+  "localizations": [
+    {
+      "locale": [
+        "*"
+      ],
+      "content": [
+        {
+          "data": "/env/templates/tpl/template.sms.c_forgot-username.anyLocale.message.txt",
+          "name": "message"
+        }
+      ]
+    }
+  ],
+  "name": "c_forgot-username",
+  "object": "template",
+  "partial": false,
+  "type": "sms"
+}

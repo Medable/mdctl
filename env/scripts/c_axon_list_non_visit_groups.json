@@ -1,0 +1,27 @@
+{
+  "active": true,
+  "configuration": {
+    "acl": [
+      "account.public"
+    ],
+    "apiKey": null,
+    "authValidation": "all",
+    "method": "get",
+    "path": "c_sites/:siteId/c_public_users/:publicUserId/non_visit_groups",
+    "plainText": false,
+    "priority": 0,
+    "system": false,
+    "urlEncoded": false
+  },
+  "description": "List all non visit groups configured in the study for the specified participant.",
+  "environment": "*",
+  "label": "Axon - List Non-Visit Groups",
+  "language": "javascript/es6",
+  "name": "c_axon_list_non_visit_groups",
+  "object": "script",
+  "optimized": false,
+  "principal": null,
+  "script": "/env/scripts/js/route.c_axon_list_non_visit_groups.js",
+  "type": "route",
+  "weight": 0
+}

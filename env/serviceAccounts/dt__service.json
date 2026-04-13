@@ -1,0 +1,10 @@
+{
+  "label": "Data Transfer Service Account",
+  "locked": false,
+  "name": "dt__service",
+  "object": "serviceAccount",
+  "roles": [
+    "administrator",
+    "dt__admin"
+  ]
+}

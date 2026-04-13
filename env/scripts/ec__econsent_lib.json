@@ -1,0 +1,17 @@
+{
+  "active": true,
+  "configuration": {
+    "export": "ec__econsent_lib"
+  },
+  "description": "Library to manage eConsents",
+  "environment": "*",
+  "label": "eConsent - eConsent Management Library",
+  "language": "javascript/es6",
+  "name": "ec__econsent_lib",
+  "object": "script",
+  "optimized": false,
+  "principal": null,
+  "script": "/env/scripts/js/library.ec__econsent_lib.js",
+  "type": "library",
+  "weight": 0
+}

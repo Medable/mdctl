@@ -1,0 +1,8 @@
+{
+  "isPublic": false,
+  "name": "axon__task_response_upload_token_config",
+  "object": "config",
+  "value": {
+    "tokenLifetimeInSeconds": 7884000
+  }
+}

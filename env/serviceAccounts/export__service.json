@@ -1,0 +1,9 @@
+{
+  "label": "Data Export Service Account",
+  "locked": false,
+  "name": "export__service",
+  "object": "serviceAccount",
+  "roles": [
+    "administrator"
+  ]
+}

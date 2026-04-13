@@ -1,0 +1,9 @@
+{
+  "label": "CDB Service Account",
+  "locked": false,
+  "name": "cdb__service",
+  "object": "serviceAccount",
+  "roles": [
+    "administrator"
+  ]
+}

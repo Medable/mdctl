@@ -1,0 +1,218 @@
+{
+  "allowConnections": true,
+  "auditing": {
+    "enabled": false
+  },
+  "canCascadeDelete": false,
+  "connectionOptions": {
+    "requireAccept": true,
+    "requiredAccess": 5,
+    "sendNotifications": true
+  },
+  "createAcl": [
+    "account.public"
+  ],
+  "defaultAcl": [
+    "account.public.update",
+    "role.administrator.delete"
+  ],
+  "defaultType": null,
+  "description": "An object representing the abbreviated metadata of a study in Axon",
+  "favorite": false,
+  "hasETag": false,
+  "hasOwner": true,
+  "isDeletable": true,
+  "isUnmanaged": false,
+  "isVersioned": false,
+  "label": "Research Data",
+  "localized": true,
+  "name": "c_research_datum",
+  "object": "object",
+  "objectTypes": [],
+  "properties": [
+    {
+      "acl": [],
+      "aclOverride": false,
+      "array": false,
+      "auditable": false,
+      "canPull": true,
+      "canPush": true,
+      "creatable": false,
+      "dateOnly": false,
+      "defaultValue": [],
+      "dependencies": [],
+      "history": false,
+      "include": [],
+      "indexed": true,
+      "label": "Date/Time",
+      "maxItems": 100,
+      "maxShift": false,
+      "minItems": 0,
+      "name": "c_datetime",
+      "optional": false,
+      "readAccess": "read",
+      "readable": true,
+      "removable": false,
+      "type": "Date",
+      "unique": false,
+      "uniqueValues": false,
+      "validators": [
+        {
+          "name": "required"
+        }
+      ],
+      "writable": true,
+      "writeAccess": "update",
+      "writeOnCreate": true
+    },
+    {
+      "accessTransforms": [],
+      "acl": [],
+      "aclOverride": false,
+      "auditable": false,
+      "autoCreate": false,
+      "cascadeDelete": false,
+      "creatable": false,
+      "defaultAcl": [],
+      "defaultAclOverride": false,
+      "defaultValue": [],
+      "dependencies": [],
+      "expandable": true,
+      "grant": "none",
+      "history": false,
+      "include": [],
+      "indexed": true,
+      "inheritInstanceRoles": false,
+      "inheritPropertyAccess": false,
+      "label": "Study",
+      "name": "c_study",
+      "optional": false,
+      "pacl": [],
+      "paths": [],
+      "readAccess": "read",
+      "readable": true,
+      "referenceAccess": "share",
+      "removable": false,
+      "roles": [],
+      "sourceObject": "c_study",
+      "type": "Reference",
+      "unique": false,
+      "updateOnWriteThrough": false,
+      "validateReference": true,
+      "validators": [
+        {
+          "name": "required"
+        }
+      ],
+      "writable": true,
+      "writeAccess": "update",
+      "writeThrough": false
+    },
+    {
+      "acl": [],
+      "aclOverride": false,
+      "array": false,
+      "auditable": false,
+      "canPull": true,
+      "canPush": true,
+      "creatable": false,
+      "defaultValue": [],
+      "dependencies": [],
+      "history": false,
+      "include": [],
+      "indexed": true,
+      "label": "Type",
+      "localization": {
+        "acl": [],
+        "aclOverride": false,
+        "enabled": false,
+        "fallback": true,
+        "fixed": "",
+        "namespace": "axon",
+        "readAccess": "read",
+        "strict": true,
+        "valid": [],
+        "writeAccess": "update"
+      },
+      "lowercase": false,
+      "maxItems": 100,
+      "maxShift": false,
+      "minItems": 0,
+      "name": "c_type",
+      "optional": false,
+      "readAccess": "read",
+      "readable": true,
+      "removable": false,
+      "trim": false,
+      "type": "String",
+      "unique": false,
+      "uniqueValues": false,
+      "uppercase": false,
+      "validators": [
+        {
+          "name": "required"
+        },
+        {
+          "definition": {
+            "min": 0,
+            "max": 512
+          },
+          "name": "string"
+        }
+      ],
+      "writable": true,
+      "writeAccess": "update",
+      "writeOnCreate": true
+    },
+    {
+      "acl": [],
+      "aclOverride": false,
+      "array": false,
+      "auditable": false,
+      "canPull": true,
+      "canPush": true,
+      "creatable": false,
+      "defaultValue": [],
+      "dependencies": [],
+      "history": false,
+      "include": [],
+      "indexed": true,
+      "label": "Value",
+      "maxItems": 100,
+      "maxShift": false,
+      "minItems": 0,
+      "name": "c_value",
+      "optional": false,
+      "readAccess": "read",
+      "readable": true,
+      "removable": false,
+      "type": "Number",
+      "unique": false,
+      "uniqueValues": false,
+      "validators": [
+        {
+          "definition": {
+            "allowDecimal": false
+          },
+          "name": "number"
+        }
+      ],
+      "writable": true,
+      "writeAccess": "update",
+      "writeOnCreate": true
+    }
+  ],
+  "reporting": {
+    "enabled": false
+  },
+  "shareAcl": [],
+  "shareChain": [
+    "share",
+    "read",
+    "connected"
+  ],
+  "uniqueKey": "",
+  "useBuildVersion": false,
+  "useBundles": true,
+  "validateOwner": true
+}

@@ -1,0 +1,16 @@
+{
+  "active": true,
+  "configuration": {
+    "export": "dcr_intake__task_assignment_repository"
+  },
+  "environment": "*",
+  "label": "dcr_intake__task_assignment_repository",
+  "language": "javascript/es6",
+  "name": "dcr_intake__task_assignment_repository",
+  "object": "script",
+  "optimized": false,
+  "principal": null,
+  "script": "/env/scripts/js/library.dcr_intake__task_assignment_repository.js",
+  "type": "library",
+  "weight": 0
+}

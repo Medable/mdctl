@@ -1,0 +1,16 @@
+{
+  "active": true,
+  "configuration": {
+    "export": "cdb__step_response_handler"
+  },
+  "environment": "*",
+  "label": "cdb__step_response_handler",
+  "language": "javascript/es6",
+  "name": "cdb__step_response_handler",
+  "object": "script",
+  "optimized": false,
+  "principal": null,
+  "script": "/env/scripts/js/library.cdb__step_response_handler.js",
+  "type": "library",
+  "weight": 0
+}

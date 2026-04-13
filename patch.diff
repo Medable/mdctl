@@ -1,0 +1,77 @@
+diff --git a/packages/mdctl-cli/lib/env/export.js b/packages/mdctl-cli/lib/env/export.js
+index be747f5..a6cecf0 100644
+--- a/packages/mdctl-cli/lib/env/export.js
++++ b/packages/mdctl-cli/lib/env/export.js
+@@ -15,6 +15,7 @@ const fs = require('fs'),
+       {
+         searchParamsToObject
+       } = require('@medable/mdctl-core-utils'),
++      os = require('os'),
+       { Config, Fault } = require('@medable/mdctl-core'),
+       ExportStream = require('@medable/mdctl-core/streams/export_stream'),
+       ExportFileTreeAdapter = require('@medable/mdctl-export-adapter-tree'),
+
+@@ -59,6 +60,7 @@
+         let manifestFile,
+             inputStream,
++            manifest = {},
+             preExport = () => {},
+             postExport = () => {}
+
+@@ -72,8 +74,7 @@
+         if (!options.stream) {
+
+           let pkg,
+-              script,
+-              manifest = {}
++              script
+
+@@ -133,7 +134,16 @@
+           if (optionsManifest) {
+-            manifest = optionsManifest
++            const expandedManifest = optionsManifest.startsWith('~')
++              ? path.join(os.homedir(), optionsManifest.slice(1))
++              : optionsManifest
++            manifestFile = path.isAbsolute(expandedManifest)
++              ? expandedManifest
++              : path.join(outputDir, expandedManifest)
++            if (!fs.existsSync(manifestFile)) {
++              throw Fault.create('kNotFound', { reason: `Manifest file not found: ${manifestFile}` })
++            }
++            manifest = JSON.parse(fs.readFileSync(manifestFile, 'utf8'))
+           }
+
+@@ -161,8 +170,35 @@
+           inputStream = options.stream.pipe(ndjson.parse())
+         }
+
++        const ALWAYS_PASS_KEYS = new Set(['manifest', 'manifest-exports', 'manifest-dependencies', 'package', 'stream'])
++        const manifestKeys = Object.keys(manifest).filter(k => k !== 'object')
++        const filterStream = new Transform({
++          objectMode: true,
++          transform(chunk, encoding, cb) {
++            const { key, name, code } = chunk
++            if (ALWAYS_PASS_KEYS.has(key) || !manifestKeys.length) {
++              this.push(chunk)
++              return cb()
++            }
++            if (key === 'object') {
++              if (manifest.objects instanceof Array && manifest.objects.some(o => o.name === name)) {
++                this.push(chunk)
++              }
++              return cb()
++            }
++            const entry = manifest[key]
++            if (entry && entry.includes instanceof Array) {
++              const inc = entry.includes
++              if (inc[0] === '*' || inc.includes(name || code)) {
++                this.push(chunk)
++              }
++            }
++            return cb()
++          }
++        })
+
+         return new Promise((resolve, reject) => {
+-          const resultStream = pump(inputStream, streamTransform, logStream, adapter, async(err) => {
++          const resultStream = pump(inputStream, streamTransform, filterStream, logStream, adapter, async(err) => {

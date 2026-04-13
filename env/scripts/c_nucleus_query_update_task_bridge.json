@@ -1,0 +1,20 @@
+{
+  "active": false,
+  "configuration": {
+    "event": "update.after",
+    "inline": false,
+    "object": "c_query",
+    "paths": []
+  },
+  "description": "Nucleus - Query Status Update/Task Status Bridge",
+  "environment": "*",
+  "label": "Nucleus - Query Update/Task Bridge",
+  "language": "javascript/es6",
+  "name": "c_nucleus_query_update_task_bridge",
+  "object": "script",
+  "optimized": false,
+  "principal": "serviceAccount.c_system_user",
+  "script": "/env/scripts/js/trigger.c_nucleus_query_update_task_bridge.js",
+  "type": "trigger",
+  "weight": 0
+}

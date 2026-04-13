@@ -1,0 +1,30 @@
+{
+  "allowNameMapping": true,
+  "authDuration": 2700,
+  "blacklist": [],
+  "cors": [
+    "https://cloud-latest.medable.com",
+    "https://cloud-staging.medable.com",
+    "https://cloud-test.medable.com",
+    "https://cloud.local.medable.com",
+    "https://cloud.medable.com"
+  ],
+  "csrf": false,
+  "enabled": true,
+  "expires": null,
+  "expose": false,
+  "label": "Studio App",
+  "maxTokensPerPrincipal": 10,
+  "name": "c_studio_app",
+  "object": "app",
+  "readOnly": false,
+  "sessions": true,
+  "urls": {
+    "connection": "",
+    "resetPassword": "",
+    "createPassword": "",
+    "activateAccount": "",
+    "verifyAccount": ""
+  },
+  "whitelist": []
+}

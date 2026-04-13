@@ -1,0 +1,19 @@
+{{#extend "layout"}}
+
+{{#replace "title"}}
+Integrations Platform Queue Failed
+{{/replace}}
+
+{{#replace "body"}}
+
+Subject Number: {{subject_number}}<br />
+User ID (c_public_user._id): {{user_id}}<br />
+Site Number: {{site_number}}<br />
+Queue ID: {{queue_id}}<br />
+Pipeline Identifier: {{pipeline_identifier}}<br />
+Connector Name: {{connector_name}}<br />
+Time of failure: {{time}}
+
+{{/replace}}
+
+{{/extend}}

@@ -1,0 +1,29 @@
+{
+  "description": "Ownership transferred to user",
+  "label": "Transfer existing user",
+  "localizations": [
+    {
+      "locale": [
+        "en_US"
+      ],
+      "content": [
+        {
+          "data": "/env/templates/tpl/template.email.transfer-existing-user.en_US.html.html",
+          "name": "html"
+        },
+        {
+          "data": "/env/templates/tpl/template.email.transfer-existing-user.en_US.plain.txt",
+          "name": "plain"
+        },
+        {
+          "data": "/env/templates/tpl/template.email.transfer-existing-user.en_US.subject.txt",
+          "name": "subject"
+        }
+      ]
+    }
+  ],
+  "name": "transfer-existing-user",
+  "object": "template",
+  "partial": false,
+  "type": "email"
+}

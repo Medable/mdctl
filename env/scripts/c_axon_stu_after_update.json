@@ -1,0 +1,19 @@
+{
+  "active": true,
+  "configuration": {
+    "event": "update.after",
+    "inline": false,
+    "object": "c_study_team_user",
+    "paths": []
+  },
+  "environment": "*",
+  "label": "Axon - STU After Update",
+  "language": "javascript/es6",
+  "name": "c_axon_stu_after_update",
+  "object": "script",
+  "optimized": false,
+  "principal": null,
+  "script": "/env/scripts/js/trigger.c_axon_stu_after_update.js",
+  "type": "trigger",
+  "weight": 0
+}

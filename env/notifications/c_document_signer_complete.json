@@ -1,0 +1,18 @@
+{
+  "duplicates": false,
+  "endpoints": [
+    {
+      "configurable": true,
+      "defaultUserState": 0,
+      "label": "Email",
+      "name": "email",
+      "state": "Enabled",
+      "template": "ec__document_signer_complete",
+      "type": "email"
+    }
+  ],
+  "label": "EC Document Signer Complete",
+  "name": "c_document_signer_complete",
+  "object": "notification",
+  "persists": false
+}

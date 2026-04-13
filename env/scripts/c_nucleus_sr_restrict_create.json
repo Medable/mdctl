@@ -1,0 +1,19 @@
+{
+  "active": false,
+  "configuration": {
+    "event": "create.before",
+    "inline": false,
+    "object": "c_step_response",
+    "paths": []
+  },
+  "environment": "*",
+  "label": "Nucleus - SR: Restrict Create",
+  "language": "javascript/es6",
+  "name": "c_nucleus_sr_restrict_create",
+  "object": "script",
+  "optimized": false,
+  "principal": null,
+  "script": "/env/scripts/js/trigger.c_nucleus_sr_restrict_create.js",
+  "type": "trigger",
+  "weight": 0
+}

@@ -1,0 +1,121 @@
+{
+  "allowConnections": false,
+  "auditing": {
+    "enabled": false
+  },
+  "canCascadeDelete": false,
+  "connectionOptions": {
+    "requireAccept": true,
+    "requiredAccess": 5,
+    "sendNotifications": true
+  },
+  "createAcl": [
+    "account.public"
+  ],
+  "defaultAcl": [
+    "owner.delete"
+  ],
+  "defaultType": null,
+  "favorite": false,
+  "hasETag": false,
+  "hasOwner": true,
+  "isDeletable": true,
+  "isUnmanaged": false,
+  "isVersioned": false,
+  "label": "Generation Tracker",
+  "localized": false,
+  "name": "c_generation_tracker",
+  "object": "object",
+  "objectTypes": [],
+  "properties": [
+    {
+      "acl": [],
+      "aclOverride": false,
+      "array": true,
+      "auditable": false,
+      "canPull": true,
+      "canPush": true,
+      "cascadeDelete": false,
+      "creatable": false,
+      "defaultValue": [],
+      "dependencies": [],
+      "description": "The array of assignments from the previous generation",
+      "history": true,
+      "include": [],
+      "indexed": false,
+      "label": "Assignments",
+      "maxItems": 500,
+      "maxShift": false,
+      "minItems": 0,
+      "name": "c_assignments",
+      "optional": false,
+      "readAccess": "read",
+      "readable": true,
+      "removable": false,
+      "sourceObject": "c_task_assignment",
+      "type": "ObjectId",
+      "unique": false,
+      "uniqueValues": false,
+      "validators": [],
+      "writable": true,
+      "writeAccess": "update",
+      "writeOnCreate": true
+    },
+    {
+      "accessTransforms": [],
+      "acl": [],
+      "aclOverride": false,
+      "auditable": false,
+      "autoCreate": false,
+      "cascadeDelete": false,
+      "creatable": false,
+      "defaultAcl": [],
+      "defaultAclOverride": false,
+      "defaultValue": [],
+      "dependencies": [],
+      "expandable": true,
+      "grant": "read",
+      "history": false,
+      "include": [],
+      "indexed": true,
+      "inheritInstanceRoles": false,
+      "inheritPropertyAccess": false,
+      "label": "Participant",
+      "name": "c_public_user",
+      "optional": false,
+      "pacl": [],
+      "paths": [],
+      "readAccess": "read",
+      "readable": true,
+      "referenceAccess": "none",
+      "removable": false,
+      "roles": [],
+      "sourceObject": "c_public_user",
+      "type": "Reference",
+      "unique": false,
+      "updateOnWriteThrough": false,
+      "validateReference": true,
+      "validators": [
+        {
+          "name": "required"
+        }
+      ],
+      "writable": true,
+      "writeAccess": "update",
+      "writeThrough": false
+    }
+  ],
+  "reporting": {
+    "enabled": false
+  },
+  "shareAcl": [],
+  "shareChain": [
+    "share",
+    "read",
+    "connected"
+  ],
+  "uniqueKey": "",
+  "useBuildVersion": false,
+  "useBundles": false,
+  "validateOwner": true
+}

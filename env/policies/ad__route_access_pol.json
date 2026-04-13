@@ -1,0 +1,37 @@
+{
+  "aclBlacklist": [],
+  "aclWhitelist": [],
+  "action": "Script",
+  "active": true,
+  "appBlacklist": [],
+  "appWhitelist": [],
+  "condition": "and",
+  "environment": "*",
+  "faultCode": "cortex.accessDenied.policy",
+  "faultReason": "Access denied by policy.",
+  "faultStatusCode": 403,
+  "halt": false,
+  "ipBlacklist": [],
+  "ipWhitelist": [],
+  "label": "AD Route Access Policy",
+  "methods": [],
+  "name": "ad__route_access_pol",
+  "object": "policy",
+  "paths": [
+    "/routes/ad/list_apps",
+    "/routes/ad/list_apps_lib"
+  ],
+  "priority": 0,
+  "rateLimit": false,
+  "rateLimitCount": 300,
+  "rateLimitElements": [
+    "ip"
+  ],
+  "rateLimitReason": "Too many requests.",
+  "rateLimitWindow": 300,
+  "redirectStatusCode": 307,
+  "script": "/env/policies/js/policy.ad__route_access_pol.js",
+  "trace": false,
+  "type": "api",
+  "weight": 0
+}

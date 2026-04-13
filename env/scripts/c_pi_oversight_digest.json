@@ -1,0 +1,17 @@
+{
+  "active": true,
+  "configuration": {
+    "export": "c_pi_oversight_digest"
+  },
+  "description": "PI Oversight digest email helper library",
+  "environment": "*",
+  "label": "PI Oversight - Digest Library",
+  "language": "javascript/es6",
+  "name": "c_pi_oversight_digest",
+  "object": "script",
+  "optimized": false,
+  "principal": null,
+  "script": "/env/scripts/js/library.c_pi_oversight_digest.js",
+  "type": "library",
+  "weight": 0
+}

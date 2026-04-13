@@ -1,0 +1,26 @@
+{
+  "allowNameMapping": true,
+  "authDuration": 900,
+  "blacklist": [],
+  "cors": [
+    "https://portal-m6269.alpha-latest.medable.com"
+  ],
+  "csrf": true,
+  "enabled": true,
+  "expires": null,
+  "expose": false,
+  "label": "Portal",
+  "maxTokensPerPrincipal": 10,
+  "name": "c_portal",
+  "object": "app",
+  "readOnly": false,
+  "sessions": true,
+  "urls": {
+    "connection": "",
+    "resetPassword": "https://portal-m6269.alpha-latest.medable.com/reset-password/$token?org=cubicularis-angelus-aptus-4278",
+    "createPassword": "",
+    "activateAccount": "",
+    "verifyAccount": ""
+  },
+  "whitelist": []
+}

@@ -1,0 +1,160 @@
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+        <style>
+            body{
+            width: 100%;
+            background-color: #f2f2f2;
+            margin:0;
+            padding:0;
+            -webkit-font-smoothing: antialiased;
+            }
+            html{
+            width: 100%;
+            }
+            table{
+            font-size: 14px;
+            border: 0;
+            }
+            /* ----------- responsivity ----------- */
+            @media only screen and (max-width: 640px){
+            /*------ top header ------ */
+            .header-bg{width: 440px !important; height: 10px !important;}
+            .main-header{line-height: 28px !important;}
+            .main-subheader{line-height: 28px !important;}
+            .container{width: 440px !important;}
+            .container-middle{width: 440px !important;}
+            .mainContent{width: 400px !important;}
+            .main-image{width: 400px !important; height: auto !important;}
+            .banner{width: 400px !important; height: auto !important;}
+            /*------ sections ---------*/
+            .section-item{width: 400px !important;}
+            .section-img{width: 130px !important; height: auto !important; margin: auto !important;}
+            /*------ sections ---------*/
+            .section-img{width: 130px !important; height: auto !important; margin: auto !important;}
+            /*------- prefooter ------*/
+            .prefooter-header{padding: 0 10px !important; line-height: 24px !important;}
+            .prefooter-subheader{padding: 0 10px !important; line-height: 24px !important;}
+            /*------- footer ------*/
+            .top-bottom-bg{width: 420px !important; height: auto !important;}
+            }
+            @media only screen and (max-width: 479px){
+            /*------ top header ------ */
+            .header-bg{width: 280px !important; height: 10px !important;}
+            .top-header-left{width: 260px !important; text-align: center !important;}
+            .top-header-right{width: 260px !important;}
+            .main-header{line-height: 28px !important; text-align: center !important;}
+            .main-subheader{line-height: 28px !important; text-align: center !important;}
+            /*------- header ----------*/
+            .logo{width: 260px !important;}
+            .nav{width: 260px !important;}
+            .container{width: 280px !important;}
+            .container-middle{width: 280px !important;}
+            .mainContent{width: 240px !important;}
+            .main-image{width: 240px !important; height: auto !important;}
+            .banner{width: 240px !important; height: auto !important;}
+            /*------ sections ---------*/
+            .section-item{width: 240px !important;}
+            .section-img{width: 130px !important; height: auto !important; margin: auto !important;}
+            /*------- prefooter ------*/
+            .prefooter-header{padding: 0 10px !important;line-height: 28px !important;}
+            .prefooter-subheader{padding: 0 10px !important; line-height: 28px !important;}
+            /*------- footer ------*/
+            .top-bottom-bg{width: 260px !important; height: auto !important;}
+            }
+        </style>
+    </head>
+    <body leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" dir="{{lngDir}}">
+        <table border="0" width="100%" cellpadding="0" cellspacing="0" dir="{{lngDir}}">
+            <tbody>
+                <tr bgcolor="f2f2f2">
+                    <td height="30"></td>
+                </tr>
+                <tr bgcolor="f2f2f2">
+                    <td width="100%" align="center" valign="top">
+                        <table width="600" border="0" cellpadding="0" cellspacing="0" align="center" class="container" bgcolor="f2f2f2">
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <table border="0" width="600" align="center" cellpadding="0" cellspacing="0" class="container-middle">
+                                            <tbody>
+                                                <tr bgcolor="ffffff">
+                                                    <td>
+                                                        <table width="528" border="0" align="center" cellpadding="0" cellspacing="0" class="mainContent">
+                                                            <tbody>
+                                                                <tr bgcolor="ffffff">
+                                                                    <td height="25"></td>
+                                                                </tr>
+                                                                <tr bgcolor="ffffff">
+                                                                    <td>
+                                                                        <img editable="true" height="50" border="0" style="display: block;" src="{{orgLogo 'thumbnail'}}" alt="{{i18n 'template.email.layout.alt_logo'}}">
+                                                                    </td>
+                                                                </tr>
+                                                                <tr bgcolor="ffffff">
+                                                                    <td height="40"></td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>
+                                                                        <table border="0" width="528" align="left" cellpadding="0" cellspacing="0" class="section-item">
+                                                                            <tbody>
+                                                                                <tr>
+                                                                                    <td style="color: #111827; font-size: 16px; font-weight: bold; font-family: Helvetica, Arial, sans-serif;">
+                                                                                        {{#block "title"}}
+                                                                                        {{/block}}
+                                                                                    </td>
+                                                                                </tr>
+                                                                                <tr>
+                                                                                    <td height="15"></td>
+                                                                                </tr>
+                                                                                <tr>
+                                                                                    <td style="color: #111827; line-height: 25px; font-size: 12px; font-weight: normal; font-family: Helvetica, Arial, sans-serif;">
+                                                                                        {{#block "body"}}
+                                                                                        {{/block}}
+                                                                                    </td>
+                                                                                </tr>
+                                                                                {{#block "button"}}
+                                                                                {{/block}}
+                                                                            </tbody>
+                                                                        </table>
+                                                                    </td>
+                                                                </tr>
+                                                                <tr bgcolor="ffffff">
+                                                                    <td height="40"></td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>
+                                                                        <table border="0" width="100%" cellpadding="0" cellspacing="0" align="center">
+                                                                            <tbody>
+                                                                                <tr bgcolor="ffffff">
+                                                                                    <td align="center" style="color: #4B5563; font-size: 10px; font-weight: normal; font-family: Helvetica, Arial, sans-serif;">
+                                                                                        {{org.name}} © {{i18n "econsent:template.email.layout.copyright"}} {{formatDate "YYYY"}} .
+                                                                                    </td>
+                                                                                </tr>
+                                                                                <tr bgcolor="ffffff">
+                                                                                    <td height="24"></td>
+                                                                                </tr>
+                                                                            </tbody>
+                                                                        </table>
+                                                                    </td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+                <tr bgcolor="f2f2f2">
+                    <td height="30"></td>
+                </tr>
+            </tbody>
+        </table>
+    </body>
+</html>

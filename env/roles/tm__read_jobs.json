@@ -1,0 +1,7 @@
+{
+  "code": "tm__read_jobs",
+  "include": [],
+  "name": "Translation Management: Read Jobs",
+  "object": "role",
+  "scope": []
+}

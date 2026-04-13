@@ -1,0 +1,29 @@
+{
+  "description": "PI Oversight digest email notification",
+  "label": "PI Oversight Digest",
+  "localizations": [
+    {
+      "locale": [
+        "*"
+      ],
+      "content": [
+        {
+          "data": "/env/templates/tpl/template.email.c_pi_oversight_digest.anyLocale.html.html",
+          "name": "html"
+        },
+        {
+          "data": "/env/templates/tpl/template.email.c_pi_oversight_digest.anyLocale.plain.txt",
+          "name": "plain"
+        },
+        {
+          "data": "/env/templates/tpl/template.email.c_pi_oversight_digest.anyLocale.subject.txt",
+          "name": "subject"
+        }
+      ]
+    }
+  ],
+  "name": "c_pi_oversight_digest",
+  "object": "template",
+  "partial": false,
+  "type": "email"
+}

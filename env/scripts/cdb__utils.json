@@ -1,0 +1,16 @@
+{
+  "active": true,
+  "configuration": {
+    "export": "cdb__utils"
+  },
+  "environment": "*",
+  "label": "cdb__utils",
+  "language": "javascript/es6",
+  "name": "cdb__utils",
+  "object": "script",
+  "optimized": false,
+  "principal": null,
+  "script": "/env/scripts/js/library.cdb__utils.js",
+  "type": "library",
+  "weight": 0
+}

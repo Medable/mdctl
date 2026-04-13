@@ -1,0 +1,21 @@
+{
+  "description": "Account welcome message with activation required",
+  "label": "Account Welcome with Activation",
+  "localizations": [
+    {
+      "locale": [
+        "en_US"
+      ],
+      "content": [
+        {
+          "data": "/env/templates/tpl/template.sms.account-welcome-activation.en_US.message.txt",
+          "name": "message"
+        }
+      ]
+    }
+  ],
+  "name": "account-welcome-activation",
+  "object": "template",
+  "partial": false,
+  "type": "sms"
+}

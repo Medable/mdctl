@@ -1,0 +1,18 @@
+{
+  "duplicates": false,
+  "endpoints": [
+    {
+      "configurable": true,
+      "defaultUserState": 0,
+      "label": "Email",
+      "name": "email",
+      "state": "Enabled",
+      "template": "c_axon_invite-pin_only",
+      "type": "email"
+    }
+  ],
+  "label": "Axon Invite (Pin only)",
+  "name": "c_axon_invite-pin_only",
+  "object": "notification",
+  "persists": true
+}

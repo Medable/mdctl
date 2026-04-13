@@ -1,0 +1,38 @@
+{
+  "allowNameMapping": true,
+  "authDuration": 900,
+  "blacklist": [],
+  "cors": [
+    "https://app-eu1-dev.medable.com",
+    "https://app-eu1.medable.com",
+    "https://app-int-dev.medable.com",
+    "https://app-test.medable.com",
+    "https://app.dev.medable.com",
+    "https://app.medable.com",
+    "https://app.qa.medable.com",
+    "https://axon.pages.medable.tech",
+    "https://portal-int-dev.medable.com",
+    "https://portal-test.medable.com",
+    "https://portal.dev.medable.com",
+    "https://portal.medable.com",
+    "https://portal.qa.medable.com"
+  ],
+  "csrf": false,
+  "enabled": true,
+  "expires": null,
+  "expose": false,
+  "label": "Integrations Platform",
+  "maxTokensPerPrincipal": 10,
+  "name": "int__platform",
+  "object": "app",
+  "readOnly": false,
+  "sessions": true,
+  "urls": {
+    "connection": "",
+    "resetPassword": "",
+    "createPassword": "",
+    "activateAccount": "",
+    "verifyAccount": ""
+  },
+  "whitelist": []
+}

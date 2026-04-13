@@ -1,0 +1,21 @@
+{
+  "description": "Comment Update",
+  "label": "Comment Update",
+  "localizations": [
+    {
+      "locale": [
+        "en_US"
+      ],
+      "content": [
+        {
+          "data": "/env/templates/tpl/template.push.comment-update.en_US.message.txt",
+          "name": "message"
+        }
+      ]
+    }
+  ],
+  "name": "comment-update",
+  "object": "template",
+  "partial": false,
+  "type": "push"
+}

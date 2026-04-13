@@ -1,0 +1,57 @@
+{
+  "isPublic": false,
+  "name": "usm__app_urls",
+  "object": "config",
+  "value": {
+    "api-int-dev.medable.com": {
+      "usm__usm_app": {
+        "resetPassword": "https://$app-int-dev.medable.com/reset-password/$token?orgCode=$orgCode"
+      }
+    },
+    "api.qa.medable.com": {
+      "usm__usm_app": {
+        "resetPassword": "https://$app-qa.medable.com/reset-password/$token?orgCode=$orgCode"
+      }
+    },
+    "api.test.medable.com": {
+      "usm__usm_app": {
+        "resetPassword": "https://$app-test.medable.com/reset-password/$token?orgCode=$orgCode"
+      }
+    },
+    "api.dev.medable.com": {
+      "usm__usm_app": {
+        "resetPassword": "https://$app-dev.medable.com/reset-password/$token?orgCode=$orgCode"
+      }
+    },
+    "api.eu1-dev.medable.com": {
+      "usm__usm_app": {
+        "resetPassword": "https://$app-eu1-dev.medable.com/reset-password/$token?orgCode=$orgCode"
+      }
+    },
+    "api.eu1.medable.com": {
+      "usm__usm_app": {
+        "resetPassword": "https://$app-eu1.medable.com/reset-password/$token?orgCode=$orgCode"
+      }
+    },
+    "api.medable.com": {
+      "usm__usm_app": {
+        "resetPassword": "https://$app.medable.com/reset-password/$token?orgCode=$orgCode"
+      }
+    },
+    "api.medable.cn": {
+      "usm__usm_app": {
+        "resetPassword": "https://$app.medable.cn/reset-password/$token?orgCode=$orgCode"
+      }
+    },
+    "api.dev.medable.cn": {
+      "usm__usm_app": {
+        "resetPassword": "https://$app-dev.medable.cn/reset-password/$token?orgCode=$orgCode"
+      }
+    },
+    "api.local.medable.com": {
+      "usm__usm_app": {
+        "resetPassword": "https://$app.local.medable.com/reset-password/$token?orgCode=$orgCode"
+      }
+    }
+  }
+}

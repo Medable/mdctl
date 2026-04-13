@@ -103,7 +103,7 @@ describe('Environment Export', () => {
     })
   })
 
-  it.skip('export using console adapter', async() => {
+  it('export using console adapter', async() => {
     const tempDir = path.join(process.cwd(), `output-${new Date().getTime()}`),
           client = new Client({
             strictSSL: false,

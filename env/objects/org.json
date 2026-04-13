@@ -1,0 +1,65 @@
+{
+  "auditing": {
+    "enabled": false
+  },
+  "canCascadeDelete": false,
+  "defaultType": null,
+  "description": "An object representing different organizations in Axon, differentiated by a PIN.",
+  "favorite": false,
+  "hasETag": false,
+  "hasOwner": true,
+  "isDeletable": true,
+  "isUnmanaged": false,
+  "isVersioned": false,
+  "label": "Organization",
+  "localized": true,
+  "name": "org",
+  "object": "object",
+  "objectTypes": [],
+  "properties": [
+    {
+      "acl": [],
+      "aclOverride": false,
+      "array": false,
+      "auditable": false,
+      "canPull": true,
+      "canPush": true,
+      "creatable": false,
+      "defaultValue": [],
+      "dependencies": [],
+      "history": false,
+      "include": [],
+      "indexed": true,
+      "label": "Invite Code",
+      "maxItems": 100,
+      "maxShift": false,
+      "minItems": 0,
+      "name": "c_pin",
+      "optional": false,
+      "readAccess": "read",
+      "readable": true,
+      "removable": false,
+      "type": "Number",
+      "unique": false,
+      "uniqueValues": false,
+      "validators": [
+        {
+          "definition": {
+            "allowDecimal": false
+          },
+          "name": "number"
+        }
+      ],
+      "writable": true,
+      "writeAccess": "update",
+      "writeOnCreate": true
+    }
+  ],
+  "reporting": {
+    "enabled": false
+  },
+  "uniqueKey": "",
+  "useBuildVersion": false,
+  "useBundles": true,
+  "validateOwner": true
+}

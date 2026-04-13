@@ -1,0 +1,37 @@
+{
+  "aclBlacklist": [],
+  "aclWhitelist": [],
+  "action": "Transform",
+  "active": true,
+  "appBlacklist": [],
+  "appWhitelist": [],
+  "condition": "and",
+  "environment": "*",
+  "faultCode": "kAccessDenied",
+  "faultReason": "Access denied by policy",
+  "faultStatusCode": 403,
+  "halt": false,
+  "ipBlacklist": [],
+  "ipWhitelist": [],
+  "label": "Site tasks access on role and availability flags",
+  "methods": [],
+  "name": "ab__site_tasks_access",
+  "object": "policy",
+  "paths": [
+    "/routes/c_sites/:siteid/c_public_users/:publicuserid/c_groups/:groupid/c_task_assignments"
+  ],
+  "pipeline": null,
+  "priority": 0,
+  "rateLimit": false,
+  "rateLimitCount": 300,
+  "rateLimitElements": [
+    "ip"
+  ],
+  "rateLimitReason": "Too many requests.",
+  "rateLimitWindow": 300,
+  "redirectStatusCode": 307,
+  "script": "/env/policies/js/policy.ab__site_tasks_access.js",
+  "trace": false,
+  "type": "api",
+  "weight": 0
+}

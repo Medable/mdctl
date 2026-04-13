@@ -1,0 +1,8 @@
+{
+  "isPublic": true,
+  "name": "tm__version",
+  "object": "config",
+  "value": {
+    "version": "1.2.2"
+  }
+}

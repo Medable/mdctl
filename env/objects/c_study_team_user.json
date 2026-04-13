@@ -1,0 +1,191 @@
+{
+  "allowConnections": true,
+  "auditing": {
+    "enabled": true
+  },
+  "canCascadeDelete": false,
+  "connectionOptions": {
+    "requireAccept": true,
+    "requiredAccess": 5,
+    "sendNotifications": true
+  },
+  "createAcl": [
+    "role.administrator"
+  ],
+  "defaultAcl": [
+    "owner.delete",
+    "role.administrator.delete"
+  ],
+  "defaultType": null,
+  "description": "An object representing a user in Axon that is assigned to an account and a study.",
+  "favorite": false,
+  "hasETag": false,
+  "hasOwner": true,
+  "isDeletable": true,
+  "isUnmanaged": false,
+  "isVersioned": false,
+  "label": "Study Team User",
+  "localized": true,
+  "name": "c_study_team_user",
+  "object": "object",
+  "objectTypes": [],
+  "properties": [
+    {
+      "accessTransforms": [],
+      "acl": [],
+      "aclOverride": false,
+      "auditable": false,
+      "autoCreate": false,
+      "cascadeDelete": false,
+      "creatable": false,
+      "defaultAcl": [
+        "role.administrator.delete"
+      ],
+      "defaultAclOverride": false,
+      "defaultValue": [],
+      "dependencies": [],
+      "expandable": true,
+      "grant": "none",
+      "history": false,
+      "include": [],
+      "indexed": true,
+      "inheritInstanceRoles": false,
+      "inheritPropertyAccess": false,
+      "label": "Account",
+      "name": "c_account",
+      "optional": false,
+      "pacl": [],
+      "paths": [],
+      "readAccess": "read",
+      "readable": true,
+      "referenceAccess": "none",
+      "removable": false,
+      "roles": [],
+      "sourceObject": "account",
+      "type": "Reference",
+      "unique": false,
+      "updateOnWriteThrough": false,
+      "validateReference": true,
+      "validators": [
+        {
+          "name": "required"
+        }
+      ],
+      "writable": true,
+      "writeAccess": "update",
+      "writeThrough": false
+    },
+    {
+      "acl": [],
+      "aclOverride": false,
+      "array": false,
+      "auditable": false,
+      "canPull": true,
+      "canPush": true,
+      "creatable": false,
+      "defaultValue": [],
+      "dependencies": [],
+      "history": false,
+      "include": [],
+      "indexed": true,
+      "label": "Role",
+      "localization": {
+        "acl": [],
+        "aclOverride": false,
+        "enabled": false,
+        "fallback": true,
+        "fixed": "",
+        "namespace": "axon",
+        "readAccess": "read",
+        "strict": true,
+        "valid": [],
+        "writeAccess": "update"
+      },
+      "lowercase": false,
+      "maxItems": 100,
+      "maxShift": false,
+      "minItems": 0,
+      "name": "c_role",
+      "optional": false,
+      "readAccess": "read",
+      "readable": true,
+      "removable": false,
+      "trim": false,
+      "type": "String",
+      "unique": false,
+      "uniqueValues": false,
+      "uppercase": false,
+      "validators": [
+        {
+          "name": "required"
+        },
+        {
+          "definition": {
+            "min": 0,
+            "max": 512
+          },
+          "name": "string"
+        }
+      ],
+      "writable": true,
+      "writeAccess": "update",
+      "writeOnCreate": true
+    },
+    {
+      "accessTransforms": [],
+      "acl": [],
+      "aclOverride": false,
+      "auditable": false,
+      "autoCreate": false,
+      "cascadeDelete": false,
+      "creatable": false,
+      "defaultAcl": [],
+      "defaultAclOverride": false,
+      "defaultValue": [],
+      "dependencies": [],
+      "expandable": true,
+      "grant": "none",
+      "history": false,
+      "include": [],
+      "indexed": true,
+      "inheritInstanceRoles": false,
+      "inheritPropertyAccess": false,
+      "label": "Study",
+      "name": "c_study",
+      "optional": false,
+      "pacl": [],
+      "paths": [],
+      "readAccess": "read",
+      "readable": true,
+      "referenceAccess": "share",
+      "removable": false,
+      "roles": [],
+      "sourceObject": "c_study",
+      "type": "Reference",
+      "unique": false,
+      "updateOnWriteThrough": false,
+      "validateReference": true,
+      "validators": [
+        {
+          "name": "required"
+        }
+      ],
+      "writable": true,
+      "writeAccess": "update",
+      "writeThrough": false
+    }
+  ],
+  "reporting": {
+    "enabled": false
+  },
+  "shareAcl": [],
+  "shareChain": [
+    "share",
+    "read",
+    "connected"
+  ],
+  "uniqueKey": "",
+  "useBuildVersion": false,
+  "useBundles": true,
+  "validateOwner": true
+}

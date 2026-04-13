@@ -1,0 +1,14 @@
+{{#extend "layout"}}
+
+  {{#replace "title"}}
+    {{i18n "axon:template.email.c_axon_virtual_visit_5min_reminder.hello" account=account}}
+  {{/replace}}
+
+  {{#replace "body"}}
+    <p>{{i18n "axon:template.email.c_axon_virtual_visit_5min_reminder.visitStarts"}}</p>
+    <p>{{i18n "axon:template.email.c_axon_virtual_visit_5min_reminder.instructionsOne"}}</p>
+    <p>{{i18n "axon:template.email.c_axon_virtual_visit_5min_reminder.instructionsTwo"}}</p>
+    <p>{{i18n "axon:template.email.c_axon_virtual_visit_5min_reminder.instructionThree"}}</p>
+  {{/replace}}
+
+{{/extend}}

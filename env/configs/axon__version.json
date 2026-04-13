@@ -1,0 +1,8 @@
+{
+  "isPublic": true,
+  "name": "axon__version",
+  "object": "config",
+  "value": {
+    "version": "4.33.0"
+  }
+}

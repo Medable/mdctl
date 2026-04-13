@@ -1,0 +1,27 @@
+{
+  "active": true,
+  "configuration": {
+    "acl": [
+      "account.anonymous"
+    ],
+    "apiKey": null,
+    "authValidation": "all",
+    "method": "get",
+    "path": "org/:info",
+    "plainText": false,
+    "priority": 0,
+    "system": false,
+    "urlEncoded": false
+  },
+  "description": "Retrieves org configuration information",
+  "environment": "*",
+  "label": "Org Configuration Information",
+  "language": "javascript/es6",
+  "name": "c_org_config",
+  "object": "script",
+  "optimized": false,
+  "principal": "serviceAccount.c_system_user",
+  "script": "/env/scripts/js/route.c_org_config.js",
+  "type": "route",
+  "weight": 0
+}

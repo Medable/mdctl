@@ -1,0 +1,12 @@
+{{#extend "layout"}}
+
+    {{#replace "title"}}
+      {{i18n "axon:template.email.c_axon_invite-forgot_username.title" studyName=studyName}}
+    {{/replace}}
+
+    {{#replace "body"}}
+      {{{i18n "axon:template.email.c_axon_invite-forgot_username.username" studyName=studyName}}}<br/><br/>
+      {{username}}
+    {{/replace}}
+
+{{/extend}}

@@ -1,0 +1,14 @@
+{{#extend "layout"}}
+
+  {{#replace "title"}}
+    {{i18n "axon:template.email.c_axon_virtual_visit_rescheduled.hello" account=account}}
+  {{/replace}}
+
+  {{#replace "body"}}
+    <p>{{{i18n "axon:template.email.c_axon_virtual_visit_rescheduled.title" date=date time=time timezone=timezone}}}</p>
+    <p>{{i18n "axon:template.email.c_axon_virtual_visit_rescheduled.instructionOne"}}</p>
+    <p>{{i18n "axon:template.email.c_axon_virtual_visit_rescheduled.instructionTwo"}}</p>
+    <p>{{i18n "axon:template.email.c_axon_virtual_visit_rescheduled.instructionThree"}}</p>
+  {{/replace}}
+
+{{/extend}}

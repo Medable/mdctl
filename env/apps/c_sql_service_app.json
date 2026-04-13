@@ -1,0 +1,24 @@
+{
+  "allowNameMapping": true,
+  "authDuration": 8400,
+  "blacklist": [],
+  "cors": [],
+  "csrf": false,
+  "enabled": true,
+  "expires": null,
+  "expose": true,
+  "label": "Sql service app",
+  "maxTokensPerPrincipal": 100,
+  "name": "c_sql_service_app",
+  "object": "app",
+  "readOnly": false,
+  "sessions": true,
+  "urls": {
+    "connection": "",
+    "resetPassword": "",
+    "createPassword": "",
+    "activateAccount": "",
+    "verifyAccount": ""
+  },
+  "whitelist": []
+}

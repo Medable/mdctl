@@ -1,0 +1,27 @@
+{
+  "active": true,
+  "configuration": {
+    "acl": [
+      "account.anonymous"
+    ],
+    "apiKey": null,
+    "authValidation": "legacy",
+    "method": "post",
+    "path": "research_register",
+    "plainText": false,
+    "priority": 0,
+    "system": false,
+    "urlEncoded": false
+  },
+  "description": "Route to associate pubic user and task responses with newly registered user",
+  "environment": "*",
+  "label": "Axon - Research Registration",
+  "language": "javascript/es6",
+  "name": "c_axon_research_registration",
+  "object": "script",
+  "optimized": false,
+  "principal": "serviceAccount.c_system_user",
+  "script": "/env/scripts/js/route.c_axon_research_registration.js",
+  "type": "route",
+  "weight": 0
+}

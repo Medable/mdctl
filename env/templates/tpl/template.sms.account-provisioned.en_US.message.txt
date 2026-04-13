@@ -1,0 +1,3 @@
+Hi {{{account.name.first}}},
+
+To create your password, please go to {{{createPassword.url}}}

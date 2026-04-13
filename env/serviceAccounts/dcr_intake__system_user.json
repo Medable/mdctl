@@ -1,0 +1,9 @@
+{
+  "label": "DCR Intake System User",
+  "locked": true,
+  "name": "dcr_intake__system_user",
+  "object": "serviceAccount",
+  "roles": [
+    "administrator"
+  ]
+}

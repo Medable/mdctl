@@ -1,0 +1,9 @@
+{
+  "label": "System User",
+  "locked": true,
+  "name": "c_system_user",
+  "object": "serviceAccount",
+  "roles": [
+    "administrator"
+  ]
+}

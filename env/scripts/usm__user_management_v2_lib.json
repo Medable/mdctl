@@ -1,0 +1,17 @@
+{
+  "active": true,
+  "configuration": {
+    "export": "usm__user_management_v2_lib"
+  },
+  "description": "V2 Library for routes to manage Accounts",
+  "environment": "*",
+  "label": "USM - Account Management Routes V2",
+  "language": "javascript/es6",
+  "name": "usm__user_management_v2_lib",
+  "object": "script",
+  "optimized": false,
+  "principal": null,
+  "script": "/env/scripts/js/library.usm__user_management_v2_lib.js",
+  "type": "library",
+  "weight": 0
+}

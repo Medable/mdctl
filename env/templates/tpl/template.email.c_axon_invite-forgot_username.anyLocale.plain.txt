@@ -1,0 +1,3 @@
+{{{i18n "axon:template.email.c_axon_invite-forgot_username.username" studyName=studyName}}}
+
+{{{username}}}

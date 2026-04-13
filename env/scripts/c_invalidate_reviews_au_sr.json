@@ -1,0 +1,20 @@
+{
+  "active": true,
+  "configuration": {
+    "event": "update.after",
+    "inline": false,
+    "object": "c_step_response",
+    "paths": []
+  },
+  "description": "Invalidates reviews after update step response",
+  "environment": "*",
+  "label": "DMWEB -  Invalidate Reviews - After Update Step Response",
+  "language": "javascript/es6",
+  "name": "c_invalidate_reviews_au_sr",
+  "object": "script",
+  "optimized": false,
+  "principal": null,
+  "script": "/env/scripts/js/trigger.c_invalidate_reviews_au_sr.js",
+  "type": "trigger",
+  "weight": 0
+}

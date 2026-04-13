@@ -1,0 +1,13 @@
+{{#extend "layout"}}
+
+    {{#replace "title"}}
+        Hi {{account.name.first}}!
+    {{/replace}}
+
+    {{#replace "body"}}
+		Hi {{account.name.first}},<br/><br/>
+
+		Welcome to {{org.name}}]! Your account has been successfully created.<br/><br/>
+		To get started, go to {{urlFor "login"}}
+    {{/replace}}
+{{/extend}}

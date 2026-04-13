@@ -1,0 +1,45 @@
+{
+  "aliases": [],
+  "assets": [],
+  "data": {
+    "actions": {
+      "confirm": "OK",
+      "login": "Login"
+    },
+    "code": "Error Code",
+    "cortex": {
+      "accessDenied": {
+        "deploymentInProgress": "A deployment is in progress.",
+        "maintenance": "The API is currently undergoing maintenance",
+        "unspecified": "Access denied"
+      },
+      "error": {
+        "unspecified": "Error"
+      },
+      "notFound": {
+        "env": "Unrecognized organization environment",
+        "org": "Org not found."
+      }
+    },
+    "identity": {
+      "locale": "en_US",
+      "version": "1.1.1"
+    },
+    "mdctl": {
+      "error": {
+        "unspecified": "There is a problem with your internet connection. Please check your connection and try again. Until connection is restored, you will not be able to add or change information."
+      }
+    },
+    "message_withCode": "$t(message_withoutCode) ($t(code): {{code}})",
+    "message_withoutCode": "{{-message}}"
+  },
+  "dirty": true,
+  "extensible": true,
+  "locale": "en_US",
+  "name": "web__framework_en_US_errors",
+  "namespace": "errors",
+  "object": "i18n",
+  "overridable": true,
+  "tags": [],
+  "weight": 0
+}

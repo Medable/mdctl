@@ -1,0 +1,57 @@
+{
+  "active": true,
+  "configuration": {
+    "event": "update.after",
+    "inline": true,
+    "object": "c_public_user",
+    "paths": []
+  },
+  "description": "Permission Management",
+  "environment": "*",
+  "if": {
+    "$and": [
+      {
+        "$gte": [
+          {
+            "$indexOfArray": [
+              "$$SCRIPT.arguments.modified",
+              "c_status"
+            ]
+          },
+          0
+        ]
+      },
+      {
+        "$eq": [
+          {
+            "$pathTo": [
+              "$$ROOT",
+              "c_number"
+            ]
+          },
+          null
+        ]
+      },
+      {
+        "$eq": [
+          {
+            "$pathTo": [
+              "$$ROOT",
+              "c_enrollment_date"
+            ]
+          },
+          null
+        ]
+      }
+    ]
+  },
+  "label": "Nucleus - PU Before Update",
+  "language": "javascript/es6",
+  "name": "c_nucleus_pu_before_update",
+  "object": "script",
+  "optimized": false,
+  "principal": "serviceAccount.c_system_user",
+  "script": "/env/scripts/js/trigger.c_nucleus_pu_before_update.js",
+  "type": "trigger",
+  "weight": 0
+}

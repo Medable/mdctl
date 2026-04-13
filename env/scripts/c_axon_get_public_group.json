@@ -1,0 +1,27 @@
+{
+  "active": true,
+  "configuration": {
+    "acl": [
+      "account.anonymous"
+    ],
+    "apiKey": null,
+    "authValidation": "legacy",
+    "method": "get",
+    "path": "get_public_group",
+    "plainText": false,
+    "priority": 99999999,
+    "system": false,
+    "urlEncoded": false
+  },
+  "description": "Get the public group and assigned tasks for user and study",
+  "environment": "*",
+  "label": "Axon - Get Public Group",
+  "language": "javascript/es6",
+  "name": "c_axon_get_public_group",
+  "object": "script",
+  "optimized": false,
+  "principal": null,
+  "script": "/env/scripts/js/route.c_axon_get_public_group.js",
+  "type": "route",
+  "weight": 0
+}

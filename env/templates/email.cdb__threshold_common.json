@@ -1,0 +1,29 @@
+{
+  "description": "Email to notify site users about threshold reached",
+  "label": "Threshold Common Email Notification",
+  "localizations": [
+    {
+      "locale": [
+        "en_US"
+      ],
+      "content": [
+        {
+          "data": "/env/templates/tpl/template.email.cdb__threshold_common.en_US.html.html",
+          "name": "html"
+        },
+        {
+          "data": "",
+          "name": "plain"
+        },
+        {
+          "data": "/env/templates/tpl/template.email.cdb__threshold_common.en_US.subject.txt",
+          "name": "subject"
+        }
+      ]
+    }
+  ],
+  "name": "cdb__threshold_common",
+  "object": "template",
+  "partial": false,
+  "type": "email"
+}

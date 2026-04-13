@@ -1,0 +1,20 @@
+{
+  "active": true,
+  "configuration": {
+    "event": "create.after",
+    "inline": false,
+    "object": "c_public_user",
+    "paths": []
+  },
+  "description": "Public User After create: Set search terms",
+  "environment": "*",
+  "label": "PU After Create",
+  "language": "javascript/es6",
+  "name": "c_pu_after_create",
+  "object": "script",
+  "optimized": false,
+  "principal": null,
+  "script": "/env/scripts/js/trigger.c_pu_after_create.js",
+  "type": "trigger",
+  "weight": 0
+}

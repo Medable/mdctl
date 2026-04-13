@@ -1,0 +1,21 @@
+{
+  "description": "SMS with invite expiry",
+  "label": "Axon SMS invite expired",
+  "localizations": [
+    {
+      "locale": [
+        "*"
+      ],
+      "content": [
+        {
+          "data": "/env/templates/tpl/template.sms.c_axon_sms-invite_expired.anyLocale.message.txt",
+          "name": "message"
+        }
+      ]
+    }
+  ],
+  "name": "c_axon_sms-invite_expired",
+  "object": "template",
+  "partial": false,
+  "type": "sms"
+}

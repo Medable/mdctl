@@ -1,0 +1,18 @@
+{
+  "duplicates": false,
+  "endpoints": [
+    {
+      "configurable": true,
+      "defaultUserState": 0,
+      "label": "Email",
+      "name": "email",
+      "state": "Enabled",
+      "template": "c_axon_virtual_visit_rescheduled",
+      "type": "email"
+    }
+  ],
+  "label": "Axon - Virtual Visit Rescheduled",
+  "name": "c_axon_virtual_visit_rescheduled",
+  "object": "notification",
+  "persists": false
+}

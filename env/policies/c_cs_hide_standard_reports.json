@@ -1,0 +1,38 @@
+{
+  "aclBlacklist": [],
+  "aclWhitelist": [],
+  "action": "Transform",
+  "active": true,
+  "appBlacklist": [],
+  "appWhitelist": [],
+  "condition": "and",
+  "environment": "*",
+  "faultCode": "kAccessDenied",
+  "faultReason": "Access denied by policy",
+  "faultStatusCode": 403,
+  "halt": false,
+  "if": null,
+  "ipBlacklist": [],
+  "ipWhitelist": [],
+  "label": "CS - Hide Standard Reports",
+  "methods": [],
+  "name": "c_cs_hide_standard_reports",
+  "object": "policy",
+  "paths": [
+    "/c_dmweb_report"
+  ],
+  "pipeline": null,
+  "priority": 0,
+  "rateLimit": false,
+  "rateLimitCount": 300,
+  "rateLimitElements": [
+    "ip"
+  ],
+  "rateLimitReason": "Too many requests.",
+  "rateLimitWindow": 300,
+  "redirectStatusCode": 307,
+  "script": "/env/policies/js/policy.c_cs_hide_standard_reports.js",
+  "trace": false,
+  "type": "api",
+  "weight": 0
+}

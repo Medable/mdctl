@@ -1,0 +1,29 @@
+{
+  "description": "Invite to existing user with link to accept",
+  "label": "Invite existing user",
+  "localizations": [
+    {
+      "locale": [
+        "en_US"
+      ],
+      "content": [
+        {
+          "data": "/env/templates/tpl/template.email.invite-existing-user.en_US.html.html",
+          "name": "html"
+        },
+        {
+          "data": "/env/templates/tpl/template.email.invite-existing-user.en_US.plain.txt",
+          "name": "plain"
+        },
+        {
+          "data": "/env/templates/tpl/template.email.invite-existing-user.en_US.subject.txt",
+          "name": "subject"
+        }
+      ]
+    }
+  ],
+  "name": "invite-existing-user",
+  "object": "template",
+  "partial": false,
+  "type": "email"
+}

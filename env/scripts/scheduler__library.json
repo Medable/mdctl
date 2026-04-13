@@ -1,0 +1,16 @@
+{
+  "active": true,
+  "configuration": {
+    "export": "scheduler__library"
+  },
+  "environment": "*",
+  "label": "scheduler__library",
+  "language": "javascript/es6",
+  "name": "scheduler__library",
+  "object": "script",
+  "optimized": false,
+  "principal": null,
+  "script": "/env/scripts/js/library.scheduler__library.js",
+  "type": "library",
+  "weight": 0
+}

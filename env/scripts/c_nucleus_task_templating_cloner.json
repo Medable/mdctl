@@ -1,0 +1,26 @@
+{
+  "active": true,
+  "configuration": {
+    "acl": [
+      "account.public"
+    ],
+    "apiKey": null,
+    "authValidation": "legacy",
+    "method": "post",
+    "path": "clone_task",
+    "plainText": false,
+    "priority": 0,
+    "system": false,
+    "urlEncoded": false
+  },
+  "environment": "*",
+  "label": "Nucleus - Task Templating Cloner",
+  "language": "javascript/es6",
+  "name": "c_nucleus_task_templating_cloner",
+  "object": "script",
+  "optimized": false,
+  "principal": "serviceAccount.c_system_user",
+  "script": "/env/scripts/js/route.c_nucleus_task_templating_cloner.js",
+  "type": "route",
+  "weight": 0
+}

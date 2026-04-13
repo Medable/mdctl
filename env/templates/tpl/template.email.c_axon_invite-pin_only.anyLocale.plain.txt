@@ -1,0 +1,12 @@
+{{{i18n "axon:template.email.c_axon_invite-pin_only.title" study_name=study_name}}}
+
+{{i18n "axon:template.email.c_axon_invite-pin_only.instructions"}}
+
+* {{i18n "axon:template.email.c_axon_invite-pin_only.email"}} {{email}}
+* {{i18n "axon:template.email.c_axon_invite-pin_only.accessCode"}} {{access_code}}
+
+{{i18n "axon:template.email.c_axon_invite-pin_only.downloadText"}}
+* {{i18n "axon:template.email.c_axon_invite-pin_only.appleStore"}} {{appleStore_url}}
+* {{i18n "axon:template.email.c_axon_invite-pin_only.googleStore"}} {{googleStore_url}}
+
+{{i18n "axon:template.email.c_axon_invite-pin_only.browserLink"}} {{paweb_url}}

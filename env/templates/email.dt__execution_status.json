@@ -1,0 +1,29 @@
+{
+  "description": "Email to user when an data transfer completes or fails",
+  "label": "Data Transfer Execution Status",
+  "localizations": [
+    {
+      "locale": [
+        "en_US"
+      ],
+      "content": [
+        {
+          "data": "/env/templates/tpl/template.email.dt__execution_status.en_US.html.html",
+          "name": "html"
+        },
+        {
+          "data": "/env/templates/tpl/template.email.dt__execution_status.en_US.plain.txt",
+          "name": "plain"
+        },
+        {
+          "data": "/env/templates/tpl/template.email.dt__execution_status.en_US.subject.txt",
+          "name": "subject"
+        }
+      ]
+    }
+  ],
+  "name": "dt__execution_status",
+  "object": "template",
+  "partial": false,
+  "type": "email"
+}

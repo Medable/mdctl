@@ -1,0 +1,19 @@
+{
+  "active": false,
+  "configuration": {
+    "event": "create.after",
+    "inline": false,
+    "object": "c_query",
+    "paths": []
+  },
+  "environment": "*",
+  "label": "Nucleus - Set Query Search Terms",
+  "language": "javascript/es6",
+  "name": "c_nucleus_set_query_search_terms",
+  "object": "script",
+  "optimized": false,
+  "principal": null,
+  "script": "/env/scripts/js/trigger.c_nucleus_set_query_search_terms.js",
+  "type": "trigger",
+  "weight": 0
+}

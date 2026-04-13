@@ -1,0 +1,20 @@
+{
+  "isPublic": false,
+  "name": "c_sql_service_config",
+  "object": "config",
+  "value": {
+    "serviceUrls": {
+      "api.medable.com": "https://sg.medable.tech",
+      "api-eu1.medable.com": "https://sg-eu1.medable.tech",
+      "api.medable.cn": "https://sg.medable.cn",
+      "api.dev.medable.com": "https://sg-dev.medable.tech",
+      "api-eu1-dev.medable.com": "https://sg-eu1-dev.medable.tech",
+      "api.dev.medable.cn": "https://sg-cn1-dev.medable.cn",
+      "api.qa.medable.com": "https://sg-qa.medable.tech",
+      "api.test.medable.com": "https://sg-test.medable.tech",
+      "api-int-dev.medable.com": "https://sg-int-dev.medable.tech",
+      "api-cs.medable.com": "https://sg-cs.medable.tech",
+      "api-m6269.alpha-latest.medable.com": "https://sg.medable.tech"
+    }
+  }
+}

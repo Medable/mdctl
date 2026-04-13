@@ -1,0 +1,31 @@
+{{#extend "layout"}}
+
+    {{#replace "title"}}
+        Please complete your {{org.name}} signup
+    {{/replace}}
+
+    {{#replace "body"}}
+        Hi {{account.name.first}},<br/><br/>
+
+        You're one step away from completing your {{org.name}} signup.<br/><br/>
+
+        Click the button below to activate your account and confirm your email address.
+    {{/replace}}
+
+    {{#replace "button"}}
+        <tr>
+            <td height="15"></td>
+        </tr>
+        <tr>
+            <td align="center">
+                <table>
+                    <tbody>
+                        <tr>
+                            <td align="center" width="300" bgcolor="#467bbe" class="button" style="background: #467bbe; padding: 10px; -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; color: #fff; font-weight: bold; text-decoration: none; font-family: Helvetica, Arial, sans-serif; display: block;"><a href="{{activation.url}}" style="color: #fff; text-decoration: none;">Confirm email address</a></td>
+                        </tr>
+                    </tbody>
+                </table>  
+            </td>
+        </tr>
+    {{/replace}}
+{{/extend}}

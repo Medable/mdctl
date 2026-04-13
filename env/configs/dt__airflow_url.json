@@ -1,0 +1,6 @@
+{
+  "isPublic": false,
+  "name": "dt__airflow_url",
+  "object": "config",
+  "value": "https://airflow-m6269-alpha-latest.medable.tech"
+}

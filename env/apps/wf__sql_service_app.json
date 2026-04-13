@@ -1,0 +1,25 @@
+{
+  "allowNameMapping": true,
+  "authDuration": 8400,
+  "blacklist": [],
+  "cors": [],
+  "csrf": false,
+  "enabled": true,
+  "expires": null,
+  "expose": true,
+  "filter": null,
+  "label": "SQL Service App",
+  "maxTokensPerPrincipal": 100,
+  "name": "wf__sql_service_app",
+  "object": "app",
+  "readOnly": false,
+  "sessions": true,
+  "urls": {
+    "connection": "",
+    "resetPassword": "",
+    "createPassword": "",
+    "activateAccount": "",
+    "verifyAccount": ""
+  },
+  "whitelist": []
+}

@@ -1,0 +1,20 @@
+{
+  "active": true,
+  "configuration": {
+    "event": "update.after",
+    "inline": false,
+    "object": "c_step_response",
+    "paths": []
+  },
+  "description": "Updates audit message in c_queries.c_response",
+  "environment": "*",
+  "label": "Axon - Hybrid - Update audit message in c_queries.c_response",
+  "language": "javascript/es6",
+  "name": "c_axon_hybrid_replicate_audit_message",
+  "object": "script",
+  "optimized": false,
+  "principal": null,
+  "script": "/env/scripts/js/trigger.c_axon_hybrid_replicate_audit_message.js",
+  "type": "trigger",
+  "weight": 0
+}

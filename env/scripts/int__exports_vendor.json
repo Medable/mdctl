@@ -1,0 +1,17 @@
+{
+  "active": true,
+  "configuration": {
+    "export": "int__exports_vendor"
+  },
+  "description": "Exports Wrapper",
+  "environment": "*",
+  "label": "Integrations: Export Wrapper",
+  "language": "javascript/es6",
+  "name": "int__exports_vendor",
+  "object": "script",
+  "optimized": false,
+  "principal": null,
+  "script": "/env/scripts/js/library.int__exports_vendor.js",
+  "type": "library",
+  "weight": 0
+}

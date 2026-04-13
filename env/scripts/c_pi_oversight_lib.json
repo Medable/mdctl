@@ -1,0 +1,17 @@
+{
+  "active": true,
+  "configuration": {
+    "export": "c_pi_oversight_lib"
+  },
+  "description": "PI Oversight shared library for due/overdue computation and review bundle building",
+  "environment": "*",
+  "label": "PI Oversight - Core Library",
+  "language": "javascript/es6",
+  "name": "c_pi_oversight_lib",
+  "object": "script",
+  "optimized": false,
+  "principal": null,
+  "script": "/env/scripts/js/library.c_pi_oversight_lib.js",
+  "type": "library",
+  "weight": 0
+}

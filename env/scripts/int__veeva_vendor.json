@@ -1,0 +1,17 @@
+{
+  "active": true,
+  "configuration": {
+    "export": "int__veeva_vendor"
+  },
+  "description": "Veeva Wrapper",
+  "environment": "*",
+  "label": "Integrations: Veeva Wrapper",
+  "language": "javascript/es6",
+  "name": "int__veeva_vendor",
+  "object": "script",
+  "optimized": false,
+  "principal": null,
+  "script": "/env/scripts/js/library.int__veeva_vendor.js",
+  "type": "library",
+  "weight": 0
+}

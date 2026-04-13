@@ -1,0 +1,29 @@
+{
+  "description": "Template for Axon leave study notification",
+  "label": "Axon Leave Study",
+  "localizations": [
+    {
+      "locale": [
+        "*"
+      ],
+      "content": [
+        {
+          "data": "/env/templates/tpl/template.email.c_axon_leave_study.anyLocale.html.html",
+          "name": "html"
+        },
+        {
+          "data": "/env/templates/tpl/template.email.c_axon_leave_study.anyLocale.plain.txt",
+          "name": "plain"
+        },
+        {
+          "data": "/env/templates/tpl/template.email.c_axon_leave_study.anyLocale.subject.txt",
+          "name": "subject"
+        }
+      ]
+    }
+  ],
+  "name": "c_axon_leave_study",
+  "object": "template",
+  "partial": false,
+  "type": "email"
+}

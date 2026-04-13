@@ -1,0 +1,29 @@
+{
+  "description": "pts document invite",
+  "label": "pts document invite",
+  "localizations": [
+    {
+      "locale": [
+        "*"
+      ],
+      "content": [
+        {
+          "data": "/env/templates/tpl/template.email.ec__pts_document_invite.anyLocale.html.html",
+          "name": "html"
+        },
+        {
+          "data": "/env/templates/tpl/template.email.ec__pts_document_invite.anyLocale.plain.txt",
+          "name": "plain"
+        },
+        {
+          "data": "/env/templates/tpl/template.email.ec__pts_document_invite.anyLocale.subject.txt",
+          "name": "subject"
+        }
+      ]
+    }
+  ],
+  "name": "ec__pts_document_invite",
+  "object": "template",
+  "partial": false,
+  "type": "email"
+}

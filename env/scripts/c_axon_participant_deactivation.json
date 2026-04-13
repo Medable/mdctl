@@ -1,0 +1,17 @@
+{
+  "active": true,
+  "configuration": {
+    "export": "c_axon_participant_deactivation"
+  },
+  "description": "Library for Participant Deactivation",
+  "environment": "*",
+  "label": "Participant Deactivation Library",
+  "language": "javascript/es6",
+  "name": "c_axon_participant_deactivation",
+  "object": "script",
+  "optimized": false,
+  "principal": null,
+  "script": "/env/scripts/js/library.c_axon_participant_deactivation.js",
+  "type": "library",
+  "weight": 0
+}

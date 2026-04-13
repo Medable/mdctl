@@ -1,0 +1,26 @@
+{
+  "active": true,
+  "configuration": {
+    "acl": [
+      "role.administrator"
+    ],
+    "apiKey": null,
+    "authValidation": "legacy",
+    "method": "get",
+    "path": "nucleus/test_history/:taskResposneId",
+    "plainText": false,
+    "priority": 0,
+    "system": false,
+    "urlEncoded": false
+  },
+  "environment": "*",
+  "label": "Nucleus - Temp History Test",
+  "language": "javascript/es6",
+  "name": "c_nucleus_temp_history_test",
+  "object": "script",
+  "optimized": false,
+  "principal": "serviceAccount.c_system_user",
+  "script": "/env/scripts/js/route.c_nucleus_temp_history_test.js",
+  "type": "route",
+  "weight": 0
+}

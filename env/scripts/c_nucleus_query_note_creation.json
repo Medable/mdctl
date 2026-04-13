@@ -1,0 +1,19 @@
+{
+  "active": true,
+  "configuration": {
+    "event": "create.after",
+    "inline": false,
+    "object": "c_query_note",
+    "paths": []
+  },
+  "environment": "*",
+  "label": "Nucleus - Query Note Creation",
+  "language": "javascript/es6",
+  "name": "c_nucleus_query_note_creation",
+  "object": "script",
+  "optimized": false,
+  "principal": "serviceAccount.c_system_user",
+  "script": "/env/scripts/js/trigger.c_nucleus_query_note_creation.js",
+  "type": "trigger",
+  "weight": 0
+}

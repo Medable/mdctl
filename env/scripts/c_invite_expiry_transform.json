@@ -1,0 +1,17 @@
+{
+  "active": true,
+  "configuration": {
+    "export": "c_invite_expiry_transform"
+  },
+  "description": "Transforms a list of public users (invites) and updates expiry status as necessary",
+  "environment": "*",
+  "label": "Invite Expiry Transform",
+  "language": "javascript/es6",
+  "name": "c_invite_expiry_transform",
+  "object": "script",
+  "optimized": false,
+  "principal": null,
+  "script": "/env/scripts/js/library.c_invite_expiry_transform.js",
+  "type": "library",
+  "weight": 0
+}

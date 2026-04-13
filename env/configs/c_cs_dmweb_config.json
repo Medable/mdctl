@@ -1,0 +1,11 @@
+{
+  "isPublic": false,
+  "name": "c_cs_dmweb_config",
+  "object": "config",
+  "value": {
+    "exclusions": [
+      "00b838c9-2a66-4cda-9fa2-5a8b4970085d",
+      "00b838c9-2a66-4cda-9fa2-5a8b4970086a"
+    ]
+  }
+}

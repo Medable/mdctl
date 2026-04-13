@@ -1,0 +1,21 @@
+{
+  "description": "General Email Layout",
+  "label": "Email Layout",
+  "localizations": [
+    {
+      "locale": [
+        "*"
+      ],
+      "content": [
+        {
+          "data": "/env/templates/tpl/template.email.layout.anyLocale.html.html",
+          "name": "html"
+        }
+      ]
+    }
+  ],
+  "name": "layout",
+  "object": "template",
+  "partial": false,
+  "type": "email"
+}

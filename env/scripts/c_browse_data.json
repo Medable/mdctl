@@ -1,0 +1,26 @@
+{
+  "active": true,
+  "configuration": {
+    "acl": [
+      "account.public"
+    ],
+    "apiKey": null,
+    "authValidation": "all",
+    "method": "get",
+    "path": "browse_data/:entity/:type",
+    "plainText": false,
+    "priority": 0,
+    "system": false,
+    "urlEncoded": false
+  },
+  "environment": "*",
+  "label": "DMWEB - Browse Data",
+  "language": "javascript/es6",
+  "name": "c_browse_data",
+  "object": "script",
+  "optimized": false,
+  "principal": null,
+  "script": "/env/scripts/js/route.c_browse_data.js",
+  "type": "route",
+  "weight": 0
+}

@@ -1,0 +1,28 @@
+{
+  "active": true,
+  "configuration": {
+    "acl": [
+      "account.anonymous",
+      "account.public"
+    ],
+    "apiKey": null,
+    "authValidation": "all",
+    "method": "get",
+    "path": "c_public_users/:publicUserId/c_task_responses",
+    "plainText": false,
+    "priority": 0,
+    "system": false,
+    "urlEncoded": false
+  },
+  "description": "List task responses created by the public user.  Enforces certain limitations on when task responses are shown.",
+  "environment": "*",
+  "label": "Axon - List My Task Responses",
+  "language": "javascript/es6",
+  "name": "c_axon_list_my_task_responses",
+  "object": "script",
+  "optimized": false,
+  "principal": null,
+  "script": "/env/scripts/js/route.c_axon_list_my_task_responses.js",
+  "type": "route",
+  "weight": 0
+}

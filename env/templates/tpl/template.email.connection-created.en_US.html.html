@@ -1,0 +1,12 @@
+{{#extend "layout"}}
+
+    {{#replace "title"}}
+        You're connected
+    {{/replace}}
+
+    {{#replace "body"}}
+        Hi {{account.name.first}},<br/><br/>
+        You've been connected to a {{connection.context.object}} at {{org.name}}
+    {{/replace}}
+
+{{/extend}}

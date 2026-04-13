@@ -1,0 +1,103 @@
+{
+  "isPublic": false,
+  "name": "ad__available_apps",
+  "object": "config",
+  "value": {
+    "cortex_web_ui": {
+      "allowedRoles": [],
+      "icon": "navSchedule",
+      "displayName": "Cortex",
+      "hostPrefix": "app",
+      "orgCodeAsUrlPath": true
+    },
+    "c_study_builder": {
+      "allowedRoles": [],
+      "mandatoryRoles": [],
+      "icon": "navStudySetup",
+      "displayName": "Study Builder",
+      "hostPrefix": "builder"
+    },
+    "c_portal": {
+      "allowedRoles": [
+        "c_dm_app"
+      ],
+      "icon": "navTodo",
+      "displayName": "Study Manager",
+      "hostPrefix": "portal"
+    },
+    "ec__econsent": {
+      "allowedRoles": [
+        "administrator",
+        "ec__document_author"
+      ],
+      "icon": "navConsent",
+      "displayName": "eConsent",
+      "hostPrefix": "consent"
+    },
+    "c_site_app_demo": {
+      "allowedRoles": [
+        "c_site_user",
+        "c_axon_site_user",
+        "c_site_monitor",
+        "c_axon_site_monitor",
+        "c_site_investigator",
+        "c_axon_site_investigator",
+        "ec__document_manager"
+      ],
+      "icon": "navSites",
+      "displayName": "Site App Web",
+      "hostPrefix": "site"
+    },
+    "tm__app": {
+      "allowedRoles": [
+        "tm__translation_manager"
+      ],
+      "icon": "navTranslations",
+      "displayName": "Translations",
+      "hostPrefix": "admin-tools",
+      "urlPath": "translation-management"
+    },
+    "usm__usm_app": {
+      "allowedRoles": [
+        "administrator",
+        "support",
+        "usm__user_and_site_manager"
+      ],
+      "icon": "navUserManagement",
+      "displayName": "User and Site Management",
+      "hostPrefix": "usm"
+    },
+    "dcr_intake__app": {
+      "allowedRoles": [
+        "c_site_user",
+        "c_axon_site_user",
+        "c_site_investigator",
+        "c_axon_site_investigator",
+        "c_site_monitor",
+        "c_axon_site_monitor",
+        "dcr_intake__data_service_team",
+        "dcr_intake__view_and_comment"
+      ],
+      "icon": "navProtocol",
+      "displayName": "Data Change",
+      "hostPrefix": "datachange"
+    },
+    "c_screenshot_tool_app": {
+      "allowedRoles": [
+        "c_screenshot_manager"
+      ],
+      "icon": "navScreenshot",
+      "displayName": "Screenshot Tool",
+      "hostPrefix": "screenshot"
+    },
+    "data-transfers": {
+      "allowedRoles": [
+        "dt__admin"
+      ],
+      "icon": "navDataTransfer",
+      "displayName": "Data Transfer",
+      "hostPrefix": "admin-tools",
+      "urlPath": "data-transfer"
+    }
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "code": "dt__admin",
+  "include": [],
+  "name": "Data Transfer Admin",
+  "object": "role",
+  "scope": []
+}

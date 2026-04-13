@@ -1,0 +1,17 @@
+{
+  "active": true,
+  "configuration": {
+    "export": "c_pat_loc_tz"
+  },
+  "description": "Library to manage patient locale and timezone",
+  "environment": "*",
+  "label": "Axon - Patient Locale and Timezone",
+  "language": "javascript/es6",
+  "name": "c_pat_loc_tz_lib",
+  "object": "script",
+  "optimized": false,
+  "principal": null,
+  "script": "/env/scripts/js/library.c_pat_loc_tz_lib.js",
+  "type": "library",
+  "weight": 0
+}

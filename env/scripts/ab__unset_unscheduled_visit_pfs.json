@@ -1,0 +1,16 @@
+{
+  "active": true,
+  "configuration": {
+    "export": "ab__unset_unscheduled_visit_pfs"
+  },
+  "environment": "*",
+  "label": "Unscheduled visit patient flags unset",
+  "language": "javascript/es6",
+  "name": "ab__unset_unscheduled_visit_pfs",
+  "object": "script",
+  "optimized": false,
+  "principal": null,
+  "script": "/env/scripts/js/library.ab__unset_unscheduled_visit_pfs.js",
+  "type": "library",
+  "weight": 0
+}

@@ -1,0 +1,16 @@
+{{#extend "layout"}}
+
+    {{#replace "title"}}
+        Hi {{account.name.first}}!
+    {{/replace}}
+
+    {{#replace "body"}}
+
+        Hi {{account.name.first}},<br/><br/>
+
+        Welcome to {{org.name}}!<br/><br/>
+        Confirm your email address at {{verification.url}}
+
+    {{/replace}}
+
+{{/extend}}

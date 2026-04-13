@@ -1,0 +1,29 @@
+{
+  "description": "This is sent to providers that have just updated their provider verification information.",
+  "label": "Provider Verification Processing",
+  "localizations": [
+    {
+      "locale": [
+        "en_US"
+      ],
+      "content": [
+        {
+          "data": "/env/templates/tpl/template.email.account-provider-verification-processing.en_US.html.html",
+          "name": "html"
+        },
+        {
+          "data": "/env/templates/tpl/template.email.account-provider-verification-processing.en_US.plain.txt",
+          "name": "plain"
+        },
+        {
+          "data": "/env/templates/tpl/template.email.account-provider-verification-processing.en_US.subject.txt",
+          "name": "subject"
+        }
+      ]
+    }
+  ],
+  "name": "account-provider-verification-processing",
+  "object": "template",
+  "partial": false,
+  "type": "email"
+}

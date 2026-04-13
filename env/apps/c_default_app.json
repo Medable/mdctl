@@ -1,0 +1,25 @@
+{
+  "allowNameMapping": true,
+  "authDuration": 900,
+  "blacklist": [],
+  "cors": [
+    "*"
+  ],
+  "csrf": false,
+  "enabled": true,
+  "expose": false,
+  "label": "Default App",
+  "maxTokensPerPrincipal": 10,
+  "name": "c_default_app",
+  "object": "app",
+  "readOnly": false,
+  "sessions": true,
+  "urls": {
+    "connection": "",
+    "resetPassword": "",
+    "createPassword": "",
+    "activateAccount": "",
+    "verifyAccount": ""
+  },
+  "whitelist": []
+}

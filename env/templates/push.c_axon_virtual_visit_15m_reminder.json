@@ -1,0 +1,21 @@
+{
+  "description": "Push notification sent to public user (participant) 15 minutes before a virtual visit occurs.",
+  "label": "Axon - Virtual Visit 15 Minute Reminder",
+  "localizations": [
+    {
+      "locale": [
+        "*"
+      ],
+      "content": [
+        {
+          "data": "/env/templates/tpl/template.push.c_axon_virtual_visit_15m_reminder.anyLocale.message.txt",
+          "name": "message"
+        }
+      ]
+    }
+  ],
+  "name": "c_axon_virtual_visit_15m_reminder",
+  "object": "template",
+  "partial": false,
+  "type": "push"
+}

@@ -1,0 +1,29 @@
+{
+  "description": "Email sent to participant (public user) when a virtual visit is scheduled.",
+  "label": "Axon - Virtual Visit New Visit Scheduled",
+  "localizations": [
+    {
+      "locale": [
+        "*"
+      ],
+      "content": [
+        {
+          "data": "/env/templates/tpl/template.email.c_axon_virtual_visit_new.anyLocale.html.html",
+          "name": "html"
+        },
+        {
+          "data": "/env/templates/tpl/template.email.c_axon_virtual_visit_new.anyLocale.plain.txt",
+          "name": "plain"
+        },
+        {
+          "data": "/env/templates/tpl/template.email.c_axon_virtual_visit_new.anyLocale.subject.txt",
+          "name": "subject"
+        }
+      ]
+    }
+  ],
+  "name": "c_axon_virtual_visit_new",
+  "object": "template",
+  "partial": false,
+  "type": "email"
+}

@@ -1,0 +1,27 @@
+{
+  "active": true,
+  "configuration": {
+    "acl": [
+      "account.anonymous"
+    ],
+    "apiKey": null,
+    "authValidation": "legacy",
+    "method": "post",
+    "path": "create_public_task_response",
+    "plainText": false,
+    "priority": 0,
+    "system": false,
+    "urlEncoded": false
+  },
+  "description": "Route for anonymously writing task responses",
+  "environment": "*",
+  "label": "Axon - Create Public Task Response",
+  "language": "javascript/es6",
+  "name": "c_axon_create_public_task_response",
+  "object": "script",
+  "optimized": false,
+  "principal": "serviceAccount.c_system_user",
+  "script": "/env/scripts/js/route.c_axon_create_public_task_response.js",
+  "type": "route",
+  "weight": 0
+}

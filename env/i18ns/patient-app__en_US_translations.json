@@ -1,0 +1,1208 @@
+{
+  "aliases": [],
+  "assets": [],
+  "data": {
+    "account": {
+      "errors": {
+        "unauthenticated": "You must be logged in to access this page."
+      },
+      "timezoneDialog": {
+        "actions": {
+          "ignore": "Ignore",
+          "update": "Update"
+        },
+        "description": "We’ve detected a change in your time zone.",
+        "question": "Update to current time zone?",
+        "title": "Time Zone"
+      },
+      "title": "My Account",
+      "toast": {
+        "passwordUpdateSuccess": "Your account password has been updated.",
+        "updated": "updated"
+      },
+      "updatePassword": {
+        "action": "Update Password",
+        "fields": {
+          "currentPassword": "Current Password",
+          "newPassword": "New Password",
+          "reEnterPassword": "Re-enter Password"
+        },
+        "title": "Update Password"
+      }
+    },
+    "accountSwitcher": {
+      "actions": {
+        "signOut": "Sign Out"
+      },
+      "caregiver": "Caregiver {count}",
+      "confirmation": {
+        "actions": {
+          "cancel": "Cancel",
+          "confirm": "Switch"
+        },
+        "content": "You’ll be signed out of your account.",
+        "title": "Switch to a different user?"
+      },
+      "invited": "Invited",
+      "needHelp": "Need help?",
+      "participant": "Participant",
+      "signOut": {
+        "actions": {
+          "cancel": "Cancel",
+          "confirm": "Sign Out"
+        },
+        "content": "Are you sure you want to sign out?",
+        "title": "Sign Out"
+      },
+      "yourStudy": "Your study"
+    },
+    "actions": {
+      "cancel": "Cancel",
+      "create": "Create",
+      "delete": "Delete",
+      "edit": "Edit",
+      "ok": "Ok",
+      "refresh": "Refresh",
+      "save": "Save"
+    },
+    "app": {
+      "upgrade": {
+        "button": "Update",
+        "helpButton": "Help & Support",
+        "message": "This version of the app needs to be updated for features to function properly.",
+        "title": "Update Required"
+      }
+    },
+    "appReset": {
+      "dataSynced": "All data has been synced to Medable and device is ready for the next participant.",
+      "errorDetails": "Error details",
+      "errorTitle": "Something went wrong",
+      "preparationComplete": "Device preparation completed",
+      "preparationError": "There was an error with device preparation. Please make sure device is connected to the internet and try again.",
+      "prepareDeviceButton": "Prepare device",
+      "prepareDeviceDescription": "This process will sync all participant data and prepare device for re-use. This cannot be undone.",
+      "prepareDeviceTitle": "Prepare device for next user",
+      "preparingDevice": "Preparing device for next user",
+      "syncingData": "Syncing data to Medable servers...",
+      "tryAgain": "Try again",
+      "unsentPatientData": "Unsent Patient Data"
+    },
+    "components": {
+      "barcodeScanner": {
+        "errors": {
+          "notAllowed": "Permission denied",
+          "unavailable": "Camera unavailable, please allow device to use the camera in order to capture a photo."
+        }
+      },
+      "camera": {
+        "actions": {
+          "capture": "Capture",
+          "recapture": "Recapture"
+        },
+        "errors": {
+          "notAllowed": "Permission denied",
+          "unavailable": "Camera unavailable, please allow device to use the camera in order to capture a photo."
+        }
+      },
+      "date": {
+        "datePlaceholder": "Enter a date",
+        "timePlaceholder": "Enter a time"
+      },
+      "documentArray": {
+        "newItemLabel": "Add new item"
+      },
+      "dropdown": {
+        "noItemsSelected": "Make a selection"
+      },
+      "field": {
+        "boolean": {
+          "notSpecified": "Not specified"
+        }
+      },
+      "fileManager": {
+        "uploadStates": {
+          "failed": "Upload Failed",
+          "processing": "Processing",
+          "queued": "Queued",
+          "succeeded": "Completed",
+          "uploading": "Uploading"
+        }
+      },
+      "filterBar": {
+        "advancedLogic": "Use advanced logic",
+        "basicLogic": "Use basic logic",
+        "emptyPlaceholderLabel": "Select a filter or enter a search term",
+        "placeholderLabel": "Select a filter"
+      },
+      "layout": {
+        "actions": {
+          "logout": "Log Out"
+        }
+      },
+      "list": {
+        "actions": {
+          "create": "Create",
+          "delete": "Delete",
+          "edit": "Edit",
+          "export": "Preview & Export",
+          "refresh": " ",
+          "view": "View"
+        },
+        "export": {
+          "labels": {
+            "close": "Close",
+            "download": "Download",
+            "title": "Export List in CSV Format"
+          }
+        },
+        "labels": {
+          "rowsPerPage": "Rows per page:"
+        }
+      },
+      "referenceField": {
+        "searchPlaceholder": "Search"
+      },
+      "table": {
+        "emptyMessage": "No data available",
+        "reorderableColumns": {
+          "firstColumnLabel": "Visible columns - reorder by dragging",
+          "secondColumnLabel": "Unused columns",
+          "title": "Configure Columns"
+        }
+      },
+      "toast": {
+        "errors": {
+          "retrying": "{errorMessage} (Retrying...)"
+        }
+      }
+    },
+    "copyright": "Copyright © 2020 Medable, Inc. All rights reserved.",
+    "countrycodepicker": {
+      "countries": {
+        "AD": "Andorra",
+        "AE": "United Arab Emirates",
+        "AF": "Afghanistan",
+        "AG": "Antigua and Barbuda",
+        "AI": "Anguilla",
+        "AL": "Albania",
+        "AM": "Armenia",
+        "AO": "Angola",
+        "AQ": "Antarctica",
+        "AR": "Argentina",
+        "AS": "American Samoa",
+        "AT": "Austria",
+        "AU": "Australia",
+        "AW": "Aruba",
+        "AX": "Åland Islands",
+        "AZ": "Azerbaijan",
+        "BA": "Bosnia and Herzegovina",
+        "BB": "Barbados",
+        "BD": "Bangladesh",
+        "BE": "Belgium",
+        "BF": "Burkina Faso",
+        "BG": "Bulgaria",
+        "BH": "Bahrain",
+        "BI": "Burundi",
+        "BJ": "Benin",
+        "BL": "Saint Barthélemy",
+        "BM": "Bermuda",
+        "BN": "Brunei Darussalam",
+        "BO": "Bolivia",
+        "BQ": "Bonaire, Sint Eustatius and Saba",
+        "BR": "Brazil",
+        "BS": "Bahamas",
+        "BT": "Bhutan",
+        "BV": "Bouvet Island",
+        "BW": "Botswana",
+        "BY": "Belarus",
+        "BZ": "Belize",
+        "CA": "Canada",
+        "CC": "Cocos (Keeling) Islands",
+        "CD": "Congo",
+        "CF": "Central African Republic",
+        "CG": "Congo",
+        "CH": "Switzerland",
+        "CI": "Côte D'Ivoire",
+        "CK": "Cook Islands",
+        "CL": "Chile",
+        "CM": "Cameroon",
+        "CN": "China",
+        "CO": "Colombia",
+        "CR": "Costa Rica",
+        "CU": "Cuba",
+        "CV": "Cape Verde",
+        "CW": "Curaçao",
+        "CX": "Christmas Island",
+        "CY": "Cyprus",
+        "CZ": "Czech Republic",
+        "DE": "Germany",
+        "DJ": "Djibouti",
+        "DK": "Denmark",
+        "DM": "Dominica",
+        "DO": "Dominican Republic",
+        "DZ": "Algeria",
+        "EC": "Ecuador",
+        "EE": "Estonia",
+        "EG": "Egypt",
+        "EH": "Western Sahara",
+        "ER": "Eritrea",
+        "ES": "Spain",
+        "ET": "Ethiopia",
+        "FI": "Finland",
+        "FJ": "Fiji",
+        "FK": "Falkland Islands (Malvinas)",
+        "FM": "Micronesia",
+        "FO": "Faroe Islands",
+        "FR": "France",
+        "GA": "Gabon",
+        "GB": "United Kingdom",
+        "GD": "Grenada",
+        "GE": "Georgia",
+        "GF": "French Guiana",
+        "GG": "Guernsey",
+        "GH": "Ghana",
+        "GI": "Gibraltar",
+        "GL": "Greenland",
+        "GM": "Gambia",
+        "GN": "Guinea",
+        "GP": "Guadeloupe",
+        "GQ": "Equatorial Guinea",
+        "GR": "Greece",
+        "GS": "South Georgia",
+        "GT": "Guatemala",
+        "GU": "Guam",
+        "GW": "Guinea-Bissau",
+        "GY": "Guyana",
+        "HK": "Hong Kong",
+        "HM": "Heard Island and Mcdonald Islands",
+        "HN": "Honduras",
+        "HR": "Croatia",
+        "HT": "Haiti",
+        "HU": "Hungary",
+        "ID": "Indonesia",
+        "IE": "Ireland",
+        "IL": "Israel",
+        "IM": "Isle of Man",
+        "IN": "India",
+        "IO": "British Indian Ocean Territory",
+        "IQ": "Iraq",
+        "IR": "Iran",
+        "IS": "Iceland",
+        "IT": "Italy",
+        "JE": "Jersey",
+        "JM": "Jamaica",
+        "JO": "Jordan",
+        "JP": "Japan",
+        "KE": "Kenya",
+        "KG": "Kyrgyzstan",
+        "KH": "Cambodia",
+        "KI": "Kiribati",
+        "KM": "Comoros",
+        "KN": "Saint Kitts and Nevis",
+        "KP": "North Korea",
+        "KR": "South Korea",
+        "KW": "Kuwait",
+        "KY": "Cayman Islands",
+        "KZ": "Kazakhstan",
+        "LA": "Lao People's Democratic Republic",
+        "LB": "Lebanon",
+        "LC": "Saint Lucia",
+        "LI": "Liechtenstein",
+        "LK": "Sri Lanka",
+        "LR": "Liberia",
+        "LS": "Lesotho",
+        "LT": "Lithuania",
+        "LU": "Luxembourg",
+        "LV": "Latvia",
+        "LY": "Libya",
+        "MA": "Morocco",
+        "MC": "Monaco",
+        "MD": "Moldova",
+        "ME": "Montenegro",
+        "MF": "Saint Martin (French Part)",
+        "MG": "Madagascar",
+        "MH": "Marshall Islands",
+        "MK": "Macedonia",
+        "ML": "Mali",
+        "MM": "Myanmar",
+        "MN": "Mongolia",
+        "MO": "Macao",
+        "MP": "Northern Mariana Islands",
+        "MQ": "Martinique",
+        "MR": "Mauritania",
+        "MS": "Montserrat",
+        "MT": "Malta",
+        "MU": "Mauritius",
+        "MV": "Maldives",
+        "MW": "Malawi",
+        "MX": "Mexico",
+        "MY": "Malaysia",
+        "MZ": "Mozambique",
+        "NA": "Namibia",
+        "NC": "New Caledonia",
+        "NE": "Niger",
+        "NF": "Norfolk Island",
+        "NG": "Nigeria",
+        "NI": "Nicaragua",
+        "NL": "Netherlands",
+        "NO": "Norway",
+        "NP": "Nepal",
+        "NR": "Nauru",
+        "NU": "Niue",
+        "NZ": "New Zealand",
+        "OM": "Oman",
+        "PA": "Panama",
+        "PE": "Peru",
+        "PF": "French Polynesia",
+        "PG": "Papua New Guinea",
+        "PH": "Philippines",
+        "PK": "Pakistan",
+        "PL": "Poland",
+        "PM": "Saint Pierre and Miquelon",
+        "PN": "Pitcairn",
+        "PR": "Puerto Rico",
+        "PS": "Palestinian Territory",
+        "PT": "Portugal",
+        "PW": "Palau",
+        "PY": "Paraguay",
+        "QA": "Qatar",
+        "RE": "Réunion",
+        "RO": "Romania",
+        "RS": "Serbia",
+        "RU": "Russia",
+        "RW": "Rwanda",
+        "SA": "Saudi Arabia",
+        "SB": "Solomon Islands",
+        "SC": "Seychelles",
+        "SD": "Sudan",
+        "SE": "Sweden",
+        "SG": "Singapore",
+        "SH": "Saint Helena, Ascension and Tristan Da Cunha",
+        "SI": "Slovenia",
+        "SJ": "Svalbard and Jan Mayen",
+        "SK": "Slovakia",
+        "SL": "Sierra Leone",
+        "SM": "San Marino",
+        "SN": "Senegal",
+        "SO": "Somalia",
+        "SR": "Suriname",
+        "SS": "South Sudan",
+        "ST": "Sao Tome and Principe",
+        "SV": "El Salvador",
+        "SX": "Sint Maarten",
+        "SY": "Syrian Arab Republic",
+        "SZ": "Swaziland",
+        "TC": "Turks and Caicos Islands",
+        "TD": "Chad",
+        "TF": "French Southern Territories",
+        "TG": "Togo",
+        "TH": "Thailand",
+        "TJ": "Tajikistan",
+        "TK": "Tokelau",
+        "TL": "Timor-Leste",
+        "TM": "Turkmenistan",
+        "TN": "Tunisia",
+        "TO": "Tonga",
+        "TR": "Turkey",
+        "TT": "Trinidad and Tobago",
+        "TV": "Tuvalu",
+        "TW": "Taiwan",
+        "TZ": "Tanzania",
+        "UA": "Ukraine",
+        "UG": "Uganda",
+        "UM": "United States Minor Outlying Islands",
+        "US": "United States",
+        "UY": "Uruguay",
+        "UZ": "Uzbekistan",
+        "VA": "Vatican City",
+        "VC": "Saint Vincent and The Grenadines",
+        "VE": "Venezuela",
+        "VG": "Virgin Islands, British",
+        "VI": "Virgin Islands, U.S.",
+        "VN": "Viet Nam",
+        "VU": "Vanuatu",
+        "WF": "Wallis and Futuna",
+        "WS": "Samoa",
+        "XK": "Kosovo",
+        "YE": "Yemen",
+        "YT": "Mayotte",
+        "ZA": "South Africa",
+        "ZM": "Zambia",
+        "ZW": "Zimbabwe"
+      },
+      "search": "Search",
+      "title": "Select a country"
+    },
+    "dialogs": {
+      "delete": {
+        "content": "Are you sure you want to delete this {label}?",
+        "title": "Delete {schema.label}"
+      }
+    },
+    "econsent": {
+      "document": {
+        "completion": {
+          "actions": {
+            "done": "Done"
+          },
+          "instructions": {
+            "download": "Click below to download the study app on your mobile phone:",
+            "studyCode": "When prompted by the app, please enter the study code below:"
+          }
+        },
+        "delayedSigning": {
+          "readOnly": {
+            "message": "Signing of this document is disabled until a study team member unlocks it.",
+            "title": "Read-only"
+          }
+        },
+        "instruction": {
+          "actions": {
+            "cancel": "Cancel"
+          }
+        },
+        "labels": {
+          "percentageRead": "Read"
+        },
+        "signature": {
+          "actions": {
+            "cancel": "Cancel",
+            "view": "Download"
+          }
+        }
+      },
+      "messages": {
+        "invalidToken": "The invitation token is invalid."
+      }
+    },
+    "error": {
+      "unsupportedDeviceAction": "This action is not supported on this device.",
+      "userNotEnrolled": {
+        "dialog": {
+          "actions": {
+            "ok": "OK"
+          },
+          "message": "You cannot access as your user account is not enrolled in this study.",
+          "title": "User not enrolled"
+        }
+      }
+    },
+    "errorDetail": {
+      "generic": {
+        "contactMessage": "If the problem persists, please contact {medableSupport}.",
+        "errorOccurred": "An error has occurred. You may be using an unsupported browser. Medable supports the most recent versions of the following browsers:",
+        "medableSupport": "Medable support"
+      },
+      "title": "Oops! Something went wrong.",
+      "unknownMessage": "But we're not sure what it was."
+    },
+    "errorPage": {
+      "403": {
+        "code": "403",
+        "goBack": "Go Back",
+        "goHome": "Go Home",
+        "message": "You don’t have sufficient permissions to access this page.",
+        "options": "You can",
+        "or": "or",
+        "status": "Forbidden"
+      },
+      "404": {
+        "code": "404",
+        "goBack": "Go Back",
+        "goHome": "Go Home",
+        "message": "Unfortunately, this page does not exist.",
+        "options": "You can",
+        "or": "or",
+        "status": "Page not found"
+      }
+    },
+    "errors": {
+      "kNetworkError": "No internet connectivity"
+    },
+    "filter": {
+      "clear": "Clear",
+      "labels": {
+        "startsWith": "starts with"
+      },
+      "placeholder": {
+        "filter": "Add a filter",
+        "search": "Search"
+      }
+    },
+    "forgotPassword": {
+      "actions": {
+        "back": "Back"
+      },
+      "alerts": {
+        "instructionsSent": "Instructions for resetting the password have been sent to {email}"
+      },
+      "instructions": {
+        "both": "Enter your email or mobile below and we’ll attempt to send you instructions on how you can reset your password.",
+        "email": "Enter your email below and we’ll attempt to send you instructions on how you can reset your password.",
+        "mobile": "Enter your mobile below and we’ll attempt to send you instructions on how you can reset your password."
+      },
+      "labels": {
+        "email": "Email",
+        "mobile": "Mobile",
+        "retrievePassword": "Retrieve password",
+        "send": "Send"
+      },
+      "placeholders": {
+        "mobile": "Enter mobile number"
+      },
+      "resetSent": {
+        "action": {
+          "label": "Return to Sign In"
+        },
+        "description": "If we recognize your information, we will send instructions on how to sign in.",
+        "title": "Request received!"
+      },
+      "validations": {
+        "email": "Email is required",
+        "mobile": "Mobile number is required"
+      }
+    },
+    "forgotUsername": {
+      "actions": {
+        "back": "Back",
+        "signin": "Return to Sign In"
+      },
+      "alerts": {
+        "success": "If we recognize your information, we will send instructions on how to sign in."
+      },
+      "instructions": {
+        "both": "Enter either your email or mobile number below and we’ll attempt to send you your username.",
+        "email": "Enter your email address below and we’ll attempt to send you your username.",
+        "mobile": "Enter your mobile number below and we’ll attempt to send you your username."
+      },
+      "labels": {
+        "email": "Email",
+        "mobile": "Mobile",
+        "request": "Request Received!",
+        "send": "Send",
+        "username": "Retrieve username"
+      },
+      "placeholders": {
+        "email": "name@example.com",
+        "mobile": "Enter mobile number"
+      }
+    },
+    "global": {
+      "actions": {
+        "ok": "OK",
+        "retry": "Retry"
+      },
+      "messages": {
+        "error": "Error"
+      }
+    },
+    "home": {
+      "actions": {
+        "login": "Sign In",
+        "review": "Review Documents"
+      },
+      "event": {
+        "actions": {
+          "completeTask": "Complete task",
+          "exitTask": "Exit task",
+          "leaveActivity": "Leave Activity",
+          "loadMore": "Load more",
+          "loading": "Loading...",
+          "offline": "Offline",
+          "ok": "OK",
+          "start": "Start",
+          "startActivity": "Start activity",
+          "startTask": "Start task"
+        },
+        "dates": {
+          "friday": "Friday",
+          "monday": "Monday",
+          "saturday": "Saturday",
+          "sunday": "Sunday",
+          "thursday": "Thursday",
+          "today": "Today",
+          "tomorrow": "Tomorrow",
+          "tuesday": "Tuesday",
+          "wednesday": "Wednesday"
+        },
+        "headings": {
+          "asNeeded": "As needed",
+          "completed": "Completed",
+          "dateAndDateName": "{dateName} {date}",
+          "midnight": "Midnight",
+          "noon": "Noon"
+        },
+        "messages": {
+          "activityCompleted": "Activity is already completed",
+          "activityNoLongerAvailable": "This activity is no longer available.",
+          "activityStarted": "Activity is already started by another user",
+          "activityStartedByAnotherUser": "Activity started by another user",
+          "noActivitiesToday": "No activities today",
+          "noTasksToday": "No tasks today",
+          "taskNoLongerAvailable": "This task is no longer available."
+        }
+      },
+      "headings": {
+        "asNeeded": "AS NEEDED",
+        "completed": "Completed",
+        "label": "Tasks",
+        "month": "THIS MONTH",
+        "today": "TODAY",
+        "week": "THIS WEEK"
+      },
+      "messages": {
+        "AM": "AM",
+        "PM": "PM",
+        "allTasksCompleted": "You have completed all open tasks. Please sign in to view tasks assigned to you.",
+        "allTasksCompleted_isAuthenticated": "You have completed all open tasks. When new tasks are available, you'll find them here.",
+        "and": " and ",
+        "availableReviewDocuments": "Your schedule will become available once all parties sign the pending document(s)",
+        "availableTasks": "Select an available task",
+        "completedAt": "Completed {time}",
+        "completedTasksHeader": "You’ve completed all your {headerText} tasks. Congratulations 🎉",
+        "daysRemaining": "{count, plural, one {# Day Remaining} other {# Days Remaining}}",
+        "daysRemaining_plural": "{count, plural, one {# Day Remaining} other {# Days Remaining}}",
+        "days_one": "{count, plural, one {# day} other {# days}}",
+        "days_other": "{count, plural, one {# day} other {# days}}",
+        "hours_few": "{count, plural, =0 {# hours} one {# hour} other {# hours}}",
+        "hours_many": "{count, plural, =0 {# hours} one {# hour} other {# hours}}",
+        "hours_one": "{count, plural, =0 {# hours} one {# hour} other {# hours}}",
+        "hours_other": "{count, plural, =0 {# hours} one {# hour} other {# hours}}",
+        "hours_two": "{count, plural, =0 {# hours} one {# hour} other {# hours}}",
+        "hours_zero": "{count, plural, =0 {# hours} one {# hour} other {# hours}}",
+        "minutes_few": "{count, plural, =0 {# minutes} one {# minute} other {# minutes}}",
+        "minutes_many": "{count, plural, =0 {# minutes} one {# minute} other {# minutes}}",
+        "minutes_one": "{count, plural, =0 {# minutes} one {# minute} other {# minutes}}",
+        "minutes_other": "{count, plural, =0 {# minutes} one {# minute} other {# minutes}}",
+        "minutes_two": "{count, plural, =0 {# minutes} one {# minute} other {# minutes}}",
+        "minutes_zero": "{count, plural, =0 {# minutes} one {# minute} other {# minutes}}",
+        "missedTasks": "Missed",
+        "remaining": "{hours, plural, =0 {} other {{hours, plural, one {# hour} other {# hours}} }}{minutes, plural, =0 {} other {{minutes, plural, one {# minute} other {# minutes}} }}remaining",
+        "remaining_hours": "{hours, plural, one {# hour} other {# hours}} remaining",
+        "remaining_minutes": "{minutes, plural, one {# minute} other {# minutes}} remaining"
+      }
+    },
+    "identity": {
+      "locale": "en_US",
+      "version": null
+    },
+    "inviteVerification": {
+      "actions": {
+        "back": "I don't have an invite",
+        "cancel": "Cancel",
+        "goBack": "Go back",
+        "resendInviteCode": "Forgot?",
+        "signIn": "Sign In",
+        "submit": "Submit"
+      },
+      "header": "Create your account",
+      "instructions": "Please enter the invite code you've received from your site to continue.",
+      "labels": {
+        "email": "Email",
+        "invitecode": "Invite Code",
+        "mobile": "Mobile",
+        "username": "Username"
+      },
+      "message": "The invitation code is no longer valid, please sign in or request a new invite code.",
+      "placeholders": {
+        "email": "name@example.com",
+        "invitecode": "000000",
+        "mobile": "mobile",
+        "username": "username"
+      },
+      "title": "Something went wrong"
+    },
+    "labels": {
+      "created": "The entry was created.",
+      "deleted": "The entry was deleted.",
+      "notChanged": "The entry was not changed.",
+      "updated": "The entry was updated."
+    },
+    "languageSelection": {
+      "actions": {
+        "done": "Done",
+        "next": "Next"
+      },
+      "instructions": {
+        "select": "Please select your preferred language"
+      },
+      "labels": {
+        "language": "Language"
+      },
+      "title": "Choose language"
+    },
+    "login": {
+      "actions": {
+        "changeOrg": "Change organization",
+        "createAccountButtonPrefix": "Don't have an account?",
+        "forgotPassword": "Forgot password",
+        "forgotUsername": "Forgot username",
+        "login": "Sign In",
+        "loginWithSSO": "Login with SSO",
+        "register": "Sign up",
+        "setPassword": "Set New Password",
+        "signup": "I don't have an account",
+        "switchStudy": "Switch study",
+        "useInviteCode": "Use invite code"
+      },
+      "biometrics": {
+        "android": {
+          "description": "\"{studyName}\" is using Android biometric authentication",
+          "passwordError": "We couldn't retrieve your password. Please enter your password again.",
+          "subtitle": "Use your Biometric to login",
+          "title": "Biometric access for \"{studyName}\"",
+          "useAppPassword": "Use app password"
+        },
+        "prompt": "Use your fingerprint or face to sign in",
+        "useFaceID": "Use Face ID to Sign in",
+        "useFingerprint": "Use Fingerprint to Sign in",
+        "useTouchID": "Use Touch ID to Sign in"
+      },
+      "instructions": {
+        "login": "Welcome, sign in to {orgName}",
+        "title": "Sign in to your account",
+        "verificationCode": "An SMS verification code has been sent to the number associated to the email entered above."
+      },
+      "labels": {
+        "confirmPassword": "Confirm Password",
+        "email": "Email",
+        "emailUsername": "Email or username",
+        "newPassword": "New Password",
+        "oldPassword": "Old Password",
+        "or": "Or",
+        "password": "Password",
+        "remember": "Remember this device",
+        "username": "Username",
+        "verificationCode": "Verification Code"
+      },
+      "placeholders": {
+        "email": "name@example.com",
+        "password": "Password",
+        "username": "Username",
+        "verificationCode": "Verification Code"
+      }
+    },
+    "loginMethod": {
+      "credentials": "Credentials",
+      "credentialsOrSso": "Credentials or SSO",
+      "sso": "SSO",
+      "title": "Login method"
+    },
+    "navigation": {
+      "activities": "Activities",
+      "login": "Sign In",
+      "profile": "Profile",
+      "resources": "Resources",
+      "schedule": "Schedule",
+      "settings": "Settings",
+      "signOut": "Sign Out",
+      "tasks": "Schedule"
+    },
+    "onboarding": {
+      "actions": {
+        "enterstudycode": "Enter study code",
+        "goToSignIn": "Go to sign in",
+        "needhelp": "Need help?",
+        "submit": "Submit"
+      },
+      "errors": {
+        "connectivity": "There is a problem with your internet connection. Please try again when you're back online.",
+        "connectivityTitle": "You're offline",
+        "inviteCode": "Please double check your invite code and try again. If you're still having trouble, reach out to your site for support.",
+        "missingStudyLocales": "The study you are trying to access does not have any locales. Please contact your study staff for support.",
+        "studyCode": "Please check your code and try again. If you are still having trouble please contact your study staff for support."
+      },
+      "intro": {
+        "title": "Connect to your clinical\nstudy today"
+      },
+      "studyconnect": {
+        "buildermode": "Builder mode",
+        "instructions": "To locate your study, please enter the study code you received from your study staff.",
+        "studyorgurl": "Study Org URL",
+        "title": "Enter study code"
+      },
+      "verification": {
+        "haveAccessAlready": "Have access already?",
+        "instructions": "To setup your account, please enter the invite code you received from your study staff.",
+        "title": "Enter invite code"
+      }
+    },
+    "orgSelect": {
+      "actions": {
+        "back": "Back",
+        "change": "Change",
+        "select": "Select"
+      },
+      "headings": {
+        "change": "Change Org",
+        "select": "Select Org"
+      },
+      "instructions": {
+        "select": "Enter the name of the org you would like to log in to."
+      },
+      "labels": {
+        "orgName": "Org Name"
+      }
+    },
+    "privacy": {
+      "headings": {
+        "quickInfo": "Quick Info",
+        "resources": "Resources"
+      }
+    },
+    "profile": {
+      "actions": {
+        "done": "Done",
+        "leaveStudy": "Leave"
+      },
+      "gender": {
+        "female": "Female",
+        "male": "Male",
+        "neither": "Neither",
+        "other": "Other",
+        "transgender": "Transgender",
+        "unspecified": "Unspecified"
+      },
+      "headings": {
+        "label": "Profile"
+      },
+      "labels": {
+        "birthDate": "Date of Birth",
+        "email": "Email",
+        "gender": "Gender",
+        "locale": "Locale",
+        "mobile": "Mobile Number",
+        "name": "Name",
+        "subject": "Subject ID",
+        "tz": "Timezone",
+        "username": "Username",
+        "version": "Version"
+      },
+      "languageSelection": {
+        "label": "Preferred Language"
+      }
+    },
+    "registration": {
+      "actions": {
+        "register": "Register"
+      },
+      "instructions": {
+        "register": "Register for {orgName}",
+        "verificationCode": "An SMS verification code has been sent to the number entered above."
+      },
+      "labels": {
+        "confirmPassword": "Confirm Password",
+        "email": "Email Address",
+        "firstname": "First Name",
+        "lastname": "Last Name",
+        "mobileNumber": "Mobile Number",
+        "password": "Password"
+      },
+      "placeholders": {
+        "email": "your-email@medable.com",
+        "firstname": "First Name",
+        "lastname": "Last Name",
+        "mobileNumber": "0000000000",
+        "password": "Password"
+      }
+    },
+    "resendPin": {
+      "actions": {
+        "back": "Back",
+        "resendPin": "Submit"
+      },
+      "emailInstructions": "If an email was used to create your account, enter it below to resend the invite code.",
+      "instructions": "Enter the information below to resend your invite code. You will receive your invite code shortly.",
+      "labels": {
+        "email": "Email",
+        "phone": "Phone"
+      },
+      "messages": {
+        "pinResendError": "Please double check your email and try again. If you're still having trouble, reach out to your site for support.",
+        "pinResendSuccess": "Invite code sent! Please check your email for your new invite code."
+      },
+      "placeholders": {
+        "email": "name@example.com",
+        "phone": "Enter mobile number"
+      },
+      "title": "Resend invite code",
+      "usernameInstructions": "If you have a username instead, use the following support information."
+    },
+    "resetLoginIdentifierViewController": {
+      "forgotPassword": {
+        "emailInstructions": "If an email was used to create your account, enter it below to receive a reset link.",
+        "emailMobileSubtitle": "Enter either your email or mobile number below and we'll attempt to send you your password.",
+        "emailSubtitle": "Enter your email below and we'll attempt to send you your password.",
+        "heading": "Forgot password",
+        "mobileSubtitle": "Enter your mobile number below and we'll attempt to send you your password.",
+        "title": "Forgot Your Password?",
+        "usernameInstructions": "If you have a username instead, or the reset link isn't working, use the following support information."
+      },
+      "forgotUsername": {
+        "title": "Forgot your username?"
+      }
+    },
+    "resetPassword": {
+      "actions": {
+        "cancel": "Cancel",
+        "submit": "Submit"
+      },
+      "alerts": {
+        "resetSuccess": "Your password has been set. You may now log in using your new password."
+      },
+      "instructions": {
+        "create": "Create new password",
+        "description": "Your password has been temporarily reset and we need you to create new one."
+      },
+      "labels": {
+        "confirmPassword": "Confirm Password",
+        "newPassword": "New Password"
+      }
+    },
+    "resource": {
+      "back": "Back"
+    },
+    "resources": {
+      "headings": {
+        "consentDocuments": "Consent Documents",
+        "label": "Resources",
+        "siteInformation": {
+          "label": "Site Information"
+        }
+      },
+      "messages": {
+        "noResourcesAvailable": "There are no study resource items available."
+      }
+    },
+    "sessionTimeout": {
+      "actions": {
+        "ok": "OK"
+      },
+      "kAccountLocked": {
+        "reason": "Your account has been disabled, please contact your administrator for access.",
+        "title": "Disabled user account"
+      },
+      "kLoggedInElsewhere": {
+        "reason": "You have been signed out due to signing in to another location.",
+        "title": "Simultaneous session"
+      },
+      "kSessionExpired": {
+        "reason": "You have been signed out due to inactivity.",
+        "title": "Session timeout"
+      }
+    },
+    "settings": {
+      "headings": {
+        "label": "Settings",
+        "study": "Study"
+      }
+    },
+    "signup": {
+      "actions": {
+        "done": "Done",
+        "signup": "Create account",
+        "submit": "Submit"
+      },
+      "instructions": {
+        "link": "Privacy Policy",
+        "pleaseView": "Please view",
+        "privacyNotice": "Privacy Notice",
+        "text": "By creating an account, you accept the"
+      },
+      "labels": {
+        "confirmPassword": "Confirm password",
+        "email": "Email",
+        "firstName": "First name",
+        "lastName": "Last name",
+        "password": "Password",
+        "phone": "Phone",
+        "username": "Username"
+      },
+      "messages": {
+        "invalidMobileNumber": "The mobile number you entered is not valid",
+        "invalidPhoneNumber": "Invalid phone number. Please select a country code and then enter your phone number.",
+        "signupSuccess": "Account created successfully",
+        "usernameReminder": "REMINDER: Please do not use your first name, last name/surname, initials, date of birth or any confidential/identifiable information in the username."
+      },
+      "title": "Create account",
+      "validations": {
+        "passwordMismatch": "The passwords do not match",
+        "requiredFields": "Please complete all required fields",
+        "validEmail": "Enter a valid email"
+      }
+    },
+    "stringArray": {
+      "placeholder": "Add a string text and hit enter..."
+    },
+    "study": {
+      "code": "Study Code",
+      "leaveDialog": {
+        "cancel": "No",
+        "confirm": "Yes",
+        "infoMessage": "Are you sure you want to leave study? Clicking confirm will send an email to your study doctor to inform them that you would like to leave.",
+        "message": "Are you sure you want to leave study?",
+        "successMessage": "A researcher will contact you to process your request. Please note that in the meantime you will still be enrolled in the study.",
+        "successTitle": "Your request to leave the study has been received.",
+        "title": "Leave Study"
+      }
+    },
+    "support": {
+      "defaultDescription": "Contact your study staff or Medable support for assistance.",
+      "header": "Support information",
+      "webView": {
+        "actions": {
+          "done": "Done",
+          "openInBrowser": "Open in browser"
+        },
+        "errors": {
+          "httpError": "HTTP error",
+          "loadFailed": "Failed to load page",
+          "openLinkFailed": "Failed to open link",
+          "webViewError": "WebView error"
+        }
+      }
+    },
+    "switchstudy": {
+      "actions": {
+        "add": "Add",
+        "cancel": "Cancel",
+        "delete": "Delete"
+      },
+      "messages": "This will permanently remove this study from your app history.",
+      "title": "Your studies"
+    },
+    "televisit": {
+      "alerts": {
+        "reScheduleSuccess": "Call rescheduled to {dateTime}",
+        "scheduleSuccess": "Call scheduled"
+      },
+      "descriptions": {
+        "audio_input": "Talk now. If the meter lights up, your microphone is working.",
+        "audio_input_error": "We are unable to detect your available microphones. This is likely due to a privacy setting in your browser. If the meter lights up, your microphone is working. If not, click on the camera icon in your browser address bar, enable access to camera and mic, and refresh your browser.",
+        "audio_input_help": "Check that your volume input is turned all the way up. You can check this in your computer settings or device settings. You will see a visual indicator on the previous page when you speak into the microphone.",
+        "audio_output": "If you can hear the test sound, your speakers are working.",
+        "audio_output_error": "We are unable to detect your available speakers. This is likely due to a privacy setting in your browser. However, if you can hear the test sound, your speakers are still working.",
+        "audio_output_help": "Check that your speaker volume is turned all the way up. You can check this in your computer settings or device settings. You can test the sound by clicking the “play test sound” button on the previous page.",
+        "audio_output_test": "The test sound is playing. If you cannot hear it, check that your speaker volume is turned up.",
+        "cancel": "Are you sure you want to cancel the visit?",
+        "schedule": "Schedule a televisit with the participant.",
+        "scheduled": "Your televisit is scheduled for {start}",
+        "video": "If you can see yourself, your camera is active.",
+        "video_help": "If you cannot see your camera working, you may need to allow access. In your browsers address bar, click the camera blocked icon and allow access. You may need to refresh your browser afterward. On tablet or mobile devices, you will need to allow access in your device settings or via the dialog that appears when you open the video call link.",
+        "waiting": "It’s time for your televisit. Please join the waiting room and we’ll be right with you."
+      },
+      "header": {
+        "button": {
+          "join": "Join waiting room"
+        },
+        "message": {
+          "noProvider": "It's time for your televisit. Please join the waiting room and we'll be right with you.",
+          "provider": "It's time! Your TeleVisit appointment is here. Your provider is in the waiting room waiting for you to join."
+        }
+      },
+      "headers": {
+        "call_ready": "Your call is ready to begin.",
+        "settings": "Settings",
+        "televisit": "Televisit",
+        "waiting": "Waiting for other participants..."
+      },
+      "labels": {
+        "appointment_date": "Date and Time",
+        "audio_play": "Play Test Audio",
+        "audio_stop": "Stop Test Audio",
+        "camera": "Camera",
+        "cancel": "Cancel",
+        "cancel_visit": "Cancel Visit",
+        "close": "Close",
+        "done": "Done",
+        "help": "Need Help",
+        "join": "Join Now",
+        "join_call": "Join Call",
+        "join_waiting": "Join Waiting Room",
+        "microphone": "Microphone",
+        "reschedule": "Reschedule",
+        "schedule": "Schedule",
+        "schedule_call": "Schedule a Call",
+        "speaker": "Speaker",
+        "test": "Test Audio/Video",
+        "title": "Title",
+        "you": "You"
+      },
+      "messages": {
+        "scheduledForToday": "A televisit is scheduled for today at {time}"
+      },
+      "notification": {
+        "reminder": {
+          "message": "You have a televisit scheduled tomorrow",
+          "title": "Televisit reminder"
+        },
+        "soon": {
+          "message": "Please join the waiting room",
+          "title": "Televisit starting now"
+        }
+      },
+      "placeholders": {
+        "audio_input": "Unable to Detect Microphone",
+        "audio_output": "Unable to Detect Speaker",
+        "video": "Your camera is not enabled. Click on the camera icon in your browser address bar, enable access to camera and mic, and refresh your browser.",
+        "video_setting": "Unable to Detect Camera"
+      },
+      "values": {
+        "default_title": "Televisit"
+      },
+      "virtualVisit": {
+        "alert": {
+          "cancel": "Cancel",
+          "endCall": "End Call",
+          "message": "Are you sure you want to end this call?"
+        }
+      },
+      "waitingRoom": {
+        "loading": {
+          "joinCall": "Join Call",
+          "message": "You're currently in the waiting room for your TeleVisit. A join button will appear when you can start the call.",
+          "title": "Waiting room…"
+        }
+      }
+    },
+    "test": {
+      "activity": "Activity",
+      "visit": "Visit"
+    },
+    "timeTravel": {
+      "actions": {
+        "done": "Done"
+      },
+      "changed": {
+        "appTime": "App time:",
+        "refresh": "Refresh",
+        "refreshPrompt": "Please tap Refresh to sync the app.",
+        "serverTime": "Server time:",
+        "title": "Time travel server time adjusted"
+      },
+      "description": "Adjusted date and time of the app.",
+      "title": "Time travel",
+      "youAreHere": "You are here:"
+    },
+    "users": {
+      "alerts": {
+        "deleteSuccess": "User deleted"
+      },
+      "headings": {
+        "details": "User Details",
+        "list": "Users List",
+        "newUser": "New User",
+        "users": "Users"
+      }
+    }
+  },
+  "dirty": true,
+  "extensible": true,
+  "locale": "en_US",
+  "name": "patient-app__en_US_translations",
+  "namespace": "patient-app",
+  "object": "i18n",
+  "overridable": true,
+  "tags": [],
+  "weight": 0
+}

@@ -1,0 +1,27 @@
+{
+  "active": true,
+  "configuration": {
+    "acl": [
+      "role.administrator"
+    ],
+    "apiKey": null,
+    "authValidation": "all",
+    "method": "post",
+    "path": "pi_oversight/send_digest",
+    "plainText": false,
+    "priority": 0,
+    "system": false,
+    "urlEncoded": false
+  },
+  "description": "Triggers the PI Oversight digest email for a site/study.",
+  "environment": "*",
+  "label": "PI Oversight - Send Digest",
+  "language": "javascript/es6",
+  "name": "c_pi_oversight_send_digest",
+  "object": "script",
+  "optimized": false,
+  "principal": null,
+  "script": "/env/scripts/js/route.c_pi_oversight_send_digest.js",
+  "type": "route",
+  "weight": 0
+}

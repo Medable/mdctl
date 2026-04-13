@@ -1,0 +1,27 @@
+{
+  "active": true,
+  "configuration": {
+    "acl": [
+      "account.public"
+    ],
+    "apiKey": null,
+    "authValidation": "all",
+    "method": "get",
+    "path": "pi_oversight/get_review_bundle",
+    "plainText": false,
+    "priority": 0,
+    "system": false,
+    "urlEncoded": false
+  },
+  "description": "Returns review bundle (deltas/compliance) for a single participant since last signoff.",
+  "environment": "*",
+  "label": "PI Oversight - Get Review Bundle",
+  "language": "javascript/es6",
+  "name": "c_pi_oversight_get_review_bundle",
+  "object": "script",
+  "optimized": false,
+  "principal": null,
+  "script": "/env/scripts/js/route.c_pi_oversight_get_review_bundle.js",
+  "type": "route",
+  "weight": 0
+}

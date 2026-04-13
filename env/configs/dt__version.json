@@ -1,0 +1,8 @@
+{
+  "isPublic": false,
+  "name": "dt__version",
+  "object": "config",
+  "value": {
+    "version": "1.6.1"
+  }
+}

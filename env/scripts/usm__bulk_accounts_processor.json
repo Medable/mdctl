@@ -1,0 +1,17 @@
+{
+  "active": true,
+  "configuration": {
+    "export": "usm__bulk_accounts_processor"
+  },
+  "description": "Library to validate bulk request",
+  "environment": "*",
+  "label": "USM - Bulk Validation V2",
+  "language": "javascript/es6",
+  "name": "usm__bulk_accounts_processor",
+  "object": "script",
+  "optimized": false,
+  "principal": null,
+  "script": "/env/scripts/js/library.usm__bulk_accounts_processor.js",
+  "type": "library",
+  "weight": 0
+}

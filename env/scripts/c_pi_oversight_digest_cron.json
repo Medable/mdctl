@@ -1,0 +1,17 @@
+{
+  "active": true,
+  "configuration": {
+    "cron": "0 14 * * 1"
+  },
+  "description": "Runs the PI Oversight digest sender on a weekly cadence (Mondays 14:00).",
+  "environment": "*",
+  "label": "PI Oversight - Digest Scheduler",
+  "language": "javascript/es6",
+  "name": "c_pi_oversight_digest_cron",
+  "object": "script",
+  "optimized": false,
+  "principal": "serviceAccount.c_system_user",
+  "script": "/env/scripts/js/job.c_pi_oversight_digest_cron.js",
+  "type": "job",
+  "weight": 0
+}

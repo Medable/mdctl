@@ -1,0 +1,11 @@
+{{{i18n "axon:template.email.c_axon_leave_study.title"}}}
+
+*{{i18n "axon:template.email.c_axon_leave_study.accountId"}} {{{account_id}}}
+
+{{i18n "axon:template.email.c_axon_leave_study.instructions"}}
+
+{{i18n "axon:template.email.c_axon_leave_study.studyInformation"}}
+
+*{{i18n "axon:template.email.c_axon_leave_study.studyName"}} {{{study_name}}}
+*{{i18n "axon:template.email.c_axon_leave_study.studyCode"}} {{{study_code}}}
+*{{i18n "axon:template.email.c_axon_leave_study.studyId"}} {{{study_id}}}

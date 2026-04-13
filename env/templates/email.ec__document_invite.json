@@ -1,0 +1,29 @@
+{
+  "description": "EC Document Invite",
+  "label": "EC Document Invite",
+  "localizations": [
+    {
+      "locale": [
+        "*"
+      ],
+      "content": [
+        {
+          "data": "/env/templates/tpl/template.email.ec__document_invite.anyLocale.html.html",
+          "name": "html"
+        },
+        {
+          "data": "/env/templates/tpl/template.email.ec__document_invite.anyLocale.plain.txt",
+          "name": "plain"
+        },
+        {
+          "data": "/env/templates/tpl/template.email.ec__document_invite.anyLocale.subject.txt",
+          "name": "subject"
+        }
+      ]
+    }
+  ],
+  "name": "ec__document_invite",
+  "object": "template",
+  "partial": false,
+  "type": "email"
+}

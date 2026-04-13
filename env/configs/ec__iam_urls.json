@@ -1,0 +1,25 @@
+{
+  "isPublic": false,
+  "name": "ec__iam_urls",
+  "object": "config",
+  "value": {
+    "permanentEnvs": {
+      "api.local.medable.com": "https://iam.local.medable.com",
+      "api-int-dev.medable.com": "https://auth-latest.medable.com",
+      "api.qa.medable.com": "https://auth-test.medable.com",
+      "api.test.medable.com": "https://auth-staging.medable.com",
+      "api.dev.medable.com": "https://auth.medable.com",
+      "api.medable.com": "https://auth.medable.com",
+      "api-eu1-dev.medable.com": "https://auth.medable.com",
+      "api-eu1.medable.com": "https://auth.medable.com",
+      "api.dev.medable.cn": "https://auth.medable.com",
+      "api.medable.cn": "https://auth.medable.com"
+    },
+    "ephemeralEnvs": {
+      "alpha-latest": "https://auth-latest.medable.com",
+      "alpha-test": "https://auth-test.medable.com",
+      "alpha-staging": "https://auth-staging.medable.com",
+      "alpha": "https://auth.medable.com"
+    }
+  }
+}

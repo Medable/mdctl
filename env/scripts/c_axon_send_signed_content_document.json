@@ -1,0 +1,27 @@
+{
+  "active": true,
+  "configuration": {
+    "acl": [
+      "account.anonymous",
+      "account.public"
+    ],
+    "apiKey": null,
+    "authValidation": "legacy",
+    "method": "post",
+    "path": "send_signed_doc",
+    "plainText": false,
+    "priority": 0,
+    "system": false,
+    "urlEncoded": false
+  },
+  "environment": "*",
+  "label": "Axon - Send Signed Content Document",
+  "language": "javascript/es6",
+  "name": "c_axon_send_signed_content_document",
+  "object": "script",
+  "optimized": false,
+  "principal": null,
+  "script": "/env/scripts/js/route.c_axon_send_signed_content_document.js",
+  "type": "route",
+  "weight": 0
+}

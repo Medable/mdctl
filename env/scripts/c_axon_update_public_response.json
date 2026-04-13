@@ -1,0 +1,27 @@
+{
+  "active": true,
+  "configuration": {
+    "acl": [
+      "account.anonymous"
+    ],
+    "apiKey": null,
+    "authValidation": "legacy",
+    "method": "put",
+    "path": "update_public_response",
+    "plainText": false,
+    "priority": 0,
+    "system": false,
+    "urlEncoded": false
+  },
+  "description": "Route to update public user task response",
+  "environment": "*",
+  "label": "Axon - Update Public Response",
+  "language": "javascript/es6",
+  "name": "c_axon_update_public_response",
+  "object": "script",
+  "optimized": false,
+  "principal": "serviceAccount.c_system_user",
+  "script": "/env/scripts/js/route.c_axon_update_public_response.js",
+  "type": "route",
+  "weight": 0
+}

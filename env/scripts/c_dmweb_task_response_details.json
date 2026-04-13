@@ -1,0 +1,27 @@
+{
+  "active": true,
+  "configuration": {
+    "acl": [
+      "account.public"
+    ],
+    "apiKey": null,
+    "authValidation": "all",
+    "method": "get",
+    "path": "task_details/:taskResponseId",
+    "plainText": false,
+    "priority": 0,
+    "system": false,
+    "urlEncoded": false
+  },
+  "description": "Returns the details of a specified task response.",
+  "environment": "*",
+  "label": "DMWEB - Task Response Details",
+  "language": "javascript/es6",
+  "name": "c_dmweb_task_response_details",
+  "object": "script",
+  "optimized": false,
+  "principal": null,
+  "script": "/env/scripts/js/route.c_dmweb_task_response_details.js",
+  "type": "route",
+  "weight": 0
+}

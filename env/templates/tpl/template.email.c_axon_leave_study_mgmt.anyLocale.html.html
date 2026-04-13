@@ -1,0 +1,13 @@
+{{#extend "layout"}}
+
+{{#replace "title"}}
+{{i18n "axon:template.email.c_axon_leave_study_mgmt.title" participant_id=participant_id study_name=study_name}}
+{{/replace}}
+
+{{#replace "body"}}
+<p>{{i18n "axon:template.email.c_axon_leave_study_mgmt.instructionOne"}}</p>
+<p>{{i18n "axon:template.email.c_axon_leave_study_mgmt.instructionTwo"}}</p>
+<a href="{{participant_url}}">{{participant_url}}</a>
+{{/replace}}
+
+{{/extend}}

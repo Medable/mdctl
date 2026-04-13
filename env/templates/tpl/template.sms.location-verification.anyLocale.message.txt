@@ -1,0 +1,1 @@
+{{i18n "axon:template.sms.location-verification.message" org=org code=code}}

@@ -1,0 +1,16 @@
+{
+  "active": true,
+  "configuration": {
+    "export": "dt__datatransferformats"
+  },
+  "environment": "*",
+  "label": "dt__datatransferformats",
+  "language": "javascript/es6",
+  "name": "dt__datatransferformats",
+  "object": "script",
+  "optimized": false,
+  "principal": null,
+  "script": "/env/scripts/js/library.dt__datatransferformats.js",
+  "type": "library",
+  "weight": 0
+}

@@ -1,0 +1,3 @@
+{{{i18n "axon:template.email.c_axon_invite-pin_expired.title" study_name=study_name}}}
+
+{{i18n "axon:template.email.c_axon_invite-pin_expired.instructions"}}

@@ -1,0 +1,1 @@
+{{{fullname connection.creator.name}}} connected you to a {{{connection.context.object}}} on {{{org.name}}}

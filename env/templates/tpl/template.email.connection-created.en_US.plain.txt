@@ -1,0 +1,3 @@
+Hi {{{account.name.first}}},
+
+ You've been connected to a {{{connection.context.object}}} at {{{org.name}}}.

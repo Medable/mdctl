@@ -1,0 +1,27 @@
+{
+  "active": true,
+  "configuration": {
+    "acl": [
+      "account.public"
+    ],
+    "apiKey": null,
+    "authValidation": "legacy",
+    "method": "post",
+    "path": "account_public_user_link",
+    "plainText": false,
+    "priority": 0,
+    "system": false,
+    "urlEncoded": false
+  },
+  "description": "Link public user to Medable account",
+  "environment": "*",
+  "label": "Axon - Account/Public User Link",
+  "language": "javascript/es6",
+  "name": "c_axon_account_public_user_link",
+  "object": "script",
+  "optimized": false,
+  "principal": "serviceAccount.c_system_user",
+  "script": "/env/scripts/js/route.c_axon_account_public_user_link.js",
+  "type": "route",
+  "weight": 0
+}

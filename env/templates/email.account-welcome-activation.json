@@ -1,0 +1,29 @@
+{
+  "description": "Account welcome email with activation required",
+  "label": "Account Welcome with Activation",
+  "localizations": [
+    {
+      "locale": [
+        "en_US"
+      ],
+      "content": [
+        {
+          "data": "/env/templates/tpl/template.email.account-welcome-activation.en_US.html.html",
+          "name": "html"
+        },
+        {
+          "data": "/env/templates/tpl/template.email.account-welcome-activation.en_US.plain.txt",
+          "name": "plain"
+        },
+        {
+          "data": "/env/templates/tpl/template.email.account-welcome-activation.en_US.subject.txt",
+          "name": "subject"
+        }
+      ]
+    }
+  ],
+  "name": "account-welcome-activation",
+  "object": "template",
+  "partial": false,
+  "type": "email"
+}

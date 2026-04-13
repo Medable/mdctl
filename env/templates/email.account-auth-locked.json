@@ -1,0 +1,29 @@
+{
+  "description": "This is sent to the account holder when the account has been locked due to too many authentication failures.",
+  "label": "Account Unauthorized Access Lock",
+  "localizations": [
+    {
+      "locale": [
+        "*"
+      ],
+      "content": [
+        {
+          "data": "/env/templates/tpl/template.email.account-auth-locked.anyLocale.html.html",
+          "name": "html"
+        },
+        {
+          "data": "/env/templates/tpl/template.email.account-auth-locked.anyLocale.plain.txt",
+          "name": "plain"
+        },
+        {
+          "data": "/env/templates/tpl/template.email.account-auth-locked.anyLocale.subject.txt",
+          "name": "subject"
+        }
+      ]
+    }
+  ],
+  "name": "account-auth-locked",
+  "object": "template",
+  "partial": false,
+  "type": "email"
+}

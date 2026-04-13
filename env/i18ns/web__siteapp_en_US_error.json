@@ -1,0 +1,20 @@
+{
+  "aliases": [],
+  "assets": [],
+  "data": {
+    "identity": {
+      "locale": "en_US",
+      "version": "1.16.0"
+    },
+    "kNetworkError": "No internet connectivity"
+  },
+  "dirty": true,
+  "extensible": true,
+  "locale": "en_US",
+  "name": "web__siteapp_en_US_error",
+  "namespace": "siteapp-error",
+  "object": "i18n",
+  "overridable": true,
+  "tags": [],
+  "weight": 0
+}

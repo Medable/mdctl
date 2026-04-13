@@ -1,0 +1,69 @@
+{{#extend "layout"}}
+
+{{#replace "title"}}
+<span style="font-weight: 300; font-size: 32px">{{i18n
+    "axon:template.email.c_axon_new_participant_invite.title"}}</span>
+{{/replace}}
+
+{{#replace "body"}}
+<div style="font-size: 14px">
+
+    {{{i18n "axon:template.email.c_axon_new_participant_invite.mobileInstructions" study_name=study_name}}}
+
+    <br />
+    <br />
+
+    <div>
+        <a href="{{appleStore_url}}">
+            <img style="width: 45%; max-width: 150px; margin-inline-end: 10px; cursor: pointer;"
+                src="https://medable-static.s3.amazonaws.com/images/app_store_logo.png" />
+        </a>
+        {{#if googleStore}}
+        <a href="{{googleStore_url}}">
+            <img style="width: 45%; max-width: 150px; cursor: pointer;" src="https://medable-static.s3.amazonaws.com/images/google_play_logo.png" />
+        </a>
+        {{/if}}
+    </div>
+
+    <br />
+
+    {{i18n "axon:template.email.c_axon_new_participant_invite.codeInstructions"}}
+
+    <br /><br />
+
+    <div style="padding: 15px 20px; background-color: #F1F2F3">
+        <div style="margin-bottom: 10px">
+            {{i18n "axon:template.email.c_axon_new_participant_invite.studyCode"}}
+        </div>
+        <div style="font-size: 30px">
+            {{c_study_code}}
+        </div>
+    </div>
+    <div style="padding: 15px 20px; background-color: #F1F2F3">
+        <div style="margin-bottom: 10px">
+            {{i18n "axon:template.email.c_axon_new_participant_invite.accessCode"}}
+        </div>
+        <div style="font-size: 30px">
+            {{access_code}}
+        </div>
+    </div>
+
+    <br />
+
+    {{i18n "axon:template.email.c_axon_new_participant_invite.pushNotificationsInstructions"}}<br /><br />
+
+    {{i18n "axon:template.email.c_axon_new_participant_invite.browserLink"}}
+
+    <br />
+
+    <a style="color: #6445D7" href="{{paweb_url}}">{{paweb_url}}</a>
+
+    <br /><br />
+
+    {{i18n "axon:template.email.c_axon_new_participant_invite.thankYou"}}
+
+
+</div>
+{{/replace}}
+
+{{/extend}}

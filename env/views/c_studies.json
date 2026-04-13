@@ -1,0 +1,43 @@
+{
+  "acl": [
+    "account.anonymous"
+  ],
+  "active": true,
+  "description": "View lists all studies in an org for selection in the Axon demo app",
+  "label": "Axon - Get All Studies",
+  "limit": {
+    "defaultValue": 100,
+    "max": 1000,
+    "min": 1,
+    "settable": true
+  },
+  "name": "c_studies",
+  "object": "view",
+  "objectAcl": [
+    "account.public.connected"
+  ],
+  "paths": {
+    "defaultValue": [
+      "_id",
+      "c_name"
+    ],
+    "limitTo": [],
+    "settable": false
+  },
+  "principal": "role.administrator",
+  "query": [
+    {
+      "name": "sort",
+      "value": {
+        "created": -1
+      }
+    }
+  ],
+  "skip": {
+    "defaultValue": 0,
+    "max": 500000,
+    "min": 0,
+    "settable": true
+  },
+  "sourceObject": "c_study"
+}

@@ -1,0 +1,11 @@
+{{#extend "layout"}}
+
+    {{#replace "title"}}
+        {{org.name}} invitation
+    {{/replace}}
+
+    {{#replace "body"}}
+        You've been invited to join {{{org.name}}}! To sign up, go to {{{connection.url}}}
+    {{/replace}}
+
+{{/extend}}

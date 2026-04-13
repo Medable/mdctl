@@ -1,0 +1,19 @@
+{
+  "active": true,
+  "configuration": {
+    "event": "update.after",
+    "inline": false,
+    "object": "c_task_response",
+    "paths": []
+  },
+  "environment": "*",
+  "label": "Nucleus - Automatic Query Management",
+  "language": "javascript/es6",
+  "name": "c_nucleus_automatic_query_management",
+  "object": "script",
+  "optimized": false,
+  "principal": "serviceAccount.c_system_user",
+  "script": "/env/scripts/js/trigger.c_nucleus_automatic_query_management.js",
+  "type": "trigger",
+  "weight": 0
+}

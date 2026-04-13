@@ -1,0 +1,27 @@
+{
+  "active": true,
+  "configuration": {
+    "acl": [
+      "account.public"
+    ],
+    "apiKey": null,
+    "authValidation": "all",
+    "method": "get",
+    "path": "filters",
+    "plainText": false,
+    "priority": 0,
+    "system": false,
+    "urlEncoded": false
+  },
+  "description": "Streams available filters for the specified properties",
+  "environment": "*",
+  "label": "DMWEB - Filters",
+  "language": "javascript/es6",
+  "name": "c_dmweb_filters",
+  "object": "script",
+  "optimized": false,
+  "principal": null,
+  "script": "/env/scripts/js/route.c_dmweb_filters.js",
+  "type": "route",
+  "weight": 0
+}

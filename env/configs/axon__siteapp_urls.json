@@ -1,0 +1,53 @@
+{
+  "isPublic": false,
+  "name": "axon__siteapp_urls",
+  "object": "config",
+  "value": {
+    "siteAppUrls": [
+      {
+        "env": "api.local.medable.com",
+        "url": "https://site-local.medable.com"
+      },
+      {
+        "env": "api-int-dev.medable.com",
+        "url": "https://site-int-dev.medable.com"
+      },
+      {
+        "env": "api.qa.medable.com",
+        "url": "https://site-qa.medable.com"
+      },
+      {
+        "env": "api.test.medable.com",
+        "url": "https://site-test.medable.com"
+      },
+      {
+        "env": "api.dev.medable.com",
+        "url": "https://site-dev.medable.com"
+      },
+      {
+        "env": "api.medable.com",
+        "url": "https://site.medable.com"
+      },
+      {
+        "env": "api.dev.medable.cn",
+        "url": "https://site-dev.medable.cn"
+      },
+      {
+        "env": "api.medable.cn",
+        "url": "https://site.medable.cn"
+      },
+      {
+        "env": "api-eu1-dev.medable.com",
+        "url": "https://site-eu1-dev.medable.com"
+      },
+      {
+        "env": "api-eu1.medable.com",
+        "url": "https://site-eu1.medable.com"
+      },
+      {
+        "env": "api-m6269.alpha-latest.medable.com",
+        "url": "https://site-m6269.alpha-latest.medable.com"
+      }
+    ]
+  }
+}

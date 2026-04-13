@@ -1,0 +1,9 @@
+{
+  "isPublic": true,
+  "name": "dcr_intake__enable_automated_changes",
+  "object": "config",
+  "value": {
+    "UPDATE_PARTICIPANT_ID": false,
+    "MOVE_PARTICIPANT_TO_TEST_SITE": false
+  }
+}

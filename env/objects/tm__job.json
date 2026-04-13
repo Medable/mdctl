@@ -1,0 +1,719 @@
+{
+  "allowConnections": false,
+  "auditing": {
+    "enabled": false
+  },
+  "canCascadeDelete": false,
+  "connectionOptions": {
+    "requireAccept": true,
+    "requiredAccess": 5,
+    "sendNotifications": true
+  },
+  "createAcl": [
+    "role.tm__create_jobs"
+  ],
+  "defaultAcl": [
+    "owner.delete",
+    "role.tm__create_jobs.update",
+    "role.tm__read_jobs.read"
+  ],
+  "defaultType": null,
+  "favorite": false,
+  "hasETag": false,
+  "hasOwner": true,
+  "isDeletable": true,
+  "isUnmanaged": false,
+  "isVersioned": false,
+  "label": "tm__job",
+  "localized": false,
+  "name": "tm__job",
+  "object": "object",
+  "objectTypes": [
+    {
+      "label": "Import Job",
+      "name": "tm__import",
+      "properties": [
+        {
+          "acl": [],
+          "aclOverride": false,
+          "array": false,
+          "auditable": false,
+          "canPull": true,
+          "canPush": true,
+          "creatable": false,
+          "defaultValue": [],
+          "dependencies": [],
+          "history": false,
+          "include": [],
+          "label": "Error File",
+          "localization": {
+            "acl": [],
+            "aclOverride": false,
+            "enabled": false,
+            "fallback": true,
+            "fixed": "",
+            "namespace": "cortex",
+            "readAccess": "read",
+            "strict": true,
+            "valid": [],
+            "writeAccess": "update"
+          },
+          "maxItems": 100,
+          "maxShift": false,
+          "minItems": 0,
+          "name": "tm__error_file",
+          "optional": false,
+          "processors": [
+            {
+              "allowUpload": true,
+              "label": "Content",
+              "maxFileSize": 10485760,
+              "mimes": [
+                "*"
+              ],
+              "name": "content",
+              "passMimes": false,
+              "private": false,
+              "required": true,
+              "source": "content",
+              "type": "passthru"
+            }
+          ],
+          "readAccess": "read",
+          "readable": true,
+          "removable": false,
+          "type": "File",
+          "uniqueValues": false,
+          "urlExpirySeconds": null,
+          "validators": [],
+          "writable": true,
+          "writeAccess": "update",
+          "writeOnCreate": true
+        },
+        {
+          "acl": [],
+          "aclOverride": false,
+          "array": false,
+          "auditable": false,
+          "canPull": true,
+          "canPush": true,
+          "creatable": false,
+          "defaultValue": [],
+          "dependencies": [],
+          "history": false,
+          "include": [],
+          "label": "Import File",
+          "localization": {
+            "acl": [],
+            "aclOverride": false,
+            "enabled": false,
+            "fallback": true,
+            "fixed": "",
+            "namespace": "cortex",
+            "readAccess": "read",
+            "strict": true,
+            "valid": [],
+            "writeAccess": "update"
+          },
+          "maxItems": 100,
+          "maxShift": false,
+          "minItems": 0,
+          "name": "tm__import_file",
+          "optional": false,
+          "processors": [
+            {
+              "allowUpload": true,
+              "label": "Content",
+              "maxFileSize": 10485760,
+              "mimes": [
+                "*"
+              ],
+              "name": "content",
+              "passMimes": false,
+              "private": false,
+              "required": true,
+              "source": "content",
+              "type": "passthru"
+            }
+          ],
+          "readAccess": "read",
+          "readable": true,
+          "removable": false,
+          "type": "File",
+          "uniqueValues": false,
+          "urlExpirySeconds": null,
+          "validators": [],
+          "writable": true,
+          "writeAccess": "update",
+          "writeOnCreate": true
+        },
+        {
+          "acl": [],
+          "aclOverride": false,
+          "array": false,
+          "auditable": false,
+          "canPull": true,
+          "canPush": true,
+          "creatable": false,
+          "defaultValue": [
+            {
+              "type": "static",
+              "value": false
+            }
+          ],
+          "dependencies": [],
+          "description": "Only import New Strings",
+          "history": false,
+          "include": [],
+          "indexed": false,
+          "label": "New Strings Only",
+          "maxItems": 100,
+          "maxShift": false,
+          "minItems": 0,
+          "name": "tm__new_strings_only",
+          "optional": false,
+          "readAccess": "read",
+          "readable": true,
+          "removable": false,
+          "type": "Boolean",
+          "unique": false,
+          "uniqueValues": false,
+          "validators": [],
+          "writable": true,
+          "writeAccess": "update",
+          "writeOnCreate": true
+        }
+      ]
+    },
+    {
+      "label": "Export Job",
+      "name": "tm__export",
+      "properties": [
+        {
+          "acl": [],
+          "aclOverride": false,
+          "array": false,
+          "auditable": false,
+          "canPull": true,
+          "canPush": true,
+          "creatable": false,
+          "defaultValue": [],
+          "dependencies": [],
+          "history": false,
+          "include": [],
+          "label": "Export File",
+          "localization": {
+            "acl": [],
+            "aclOverride": false,
+            "enabled": false,
+            "fallback": true,
+            "fixed": "",
+            "namespace": "cortex",
+            "readAccess": "read",
+            "strict": true,
+            "valid": [],
+            "writeAccess": "update"
+          },
+          "maxItems": 100,
+          "maxShift": false,
+          "minItems": 0,
+          "name": "tm__export_file",
+          "optional": false,
+          "processors": [
+            {
+              "allowUpload": true,
+              "label": "Content",
+              "maxFileSize": 10485760,
+              "mimes": [
+                "*"
+              ],
+              "name": "content",
+              "passMimes": false,
+              "private": false,
+              "required": true,
+              "source": "content",
+              "type": "passthru"
+            }
+          ],
+          "readAccess": "read",
+          "readable": true,
+          "removable": false,
+          "type": "File",
+          "uniqueValues": false,
+          "urlExpirySeconds": null,
+          "validators": [],
+          "writable": true,
+          "writeAccess": "update",
+          "writeOnCreate": true
+        },
+        {
+          "acl": [],
+          "aclOverride": false,
+          "array": false,
+          "auditable": false,
+          "canPull": true,
+          "canPush": true,
+          "creatable": false,
+          "defaultValue": [
+            {
+              "type": "static",
+              "value": false
+            }
+          ],
+          "dependencies": [],
+          "description": "Selecting this will include all non-assessment study strings in your export.",
+          "history": false,
+          "include": [],
+          "indexed": false,
+          "label": "Non-Assessments Study Strings",
+          "maxItems": 100,
+          "maxShift": false,
+          "minItems": 0,
+          "name": "tm__include_non_assessments",
+          "optional": false,
+          "readAccess": "read",
+          "readable": true,
+          "removable": false,
+          "type": "Boolean",
+          "unique": false,
+          "uniqueValues": false,
+          "validators": [],
+          "writable": true,
+          "writeAccess": "update",
+          "writeOnCreate": true
+        },
+        {
+          "acl": [],
+          "aclOverride": false,
+          "array": true,
+          "auditable": false,
+          "canPull": true,
+          "canPush": true,
+          "creatable": false,
+          "defaultValue": [],
+          "dependencies": [],
+          "description": "Languages to export. If value set to \"all\" all languages will be exported.",
+          "history": false,
+          "include": [],
+          "indexed": false,
+          "label": "Languages",
+          "localization": {
+            "acl": [],
+            "aclOverride": false,
+            "enabled": false,
+            "fallback": true,
+            "fixed": "",
+            "namespace": "cortex",
+            "readAccess": "read",
+            "strict": true,
+            "valid": [],
+            "writeAccess": "update"
+          },
+          "lowercase": false,
+          "maxItems": 200,
+          "maxShift": false,
+          "minItems": 0,
+          "name": "tm__languages",
+          "optional": false,
+          "readAccess": "read",
+          "readable": true,
+          "removable": false,
+          "trim": false,
+          "type": "String",
+          "unique": false,
+          "uniqueValues": false,
+          "uppercase": false,
+          "validators": [
+            {
+              "definition": {
+                "min": 0,
+                "max": 512
+              },
+              "name": "string"
+            }
+          ],
+          "writable": true,
+          "writeAccess": "update",
+          "writeOnCreate": true
+        },
+        {
+          "acl": [],
+          "aclOverride": false,
+          "array": true,
+          "auditable": false,
+          "canPull": true,
+          "canPush": true,
+          "cascadeDelete": false,
+          "creatable": false,
+          "defaultValue": [],
+          "dependencies": [],
+          "description": "Assessments to export. To export all send an empty array.",
+          "history": false,
+          "include": [],
+          "indexed": false,
+          "label": "Selected Assessments",
+          "maxItems": 1000,
+          "maxShift": false,
+          "minItems": 0,
+          "name": "tm__selected_assessments",
+          "optional": false,
+          "readAccess": "read",
+          "readable": true,
+          "removable": false,
+          "sourceObject": "c_task",
+          "type": "ObjectId",
+          "unique": false,
+          "uniqueValues": false,
+          "validators": [],
+          "writable": true,
+          "writeAccess": "update",
+          "writeOnCreate": true
+        }
+      ]
+    }
+  ],
+  "properties": [
+    {
+      "acl": [],
+      "aclOverride": false,
+      "array": true,
+      "auditable": false,
+      "canPull": true,
+      "canPush": true,
+      "creatable": false,
+      "defaultValue": [],
+      "dependencies": [],
+      "description": "Axon components to import/export. If value set to \"all\" all components will be imported/exported.",
+      "history": false,
+      "include": [],
+      "indexed": false,
+      "label": "Axon Components",
+      "localization": {
+        "acl": [],
+        "aclOverride": false,
+        "enabled": false,
+        "fallback": true,
+        "fixed": "",
+        "namespace": "cortex",
+        "readAccess": "read",
+        "strict": true,
+        "valid": [],
+        "writeAccess": "update"
+      },
+      "lowercase": false,
+      "maxItems": 100,
+      "maxShift": false,
+      "minItems": 0,
+      "name": "tm__axon_components",
+      "optional": false,
+      "readAccess": "read",
+      "readable": true,
+      "removable": false,
+      "trim": false,
+      "type": "String",
+      "unique": false,
+      "uniqueValues": false,
+      "uppercase": false,
+      "validators": [
+        {
+          "name": "required"
+        },
+        {
+          "definition": {
+            "min": 0,
+            "max": 512
+          },
+          "name": "string"
+        },
+        {
+          "definition": {
+            "values": [
+              {
+                "label": "Study Data",
+                "value": "data"
+              },
+              {
+                "label": "Study Errors",
+                "value": "errors"
+              },
+              {
+                "label": "Object Schemas",
+                "value": "schema"
+              },
+              {
+                "label": "Templates",
+                "value": "templates"
+              },
+              {
+                "label": "Password Feedback",
+                "value": "passwordFeedback"
+              },
+              {
+                "label": "All",
+                "value": "all"
+              }
+            ]
+          },
+          "name": "options"
+        }
+      ],
+      "writable": true,
+      "writeAccess": "update",
+      "writeOnCreate": true
+    },
+    {
+      "acl": [],
+      "aclOverride": false,
+      "array": false,
+      "auditable": false,
+      "canPull": true,
+      "canPush": true,
+      "creatable": false,
+      "defaultValue": [],
+      "dependencies": [],
+      "history": false,
+      "include": [],
+      "indexed": false,
+      "label": "Failure Reason",
+      "localization": {
+        "acl": [],
+        "aclOverride": false,
+        "enabled": false,
+        "fallback": true,
+        "fixed": "",
+        "namespace": "cortex",
+        "readAccess": "read",
+        "strict": true,
+        "valid": [],
+        "writeAccess": "update"
+      },
+      "lowercase": false,
+      "maxItems": 100,
+      "maxShift": false,
+      "minItems": 0,
+      "name": "tm__failure_reason",
+      "optional": false,
+      "readAccess": "read",
+      "readable": true,
+      "removable": false,
+      "trim": false,
+      "type": "String",
+      "unique": false,
+      "uniqueValues": false,
+      "uppercase": false,
+      "validators": [],
+      "writable": true,
+      "writeAccess": "update",
+      "writeOnCreate": true
+    },
+    {
+      "acl": [],
+      "aclOverride": false,
+      "array": false,
+      "auditable": false,
+      "canPull": true,
+      "canPush": true,
+      "creatable": false,
+      "defaultValue": [
+        {
+          "type": "env",
+          "value": "increment"
+        }
+      ],
+      "dependencies": [],
+      "history": false,
+      "include": [],
+      "indexed": true,
+      "label": "Identifier",
+      "maxItems": 100,
+      "maxShift": false,
+      "minItems": 0,
+      "name": "tm__identifier",
+      "optional": false,
+      "readAccess": "read",
+      "readable": true,
+      "removable": false,
+      "type": "Number",
+      "unique": true,
+      "uniqueValues": false,
+      "validators": [
+        {
+          "definition": {
+            "allowDecimal": false,
+            "min": 1
+          },
+          "name": "number"
+        }
+      ],
+      "writable": true,
+      "writeAccess": "update",
+      "writeOnCreate": true
+    },
+    {
+      "acl": [],
+      "aclOverride": false,
+      "array": false,
+      "auditable": false,
+      "canPull": true,
+      "canPush": true,
+      "creatable": false,
+      "defaultValue": [
+        {
+          "type": "static",
+          "value": "Job"
+        }
+      ],
+      "dependencies": [],
+      "history": false,
+      "include": [],
+      "indexed": false,
+      "label": "Name",
+      "localization": {
+        "acl": [],
+        "aclOverride": false,
+        "enabled": false,
+        "fallback": true,
+        "fixed": "",
+        "namespace": "cortex",
+        "readAccess": "read",
+        "strict": true,
+        "valid": [],
+        "writeAccess": "update"
+      },
+      "lowercase": false,
+      "maxItems": 100,
+      "maxShift": false,
+      "minItems": 0,
+      "name": "tm__name",
+      "optional": false,
+      "readAccess": "read",
+      "readable": true,
+      "removable": false,
+      "trim": false,
+      "type": "String",
+      "unique": false,
+      "uniqueValues": false,
+      "uppercase": false,
+      "validators": [
+        {
+          "name": "required"
+        },
+        {
+          "definition": {
+            "min": 0,
+            "max": 512
+          },
+          "name": "string"
+        }
+      ],
+      "writable": true,
+      "writeAccess": "update",
+      "writeOnCreate": true
+    },
+    {
+      "acl": [],
+      "aclOverride": false,
+      "array": false,
+      "auditable": false,
+      "canPull": true,
+      "canPush": true,
+      "creatable": false,
+      "defaultValue": [
+        {
+          "type": "static",
+          "value": "created"
+        }
+      ],
+      "dependencies": [],
+      "history": true,
+      "include": [],
+      "indexed": false,
+      "label": "Status",
+      "localization": {
+        "acl": [],
+        "aclOverride": false,
+        "enabled": false,
+        "fallback": true,
+        "fixed": "",
+        "namespace": "cortex",
+        "readAccess": "read",
+        "strict": true,
+        "valid": [],
+        "writeAccess": "update"
+      },
+      "lowercase": false,
+      "maxItems": 100,
+      "maxShift": false,
+      "minItems": 0,
+      "name": "tm__status",
+      "optional": false,
+      "readAccess": "read",
+      "readable": true,
+      "removable": false,
+      "trim": false,
+      "type": "String",
+      "unique": false,
+      "uniqueValues": false,
+      "uppercase": false,
+      "validators": [
+        {
+          "name": "required"
+        },
+        {
+          "definition": {
+            "min": 0,
+            "max": 512
+          },
+          "name": "string"
+        },
+        {
+          "definition": {
+            "values": [
+              {
+                "label": "Created",
+                "value": "created"
+              },
+              {
+                "label": "Queued",
+                "value": "queued"
+              },
+              {
+                "label": "Running",
+                "value": "running"
+              },
+              {
+                "label": "Failed",
+                "value": "failed"
+              },
+              {
+                "label": "Completed",
+                "value": "completed"
+              },
+              {
+                "label": "Incomplete",
+                "value": "incomplete"
+              }
+            ]
+          },
+          "name": "options"
+        }
+      ],
+      "writable": true,
+      "writeAccess": "update",
+      "writeOnCreate": true
+    }
+  ],
+  "reporting": {
+    "enabled": false
+  },
+  "shareAcl": [],
+  "shareChain": [
+    "share",
+    "read",
+    "connected"
+  ],
+  "uniqueKey": "",
+  "useBuildVersion": false,
+  "useBundles": false,
+  "validateOwner": true
+}

@@ -1,0 +1,18 @@
+{
+  "duplicates": false,
+  "endpoints": [
+    {
+      "configurable": true,
+      "defaultUserState": 0,
+      "label": "Email",
+      "name": "email",
+      "state": "Enabled",
+      "template": "c_axon_virtual_visit_15min_reminder",
+      "type": "email"
+    }
+  ],
+  "label": "Axon - Virtual Visit 15Min Reminder",
+  "name": "c_axon_virtual_visit_15min_reminder",
+  "object": "notification",
+  "persists": false
+}

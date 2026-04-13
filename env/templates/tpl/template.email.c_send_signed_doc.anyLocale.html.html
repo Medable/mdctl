@@ -1,0 +1,11 @@
+{{#extend "layout"}}
+
+  {{#replace "title"}}
+    {{i18n "axon:template.email.c_send_signed_doc.title"}}
+  {{/replace}}
+
+  {{#replace "body"}}
+    <a href="#">{{doc}}</a>
+  {{/replace}}
+
+{{/extend}}

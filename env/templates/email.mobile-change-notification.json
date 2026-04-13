@@ -1,0 +1,29 @@
+{
+  "description": "Changed mobile number",
+  "label": "Mobile change",
+  "localizations": [
+    {
+      "locale": [
+        "*"
+      ],
+      "content": [
+        {
+          "data": "/env/templates/tpl/template.email.mobile-change-notification.anyLocale.html.html",
+          "name": "html"
+        },
+        {
+          "data": "/env/templates/tpl/template.email.mobile-change-notification.anyLocale.plain.txt",
+          "name": "plain"
+        },
+        {
+          "data": "/env/templates/tpl/template.email.mobile-change-notification.anyLocale.subject.txt",
+          "name": "subject"
+        }
+      ]
+    }
+  ],
+  "name": "mobile-change-notification",
+  "object": "template",
+  "partial": false,
+  "type": "email"
+}

@@ -1,0 +1,29 @@
+{
+  "description": "Email to new user in private org with registration link",
+  "label": "Private Org Invitation",
+  "localizations": [
+    {
+      "locale": [
+        "en_US"
+      ],
+      "content": [
+        {
+          "data": "/env/templates/tpl/template.email.org-invitation.en_US.html.html",
+          "name": "html"
+        },
+        {
+          "data": "/env/templates/tpl/template.email.org-invitation.en_US.plain.txt",
+          "name": "plain"
+        },
+        {
+          "data": "/env/templates/tpl/template.email.org-invitation.en_US.subject.txt",
+          "name": "subject"
+        }
+      ]
+    }
+  ],
+  "name": "org-invitation",
+  "object": "template",
+  "partial": false,
+  "type": "email"
+}

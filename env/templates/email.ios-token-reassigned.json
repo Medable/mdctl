@@ -1,0 +1,29 @@
+{
+  "description": "Email notification for device change",
+  "label": "iOS Token Reassigned",
+  "localizations": [
+    {
+      "locale": [
+        "*"
+      ],
+      "content": [
+        {
+          "data": "/env/templates/tpl/template.email.ios-token-reassigned.anyLocale.html.html",
+          "name": "html"
+        },
+        {
+          "data": "/env/templates/tpl/template.email.ios-token-reassigned.anyLocale.plain.txt",
+          "name": "plain"
+        },
+        {
+          "data": "/env/templates/tpl/template.email.ios-token-reassigned.anyLocale.subject.txt",
+          "name": "subject"
+        }
+      ]
+    }
+  ],
+  "name": "ios-token-reassigned",
+  "object": "template",
+  "partial": false,
+  "type": "email"
+}

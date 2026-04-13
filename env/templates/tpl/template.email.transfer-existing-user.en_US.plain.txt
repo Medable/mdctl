@@ -1,0 +1,3 @@
+Hi {{{account.name.first}}},
+
+ A {{{i18n transfer.context.object}}} has been transferred to you. To accept, go to {{transfer.url}}

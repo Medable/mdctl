@@ -1,0 +1,24 @@
+{
+  "allowNameMapping": true,
+  "authDuration": 900,
+  "blacklist": [],
+  "cors": [],
+  "csrf": true,
+  "enabled": true,
+  "expires": null,
+  "expose": false,
+  "label": "Android Patient App",
+  "maxTokensPerPrincipal": 10,
+  "name": "c_android_patient_app",
+  "object": "app",
+  "readOnly": false,
+  "sessions": true,
+  "urls": {
+    "connection": "",
+    "resetPassword": "https://app-m6269.alpha-latest.medable.com/cubicularis-angelus-aptus-4278/reset-password/$token",
+    "createPassword": "",
+    "activateAccount": "",
+    "verifyAccount": ""
+  },
+  "whitelist": []
+}

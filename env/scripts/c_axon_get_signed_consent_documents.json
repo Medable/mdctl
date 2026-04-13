@@ -1,0 +1,27 @@
+{
+  "active": true,
+  "configuration": {
+    "acl": [
+      "account.anonymous",
+      "account.public"
+    ],
+    "apiKey": null,
+    "authValidation": "legacy",
+    "method": "get",
+    "path": "get_signed_docs",
+    "plainText": false,
+    "priority": 0,
+    "system": false,
+    "urlEncoded": false
+  },
+  "environment": "*",
+  "label": "Axon - Get Signed Consent Documents",
+  "language": "javascript/es6",
+  "name": "c_axon_get_signed_consent_documents",
+  "object": "script",
+  "optimized": false,
+  "principal": null,
+  "script": "/env/scripts/js/route.c_axon_get_signed_consent_documents.js",
+  "type": "route",
+  "weight": 0
+}

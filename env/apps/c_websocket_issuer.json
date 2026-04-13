@@ -1,0 +1,24 @@
+{
+  "allowNameMapping": true,
+  "authDuration": 900,
+  "blacklist": [],
+  "cors": [],
+  "csrf": false,
+  "enabled": true,
+  "expires": null,
+  "expose": true,
+  "label": "Websockets Issuer",
+  "maxTokensPerPrincipal": 10,
+  "name": "c_websocket_issuer",
+  "object": "app",
+  "readOnly": false,
+  "sessions": true,
+  "urls": {
+    "connection": "",
+    "resetPassword": "",
+    "createPassword": "",
+    "activateAccount": "",
+    "verifyAccount": ""
+  },
+  "whitelist": []
+}

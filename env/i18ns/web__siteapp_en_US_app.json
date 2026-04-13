@@ -1,0 +1,754 @@
+{
+  "aliases": [],
+  "assets": [],
+  "data": {
+    "actions": {
+      "cancel": "Cancel",
+      "change": "Change",
+      "done": "Done",
+      "proceed": "Proceed",
+      "select": "Select",
+      "skip": "Skip"
+    },
+    "activities": {
+      "axonSiteInvestigatorOnly": "This activity is pending completion by the Site Investigator.",
+      "breadcrumbs": {
+        "label": "Activities"
+      },
+      "expiredTask": "This task is no longer available.",
+      "headings": {
+        "completed": "Completed",
+        "inactivated": "Inactivated",
+        "tasks": "Tasks"
+      },
+      "messages": {
+        "allTasksCompleted": "You have completed all open tasks. When new tasks are available, you'll find them here.",
+        "deactivatedParticipant": "There are no tasks to be completed because this participant has been deactivated."
+      }
+    },
+    "deactivationReasonCodes": {
+      "AE": "Adverse Event",
+      "CMP": "Completed",
+      "DR": "Disease Relapse",
+      "DTH": "Death",
+      "FTMRC": "Failure To Meet Randomization Criteria",
+      "LOE": "Lack Of Efficacy",
+      "LTFU": "Lost To Follow-Up",
+      "NCWSD": "Non-Compliance With Study Drug",
+      "OTH": "Other",
+      "PD": "Physician Decision",
+      "PDV": "Protocol Deviation",
+      "PRD": "Progressive Disease",
+      "PREG": "Pregnancy",
+      "RCV": "Recovery",
+      "SF": "Screen Failure",
+      "STBS": "Site Terminated By Sponsor",
+      "STDTBS": "Study Terminated By Sponsor",
+      "TP": "Technical Problems",
+      "WBPG": "Withdrawal By Parent/Guardian",
+      "WBS": "Withdrawal By Subject"
+    },
+    "eConsentMigrated": {
+      "documents": {
+        "actions": {
+          "cancel": "Cancel",
+          "create": "Create"
+        },
+        "documentStatuses": {
+          "voided": "Voided"
+        },
+        "enableSigning": {
+          "buttonText": "Enable Signing",
+          "confirmDialogText": "This will unlock the document and cannot be undone",
+          "confirmDialogTitle": "Enable participant signing?",
+          "enableButtonText": "Enable",
+          "enableSigningSuccessAlert": "Document is now unlocked and participant signing is enabled",
+          "enabled": "Enabled",
+          "readonly": "Read-only"
+        },
+        "errors": {
+          "email": "Email is not valid",
+          "failedSignerLink": "Unable to obtain link for signer"
+        },
+        "labels": {
+          "completionDate": "Completion date",
+          "completionDateAndTime": "Completion Date & Time",
+          "created": "created",
+          "digital": "Digital",
+          "documentTemplate": "Document Template",
+          "documentUploaded": "Document Uploaded",
+          "id": "ID",
+          "printed": "Printed",
+          "reasonForCancellation": "Reason for void document",
+          "signedUploadedDocument": "Signed uploaded document",
+          "status": "status",
+          "type": "Type"
+        },
+        "landing": {
+          "buttonText": "Send the first consent",
+          "heading": "Welcome to the Medable Consent Manager.",
+          "message": "No consents have been sent."
+        },
+        "manage": {
+          "actionsPopoverButton": "Actions",
+          "assignOrResend": "Assign or Resend",
+          "breadcrumbs": {
+            "consents": "Documents",
+            "newConsent": "New document"
+          },
+          "cancelButton": "Cancel",
+          "downloadDocumentButton": "Download",
+          "invitationSent": "Invitation sent",
+          "reasonForCancellation": {
+            "charactersRemaining": "{{REMAINING_CHARACTERS}} characters remaining.",
+            "exceededBy": "exceeded by {{CHARACTERS_EXCEEDED}}",
+            "maxCharacters": "{{CHAR_LIMIT}} max characters",
+            "name": "Reason for cancellation",
+            "no": "No",
+            "placeholder": "Enter the reason for voiding the document (required)",
+            "title": "Would you like to continue with voiding your document?",
+            "yes": "Yes"
+          },
+          "resendInvite": "Resend Invite",
+          "sameEmailAsThirdParty": "Participant email cannot be the same as the third party email",
+          "sendDocumentButton": "Send Document",
+          "signNowButton": "Sign Now",
+          "signatureComplete": {
+            "dateChangeSuccess": "Completion date has been updated",
+            "dateChangeTitle": "Confirm Completion Date Change",
+            "dateInstructions": "Select the date the participant signed the document",
+            "dateLabel": "Date",
+            "datePlaceholder": "Select a date",
+            "docUploadSuccess": "Document has been uploaded and signed",
+            "signatureCompleteSuccess": "Signature complete",
+            "title": "Signature Complete",
+            "uploadDocNotice": "You are not required to upload a document at this time for a participant to consent"
+          },
+          "signatureCompleteButton": "Signature Complete",
+          "tabViewDigitalDocument": "View Digital Document",
+          "tabViewDocument": "View Document",
+          "tabVoid": "Void",
+          "tabVoidDocument": "Void Document",
+          "templateSelect": {
+            "dropdownSelectText": "{{TEMPLATE_NAME}} - published - {{PUBLISHED_DATE}}",
+            "eSignature": "Digital Document",
+            "emptyText": "Select document template",
+            "participantDocCreateSuccess": "The document has been sent",
+            "participantSearchText": "Search Participant Name, ID, Email",
+            "participantSelectText": "Select Participant Name, ID, Email",
+            "printToSign": "Printed Document",
+            "signatureTypeLabel": "Signature Type",
+            "templateLabel": "Document Template",
+            "title": "New Document"
+          },
+          "uploadNewDocumentButton": "Upload New Document"
+        },
+        "percentageRead": "Read",
+        "signers": {
+          "title": "Signers"
+        },
+        "subtitle": "Documents assigned to participant",
+        "title": "Documents"
+      },
+      "invite": {
+        "label": {
+          "cancel": "Cancel",
+          "send": "Send"
+        }
+      },
+      "menu": {
+        "documents": "Documents",
+        "templates": "Templates"
+      },
+      "templates": {
+        "actions": {
+          "downloadPDF": "Download PDF",
+          "send": "Send Document"
+        },
+        "config": {
+          "actions": {
+            "save": "Save"
+          },
+          "printToSign": {
+            "PTSCompletionDateReasonsForChange": {
+              "DAF": "I entered the wrong date by error. The date I initially entered was after the date the consent was signed",
+              "DBF": "I entered the wrong date by error. The date I initially entered was before the date the consent was signed"
+            },
+            "uploadDocumentDialog": {
+              "content": "Upload a document from your device now or wait until a later time. You do not need to upload a document for the participant to consent.",
+              "fields": {
+                "description": "Select the section above to upload a document. File formats accepted: PDF, JPEG. Max file size: {{file_size_limit}}MB.",
+                "label": "Upload From Device",
+                "uploadText": "Upload a document"
+              },
+              "fileUploadError": "Error: File size greater than {{file_size_limit}}MB limit",
+              "title": "Upload Print-to-Sign Document",
+              "warning": "When you upload a new document, existing content is removed."
+            },
+            "uploadSuccess": "The document has been uploaded"
+          }
+        },
+        "labels": {
+          "title": "Template Designer",
+          "viewOnly": "View-Only"
+        },
+        "list": {
+          "emptyMessage": "No templates assigned to this site",
+          "no": "No",
+          "yes": "Yes"
+        }
+      }
+    },
+    "editTaskResponse": {
+      "dataChangeRequest": {
+        "form": {
+          "labels": {
+            "printedName": "Printed Name"
+          },
+          "title": "Confirm Data Change"
+        },
+        "messages": {
+          "instruction": "Enter the reason for change along with your eSignature (full name and login credentials) to confirm that you are the author of this data update."
+        }
+      },
+      "messages": {
+        "multipleUpdatesWarning": "If you update this step, you will be required to update subsequent steps as well. Are you sure you want to proceed?",
+        "reasonForChange": "Please provide a reason for change",
+        "skippingWarning": "Skipping will clean any existing answer on this step."
+      },
+      "titles": {
+        "multipleUpdatesWarning": "You are about to edit multiple steps",
+        "reasonForChange": "Reason for Change",
+        "skippingWarning": "Are you sure you want to skip?"
+      }
+    },
+    "events": {
+      "headings": {
+        "events": "Events"
+      }
+    },
+    "generic": {
+      "cancel": "Cancel",
+      "continue": "Continue",
+      "dateTime": "Date/Time",
+      "details": "Details",
+      "edit": "Edit",
+      "leave": "Leave",
+      "participantId": "Participant ID",
+      "status": "Status",
+      "task": "Task",
+      "visit": "Visit"
+    },
+    "helpAndSupport": {
+      "contact": {
+        "instructions": "For study-specific questions contact Medable Customer Care"
+      },
+      "feedback": {
+        "description": "Help shape our product.",
+        "linkText": "Give feedback",
+        "title": "Feedback"
+      },
+      "helpCenter": {
+        "description": "Find answers to common questions.",
+        "linkText": "Go to Medable Support",
+        "title": "Help Center"
+      },
+      "resources": {
+        "title": "Resources"
+      },
+      "title": "Help & Support",
+      "training": {
+        "description": "Learn key features of Medable.",
+        "linkText": "Go to training",
+        "title": "Training"
+      }
+    },
+    "identity": {
+      "locale": "en_US",
+      "version": "1.16.0"
+    },
+    "leavePage": {
+      "description": "Changes you made may not be saved.",
+      "title": "Leave page?"
+    },
+    "locks": {
+      "hardAndSoft": {
+        "lockedSite": "A lock has been applied to this site. You may not create new data or update existing data",
+        "lockedStudy": "A lock has been applied to this study. You may not create new data or update existing data",
+        "lockedSubject": "A lock has been applied to this participant. You may not create new data or update existing data"
+      },
+      "snapshotLock": "A lock has been applied to this study. You can create new data but you may not update existing data"
+    },
+    "menu": {
+      "applications": "Applications",
+      "dataChanges": "Data Changes",
+      "helpSupport": "Help & Support",
+      "participants": "Participants",
+      "queries": "Queries",
+      "reports": "Reports"
+    },
+    "participant": {
+      "alerts": {
+        "duplicateParticipantEmail": "Participant email already exists",
+        "duplicateParticipantNumber": "Participant ID already exists",
+        "inviteCancelError": "An error occured when cancelling the invite.",
+        "inviteCanceled": "Invite has been cancelled",
+        "inviteSendError": "An error occured when sending the invite.",
+        "inviteSent": "Invite has been sent",
+        "missingFields": "Please fill in required fields",
+        "studyLocked": "Your changes have been restricted because a hard lock has been applied to the study."
+      },
+      "deactivation": {
+        "alertSuccess": "Participant has been deactivated",
+        "confirmation": {
+          "description": "Are you sure you want to deactivate this participant? This cannot be undone.",
+          "descriptionWithParticipantNumber": "By entering the Participant ID below, you are confirming deactivation of this participant.",
+          "title": "Deactivate Participant?"
+        },
+        "reasonLabel": "Deactivation Reason",
+        "validation": {
+          "participantNumber": "Participant ID does not match"
+        }
+      },
+      "descriptions": {
+        "autoParticipantIdInfo": "Study is configured to generate Participant ID automatically",
+        "piiCommsAcknowledgement": "Participant acknowledges email address may be used for study-related communications"
+      },
+      "headings": {
+        "confirmInviteCancel": "Cancel Participant Invite",
+        "create": "New Participant",
+        "details": "Details",
+        "read": "Profile"
+      },
+      "invite": {
+        "accepted": "Accepted",
+        "expired": "Expired",
+        "invited": "Invited",
+        "none": "Not invited",
+        "rejected": "Rejected"
+      },
+      "inviteModal": {
+        "modalHeadings": {
+          "confirmInviteCancel": "Cancel Participant Invite",
+          "inviteParticipant": "Invite Participant"
+        },
+        "submitButtons": {
+          "cancel": "Cancel",
+          "cancelInvite": "Cancel Invite",
+          "generatePin": "Generate PIN",
+          "invite": "Invite",
+          "send": "Send"
+        }
+      },
+      "labels": {
+        "cancel": "Cancel",
+        "cancelInvite": "Cancel Invite",
+        "deactivate": "Deactivate",
+        "deactivated": "Deactivated",
+        "invite": "Invite",
+        "newInvite": "New Invite",
+        "onboard": "Onboard participant",
+        "participantAnchorDate": "Participant Date",
+        "participantAnchorLabel": "Anchor Date",
+        "participantEmail": "Email",
+        "participantGroup": "Participant Group",
+        "participantInvitePin": "Invite Pin",
+        "participantInviteStatus": "Invite Status",
+        "participantLocale": "Language",
+        "participantNumber": "Participant Number",
+        "participantStatus": "Status",
+        "participantUsername": "Username",
+        "participantVisitSchedule": "Visit Schedule",
+        "resendInvite": "Send Invite Again",
+        "send": "Send"
+      },
+      "messages": {
+        "confirmInviteCancel": "Are you sure you want to cancel the invite ?"
+      },
+      "noDocument": {
+        "addEmail": "Add email",
+        "missingParticipantEmail": "Participant email must be added before consent can be sent.",
+        "noDocumentsCreated": "No documents have been created."
+      },
+      "patientFlags": {
+        "columns": {
+          "c_enabled": "Status",
+          "c_label": "Name"
+        },
+        "title": "Patient Flags",
+        "values": {
+          "false": "False",
+          "true": "True"
+        }
+      },
+      "resetPassword": {
+        "confirmReset": "This will reset the participant's password. This action cannot be undone.",
+        "dialogTitle": "Password Reset",
+        "okayDialogButton": "Okay",
+        "resetButton": "Reset Password",
+        "resetDialogButton": "Reset",
+        "temporaryPassword": "The participant's temporary password is"
+      },
+      "tabHeadings": {
+        "anchorDates": "Anchor Dates",
+        "unscheduled": "Other tasks",
+        "visitSchedule": "Protocol Schedule"
+      },
+      "unscheduled": {
+        "columns": {
+          "name": "Name",
+          "responses": "Task Responses",
+          "tasks": "Tasks"
+        }
+      },
+      "validation": {
+        "email": "Must be a valid email",
+        "emailRequired": "The email is required"
+      },
+      "visit": {
+        "activity": {
+          "notInvited": "Participant not Invited yet"
+        }
+      },
+      "visitSchedule": {
+        "columns": {
+          "responses": "Task Responses",
+          "tasks": "Tasks",
+          "visit": "Visit",
+          "windowEnd": "End Date",
+          "windowStart": "Start Date"
+        }
+      }
+    },
+    "participants": {
+      "actions": {
+        "create": "New Participant"
+      },
+      "headings": {
+        "created": "Created",
+        "email": "Email",
+        "number": "Participant Number",
+        "participantList": "Participant List",
+        "participants": "Participants",
+        "status": "Status",
+        "systemId": "System Id",
+        "username": "Username"
+      }
+    },
+    "profile": {
+      "actions": {
+        "done": "Done"
+      },
+      "breadcrumbs": {
+        "label": "Profile"
+      },
+      "labels": {
+        "birthDate": "Date of Birth",
+        "email": "Email",
+        "gender": "Gender",
+        "mobile": "Mobile Phone Number",
+        "name": "Name"
+      },
+      "signedConsent": {
+        "back": "Back",
+        "breadcrumbs": {
+          "label": "Documents"
+        },
+        "consentLabel": "Consent",
+        "title": "Signed Consents",
+        "viewConsent": "View"
+      },
+      "studies": {
+        "actions": {
+          "leave": "Leave Study",
+          "signedDocuments": "Signed Documents"
+        },
+        "title": "Currently Participating In"
+      }
+    },
+    "queries": {
+      "details": {
+        "labels": {
+          "clickHere": "Click here",
+          "dataNotEditable": "This data cannot be directly edited. If you need to update this data, please submit a data change request",
+          "replyPlaceholder": "Type a reply",
+          "replySuccessMessage": "You have successfully edited and replied to the query",
+          "responseSkipped": "Response skipped",
+          "sendReply": "Send",
+          "sendingReply": "Sending Reply",
+          "youReplied": "You replied"
+        }
+      },
+      "list": {
+        "columns": {
+          "description": "Preview",
+          "queryNumber": "Number",
+          "updated": "Last updated"
+        },
+        "loadingLabel": "Loading ...",
+        "noResultsLabel": "No results found",
+        "searchLabel": "Search",
+        "title": "Queries"
+      },
+      "statuses": {
+        "cancelled": "Canceled",
+        "closed": "Closed",
+        "closedRequery": "Closed by requery",
+        "open": "Open",
+        "responded": "Responded"
+      }
+    },
+    "reasonForChange": {
+      "form": {
+        "actions": {
+          "cancel": "Cancel",
+          "done": "Done"
+        },
+        "labels": {
+          "otherReason": "Other reason",
+          "reason": "Reason"
+        }
+      },
+      "title": "Reason for Change"
+    },
+    "resource": {
+      "back": "Back"
+    },
+    "resources": {
+      "breadcrumbs": {
+        "label": "Resources"
+      },
+      "messages": {
+        "noResourcesAvailable": "There are no study resource items available."
+      }
+    },
+    "sessionTimeout": {
+      "actions": {
+        "ok": "OK"
+      },
+      "kAccountLocked": {
+        "reason": "Your account has been disabled, please contact your administrator for access.",
+        "title": "Disabled user account"
+      },
+      "kLoggedInElsewhere": {
+        "reason": "You have been signed out due to signing in to another location.",
+        "title": "Simultaneous session"
+      },
+      "kSessionExpired": {
+        "reason": "You have been signed out due to inactivity.",
+        "title": "Session timeout"
+      }
+    },
+    "singleAppOnboarding": {
+      "create": {
+        "creatingStatus": "Creating ...",
+        "invitingStatus": "Inviting ...",
+        "newParticipantMessage": "Please share this study and invite code with your participant to enable them to join from the Medable app. An email has also been sent with these codes to the participant if PII is enabled and email is entered.",
+        "newParticipantSubTitle": "Participant created successfully",
+        "noOptionsDefaultText": "No options found",
+        "participantLocalesNotConfigured": {
+          "subtitle": "Participant locales are not configured for this site, please contact an administrator for help.",
+          "title": "Participant Locales not configured"
+        }
+      },
+      "inviteParticipant": {
+        "emailCodes": "Email codes to participant"
+      },
+      "view": {
+        "inviteCode": "Invite Code",
+        "noEmail": "No Email",
+        "noEmailMessage": "Please enter an email for the participant before sending invite codes",
+        "studyCode": "Study Code",
+        "studyInformationTitle": "INVITE INFORMATION",
+        "viewParticipantInviteInfoMessage": "Please share this study and invite code with your participant to enable them to join from the Medable app.",
+        "viewParticipantInviteInfoSubTitle": "Participant invite code",
+        "viewParticipantInviteInfoTitle": "Participant Invite Information"
+      }
+    },
+    "site": {
+      "actions": {
+        "cancel": "Cancel",
+        "change": "change",
+        "select": "Select"
+      },
+      "errors": {
+        "selectSite": "Select a site"
+      },
+      "headings": {
+        "selectSite": "Select Site"
+      },
+      "labels": {
+        "site": "Site"
+      }
+    },
+    "siteTraining": {
+      "alerts": {
+        "noLocaleSupport": {
+          "description": "The current locale is not supported for this training. en-US related training displayed.",
+          "title": "Current locale not supported"
+        }
+      },
+      "completion": {
+        "description": "Congratulations! You may now access Medable to start adding participants to your study",
+        "title": "You've successfully completed required training"
+      },
+      "welcome": {
+        "description": "Let's get you acquainted with key features. This is required training to access your study environment.",
+        "getStartedButtonText": "Get Started",
+        "salutation": "Welcome"
+      }
+    },
+    "study": {
+      "labels": {
+        "name": "Study",
+        "protocol": "Protocol",
+        "sponsoredBy": "sponsored by"
+      }
+    },
+    "task": {
+      "headings": {
+        "cancel": "Cancel"
+      },
+      "leaveDialog": {
+        "actions": {
+          "cancel": "Cancel",
+          "confirm": "OK"
+        },
+        "message": "Are you sure you want to leave this activity and discard its results?",
+        "title": "Leave Activity"
+      },
+      "reviewDialog": {
+        "discardDialog": {
+          "actions": {
+            "cancel": "Cancel",
+            "discard": "Yes, Discard"
+          },
+          "message": "Please note that any changes will be discarded if you proceed.",
+          "title": "Discard your changes?"
+        },
+        "saveDialog": {
+          "actions": {
+            "discard": "No, Discard",
+            "save": "Yes, Save"
+          },
+          "message": "Are you sure you want to save your changes? If so, other responses may be cleared and you may be asked to submit new information.",
+          "title": "Save your changes?"
+        }
+      }
+    },
+    "taskResponse": {
+      "auditHistory": {
+        "author": {
+          "updatedBy": "by <0>{{user}}</0> {{date}}",
+          "updatedByParticipant": "by Participant, {{date}}"
+        },
+        "changes": {
+          "newValueLabel": "New:",
+          "oldValueLabel": "Previous:"
+        },
+        "entryTitle": {
+          "query": "Query",
+          "stepResponse": "Step Response",
+          "taskResponse": "Task Response"
+        },
+        "operation": {
+          "create": "created",
+          "update": "updated"
+        },
+        "relatedInfo": {
+          "hideInfo": "hide",
+          "showInfo": "show",
+          "title": "Related Info"
+        }
+      },
+      "breadcrumbsAndTabs": {
+        "auditHistory": "Audit History",
+        "taskResponse": "Task Response"
+      },
+      "completeOnDCA": "Please create a Data Change request to update this response.",
+      "inactivation": {
+        "actions": {
+          "inactivate": "Inactivate"
+        },
+        "confirmation": {
+          "description": "Are you sure you want to inactivate the response for this task? This cannot be undone.",
+          "title": "Inactivate Task Response"
+        },
+        "feedback": {
+          "inactivated": "This Task Response is Inactivated"
+        }
+      },
+      "meta": {
+        "answer": "Answer",
+        "description": "Description:",
+        "editButton": "Edit",
+        "question": "Question:",
+        "title": "Title:"
+      },
+      "step": {
+        "form": {
+          "formItemSteps": "form item steps"
+        },
+        "noResponseDisplayed": "Response not required to be displayed",
+        "review": {
+          "skipped": "Response was skipped."
+        }
+      },
+      "timeCaptured": "Captured"
+    },
+    "televisit": {
+      "labels": {
+        "you": "You"
+      },
+      "messages": {
+        "scheduledForToday": "A televisit with the participant is scheduled {{time}} minutes ago.",
+        "scheduledForToday_plural": "A televisit with the participant is scheduled {{time}} minutes ago.",
+        "waitingMessage": "Waiting for participant to join waiting room..."
+      }
+    },
+    "unscheduled": {
+      "defaultName": "Tasks",
+      "participantEvents": "Participant Events",
+      "participantTasks": "Participant Tasks",
+      "title": "Other Tasks"
+    },
+    "userFeedback": {
+      "confirmation": {
+        "close": "Close",
+        "feedbackAndEmail": "Your feedback has been submitted and our product team will reach out shortly.",
+        "feedbackOnly": "Your feedback has been submitted.",
+        "thankYou": "Thank you!"
+      },
+      "feedbackButton": "Feedback",
+      "feedbackForm": {
+        "additionalInstruction": "Please do not include patient information.",
+        "cancel": "Cancel",
+        "heading": "How can we improve?",
+        "prompt": "At Medable, we aim to design products that align with your needs. Your feedback is valuable in shaping our product. Please provide your thoughts below.",
+        "submit": "Submit"
+      },
+      "uxSignupForm": {
+        "exit": "Exit Survey",
+        "heading": "Would you like to join our design process?",
+        "join": "Join",
+        "maybeLater": "Maybe later",
+        "medableSupport": "Medable support",
+        "prompt": "Your feedback can directly shape our product and you can get paid for your time! Please provide your email and our product team will reach out to you.",
+        "requestFailure": "Something went wrong. Please try again, or contact {{medableSupport}}.  (Error: {{requestError}})",
+        "thanks": "Thanks for submitting your feedback!"
+      }
+    },
+    "visits": {
+      "title": "Visits"
+    }
+  },
+  "dirty": true,
+  "extensible": true,
+  "locale": "en_US",
+  "name": "web__siteapp_en_US_app",
+  "namespace": "siteapp-app",
+  "object": "i18n",
+  "overridable": true,
+  "tags": [],
+  "weight": 0
+}

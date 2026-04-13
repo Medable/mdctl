@@ -1,0 +1,29 @@
+{
+  "description": "Email to newly invited user with registration link",
+  "label": "Invite new user",
+  "localizations": [
+    {
+      "locale": [
+        "en_US"
+      ],
+      "content": [
+        {
+          "data": "/env/templates/tpl/template.email.invite-new-user.en_US.html.html",
+          "name": "html"
+        },
+        {
+          "data": "/env/templates/tpl/template.email.invite-new-user.en_US.plain.txt",
+          "name": "plain"
+        },
+        {
+          "data": "/env/templates/tpl/template.email.invite-new-user.en_US.subject.txt",
+          "name": "subject"
+        }
+      ]
+    }
+  ],
+  "name": "invite-new-user",
+  "object": "template",
+  "partial": false,
+  "type": "email"
+}

@@ -1,0 +1,20 @@
+{{#extend "layout"}}
+
+    {{#replace "title"}}
+        {{i18n "axon:template.email.c_axon_leave_study.title" org=org study_name=study_name}}
+    {{/replace}}
+
+    {{#replace "body"}}
+        <ul>
+            <li>{{i18n "axon:template.email.c_axon_leave_study.accountId"}} {{account_id}}</li>
+        </ul>
+        <p>{{i18n "axon:template.email.c_axon_leave_study.instructions"}}</p>
+        <p>{{i18n "axon:template.email.c_axon_leave_study.studyInformation"}}</p>
+        <ul>
+            <li>{{i18n "axon:template.email.c_axon_leave_study.studyName"}} {{study_name}}</li>
+            <li>{{i18n "axon:template.email.c_axon_leave_study.studyCode"}} {{study_code}}</li>
+            <li>{{i18n "axon:template.email.c_axon_leave_study.studyId"}} {{study_id}}</li>
+        </ul>
+    {{/replace}}
+
+{{/extend}}

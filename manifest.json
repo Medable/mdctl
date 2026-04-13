@@ -1,0 +1,1604 @@
+{
+  "apps": {
+    "includes": [
+      "ad__app",
+      "c_android_patient_app",
+      "c_axon_demo_app",
+      "c_default_app",
+      "c_ios_patient_app",
+      "c_ios_site_app",
+      "c_mystudy",
+      "c_portal",
+      "c_site_app_demo",
+      "c_sql_service_app",
+      "c_studio_app",
+      "c_study_builder",
+      "c_websocket_issuer",
+      "cdb__platform",
+      "dcr_intake__app",
+      "ec__econsent",
+      "int__platform",
+      "scheduler__app",
+      "tm__app",
+      "tv__ws_issuer",
+      "usm__usm_app",
+      "wf__sql_service_app"
+    ]
+  },
+  "configs": {
+    "includes": [
+      "ab__adhoc_task_group_visit_schedules_map",
+      "ab__custom_anchor_date_templates",
+      "ab__custom_patient_flags",
+      "ab__onboarding_group",
+      "ab__previous_visit_anchor_map",
+      "ab__product_template",
+      "ab__remote_activity_visit_schedule_map",
+      "ab__schedule_timeline_condition",
+      "ab__screen_response_participant_status",
+      "ab__site_task_dependencies",
+      "ab__study_extensions",
+      "ab__study_url",
+      "ab__study_version",
+      "ab__unscheduled_patient_flags",
+      "ab__visit_code_name_map",
+      "ab__visit_start_anchor_map",
+      "ad__app_urls",
+      "ad__available_apps",
+      "ad__version",
+      "axon__app_urls",
+      "axon__i18n_template_update",
+      "axon__mobile_urls",
+      "axon__password_feedback_trans",
+      "axon__paweb_urls",
+      "axon__review_types_migration",
+      "axon__siteapp_studio_urls",
+      "axon__siteapp_urls",
+      "axon__task_response_upload_token_config",
+      "axon__version",
+      "axon__websockets_config",
+      "c_cs_dmweb_config",
+      "c_sql_service_config",
+      "cdb__featureFlagMobile",
+      "cdb__version",
+      "dcr_intake__comment_creator",
+      "dcr_intake__default_dcr_closed_by",
+      "dcr_intake__enable_automated_changes",
+      "dcr_intake__iam_urls",
+      "dcr_intake__proxy_config",
+      "dcr_intake__salesforce_auth_credentials",
+      "dcr_intake__salesforce_origin",
+      "dcr_intake__salesforce_owner",
+      "dcr_intake__salesforce_recordtypeid",
+      "dcr_intake__site_app_side_nav_link",
+      "dcr_intake__test_site_name",
+      "dcr_intake__version",
+      "dt__airflow_url",
+      "dt__default_c_group_sequence_value",
+      "dt__mobile_apps",
+      "dt__schema_extension",
+      "dt__sql_api_url",
+      "dt__sql_service_app",
+      "dt__version",
+      "ec__app_config",
+      "ec__iam_urls",
+      "ec__linked_fields_config",
+      "ec__mismatch_templates_reviewed",
+      "ec__version",
+      "int__airflow_service_config",
+      "int__config",
+      "int__version",
+      "reports__version",
+      "scheduler__configs",
+      "scheduler__version",
+      "tm__version",
+      "tv__config",
+      "usm__app_urls",
+      "usm__version",
+      "vtp__version",
+      "wf__sql_service_config"
+    ]
+  },
+  "env": {
+    "includes": [
+      "*"
+    ]
+  },
+  "i18ns": {
+    "includes": [
+      "android__en_US_plurals",
+      "android__en_US_strings",
+      "axon__en_US_error",
+      "axon__en_US_passwordFeedback",
+      "axon__en_US_schema",
+      "axon__en_US_templates",
+      "cortex__en_US_main",
+      "ecoa__rafael_feb_20_local_dev_en_us_i18n_task",
+      "econsent__en_US_error",
+      "econsent__en_US_schema",
+      "econsent__en_US_templates",
+      "ios__en_US_CoreLocalizable_strings",
+      "ios__en_US_PATInfoPlist_strings",
+      "ios__en_US_PATLocalizable_strings",
+      "ios__en_US_PATLocalizable_stringsdict",
+      "ios__en_US_ResearchKit_strings",
+      "nucleus__en_US_main",
+      "patient-app__en_US_translations",
+      "web-medable-for-sites__en_US_main",
+      "web__axon_en_US_axon",
+      "web__econsent_en_US_econsent",
+      "web__econsent_tool_en_US_app",
+      "web__econsent_tool_v2_en_US_main",
+      "web__framework_en_US_errors",
+      "web__framework_en_US_framework",
+      "web__framework_en_US_validation",
+      "web__patweb_en_US_app",
+      "web__patweb_en_US_error",
+      "web__patweb_en_US_inviteVerification",
+      "web__siteapp_en_US_app",
+      "web__siteapp_en_US_error",
+      "web__study-builder_en_US_app"
+    ]
+  },
+  "notifications": {
+    "includes": [
+      "c_axon_invite-access_code",
+      "c_axon_invite-expired",
+      "c_axon_invite-forgot_username",
+      "c_axon_invite-pin_expired",
+      "c_axon_invite-pin_only",
+      "c_axon_leave_study",
+      "c_axon_leave_study_mgmt",
+      "c_axon_lost_password",
+      "c_axon_new_caregiver_invite",
+      "c_axon_new_participant_invite",
+      "c_axon_virtual_visit_5min_reminder",
+      "c_axon_virtual_visit_15m_reminder",
+      "c_axon_virtual_visit_15min_reminder",
+      "c_axon_virtual_visit_canceled",
+      "c_axon_virtual_visit_missed",
+      "c_axon_virtual_visit_new",
+      "c_axon_virtual_visit_reminder",
+      "c_axon_virtual_visit_rescheduled",
+      "c_document_complete",
+      "c_document_invite",
+      "c_document_signer_complete",
+      "c_pi_oversight_digest",
+      "c_pts_document_invite",
+      "c_send_signed_doc",
+      "cdb__threshold_common",
+      "dt__execution_status",
+      "int__queue_failed"
+    ]
+  },
+  "object": "manifest",
+  "objects": [
+    {
+      "includes": [
+        "*"
+      ],
+      "name": "ab__workflow_configuration"
+    },
+    {
+      "includes": [
+        "*"
+      ],
+      "name": "account"
+    },
+    {
+      "includes": [
+        "*"
+      ],
+      "name": "c_anchor_date_template"
+    },
+    {
+      "includes": [
+        "*"
+      ],
+      "name": "c_axon_mobile_app_version"
+    },
+    {
+      "includes": [
+        "*"
+      ],
+      "name": "c_axon_notif"
+    },
+    {
+      "includes": [
+        "*"
+      ],
+      "name": "c_branch"
+    },
+    {
+      "includes": [
+        "*"
+      ],
+      "name": "c_call"
+    },
+    {
+      "includes": [
+        "*"
+      ],
+      "name": "c_caregiver_relationship"
+    },
+    {
+      "includes": [
+        "*"
+      ],
+      "name": "c_dmweb_report"
+    },
+    {
+      "includes": [
+        "*"
+      ],
+      "name": "c_event"
+    },
+    {
+      "includes": [
+        "*"
+      ],
+      "name": "c_fault"
+    },
+    {
+      "includes": [
+        "*"
+      ],
+      "name": "c_generation_event_list"
+    },
+    {
+      "includes": [
+        "*"
+      ],
+      "name": "c_generation_tracker"
+    },
+    {
+      "includes": [
+        "*"
+      ],
+      "name": "c_generation_trigger"
+    },
+    {
+      "includes": [
+        "*"
+      ],
+      "name": "c_group"
+    },
+    {
+      "includes": [
+        "*"
+      ],
+      "name": "c_group_task"
+    },
+    {
+      "includes": [
+        "*"
+      ],
+      "name": "c_health_datum"
+    },
+    {
+      "includes": [
+        "*"
+      ],
+      "name": "c_lock"
+    },
+    {
+      "includes": [
+        "*"
+      ],
+      "name": "c_looker_entity"
+    },
+    {
+      "includes": [
+        "*"
+      ],
+      "name": "c_looker_folder_permission"
+    },
+    {
+      "includes": [
+        "*"
+      ],
+      "name": "c_looker_integration_record"
+    },
+    {
+      "includes": [
+        "*"
+      ],
+      "name": "c_looker_personal_datum"
+    },
+    {
+      "includes": [
+        "*"
+      ],
+      "name": "c_missed_task"
+    },
+    {
+      "includes": [
+        "*"
+      ],
+      "name": "c_notif"
+    },
+    {
+      "includes": [
+        "*"
+      ],
+      "name": "c_partial_generation_record"
+    },
+    {
+      "includes": [
+        "*"
+      ],
+      "name": "c_participant_schedule"
+    },
+    {
+      "includes": [
+        "*"
+      ],
+      "name": "c_password_feedback_tran"
+    },
+    {
+      "includes": [
+        "*"
+      ],
+      "name": "c_patient_flag"
+    },
+    {
+      "includes": [
+        "*"
+      ],
+      "name": "c_pi_oversight_signoff"
+    },
+    {
+      "includes": [
+        "*"
+      ],
+      "name": "c_public_user"
+    },
+    {
+      "includes": [
+        "*"
+      ],
+      "name": "c_query"
+    },
+    {
+      "includes": [
+        "*"
+      ],
+      "name": "c_query_note"
+    },
+    {
+      "includes": [
+        "*"
+      ],
+      "name": "c_query_rule"
+    },
+    {
+      "includes": [
+        "*"
+      ],
+      "name": "c_research_datum"
+    },
+    {
+      "includes": [
+        "*"
+      ],
+      "name": "c_review"
+    },
+    {
+      "includes": [
+        "*"
+      ],
+      "name": "c_review_type"
+    },
+    {
+      "includes": [
+        "*"
+      ],
+      "name": "c_schedule_assignment"
+    },
+    {
+      "includes": [
+        "*"
+      ],
+      "name": "c_sent"
+    },
+    {
+      "includes": [
+        "*"
+      ],
+      "name": "c_sent_notif"
+    },
+    {
+      "includes": [
+        "*"
+      ],
+      "name": "c_site"
+    },
+    {
+      "includes": [
+        "*"
+      ],
+      "name": "c_site_training_log"
+    },
+    {
+      "includes": [
+        "*"
+      ],
+      "name": "c_site_user"
+    },
+    {
+      "includes": [
+        "*"
+      ],
+      "name": "c_step"
+    },
+    {
+      "includes": [
+        "*"
+      ],
+      "name": "c_step_response"
+    },
+    {
+      "includes": [
+        "*"
+      ],
+      "name": "c_study"
+    },
+    {
+      "includes": [
+        "*"
+      ],
+      "name": "c_study_export"
+    },
+    {
+      "includes": [
+        "*"
+      ],
+      "name": "c_study_resource"
+    },
+    {
+      "includes": [
+        "*"
+      ],
+      "name": "c_study_team_user"
+    },
+    {
+      "includes": [
+        "*"
+      ],
+      "name": "c_task"
+    },
+    {
+      "includes": [
+        "*"
+      ],
+      "name": "c_task_assignment"
+    },
+    {
+      "includes": [
+        "*"
+      ],
+      "name": "c_task_response"
+    },
+    {
+      "includes": [
+        "*"
+      ],
+      "name": "c_visit"
+    },
+    {
+      "includes": [
+        "*"
+      ],
+      "name": "c_visit_schedule"
+    },
+    {
+      "includes": [
+        "*"
+      ],
+      "name": "cdb__threshold_configuration"
+    },
+    {
+      "includes": [
+        "*"
+      ],
+      "name": "cdb__threshold_configuration_action"
+    },
+    {
+      "includes": [
+        "*"
+      ],
+      "name": "cdb__threshold_configuration_condition"
+    },
+    {
+      "includes": [
+        "*"
+      ],
+      "name": "dcr_intake__dcr_execution"
+    },
+    {
+      "includes": [
+        "*"
+      ],
+      "name": "dcr_intake__signed_case"
+    },
+    {
+      "includes": [
+        "*"
+      ],
+      "name": "dt__config"
+    },
+    {
+      "includes": [
+        "*"
+      ],
+      "name": "dt__execution"
+    },
+    {
+      "includes": [
+        "*"
+      ],
+      "name": "dt__export"
+    },
+    {
+      "includes": [
+        "*"
+      ],
+      "name": "ec__default_document_css"
+    },
+    {
+      "includes": [
+        "*"
+      ],
+      "name": "ec__document_datum"
+    },
+    {
+      "includes": [
+        "*"
+      ],
+      "name": "ec__document_invite"
+    },
+    {
+      "includes": [
+        "*"
+      ],
+      "name": "ec__document_template"
+    },
+    {
+      "includes": [
+        "*"
+      ],
+      "name": "ec__knowledge_check"
+    },
+    {
+      "includes": [
+        "*"
+      ],
+      "name": "ec__linked_field"
+    },
+    {
+      "includes": [
+        "*"
+      ],
+      "name": "ec__signed_document"
+    },
+    {
+      "includes": [
+        "*"
+      ],
+      "name": "int__country"
+    },
+    {
+      "includes": [
+        "*"
+      ],
+      "name": "int__dt_execution"
+    },
+    {
+      "includes": [
+        "*"
+      ],
+      "name": "int__event"
+    },
+    {
+      "includes": [
+        "*"
+      ],
+      "name": "int__expression"
+    },
+    {
+      "includes": [
+        "*"
+      ],
+      "name": "int__fault"
+    },
+    {
+      "includes": [
+        "*"
+      ],
+      "name": "int__form"
+    },
+    {
+      "includes": [
+        "*"
+      ],
+      "name": "int__log"
+    },
+    {
+      "includes": [
+        "*"
+      ],
+      "name": "int__pipeline"
+    },
+    {
+      "includes": [
+        "*"
+      ],
+      "name": "int__question"
+    },
+    {
+      "includes": [
+        "*"
+      ],
+      "name": "int__queue"
+    },
+    {
+      "includes": [
+        "*"
+      ],
+      "name": "int__secret"
+    },
+    {
+      "includes": [
+        "*"
+      ],
+      "name": "int__site"
+    },
+    {
+      "includes": [
+        "*"
+      ],
+      "name": "int__subject"
+    },
+    {
+      "includes": [
+        "*"
+      ],
+      "name": "int__task"
+    },
+    {
+      "includes": [
+        "*"
+      ],
+      "name": "int__vendor"
+    },
+    {
+      "includes": [
+        "*"
+      ],
+      "name": "org"
+    },
+    {
+      "includes": [
+        "*"
+      ],
+      "name": "tm__job"
+    },
+    {
+      "includes": [
+        "*"
+      ],
+      "name": "usm__bulk_request"
+    }
+  ],
+  "policies": {
+    "includes": [
+      "ab__site_tasks_access",
+      "ab__supplemental_unscheduled_visits",
+      "ad__route_access_pol",
+      "c_cs_hide_standard_reports",
+      "usm__route_access_pol"
+    ]
+  },
+  "roles": {
+    "includes": [
+      "c_axon_site_auditor",
+      "c_axon_site_investigator",
+      "c_axon_site_monitor",
+      "c_axon_site_user",
+      "c_data_export",
+      "c_data_manager",
+      "c_data_reviewer",
+      "c_dm_app",
+      "c_principal_data_manager",
+      "c_reports_manager",
+      "c_site_investigator",
+      "c_site_monitor",
+      "c_site_user",
+      "c_study_designer",
+      "c_study_participant",
+      "c_study_viewer",
+      "dcr_intake__data_service_team",
+      "dcr_intake__view_and_comment",
+      "dt__admin",
+      "ec__document_author",
+      "ec__document_manager",
+      "tm__create_jobs",
+      "tm__read_jobs",
+      "tm__translation_manager",
+      "usm__user_and_site_manager"
+    ]
+  },
+  "scripts": {
+    "includes": [
+      "ab__activity_completed_trigger",
+      "ab__activity_completed_trigger.@trigger(ActivityCompletedTrigger.onActivityCompleted)",
+      "ab__activity_missed_trigger",
+      "ab__activity_reminder_trigger",
+      "ab__activity_workflow_trigger",
+      "ab__activity_workflow_trigger.@trigger(ActivityWorkflowCompletedTrigger.onActivityCompleted)",
+      "ab__c_public_user_visit_schedule",
+      "ab__c_public_user_visit_schedule.@trigger(PublicUserVisitSchedule.updateVisitSchedule)",
+      "ab__event_created_trigger",
+      "ab__event_created_trigger.@trigger(EventCreatedTrigger.onEventCreated)",
+      "ab__notification",
+      "ab__notification_start_stop_conditions",
+      "ab__task_response_inactive_trigger",
+      "ab__task_response_inactive_trigger.@trigger(TaskResponseInactiveTrigger.onTaskResponseInactive)",
+      "ab__unset_unscheduled_visit_pfs",
+      "ab__unset_unscheduled_visit_pfs.@trigger(UnscheduledVisitPatientFlagsUnset.eventAfterUpdate)",
+      "ab__workflow_utils",
+      "ad__list_apps_lib",
+      "ad__list_apps_lib.@route(AppsLister.listAppsForUser)",
+      "ad__org_config_lib",
+      "ad__org_config_lib.@route(OrgConfigLibrary.isAdDeployed)",
+      "c_acc_after_create_pu",
+      "c_acc_after_update_pu",
+      "c_anchor_dates",
+      "c_anchor_dates.@trigger(AnchorDateLib.anchorDateTaskUpdateTrigger)",
+      "c_anchor_dates.@trigger(AnchorDateLib.anchorDateTaskUpdateTrigger)",
+      "c_anchor_dates.@trigger(AnchorDateLib.publicUserBeforeCreate)",
+      "c_ats_notif_manager",
+      "c_axon_account_public_user_link",
+      "c_axon_add_review_types",
+      "c_axon_adv_task_scheduler",
+      "c_axon_adv_task_scheduler.@trigger(AdvanceTaskScheduling.removeTaskAssignmentBeforeDeletingParticipantSchedule)",
+      "c_axon_adv_task_scheduler_generators",
+      "c_axon_adv_task_scheduler_runtimes",
+      "c_axon_adv_task_scheduler_runtimes.@route(AdvanceTaskSchedulerRuntimes.runtimeEventsRoute)",
+      "c_axon_adv_task_scheduler_runtimes.@route(AdvanceTaskSchedulerRuntimes.runtimeTaskDefRoute)",
+      "c_axon_adv_task_scheduler_runtimes.@trigger(AdvanceTaskSchedulerRuntimes.eventUpdatedDate)",
+      "c_axon_adv_task_scheduler_runtimes.@trigger(AdvanceTaskSchedulerRuntimes.handleError)",
+      "c_axon_adv_task_scheduler_runtimes.@trigger(AdvanceTaskSchedulerRuntimes.publicUserAfterCreateInline)",
+      "c_axon_adv_task_scheduler_runtimes.@trigger(AdvanceTaskSchedulerRuntimes.publicUserAfterTZUpdate)",
+      "c_axon_adv_task_scheduler_runtimes.@trigger(AdvanceTaskSchedulerRuntimes.publicUserAfterUpdateInline)",
+      "c_axon_adv_task_scheduler_runtimes.@trigger(AdvanceTaskSchedulerRuntimes.publicUserBeforeCreate)",
+      "c_axon_adv_task_scheduler_runtimes.@trigger(AdvanceTaskSchedulerRuntimes.removeTaskAssignmentBeforeDeletingParticipantSchedule)",
+      "c_axon_adv_task_scheduler_runtimes.@trigger(AdvanceTaskSchedulerRuntimes.taskAssignmentValidation)",
+      "c_axon_adv_task_scheduler_runtimes.@trigger(AdvanceTaskSchedulerRuntimes.taskResponseComplete)",
+      "c_axon_adv_task_scheduler_runtimes.@trigger(AdvanceTaskSchedulerRuntimes.taskResponseCreateBefore)",
+      "c_axon_adv_task_scheduler_transforms",
+      "c_axon_after_step_trigger",
+      "c_axon_after_study_trigger",
+      "c_axon_after_task_trigger",
+      "c_axon_alt_reg_methods",
+      "c_axon_alt_reg_methods_runtimes",
+      "c_axon_alt_reg_methods_runtimes.@route(AltRegMethodsRuntimes.inviteUsersRoute)",
+      "c_axon_alt_reg_methods_runtimes.@route(AltRegMethodsRuntimes.resendInviteRoute)",
+      "c_axon_alt_reg_methods_runtimes.@route(AltRegMethodsRuntimes.studySubjectInfoRoute)",
+      "c_axon_alt_reg_methods_validators",
+      "c_axon_alt_register_lib",
+      "c_axon_alt_register_lib.@route(AlternateRegisterLib.createParticipant)",
+      "c_axon_alt_register_lib.@route(AlternateRegisterLib.forgotUsername)",
+      "c_axon_alt_register_lib.@route(AlternateRegisterLib.initiatePasswordReset)",
+      "c_axon_alt_register_lib.@route(AlternateRegisterLib.resetPasswordRequest)",
+      "c_axon_alt_register_lib.@route(AlternateRegisterLib.resetPin)",
+      "c_axon_alt_register_lib.@route(AlternateRegisterLib.validateInvite)",
+      "c_axon_alt_register_lib.@trigger(AlternateRegisterLib.setPinOnlyInvited)",
+      "c_axon_assets_validation_library",
+      "c_axon_axon_script_library",
+      "c_axon_bc_fname_step_val",
+      "c_axon_bc_fname_study_val",
+      "c_axon_bu_fname_step_val",
+      "c_axon_bu_fname_study_val",
+      "c_axon_c_call_beforeCreate",
+      "c_axon_c_call_beforeUpdate",
+      "c_axon_c_event_after_create",
+      "c_axon_c_event_after_update",
+      "c_axon_c_event_before_update",
+      "c_axon_combatibility_library",
+      "c_axon_create_auth_task_steps",
+      "c_axon_create_public_step_responses",
+      "c_axon_create_public_task_response",
+      "c_axon_create_public_user",
+      "c_axon_create_step_responses",
+      "c_axon_create_study_team_user",
+      "c_axon_create_task_assignments",
+      "c_axon_create_task_response",
+      "c_axon_create_tr_lib",
+      "c_axon_create_tr_lib.@route(TaskResponseCreator.responseCreationRoute)",
+      "c_axon_demo_key_provider",
+      "c_axon_event_before_create_set_defaults",
+      "c_axon_expand_and_filter_task_responses",
+      "c_axon_expand_and_filter_task_responses.@transform(ExpandTaskResponseFields)",
+      "c_axon_fetch_air_quality_data",
+      "c_axon_get_admin_ui_studies",
+      "c_axon_get_auth_token",
+      "c_axon_get_enrolled_users",
+      "c_axon_get_enrollment_data",
+      "c_axon_get_group_tasks",
+      "c_axon_get_participant_data",
+      "c_axon_get_public_group",
+      "c_axon_get_public_response",
+      "c_axon_get_signed_consent_documents",
+      "c_axon_get_study_task_assets",
+      "c_axon_get_task_assignments",
+      "c_axon_get_task_responses",
+      "c_axon_get_tr_lib",
+      "c_axon_get_tr_lib.@route(TaskResponseQuery.getTaskResponses)",
+      "c_axon_get_user_group_enrollments",
+      "c_axon_group_lib",
+      "c_axon_group_lib.@object(GroupLibrary)",
+      "c_axon_group_lib.@trigger(GroupLibrary.groupBeforeCreate)",
+      "c_axon_group_lib.@trigger(GroupLibrary.groupBeforeUpdate)",
+      "c_axon_group_task_lib",
+      "c_axon_group_task_lib.@trigger(GroupTaskLibrary.afterCreate)",
+      "c_axon_group_task_lib.@trigger(GroupTaskLibrary.beforeCreate)",
+      "c_axon_group_task_lib.@trigger(GroupTaskLibrary.beforeDelete)",
+      "c_axon_group_task_lib.@trigger(GroupTaskLibrary.beforeUpdate)",
+      "c_axon_history_api",
+      "c_axon_history_api.@route(HistoryRoutes.getParticipantHistory)",
+      "c_axon_history_api.@route(HistoryRoutes.getTaskResponseHistory)",
+      "c_axon_history_api.@transform(TransformTaskResponseHistory)",
+      "c_axon_hybrid_add_review",
+      "c_axon_hybrid_au_set_reviewed",
+      "c_axon_hybrid_cancel_invite",
+      "c_axon_hybrid_default_status_pu",
+      "c_axon_hybrid_enforce_rtype_uniqueness",
+      "c_axon_hybrid_list_invites",
+      "c_axon_hybrid_query_close_reason",
+      "c_axon_hybrid_remove_required_reviews",
+      "c_axon_hybrid_replicate_audit_message",
+      "c_axon_hybrid_resend_invite",
+      "c_axon_hybrid_resend_pin",
+      "c_axon_hybrid_responded_query",
+      "c_axon_hybrid_sr_update_site_and_pu",
+      "c_axon_hybrid_subject_info",
+      "c_axon_hybrid_tr_update_site_and_pu",
+      "c_axon_invite_users",
+      "c_axon_leave_study",
+      "c_axon_list_group_task_assignments",
+      "c_axon_list_group_task_responses",
+      "c_axon_list_my_task_responses",
+      "c_axon_list_non_visit_groups",
+      "c_axon_list_public_user_task_responses",
+      "c_axon_list_site_participant_responses",
+      "c_axon_list_visits",
+      "c_axon_min_password_score",
+      "c_axon_mobile_app_version_library",
+      "c_axon_mobile_app_version_library.@route(AxonMobileAppVersionHandler.get)",
+      "c_axon_mobile_app_version_library.@trigger(AxonMobileAppVersionHandler.createdAppVersion)",
+      "c_axon_mobile_app_version_library.@trigger(AxonMobileAppVersionHandler.createdAppVersion)",
+      "c_axon_org_lib",
+      "c_axon_org_lib.@object(OrgLibrary)",
+      "c_axon_participant_deactivation",
+      "c_axon_participant_deactivation.@route(ParticipantDeactivation.deactivateParticipant)",
+      "c_axon_participant_id_lib",
+      "c_axon_participant_id_lib.@trigger(ParticipantIDLibrary.setParticipantIDFromTaskResponse)",
+      "c_axon_participant_id_lib.@trigger(ParticipantIDLibrary.validateParticipantIDTrigger)",
+      "c_axon_participant_id_lib.@trigger(ParticipantIDLibrary.validateParticipantIDTrigger)",
+      "c_axon_participant_lib",
+      "c_axon_participant_lib.@route(ParticipantLibrary.getWebsocketUserToken)",
+      "c_axon_participant_lib.@route(ParticipantLibrary.registerUser)",
+      "c_axon_password_strength_check",
+      "c_axon_push_task_groups_array",
+      "c_axon_queries_lib",
+      "c_axon_queries_lib.@trigger(QueriesLibrary.afterQueryCreation)",
+      "c_axon_queries_lib.@trigger(QueriesLibrary.preventSystemQueryCreation)",
+      "c_axon_queries_lib.@trigger(QueriesLibrary.queryCloseReason)",
+      "c_axon_queries_lib.@trigger(QueriesLibrary.queryNumbering)",
+      "c_axon_queries_lib.@trigger(QueriesLibrary.queryResponse)",
+      "c_axon_queries_lib.@trigger(QueriesLibrary.querySearchTerms)",
+      "c_axon_queries_lib.@trigger(QueriesLibrary.queryStatuses)",
+      "c_axon_queries_lib.@trigger(QueriesLibrary.setSearchTerms)",
+      "c_axon_queries_lib.@trigger(QueriesLibrary.taskResponseStatus)",
+      "c_axon_query_management",
+      "c_axon_query_management.@transform(CalculateTaskResponseOpenQueries)",
+      "c_axon_query_management.@transform(UpdatePublicUserOpenQueries)",
+      "c_axon_query_management.@trigger(AxonQueryManagement.updatePublicUserAfterQueryUpdate)",
+      "c_axon_query_management.@trigger(AxonQueryManagement.updateQueryCountOnCreation)",
+      "c_axon_registration_validator",
+      "c_axon_research_authentication",
+      "c_axon_research_registration",
+      "c_axon_room_event_library",
+      "c_axon_room_onParticipantEvent",
+      "c_axon_room_onRoomEvent",
+      "c_axon_schedule_compliance",
+      "c_axon_send_signed_content_document",
+      "c_axon_send_televisit_event_reminders",
+      "c_axon_set_default_pu_status_trigger",
+      "c_axon_set_pu_status_trigger_create",
+      "c_axon_set_pu_status_trigger_update",
+      "c_axon_set_subject_id_trigger",
+      "c_axon_sig_validate",
+      "c_axon_sign_review_lib",
+      "c_axon_sign_review_lib.@route(SignReviewType.signReviewType)",
+      "c_axon_site_cursor_lib",
+      "c_axon_site_lib",
+      "c_axon_site_lib.@trigger(SiteLibrary.siteBeforeCreate)",
+      "c_axon_site_lib.@trigger(SiteLibrary.siteBeforeUpdate)",
+      "c_axon_sites_access_manager_lib",
+      "c_axon_sites_access_runtime_manager",
+      "c_axon_sites_access_runtime_manager.@route(SitesAccessManagerRuntimes.assignSites)",
+      "c_axon_sites_access_runtime_manager.@route(SitesAccessManagerRuntimes.unassignSites)",
+      "c_axon_sites_access_runtime_manager.@trigger(SitesAccessManagerRuntimes.createBeforeSiteUser)",
+      "c_axon_sites_access_runtime_manager.@trigger(SitesAccessManagerRuntimes.createBeforeSiteUser)",
+      "c_axon_sites_access_runtime_manager.@trigger(SitesAccessManagerRuntimes.updateBeforeSiteUser)",
+      "c_axon_splice_task_groups_array",
+      "c_axon_sr_restrict_delete",
+      "c_axon_statistics_participant_count",
+      "c_axon_statistics_task_responses",
+      "c_axon_stu_after_update",
+      "c_axon_stu_before_delete",
+      "c_axon_study_configuration_export",
+      "c_axon_study_configuration_import",
+      "c_axon_study_lib",
+      "c_axon_study_lib.@object(StudyLibrary)",
+      "c_axon_study_lib.@trigger(StudyLibrary.afterCreateStudy)",
+      "c_axon_study_lib.@trigger(StudyLibrary.afterUpdateStudy)",
+      "c_axon_study_lib.@trigger(StudyLibrary.beforeCreateUpdatePublicUser)",
+      "c_axon_study_lib.@trigger(StudyLibrary.beforeCreateUpdatePublicUser)",
+      "c_axon_study_lib.@trigger(StudyLibrary.beforeCreateUpdateStudy)",
+      "c_axon_study_lib.@trigger(StudyLibrary.beforeCreateUpdateStudy)",
+      "c_axon_subject_transform",
+      "c_axon_subject_transform.@transform(SubjectListTransform)",
+      "c_axon_ta_order_delete",
+      "c_axon_task_assign_create_order",
+      "c_axon_task_templating_schemas",
+      "c_axon_televisit_event_runtimes",
+      "c_axon_televisit_event_runtimes.@transform(TelevisitReminderTransform)",
+      "c_axon_televisit_event_runtimes.@trigger(TelevisitEventRuntimes.eventBeforeUpdate)",
+      "c_axon_televisit_notification_library",
+      "c_axon_televisit_reminder_transform",
+      "c_axon_televisit_reminder_transform.@transform(TelevisitReminderTransform)",
+      "c_axon_unenroll_user",
+      "c_axon_update_form_step_orders",
+      "c_axon_update_public_response",
+      "c_axon_update_step_orders",
+      "c_axon_update_ta_order",
+      "c_axon_update_task_responses",
+      "c_axon_update_user_enrollments",
+      "c_axon_utils_lib",
+      "c_axon_validate_org_pin",
+      "c_axon_validate_review_type",
+      "c_axon_validate_review_type.@trigger(ValidateReviewType.validateReviewTypeBeforeCreate)",
+      "c_axon_validate_review_type.@trigger(ValidateReviewType.validateReviewTypeBeforeUpdate)",
+      "c_axon_verify_access_code",
+      "c_axon_visit_lib",
+      "c_axon_visit_lib.@trigger(VisitLibrary.afterVisitCreate)",
+      "c_axon_visit_lib.@trigger(VisitLibrary.afterVisitDelete)",
+      "c_axon_visit_lib.@trigger(VisitLibrary.beforeVisitScheduleDelete)",
+      "c_axon_visit_transform",
+      "c_axon_visit_transform.@transform(VisitListTransform)",
+      "c_browse_data",
+      "c_browse_data_transform",
+      "c_browse_data_transform.@transform(Transform)",
+      "c_caregiver_library",
+      "c_caregiver_library.@route(CaregiverManager.caregiverRelationships)",
+      "c_caregiver_library.@route(CaregiverManager.editCaregiverInvite)",
+      "c_caregiver_library.@route(CaregiverManager.inviteCaregiver)",
+      "c_caregiver_library.@route(CaregiverManager.registerCaregiver)",
+      "c_caregiver_library.@route(CaregiverManager.updateCaregiver)",
+      "c_cs_time_travel",
+      "c_cs_time_travel.@transform(BackdateCortexEvents)",
+      "c_cs_time_travel.@transform(BackdateEvents)",
+      "c_cs_time_travel.@transform(BackdateNotifs)",
+      "c_cs_time_travel.@transform(BackdateTasks)",
+      "c_data_listing_report_builder",
+      "c_data_listing_report_builder.@transform(DataStageTransform)",
+      "c_data_listing_report_builder.@transform(ReportNextTransform)",
+      "c_data_listing_report_builder.@transform(SQLQueryTransform)",
+      "c_data_listing_report_builder.@transform(TransformationStageTransform)",
+      "c_dev_tools_get_objects",
+      "c_dmweb_after_review_creation",
+      "c_dmweb_after_review_edition",
+      "c_dmweb_after_tr_creation",
+      "c_dmweb_audits",
+      "c_dmweb_audits_transform",
+      "c_dmweb_audits_transform.@transform(AuditsTransform)",
+      "c_dmweb_filters",
+      "c_dmweb_lib",
+      "c_dmweb_report_ops_creation",
+      "c_dmweb_report_ops_status",
+      "c_dmweb_reports",
+      "c_dmweb_reports_generator",
+      "c_dmweb_tabs",
+      "c_dmweb_task_response_details",
+      "c_dmweb_task_step_details",
+      "c_dmweb_transforms_lib",
+      "c_dmweb_transforms_lib.@transform(ReviewTab)",
+      "c_dmweb_transforms_lib.@transform(SiteTab)",
+      "c_fault_errcode_set_create",
+      "c_fault_errcode_set_update",
+      "c_fault_lib",
+      "c_fault_lib.@trigger(FaultLibrary.faultBeforeCreate)",
+      "c_fault_lib.@trigger(FaultLibrary.faultBeforeUpdate)",
+      "c_get_sites",
+      "c_get_sites.@route(UserSites.getSites)",
+      "c_i18n_utils",
+      "c_i18n_utils.@route(I18nUtils.getI18nBunldeHash)",
+      "c_integrations",
+      "c_integrations.@route(LookerRuntimes.addBulkPermissions)",
+      "c_integrations.@route(LookerRuntimes.checkLookerReportingAccessibility)",
+      "c_integrations.@route(LookerRuntimes.createFolder)",
+      "c_integrations.@route(LookerRuntimes.deleteFolder)",
+      "c_integrations.@route(LookerRuntimes.generateSSOUrl)",
+      "c_integrations.@route(LookerRuntimes.list)",
+      "c_integrations.@route(LookerRuntimes.listAllFolders)",
+      "c_integrations.@route(LookerRuntimes.moveSubFolder)",
+      "c_integrations.@route(LookerRuntimes.updateFolder)",
+      "c_integrations.@trigger(LookerRuntimes.accountCreationOrEdition)",
+      "c_integrations.@trigger(LookerRuntimes.accountCreationOrEdition)",
+      "c_invalidate_reviews_ac_query",
+      "c_invalidate_reviews_au_sr",
+      "c_invite_expiry_transform",
+      "c_invite_expiry_transform.@transform(InviteExpiryTransform)",
+      "c_list_site_subjects",
+      "c_missed_tasks_lib",
+      "c_missed_tasks_lib.@job(MissedTasks.generateUpcomingTasks)",
+      "c_missed_tasks_lib.@transform(MissedTaskTransform)",
+      "c_missed_tasks_lib.@trigger(MissedTasks.newPublicUserTasks)",
+      "c_missed_tasks_lib.@trigger(MissedTasks.responseUpdate)",
+      "c_missed_tasks_lib.@trigger(MissedTasks.updatePublicUserTasks)",
+      "c_notif_generator",
+      "c_nucleus_acc_pi_create",
+      "c_nucleus_acc_pi_update",
+      "c_nucleus_asset_download",
+      "c_nucleus_automatic_query_management",
+      "c_nucleus_export_sites",
+      "c_nucleus_export_visit_schedule",
+      "c_nucleus_get_history_for_subject",
+      "c_nucleus_get_history_for_tr",
+      "c_nucleus_import_sites",
+      "c_nucleus_permissions_lib",
+      "c_nucleus_pu_before_update",
+      "c_nucleus_q_create_task_status_bridge",
+      "c_nucleus_query_debug_utils",
+      "c_nucleus_query_loader_dev_",
+      "c_nucleus_query_management",
+      "c_nucleus_query_note_creation",
+      "c_nucleus_query_numbering",
+      "c_nucleus_query_parser",
+      "c_nucleus_query_statuses",
+      "c_nucleus_query_update_task_bridge",
+      "c_nucleus_response_export",
+      "c_nucleus_restrict_sys_query_create",
+      "c_nucleus_retro_query_eval_run_one",
+      "c_nucleus_retro_query_eval_setup",
+      "c_nucleus_set_query_search_terms",
+      "c_nucleus_site_numbering",
+      "c_nucleus_sr_create",
+      "c_nucleus_sr_restrict_create",
+      "c_nucleus_sr_restrict_update",
+      "c_nucleus_sr_update",
+      "c_nucleus_su_creation",
+      "c_nucleus_su_delete",
+      "c_nucleus_task_response_numbering",
+      "c_nucleus_task_templating_cloner",
+      "c_nucleus_temp_history_test",
+      "c_nucleus_tr_before_delete",
+      "c_nucleus_tr_before_update",
+      "c_nucleus_tr_check_tasks",
+      "c_nucleus_tr_deactivation",
+      "c_nucleus_tr_restrict_creation",
+      "c_nucleus_update_query_search_terms",
+      "c_nucleus_utilities_lib",
+      "c_nucleus_visit_schedule_import",
+      "c_org_config",
+      "c_org_notifications",
+      "c_org_notifications.@route(OrgConfigurationNotifications.getOrgConfigurationNotifications)",
+      "c_participant_websockets",
+      "c_pat_loc_tz_lib",
+      "c_pat_loc_tz_lib.@route(PatTzLoc.updateLocTz)",
+      "c_pat_loc_tz_lib.@trigger(PatTzLoc.accountBeforeCreate)",
+      "c_pat_loc_tz_lib.@trigger(PatTzLoc.accountBeforeUpdate)",
+      "c_pat_loc_tz_lib.@trigger(PatTzLoc.publicUserBeforeUpdate)",
+      "c_patient_flags_lib",
+      "c_patient_flags_lib.@trigger(PatientFlagsLib.afterUpdatePatientFlag)",
+      "c_patient_flags_lib.@trigger(PatientFlagsLib.validatePatientFlagOnCreation)",
+      "c_patient_flags_lib.@trigger(PatientFlagsLib.validatePatientFlagOnUpdate)",
+      "c_paweb_consent_generation",
+      "c_paweb_consent_generation_status",
+      "c_pi_oversight_digest",
+      "c_pi_oversight_digest_cron",
+      "c_pi_oversight_get_review_bundle",
+      "c_pi_oversight_lib",
+      "c_pi_oversight_list_participants",
+      "c_pi_oversight_send_digest",
+      "c_pi_oversight_sign",
+      "c_pi_oversight_signoff_after_create",
+      "c_prevent_orphan_records",
+      "c_prevent_orphan_records.@trigger(PreventOrphanRecordsLibrary.beforeStepDelete)",
+      "c_prevent_orphan_records.@trigger(PreventOrphanRecordsLibrary.beforeTaskDelete)",
+      "c_prevent_orphan_records.@trigger(PreventOrphanRecordsLibrary.beforeVisitDelete)",
+      "c_prevent_orphan_records.@trigger(PreventOrphanRecordsLibrary.beforeVisitScheduleDelete)",
+      "c_prevent_orphan_records.@trigger(PreventOrphanRecordsLibrary.onDeleteAnchorDate)",
+      "c_prevent_orphan_records.@trigger(PreventOrphanRecordsLibrary.onSiteDelete)",
+      "c_prevent_orphan_records.@trigger(PreventOrphanRecordsLibrary.removeSiteUserBeforeAccountDelete)",
+      "c_prevent_orphan_records.@trigger(PreventOrphanRecordsLibrary.taskAssignmentBeforeDelete)",
+      "c_prevent_orphan_records.@trigger(PreventOrphanRecordsLibrary.validatePatientFlagOnDeletion)",
+      "c_pu_after_create",
+      "c_pu_create_permission_trigger",
+      "c_pu_create_permission_trigger.@trigger(PUCreatePermissionLibrary.validateCreatePermission)",
+      "c_public_user_before_set_dates",
+      "c_public_user_before_set_number",
+      "c_public_user_before_update_trigger",
+      "c_public_user_before_update_trigger.@trigger(PublicUserBeforeUpdate.participantBeforeUpdate)",
+      "c_public_user_tz_trigger",
+      "c_public_user_tz_trigger.@trigger(PublicUserTimzoneLibrary.addUserTimezoneIfNotExists)",
+      "c_site_participant_responses_lib",
+      "c_site_training_log_lib",
+      "c_site_training_log_lib.@route(SiteTrainingLogLib.createTrainingLog)",
+      "c_site_training_log_lib.@route(SiteTrainingLogLib.getSiteTrainingLogs)",
+      "c_site_training_log_lib.@trigger(SiteTrainingLogLib.validateSiteTrainingResource)",
+      "c_site_training_log_lib.@trigger(SiteTrainingLogLib.validateSiteTrainingResource)",
+      "c_sql_api_endpoint",
+      "c_sql_api_endpoint.@route(SqlApiEndpoint.post)",
+      "c_sql_queries_handler",
+      "c_step_axon_library",
+      "c_step_axon_library.@trigger(StepTriggerLibrary.beforeDeleteStep)",
+      "c_step_axon_library.@trigger(StepTriggerLibrary.beforeStepCreate)",
+      "c_step_axon_library.@trigger(StepTriggerLibrary.beforeStepUpdate)",
+      "c_step_response_trigger",
+      "c_step_response_trigger.@trigger(StepResponseTrigger.afterStepCreate)",
+      "c_study_export_manifest",
+      "c_study_lock_lib",
+      "c_study_lock_lib.@trigger(StudyLock.lockCreate)",
+      "c_study_lock_lib.@trigger(StudyLock.lockUpdate)",
+      "c_study_lock_lib.@trigger(StudyLock.publicUserBeforeCreate)",
+      "c_study_lock_lib.@trigger(StudyLock.publicUserBeforeDelete)",
+      "c_study_lock_lib.@trigger(StudyLock.publicUserBeforeUpdate)",
+      "c_study_lock_lib.@trigger(StudyLock.queryBeforeCreate)",
+      "c_study_lock_lib.@trigger(StudyLock.queryBeforeDelete)",
+      "c_study_lock_lib.@trigger(StudyLock.queryBeforeUpdate)",
+      "c_study_lock_lib.@trigger(StudyLock.reviewBeforeCreate)",
+      "c_study_lock_lib.@trigger(StudyLock.reviewBeforeUpdate)",
+      "c_study_lock_lib.@trigger(StudyLock.siteBeforeCreate)",
+      "c_study_lock_lib.@trigger(StudyLock.siteBeforeDelete)",
+      "c_study_lock_lib.@trigger(StudyLock.siteBeforeUpdate)",
+      "c_study_lock_lib.@trigger(StudyLock.stepResponseBeforeCreate)",
+      "c_study_lock_lib.@trigger(StudyLock.stepResponseBeforeDelete)",
+      "c_study_lock_lib.@trigger(StudyLock.stepResponseBeforeUpdate)",
+      "c_study_lock_lib.@trigger(StudyLock.studyBeforeCreate)",
+      "c_study_lock_lib.@trigger(StudyLock.studyBeforeDelete)",
+      "c_study_lock_lib.@trigger(StudyLock.studyBeforeUpdate)",
+      "c_study_lock_lib.@trigger(StudyLock.taskResponseBeforeCreate)",
+      "c_study_lock_lib.@trigger(StudyLock.taskResponseBeforeDelete)",
+      "c_study_lock_lib.@trigger(StudyLock.taskResponseBeforeUpdate)",
+      "c_study_pu_status",
+      "c_subject_casebook_signature",
+      "c_subject_casebook_signature.@route(SignSubjectCasebookService.signSubjectCasebook)",
+      "c_subject_casebook_signature.@trigger(SignSubjectCasebookService.beforeCreateSignature)",
+      "c_subject_casebook_signature.@trigger(SignSubjectCasebookService.beforeUpdatePublicUser)",
+      "c_task_assignment_visit_tracking",
+      "c_task_assignment_visit_tracking.@trigger(TaskAssignmentVisitTracking.siteVisitOnResponse)",
+      "c_task_assignments_lib",
+      "c_task_response_deactivation",
+      "c_task_response_deactivation.@route(TaskResponseDeactivation.get)",
+      "c_task_response_deactivation.@route(TaskResponseDeactivation.post)",
+      "c_task_response_deactivation.@transform(DeactivationTransform)",
+      "c_task_response_deactivation.@trigger(TaskResponseDeactivation.updateAfter)",
+      "c_task_response_deactivation.@trigger(TaskResponseDeactivation.updateBefore)",
+      "c_tr_pending_uploads",
+      "c_upload_query_rule",
+      "c_visit_events_management",
+      "c_visit_events_management.@route(VisitEventsManagement.visitAction)",
+      "c_visit_events_management.@trigger(VisitEventsManagement.eventAfterUpdateInline)",
+      "c_visit_events_management.@trigger(VisitEventsManagement.eventCreateAfter)",
+      "c_visit_events_management.@trigger(VisitEventsManagement.eventCreateBefore)",
+      "c_visit_events_management.@trigger(VisitEventsManagement.scheduleVisitClosing)",
+      "c_visit_events_management.@trigger(VisitEventsManagement.taskResponseCreateAfter)",
+      "cdb__step_response_handler",
+      "cdb__step_response_handler.@trigger(StepResponseHandler.afterStepResponseCreate)",
+      "cdb__step_response_handler.@trigger(StepResponseHandler.afterStepResponseUpdate)",
+      "cdb__threshold_handler",
+      "cdb__threshold_handler.@trigger(ThresholdHandler.afterHealthDatumCreate)",
+      "cdb__utils",
+      "cs__notifications",
+      "cs__notifications.@trigger(NotifTriggers.accountUpdate)",
+      "cs__notifications.@trigger(NotifTriggers.handleError)",
+      "dcr_intake__account_repository",
+      "dcr_intake__account_service",
+      "dcr_intake__auth_service",
+      "dcr_intake__automated_change_service",
+      "dcr_intake__branching_logic_service",
+      "dcr_intake__case_repository",
+      "dcr_intake__comment_service",
+      "dcr_intake__dcr_execution_repository",
+      "dcr_intake__dcr_execution_service",
+      "dcr_intake__dcr_service",
+      "dcr_intake__event_repository",
+      "dcr_intake__gen_trigger_repository",
+      "dcr_intake__group_repository",
+      "dcr_intake__org_repository",
+      "dcr_intake__package",
+      "dcr_intake__package.@route(DataChangeRequestIntakePackage.changeDcrIntakeRequestStatus)",
+      "dcr_intake__package.@route(DataChangeRequestIntakePackage.createDcrExecution)",
+      "dcr_intake__package.@route(DataChangeRequestIntakePackage.createDcrIntakeRequestComment)",
+      "dcr_intake__package.@route(DataChangeRequestIntakePackage.createDcrRequest)",
+      "dcr_intake__package.@route(DataChangeRequestIntakePackage.createSsoCode)",
+      "dcr_intake__package.@route(DataChangeRequestIntakePackage.findStepResponsesForLoggedInUser)",
+      "dcr_intake__package.@route(DataChangeRequestIntakePackage.findTaskResponsesForLoggedInUser)",
+      "dcr_intake__package.@route(DataChangeRequestIntakePackage.getActivityTaskResponses)",
+      "dcr_intake__package.@route(DataChangeRequestIntakePackage.getAllVisits)",
+      "dcr_intake__package.@route(DataChangeRequestIntakePackage.getBranchingLogicAffectedSteps)",
+      "dcr_intake__package.@route(DataChangeRequestIntakePackage.getDcrIntakeRequest)",
+      "dcr_intake__package.@route(DataChangeRequestIntakePackage.getDcrIntakeRequestComments)",
+      "dcr_intake__package.@route(DataChangeRequestIntakePackage.getLatestDcrIntakeRequestSignature)",
+      "dcr_intake__package.@route(DataChangeRequestIntakePackage.getPublicUserActivities)",
+      "dcr_intake__package.@route(DataChangeRequestIntakePackage.getPublicUserSetDates)",
+      "dcr_intake__package.@route(DataChangeRequestIntakePackage.getPublicUserTaskAndStepResponses)",
+      "dcr_intake__package.@route(DataChangeRequestIntakePackage.getPublicUserVisits)",
+      "dcr_intake__package.@route(DataChangeRequestIntakePackage.getPublicUsers)",
+      "dcr_intake__package.@route(DataChangeRequestIntakePackage.getSiteTaskResponsesForVisitForParticipant)",
+      "dcr_intake__package.@route(DataChangeRequestIntakePackage.getSites)",
+      "dcr_intake__package.@route(DataChangeRequestIntakePackage.getTaskResponseScreens)",
+      "dcr_intake__package.@route(DataChangeRequestIntakePackage.initSsoCodeCreation)",
+      "dcr_intake__package.@route(DataChangeRequestIntakePackage.listDcrIntakeRequests)",
+      "dcr_intake__package.@route(DataChangeRequestIntakePackage.proxy)",
+      "dcr_intake__package.@route(DataChangeRequestIntakePackage.signDcrIntakeRequest)",
+      "dcr_intake__package.@route(DataChangeRequestIntakePackage.validatePublicUserNumber)",
+      "dcr_intake__package.@trigger(DataChangeRequestIntakePackage.siteAfterCreate)",
+      "dcr_intake__proxy_service",
+      "dcr_intake__public_user_repository",
+      "dcr_intake__public_user_service",
+      "dcr_intake__salesforce_repository",
+      "dcr_intake__signed_case_repository",
+      "dcr_intake__site_repository",
+      "dcr_intake__site_service",
+      "dcr_intake__site_user_repository",
+      "dcr_intake__sso_service",
+      "dcr_intake__step_response_repository",
+      "dcr_intake__step_response_service",
+      "dcr_intake__study_repository",
+      "dcr_intake__task_assignment_repository",
+      "dcr_intake__task_response_repository",
+      "dcr_intake__task_response_service",
+      "dcr_intake__visit_repository",
+      "dt__account_repository",
+      "dt__airflow_repository",
+      "dt__config",
+      "dt__config.@job(DTConfig.checkScheduledTransfers)",
+      "dt__config.@object(DTConfig)",
+      "dt__config.@route(DTConfig.updateConfig)",
+      "dt__config.@trigger(DTConfig.afterUpdate)",
+      "dt__config.@trigger(DTConfig.beforeCreate)",
+      "dt__config.@trigger(DTConfig.beforeUpdate)",
+      "dt__config_repository",
+      "dt__config_service",
+      "dt__datatransferformats",
+      "dt__event_repository",
+      "dt__execution_repository",
+      "dt__export_repository",
+      "dt__field_repository",
+      "dt__field_service",
+      "dt__notification_repository",
+      "dt__org_repository",
+      "dt__package",
+      "dt__package.@route(Package.cancelScheduled)",
+      "dt__package.@route(Package.getAllConfigs)",
+      "dt__package.@route(Package.getAllExecutions)",
+      "dt__package.@route(Package.getConfig)",
+      "dt__package.@route(Package.getDefaultFields)",
+      "dt__package.@route(Package.getFormats)",
+      "dt__package.@route(Package.getOneExecution)",
+      "dt__package.@route(Package.getStudyInfo)",
+      "dt__package.@route(Package.preview)",
+      "dt__public_user_repository",
+      "dt__site_repository",
+      "dt__sql_query_repository",
+      "dt__step_repository",
+      "dt__study_repository",
+      "dt__task_repository",
+      "dt__token_repository",
+      "dt__transfer_service",
+      "ec__document_processor",
+      "ec__econsent_lib",
+      "ec__econsent_runtimes_lib",
+      "ec__econsent_runtimes_lib.@route(EconsentRoutes.assignSites)",
+      "ec__econsent_runtimes_lib.@route(EconsentRoutes.checkIfSsoUser)",
+      "ec__econsent_runtimes_lib.@route(EconsentRoutes.cloneTemplate)",
+      "ec__econsent_runtimes_lib.@route(EconsentRoutes.completePtsDocument)",
+      "ec__econsent_runtimes_lib.@route(EconsentRoutes.completeSigner)",
+      "ec__econsent_runtimes_lib.@route(EconsentRoutes.createSsoCode)",
+      "ec__econsent_runtimes_lib.@route(EconsentRoutes.getECSiteSigners)",
+      "ec__econsent_runtimes_lib.@route(EconsentRoutes.getSignerAppLink)",
+      "ec__econsent_runtimes_lib.@route(EconsentRoutes.initSsoCodeCreation)",
+      "ec__econsent_runtimes_lib.@route(EconsentRoutes.inviteConsent)",
+      "ec__econsent_runtimes_lib.@route(EconsentRoutes.register)",
+      "ec__econsent_runtimes_lib.@route(EconsentRoutes.renderPDF)",
+      "ec__econsent_runtimes_lib.@route(EconsentRoutes.resendInvite)",
+      "ec__econsent_runtimes_lib.@route(EconsentRoutes.setDocumentData)",
+      "ec__econsent_runtimes_lib.@route(EconsentRoutes.signDocument)",
+      "ec__econsent_runtimes_lib.@route(EconsentRoutes.unassignSites)",
+      "ec__econsent_runtimes_lib.@route(EconsentRoutes.validateInvite)",
+      "ec__econsent_runtimes_lib.@route(EconsentRoutes.voidDocument)",
+      "ec__econsent_runtimes_lib.@trigger(EconsentRoutes.accountAfterCreate)",
+      "ec__econsent_runtimes_lib.@trigger(EconsentRoutes.accountBeforeCreate)",
+      "ec__econsent_runtimes_lib.@trigger(EconsentRoutes.ensureDocumentManagerCanUpdateOnlyPTSDocument)",
+      "ec__econsent_runtimes_lib.@trigger(EconsentRoutes.inviteChanges)",
+      "ec__econsent_runtimes_lib.@trigger(EconsentRoutes.inviteChanges)",
+      "ec__econsent_runtimes_lib.@trigger(EconsentRoutes.participantAfterUpdate)",
+      "ec__econsent_runtimes_lib.@trigger(EconsentRoutes.ptsDocumentUploaded)",
+      "ec__econsent_runtimes_lib.@trigger(EconsentRoutes.signedBeforeCreate)",
+      "ec__econsent_runtimes_lib.@trigger(EconsentRoutes.studyBeforeCreate)",
+      "ec__econsent_template_runtimes_lib",
+      "ec__econsent_template_runtimes_lib.@route(EconsentTemplateRoutes.getAuthToken)",
+      "ec__econsent_template_runtimes_lib.@route(EconsentTemplateRoutes.preview)",
+      "ec__econsent_template_runtimes_lib.@trigger(EconsentTemplateRoutes.afterTemplateUpdate)",
+      "ec__econsent_template_runtimes_lib.@trigger(EconsentTemplateRoutes.templateBeforeCreate)",
+      "ec__econsent_template_runtimes_lib.@trigger(EconsentTemplateRoutes.templateBeforeSignerRolesUpdate)",
+      "ec__econsent_template_runtimes_lib.@trigger(EconsentTemplateRoutes.templateBeforeStatusUpdate)",
+      "ec__econsent_template_runtimes_lib.@trigger(EconsentTemplateRoutes.templateBeforeUpdate)",
+      "ec__econsent_transforms_lib",
+      "ec__econsent_transforms_lib.@transform(GenerateLFsTransform)",
+      "ec__econsent_transforms_lib.@transform(SiteTemplateUpdate)",
+      "ec__econsent_utilities_lib",
+      "ec__linked_fields_runtimes",
+      "ec__linked_fields_runtimes.@route(LinkedFields.getLinkedFieldConfiguration)",
+      "ec__linked_fields_runtimes.@route(LinkedFields.getLinkedFieldsStatus)",
+      "ec__linked_fields_runtimes.@trigger(LinkedFields.handleError)",
+      "ec__linked_fields_runtimes.@trigger(LinkedFields.templateAfterSitesAssignment)",
+      "ec__linked_fields_runtimes.@trigger(LinkedFields.templateAfterSitesAssignment)",
+      "ec__linked_fields_runtimes.@trigger(LinkedFields.templateBeforeSiteAssignment)",
+      "ec__linked_fields_runtimes.@trigger(LinkedFields.templateBeforeSiteAssignment)",
+      "ec__mismatch_html_and_doc_data",
+      "ec__mismatch_html_and_doc_data.@job(MismatchHtmlTemplateData.fixMismatchTemplatesData)",
+      "ec__mismatch_html_and_doc_data.@trigger(MismatchHtmlTemplateData.afterTemplateUpdate)",
+      "ec__org_lib",
+      "ec__sso_lib",
+      "ec__template_manager_lib",
+      "ecoa__customization_lib",
+      "int__api_request_task",
+      "int__common_expressions",
+      "int__core_vendor",
+      "int__core_vendor.@route(CoreVendor.config)",
+      "int__core_vendor.@route(CoreVendor.extendedPing)",
+      "int__core_vendor.@route(CoreVendor.ping)",
+      "int__core_vendor.@trigger(CoreVendor.subjectStatusUpdate)",
+      "int__core_vendor.@trigger(CoreVendor.subsequentEconsentSigned)",
+      "int__core_vendor.@trigger(CoreVendor.taskCompletion)",
+      "int__cursor_task",
+      "int__endpt_vendor",
+      "int__endpt_vendor.@route(EndptVendor.administration)",
+      "int__endpt_vendor.@route(EndptVendor.administrationInbound)",
+      "int__endpt_vendor.@route(EndptVendor.config)",
+      "int__endpt_vendor.@route(EndptVendor.ping)",
+      "int__endpt_vendor.@route(EndptVendor.reScreen)",
+      "int__endpt_vendor.@route(EndptVendor.rescreen)",
+      "int__endpt_vendor.@route(EndptVendor.statusUpdate)",
+      "int__endpt_vendor.@route(EndptVendor.status_update)",
+      "int__endpt_vendor.@route(EndptVendor.validateAdminRequest)",
+      "int__endpt_vendor.@route(EndptVendor.validateRequest)",
+      "int__endpt_vendor.@route(EndptVendor.validateRescreenRequest)",
+      "int__endpt_vendor.@route(EndptVendor.validateStatusUpdateRequest)",
+      "int__endpt_vendor.@trigger(EndptVendor.subsequentEconsentSigned)",
+      "int__endpt_vendor.@trigger(EndptVendor.taskCompletion)",
+      "int__export_task",
+      "int__exports_vendor",
+      "int__exports_vendor.@route(ExportsVendor.administration)",
+      "int__exports_vendor.@route(ExportsVendor.callBack)",
+      "int__exports_vendor.@route(ExportsVendor.config)",
+      "int__exports_vendor.@route(ExportsVendor.extractStudyDataAsync)",
+      "int__exports_vendor.@route(ExportsVendor.getAirflowJobStatus)",
+      "int__exports_vendor.@route(ExportsVendor.jobStatus)",
+      "int__exports_vendor.@route(ExportsVendor.removeFile)",
+      "int__exports_vendor.@route(ExportsVendor.validateRequest)",
+      "int__expression_task",
+      "int__faults",
+      "int__logging",
+      "int__logging.@route(Logs.fetchLogs)",
+      "int__notification",
+      "int__oracle_setup",
+      "int__oracle_vendor",
+      "int__oracle_vendor.@route(OracleVendor.config)",
+      "int__oracle_vendor.@route(OracleVendor.createMapping)",
+      "int__oracle_vendor.@route(OracleVendor.fetchMappingStatus)",
+      "int__oracle_vendor.@trigger(OracleVendor.afterCallFinished)",
+      "int__oracle_vendor.@trigger(OracleVendor.afterCreateTaskResponse)",
+      "int__oracle_vendor.@trigger(OracleVendor.subsequentEconsentSigned)",
+      "int__pipeline",
+      "int__queue",
+      "int__queue.@job(Queue.queueErroredJobs)",
+      "int__queue.@route(Queue.resetQueue)",
+      "int__queue.@trigger(Queue.notifyFailedQueue)",
+      "int__queue.@trigger(Queue.notifyFailedQueue)",
+      "int__queue.@trigger(Queue.process)",
+      "int__queue.@trigger(Queue.process)",
+      "int__rave_helper",
+      "int__rave_vendor",
+      "int__rave_vendor.@route(RaveVendor.config)",
+      "int__rave_vendor.@route(RaveVendor.createMapping)",
+      "int__rave_vendor.@route(RaveVendor.ping)",
+      "int__rave_vendor.@trigger(RaveVendor.taskCompletion)",
+      "int__task",
+      "int__utils",
+      "int__veeva_setup",
+      "int__veeva_vendor",
+      "int__veeva_vendor.@route(VeevaVendor.config)",
+      "int__veeva_vendor.@route(VeevaVendor.createMapping)",
+      "int__veeva_vendor.@route(VeevaVendor.ping)",
+      "int__veeva_vendor.@trigger(VeevaVendor.subsequentEconsentSigned)",
+      "int__yprime_vendor",
+      "int__yprime_vendor.@route(YPrimeVendor.administration)",
+      "int__yprime_vendor.@route(YPrimeVendor.config)",
+      "int__yprime_vendor.@route(YPrimeVendor.ping)",
+      "int__yprime_vendor.@route(YPrimeVendor.statusUpdate)",
+      "int__yprime_vendor.@route(YPrimeVendor.validateRequest)",
+      "int__yprime_vendor.@trigger(YPrimeVendor.subsequentEconsentSigned)",
+      "int__yprime_vendor.@trigger(YPrimeVendor.taskCompletion)",
+      "scheduler__library",
+      "tm__library",
+      "tm__library.@trigger(TranslationManagement.onFileProcessed)",
+      "tm__library.@trigger(TranslationManagement.setDefaultStatus)",
+      "tm__library.@trigger(TranslationManagement.submitJobWhenQueued)",
+      "tm__library.@trigger(TranslationManagement.submitJobWhenQueued)",
+      "tv__app",
+      "tv__app.@job(TvApp.tv__app_job_gc)",
+      "tv__app.@route(TvApp.tv__app_route_get_connect)",
+      "tv__app.@route(TvApp.tv__app_route_get_event)",
+      "tv__app.@route(TvApp.tv__app_route_get_token)",
+      "tv__app.@route(TvApp.tv__app_route_update_event)",
+      "tv__app.@trigger(TvApp.c_axon_room_onParticipantEvent)",
+      "usm__bulk_accounts_processor",
+      "usm__bulk_request_trigger_lib",
+      "usm__bulk_request_trigger_lib.@trigger(BulkRequestExecutionLib.handleError)",
+      "usm__bulk_request_trigger_lib.@trigger(BulkRequestExecutionLib.processBatches)",
+      "usm__bulk_request_trigger_lib_v2",
+      "usm__bulk_request_trigger_lib_v2.@trigger(BulkRequestExecutionLibV2.handleErrorV2)",
+      "usm__bulk_request_trigger_lib_v2.@trigger(BulkRequestExecutionLibV2.startProcessing)",
+      "usm__bulk_user_creation_summary_lib",
+      "usm__bulk_user_creation_summary_lib.@route(BulkSummaryLibrary.getSummary)",
+      "usm__consts",
+      "usm__csv_management_lib",
+      "usm__csv_management_lib.@route(CsvManagementLibrary.getCsvHeaders)",
+      "usm__locale_utils_lib",
+      "usm__org_config_lib",
+      "usm__org_config_lib.@route(OrgConfigLibrary.getAccountConfig)",
+      "usm__org_config_lib.@route(OrgConfigLibrary.getApps)",
+      "usm__org_config_lib.@route(OrgConfigLibrary.getBulkCreationLimit)",
+      "usm__roles_lib",
+      "usm__roles_lib.@route(RolesLibrary.getRoles)",
+      "usm__roles_lib.@route(RolesLibrary.getUpdateRoles)",
+      "usm__site_management_lib",
+      "usm__site_management_lib.@route(SiteManagementLibrary.getSiteDisabledLocales)",
+      "usm__site_management_lib.@route(SiteManagementLibrary.getSiteIds)",
+      "usm__site_management_lib.@route(SiteManagementLibrary.getSiteList)",
+      "usm__site_management_lib.@route(SiteManagementLibrary.getSites)",
+      "usm__site_management_lib.@route(SiteManagementLibrary.getSitesByUser)",
+      "usm__site_management_lib.@route(SiteManagementLibrary.updateLocale)",
+      "usm__site_management_lib.@route(SiteManagementLibrary.updateSite)",
+      "usm__site_user_listing_lib",
+      "usm__site_user_listing_lib.@route(SiteUserListingLibrary.getSiteUsers)",
+      "usm__site_user_management_lib",
+      "usm__site_user_management_lib.@route(SiteUserManagementLibrary.getSiteDetails)",
+      "usm__site_user_management_lib.@route(SiteUserManagementLibrary.getSiteSchema)",
+      "usm__site_user_management_lib.@route(SiteUserManagementLibrary.unassignSite)",
+      "usm__sites_access_manager_lib",
+      "usm__user_details_lib",
+      "usm__user_details_lib.@route(UserDetailsLibrary.getUser)",
+      "usm__user_listing_lib",
+      "usm__user_listing_lib.@route(UserListingLibrary.getUsers)",
+      "usm__user_management_lib",
+      "usm__user_management_lib.@route(UserManagementLibrary.administerUser)",
+      "usm__user_management_lib.@route(UserManagementLibrary.bulkManageUsers)",
+      "usm__user_management_lib.@route(UserManagementLibrary.createUser)",
+      "usm__user_management_lib.@route(UserManagementLibrary.deleteUser)",
+      "usm__user_management_lib.@route(UserManagementLibrary.getBulkManageStatus)",
+      "usm__user_management_lib.@route(UserManagementLibrary.getBulkRequestStatus)",
+      "usm__user_management_lib.@route(UserManagementLibrary.updatePatchUser)",
+      "usm__user_management_lib.@route(UserManagementLibrary.updateUser)",
+      "usm__user_management_lib.@route(UserManagementLibrary.validateAndExecuteBulkRequest)",
+      "usm__user_management_lib.@route(UserManagementLibrary.validateBulkUserRequest)",
+      "usm__user_management_v2_lib",
+      "usm__user_management_v2_lib.@route(UserManagementLibraryV2.bulkUserValidation)",
+      "usm__user_management_v2_lib.@route(UserManagementLibraryV2.executeBulkUserRequest)",
+      "usm__utils_lib",
+      "usm__validation_utils_lib",
+      "wf__sql_queries_handler"
+    ]
+  },
+  "serviceAccounts": {
+    "includes": [
+      "c_system_user",
+      "cdb__service",
+      "dcr_intake__system_user",
+      "dt__service",
+      "ec__service_user",
+      "export__service",
+      "scheduler__service_account",
+      "tm__service"
+    ]
+  },
+  "templates": {
+    "includes": [
+      "email.account-activation",
+      "email.account-activation-provider",
+      "email.account-auth-locked",
+      "email.account-provider-verification-processing",
+      "email.account-provider-verification-verified",
+      "email.account-provisioned",
+      "email.account-welcome",
+      "email.account-welcome-activation",
+      "email.account-welcome-activation-provider",
+      "email.account-welcome-provider",
+      "email.account-welcome-verification",
+      "email.account-welcome-verification-provider",
+      "email.c_axon_invite-access_code",
+      "email.c_axon_invite-expired",
+      "email.c_axon_invite-forgot_username",
+      "email.c_axon_invite-pin_expired",
+      "email.c_axon_invite-pin_only",
+      "email.c_axon_leave_study",
+      "email.c_axon_leave_study_mgmt",
+      "email.c_axon_new_caregiver_invite",
+      "email.c_axon_new_participant_invite",
+      "email.c_axon_virtual_visit_5min_reminder",
+      "email.c_axon_virtual_visit_15min_reminder",
+      "email.c_axon_virtual_visit_canceled",
+      "email.c_axon_virtual_visit_new",
+      "email.c_axon_virtual_visit_reminder",
+      "email.c_axon_virtual_visit_rescheduled",
+      "email.c_pi_oversight_digest",
+      "email.c_send_signed_doc",
+      "email.cdb__threshold_common",
+      "email.connection-created",
+      "email.dt__execution_status",
+      "email.ec__document_complete",
+      "email.ec__document_invite",
+      "email.ec__document_signer_complete",
+      "email.ec__pts_document_invite",
+      "email.gcm-regid-reassigned",
+      "email.int__queue_failed",
+      "email.invite-existing-user",
+      "email.invite-new-user",
+      "email.ios-token-reassigned",
+      "email.layout",
+      "email.lost-password",
+      "email.mobile-change-notification",
+      "email.org-invitation",
+      "email.password-change-notification",
+      "email.transfer-existing-user",
+      "email.transfer-new-user",
+      "push.c_axon_virtual_visit_15m_reminder",
+      "push.c_axon_virtual_visit_missed",
+      "push.comment-update",
+      "push.connection",
+      "push.invitation",
+      "push.post-update",
+      "push.transfer",
+      "sms.account-activation",
+      "sms.account-auth-locked",
+      "sms.account-provisioned",
+      "sms.account-welcome",
+      "sms.account-welcome-activation",
+      "sms.account-welcome-verification",
+      "sms.c_axon_lost_password",
+      "sms.c_axon_sms-invite_expired",
+      "sms.c_axon_sms-invite_pin_only",
+      "sms.c_axon_sms-invite_users",
+      "sms.c_axon_sms-pin_expired",
+      "sms.c_forgot-username",
+      "sms.ec__signature_invite_sms",
+      "sms.location-verification",
+      "sms.lost-password",
+      "sms.mobile-change-notification",
+      "sms.org-invitation",
+      "sms.password-change-notification"
+    ]
+  },
+  "views": {
+    "includes": [
+      "c_studies"
+    ]
+  }
+}

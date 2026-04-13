@@ -1,0 +1,19 @@
+{
+  "active": true,
+  "configuration": {
+    "event": "create.before",
+    "inline": false,
+    "object": "c_task_response",
+    "paths": []
+  },
+  "environment": "*",
+  "label": "Axon - Hybrid - TR Update Site and PU",
+  "language": "javascript/es6",
+  "name": "c_axon_hybrid_tr_update_site_and_pu",
+  "object": "script",
+  "optimized": false,
+  "principal": null,
+  "script": "/env/scripts/js/trigger.c_axon_hybrid_tr_update_site_and_pu.js",
+  "type": "trigger",
+  "weight": 0
+}

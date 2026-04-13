@@ -1,0 +1,29 @@
+{
+  "description": "Virtual visit reminder email sent to public user (participant) 15 Minutes before a virtual visit.",
+  "label": "Axon - Virtual Visit 15 Minutes Reminder",
+  "localizations": [
+    {
+      "locale": [
+        "*"
+      ],
+      "content": [
+        {
+          "data": "/env/templates/tpl/template.email.c_axon_virtual_visit_15min_reminder.anyLocale.html.html",
+          "name": "html"
+        },
+        {
+          "data": "/env/templates/tpl/template.email.c_axon_virtual_visit_15min_reminder.anyLocale.plain.txt",
+          "name": "plain"
+        },
+        {
+          "data": "/env/templates/tpl/template.email.c_axon_virtual_visit_15min_reminder.anyLocale.subject.txt",
+          "name": "subject"
+        }
+      ]
+    }
+  ],
+  "name": "c_axon_virtual_visit_15min_reminder",
+  "object": "template",
+  "partial": false,
+  "type": "email"
+}

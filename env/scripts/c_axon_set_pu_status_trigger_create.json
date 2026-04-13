@@ -1,0 +1,20 @@
+{
+  "active": true,
+  "configuration": {
+    "event": "create.before",
+    "inline": false,
+    "object": "c_task_response",
+    "paths": []
+  },
+  "description": "Sets Public User Status",
+  "environment": "*",
+  "label": "Axon - Set PU Status Trigger, Create",
+  "language": "javascript/es6",
+  "name": "c_axon_set_pu_status_trigger_create",
+  "object": "script",
+  "optimized": false,
+  "principal": null,
+  "script": "/env/scripts/js/trigger.c_axon_set_pu_status_trigger_create.js",
+  "type": "trigger",
+  "weight": 0
+}

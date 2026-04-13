@@ -1,0 +1,27 @@
+{
+  "active": true,
+  "configuration": {
+    "acl": [
+      "account.public"
+    ],
+    "apiKey": null,
+    "authValidation": "all",
+    "method": "get",
+    "path": "pi_oversight/list_participants",
+    "plainText": false,
+    "priority": 0,
+    "system": false,
+    "urlEncoded": false
+  },
+  "description": "Returns all participants with their oversight status (Current/Pending/Overdue) for a site and study.",
+  "environment": "*",
+  "label": "PI Oversight - List Participants",
+  "language": "javascript/es6",
+  "name": "c_pi_oversight_list_participants",
+  "object": "script",
+  "optimized": false,
+  "principal": null,
+  "script": "/env/scripts/js/route.c_pi_oversight_list_participants.js",
+  "type": "route",
+  "weight": 0
+}

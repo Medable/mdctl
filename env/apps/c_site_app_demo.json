@@ -1,0 +1,26 @@
+{
+  "allowNameMapping": true,
+  "authDuration": 2700,
+  "blacklist": [],
+  "cors": [
+    "https://site-m6269.alpha-latest.medable.com"
+  ],
+  "csrf": false,
+  "enabled": true,
+  "expires": null,
+  "expose": false,
+  "label": "Site App Web",
+  "maxTokensPerPrincipal": 10,
+  "name": "c_site_app_demo",
+  "object": "app",
+  "readOnly": false,
+  "sessions": true,
+  "urls": {
+    "connection": "",
+    "resetPassword": "https://site-m6269.alpha-latest.medable.com/reset-password/$token?org=cubicularis-angelus-aptus-4278",
+    "createPassword": "",
+    "activateAccount": "",
+    "verifyAccount": ""
+  },
+  "whitelist": []
+}

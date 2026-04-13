@@ -1,0 +1,21 @@
+{
+  "description": "Account welcome message",
+  "label": "Account Welcome",
+  "localizations": [
+    {
+      "locale": [
+        "en_US"
+      ],
+      "content": [
+        {
+          "data": "/env/templates/tpl/template.sms.account-welcome.en_US.message.txt",
+          "name": "message"
+        }
+      ]
+    }
+  ],
+  "name": "account-welcome",
+  "object": "template",
+  "partial": false,
+  "type": "sms"
+}

@@ -1,0 +1,1 @@
+{{i18n "axon:template.email.c_axon_virtual_visit_canceled.subject"}}

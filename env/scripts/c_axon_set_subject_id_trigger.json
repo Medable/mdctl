@@ -1,0 +1,74 @@
+{
+  "active": true,
+  "configuration": {
+    "event": "update.after",
+    "inline": false,
+    "object": "c_public_user",
+    "paths": []
+  },
+  "description": "Sets a Subject Id to a Public User",
+  "environment": "*",
+  "if": {
+    "$and": [
+      {
+        "$eq": [
+          {
+            "$cache": {
+              "$concat": [
+                "locTZUpdate-",
+                "$$REQUEST._id"
+              ]
+            }
+          },
+          null
+        ]
+      },
+      {
+        "$or": [
+          {
+            "$gte": [
+              {
+                "$indexOfArray": [
+                  "$$SCRIPT.arguments.modified",
+                  "c_email"
+                ]
+              },
+              0
+            ]
+          },
+          {
+            "$gte": [
+              {
+                "$indexOfArray": [
+                  "$$SCRIPT.arguments.modified",
+                  "c_account"
+                ]
+              },
+              0
+            ]
+          },
+          {
+            "$gte": [
+              {
+                "$indexOfArray": [
+                  "$$SCRIPT.arguments.modified",
+                  "c_number"
+                ]
+              },
+              0
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "label": "Axon - Set Subject Id Trigger",
+  "language": "javascript/es6",
+  "name": "c_axon_set_subject_id_trigger",
+  "object": "script",
+  "optimized": false,
+  "principal": null,
+  "script": "/env/scripts/js/trigger.c_axon_set_subject_id_trigger.js",
+  "type": "trigger",
+  "weight": 0
+}

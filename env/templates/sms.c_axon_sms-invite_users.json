@@ -1,0 +1,21 @@
+{
+  "description": "SMS invitation to Study",
+  "label": "Axon SMS invite users",
+  "localizations": [
+    {
+      "locale": [
+        "*"
+      ],
+      "content": [
+        {
+          "data": "/env/templates/tpl/template.sms.c_axon_sms-invite_users.anyLocale.message.txt",
+          "name": "message"
+        }
+      ]
+    }
+  ],
+  "name": "c_axon_sms-invite_users",
+  "object": "template",
+  "partial": false,
+  "type": "sms"
+}

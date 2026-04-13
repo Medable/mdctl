@@ -1,0 +1,8 @@
+{
+  "isPublic": true,
+  "name": "int__config",
+  "object": "config",
+  "value": {
+    "notification_recipients": []
+  }
+}

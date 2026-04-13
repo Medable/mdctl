@@ -1,0 +1,49 @@
+{
+  "isPublic": false,
+  "name": "axon__siteapp_studio_urls",
+  "object": "config",
+  "value": {
+    "siteAppUrls": [
+      {
+        "env": "api.local.medable.com",
+        "url": "https://cloud.local.medable.com/site"
+      },
+      {
+        "env": "api-int-dev.medable.com",
+        "url": "https://cloud-latest.medable.com/site"
+      },
+      {
+        "env": "api.qa.medable.com",
+        "url": "https://cloud-test.medable.com/site"
+      },
+      {
+        "env": "api.test.medable.com",
+        "url": "https://cloud-staging.medable.com/site"
+      },
+      {
+        "env": "api.dev.medable.com",
+        "url": "https://cloud.medable.com/site"
+      },
+      {
+        "env": "api.medable.com",
+        "url": "https://cloud.medable.com/site"
+      },
+      {
+        "env": "api.dev.medable.cn",
+        "url": "https://cloud.medable.cn/site"
+      },
+      {
+        "env": "api.medable.cn",
+        "url": "https://cloud.medable.cn/site"
+      },
+      {
+        "env": "api-eu1-dev.medable.com",
+        "url": "https://cloud.medable.com/site"
+      },
+      {
+        "env": "api-eu1.medable.com",
+        "url": "https://cloud.medable.com/site"
+      }
+    ]
+  }
+}

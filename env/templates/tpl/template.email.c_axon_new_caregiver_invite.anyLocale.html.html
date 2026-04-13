@@ -1,0 +1,143 @@
+{{#extend "layout"}}
+
+    {{#replace "title"}}
+        <span style="font-weight: 300; font-size: 32px">{{i18n "axon:template.email.c_axon_new_caregiver_invite.title"}}</span>
+    {{/replace}}
+
+    {{#replace "body"}}
+        <div style="font-size: 14px">
+
+            {{#if isMobileOnlyStudy}}
+
+                {{{i18n "axon:template.email.c_axon_new_caregiver_invite.mobileInstructions" study_name=study_name}}}
+
+                <br/><br/>
+
+                <div>
+                    {{#if appleStore}}
+                        <a style="text-decoration: none;" href="{{appleStore_url}}">
+                            <img style="width: 45%; max-width: 150px; margin-inline-end: 10px; cursor: pointer;" src="https://medable-static.s3.amazonaws.com/images/app_store_logo.png"  />
+                        </a>
+                    {{/if}}
+                    {{#if googleStore}}
+                    <a href="{{googleStore_url}}">
+                        <img style="width: 45%; max-width: 150px; cursor: pointer;" src="https://medable-static.s3.amazonaws.com/images/google_play_logo.png" />
+                    </a>
+                    {{/if}}
+                </div>
+
+                <br/>
+
+
+                {{i18n "axon:template.email.c_axon_new_caregiver_invite.codeInstructions"}}
+
+                <br/><br/>
+                <div style="padding: 15px 20px; background-color: #F1F2F3">
+                    <div style="margin-bottom: 10px">
+                        {{i18n "axon:template.email.c_axon_new_caregiver_invite.accessCode"}}
+                    </div>
+                    <div style="font-size: 30px">
+                        {{access_code}}
+                    </div>
+                </div>
+
+                <br/>
+
+                {{i18n "axon:template.email.c_axon_new_caregiver_invite.pushNotificationsInstructions"}}<br/><br/>
+
+                {{i18n "axon:template.email.c_axon_new_caregiver_invite.thankYou"}}
+
+            {{else if isWebOnlyStudy}}
+
+                {{{i18n "axon:template.email.c_axon_new_caregiver_invite.webInstructions" study_name=study_name}}}<br/><br/>
+
+
+                <a href="{{paweb_url}}" target="_blank" style="text-decoration: none;">
+                    <button style="padding: 12px 24px; background-color: #6445D7; color: #FFF; border: none; border-radius: 6px; cursor: pointer;">
+                        {{i18n "axon:template.email.c_axon_new_caregiver_invite.webButtonText"}}
+                    </button>
+                </a>
+
+                <br/><br/>
+
+
+                {{i18n "axon:template.email.c_axon_new_caregiver_invite.codeInstructions"}}
+
+                <br/><br/>
+
+                <div style="padding: 15px 20px; background-color: #F1F2F3">
+                    <div style="margin-bottom: 10px">
+                        {{i18n "axon:template.email.c_axon_new_caregiver_invite.accessCode"}}
+                    </div>
+                    <div style="font-size: 30px">
+                        {{access_code}}
+                    </div>
+                </div>
+
+                <br/>
+
+
+                {{i18n "axon:template.email.c_axon_new_caregiver_invite.browserLink"}}
+
+                <br/>
+
+                <a style="color: #6445D7" href="{{paweb_url}}">{{paweb_url}}</a>
+
+                <br/><br/>
+
+                {{i18n "axon:template.email.c_axon_new_caregiver_invite.thankYou"}}
+
+            {{else}}
+
+                {{{i18n "axon:template.email.c_axon_new_caregiver_invite.mobileInstructions" study_name=study_name}}}
+
+                <br/>
+                <br/>
+
+                <div>
+                    {{#if appleStore}}
+                        <a href="{{appleStore_url}}">
+                            <img style="width: 45%; max-width: 150px; margin-inline-end: 10px; cursor: pointer;" src="https://medable-static.s3.amazonaws.com/images/app_store_logo.png"  />
+                        </a>
+                    {{/if}}
+                    {{#if googleStore}}
+                        <a href="{{googleStore_url}}">
+                            <img style="width: 45%; max-width: 150px; cursor: pointer;" src="https://medable-static.s3.amazonaws.com/images/google_play_logo.png" />
+                        </a>
+                    {{/if}}
+                </div>
+
+                <br/>
+
+                {{i18n "axon:template.email.c_axon_new_caregiver_invite.codeInstructions"}}
+
+                <br/><br/>
+                <div style="padding: 15px 20px; background-color: #F1F2F3">
+                    <div style="margin-bottom: 10px">
+                        {{i18n "axon:template.email.c_axon_new_caregiver_invite.accessCode"}}
+                    </div>
+                    <div style="font-size: 30px">
+                        {{access_code}}
+                    </div>
+                </div>
+
+                <br/>
+
+                {{i18n "axon:template.email.c_axon_new_caregiver_invite.pushNotificationsInstructions"}}<br/><br/>
+
+                {{i18n "axon:template.email.c_axon_new_caregiver_invite.browserLink"}}
+
+                <br/>
+
+                <a style="color: #6445D7" href="{{paweb_url}}">{{paweb_url}}</a>
+
+                <br/><br/>
+
+                {{i18n "axon:template.email.c_axon_new_caregiver_invite.thankYou"}}
+
+            {{/if}}
+
+        </div>
+    {{/replace}}
+
+{{/extend}}

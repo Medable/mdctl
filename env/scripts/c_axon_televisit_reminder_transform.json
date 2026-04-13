@@ -1,0 +1,17 @@
+{
+  "active": false,
+  "configuration": {
+    "export": "c_axon_televisit_reminder_transform"
+  },
+  "description": "A transform that sends televisit reminders and carefully avoids script limits.",
+  "environment": "*",
+  "label": "Axon - Televisit Reminder Transform",
+  "language": "javascript/es6",
+  "name": "c_axon_televisit_reminder_transform",
+  "object": "script",
+  "optimized": false,
+  "principal": null,
+  "script": "/env/scripts/js/library.c_axon_televisit_reminder_transform.js",
+  "type": "library",
+  "weight": 0
+}

@@ -1,0 +1,17 @@
+{
+  "active": true,
+  "configuration": {
+    "export": "c_axon_televisit_notification_library"
+  },
+  "description": "Implements methods for sending Axon Televisit notifications.",
+  "environment": "*",
+  "label": "Axon - Televisit Notification Library",
+  "language": "javascript/es6",
+  "name": "c_axon_televisit_notification_library",
+  "object": "script",
+  "optimized": false,
+  "principal": null,
+  "script": "/env/scripts/js/library.c_axon_televisit_notification_library.js",
+  "type": "library",
+  "weight": 0
+}

@@ -1,0 +1,62 @@
+{
+  "isPublic": false,
+  "name": "ad__app_urls",
+  "object": "config",
+  "value": {
+    "api-int-dev.medable.com": {
+      "ad__app": {
+        "resetPassword": "https://apps-dashboard-int-dev.medable.com/reset-password/$token?orgCode=$orgCode"
+      }
+    },
+    "api.qa.medable.com": {
+      "ad__app": {
+        "resetPassword": "https://apps-dashboard-qa.medable.com/reset-password/$token?orgCode=$orgCode"
+      }
+    },
+    "api.test.medable.com": {
+      "ad__app": {
+        "resetPassword": "https://apps-dashboard-test.medable.com/reset-password/$token?orgCode=$orgCode"
+      }
+    },
+    "api.dev.medable.com": {
+      "ad__app": {
+        "resetPassword": "https://apps-dashboard-dev.medable.com/reset-password/$token?orgCode=$orgCode"
+      }
+    },
+    "api.eu1-dev.medable.com": {
+      "ad__app": {
+        "resetPassword": "https://apps-dashboard-eu1-dev.medable.com/reset-password/$token?orgCode=$orgCode"
+      }
+    },
+    "api.eu1.medable.com": {
+      "ad__app": {
+        "resetPassword": "https://apps-dashboard-eu1.medable.com/reset-password/$token?orgCode=$orgCode"
+      }
+    },
+    "api.medable.com": {
+      "ad__app": {
+        "resetPassword": "https://apps-dashboard.medable.com/reset-password/$token?orgCode=$orgCode"
+      }
+    },
+    "api.medable.cn": {
+      "ad__app": {
+        "resetPassword": "https://apps-dashboard.medable.cn/reset-password/$token?orgCode=$orgCode"
+      }
+    },
+    "api.dev.medable.cn": {
+      "ad__app": {
+        "resetPassword": "https://apps-dashboard-dev.medable.cn/reset-password/$token?orgCode=$orgCode"
+      }
+    },
+    "api.local.medable.com": {
+      "ad__app": {
+        "resetPassword": "https://apps-dashboard.local.medable.com/reset-password/$token?orgCode=$orgCode"
+      }
+    },
+    "api-m6269.alpha-latest.medable.com": {
+      "ad__app": {
+        "resetPassword": "https://apps-dashboard-m6269.alpha-latest.medable.com/reset-password/$token?orgCode=$orgCode"
+      }
+    }
+  }
+}

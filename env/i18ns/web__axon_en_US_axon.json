@@ -1,0 +1,376 @@
+{
+  "aliases": [],
+  "assets": [],
+  "data": {
+    "identity": {
+      "locale": "en_US",
+      "version": "1.4.2"
+    },
+    "sessionTimeout": {
+      "actions": {
+        "ok": "OK"
+      },
+      "kAccountLocked": {
+        "reason": "Your account has been disabled, please contact your administrator for access.",
+        "title": "Disabled user account"
+      },
+      "kLoggedInElsewhere": {
+        "reason": "You have been signed out due to signing in to another location.",
+        "title": "Simultaneous session"
+      },
+      "kSessionExpired": {
+        "reason": "You have been signed out due to inactivity.",
+        "title": "Session timeout"
+      }
+    },
+    "steps": {
+      "auth": {
+        "controls": {
+          "done": "Done"
+        }
+      },
+      "autoComplete": {
+        "selectionMismatch": "Please select an option from the list.",
+        "suggestions": "Suggestions"
+      },
+      "barcodeScanner": {
+        "scannerView": {
+          "textInput": {
+            "actions": {
+              "upload": "Or manually enter"
+            }
+          }
+        },
+        "selectionView": {
+          "scanner": {
+            "alt": "Barcode Scanner",
+            "description": "Use your device's camera to scan a barcode",
+            "title": "Scan Barcode"
+          },
+          "textInput": {
+            "alt": "Barcode Text Input",
+            "description": "Type in the barcode characters manually",
+            "title": "Type in Barcode"
+          }
+        },
+        "textInputView": {
+          "scanner": {
+            "actions": {
+              "scan": "Scan Barcode"
+            },
+            "description": "Prefer to scan the barcode?"
+          },
+          "textInput": {
+            "description": "Barcode number"
+          }
+        },
+        "validations": {
+          "isRequired": "The barcode is required"
+        }
+      },
+      "boolean": {
+        "no": "No",
+        "yes": "Yes"
+      },
+      "completion": {
+        "description": "If you wish to review or change anything, please go back before you submit.",
+        "title": "Ready to submit?"
+      },
+      "consentReview": {
+        "agreeDialog": {
+          "cancel": "Cancel",
+          "confirm": "Agree",
+          "content": "By agreeing you confirm that you read the information and that you wish to take part in this research study.",
+          "title": "Review"
+        },
+        "controls": {
+          "agree": "Agree",
+          "disagree": "Disagree",
+          "previous": "Previous"
+        },
+        "signature": {
+          "stepTitle": "Consent Document"
+        }
+      },
+      "consentSignature": {
+        "actions": {
+          "clear": "Clear Signature"
+        },
+        "controls": {
+          "done": "Done",
+          "previous": "Previous"
+        },
+        "errorProcessing": "Something went wrong while processing your response. Please try again.",
+        "labels": {
+          "firstName": "First Name",
+          "lastName": "Last Name",
+          "signature": "Signature"
+        },
+        "pdf": {
+          "date": "Date",
+          "printName": "Participant's Name (printed)",
+          "signature": "Participant's Signature"
+        },
+        "validations": {
+          "isRequired": "The field is required."
+        }
+      },
+      "consentThankYou": {
+        "consentUploaded": "We've generated a signed version that was uploaded to our secure cloud. You can review it here or later in your Profile.",
+        "controls": {
+          "done": "Done"
+        },
+        "thanksForSigning": "Thank you for signing the consent document.",
+        "title": "Thank You",
+        "viewConsent": "View"
+      },
+      "continousScale": {
+        "validations": {
+          "isRequired": "The field is required."
+        }
+      },
+      "controls": {
+        "cancel": "Cancel",
+        "done": "Done",
+        "next": "Next",
+        "previous": "Previous",
+        "save": "Save",
+        "skip": "Skip",
+        "submit": "Submit"
+      },
+      "date": {
+        "label": {
+          "dateOnly": "Date",
+          "dateTime": "Date & Time"
+        },
+        "validations": {
+          "date": {
+            "isAfter": "Please select a date on or after {{date}}.",
+            "isBefore": "Please select a date on or before {{date}}."
+          },
+          "dateTime": {
+            "isAfter": "Please select a date and time on or after {{dateTime}}.",
+            "isBefore": "Please select a date and time on or before {{dateTime}}."
+          },
+          "invalidDateFormat": "The date format is invalid",
+          "isRequired": "The date field is required"
+        }
+      },
+      "documentSection": {
+        "defaultLearnMore": "Learn More",
+        "dialog": {
+          "close": "Close",
+          "defaultDescription": "Learn more content"
+        },
+        "sections": {
+          "data_gathering": "Data Gathering",
+          "data_use": "Data Use",
+          "overview": "Overview",
+          "privacy": "Privacy",
+          "surveys": "Surveys",
+          "tasks": "Tasks",
+          "time_commitment": "Time Commitment",
+          "withdrawal": "Withdrawal"
+        }
+      },
+      "email": {
+        "validations": {
+          "email": "The email format is invalid",
+          "isRequired": "The email is required"
+        }
+      },
+      "imageCapture": {
+        "cameraView": {
+          "fileUpload": {
+            "actions": {
+              "upload": "Or manually upload"
+            }
+          }
+        },
+        "fileUploadView": {
+          "camera": {
+            "actions": {
+              "capture": "Capture photo"
+            },
+            "description": "Prefer to capture an image?"
+          },
+          "fileUpload": {
+            "description": "Select the section above to upload an image",
+            "label": "Upload from device",
+            "uploadText": "Upload an image"
+          }
+        },
+        "selectionView": {
+          "camera": {
+            "alt": "Camera",
+            "description": "Use your device's camera to capture image",
+            "title": "Take Photo"
+          },
+          "fileUpload": {
+            "alt": "Laptop",
+            "description": "Select an image to upload manually",
+            "title": "Upload Image"
+          }
+        },
+        "validations": {
+          "customValidImage": "Please upload a valid image",
+          "isRequired": "The field is required."
+        }
+      },
+      "integerScale": {
+        "validations": {
+          "isRequired": "The field is required."
+        }
+      },
+      "location": {
+        "map": {
+          "errors": {
+            "default": "There was an error with the Geolocation service on your browser",
+            "geoCoderFailed": "Geocoder failed due to: ",
+            "geoCoderQueryLimitError": "Please wait for your query to be completed",
+            "geoLocationNotSupported": "Your device does not support geolocation",
+            "loadError": "Map cannot be loaded right now, sorry.",
+            "locationNotFound": "Location not found",
+            "permissionDenied": "Permission Denied",
+            "positionUnavailable": "Position Unavailable",
+            "timeout": "Timeout Error"
+          },
+          "loading": {
+            "mapLoading": "Loading map..."
+          }
+        },
+        "readOnly": {
+          "latitude": "Latitude",
+          "longitude": "Longitude"
+        },
+        "searchBox": {
+          "placeholder": "Search"
+        }
+      },
+      "numeric": {
+        "validations": {
+          "isGreaterThan": "The value must be less than, or equal to {{max}}.",
+          "isInteger": "The value must be an integer.",
+          "isLessThan": "The value must be more than, or equal to {{min}}.",
+          "isRequired": "The value must be a number."
+        }
+      },
+      "participantId": {
+        "meta": {
+          "description": "Once the ID is submitted it cannot be changed",
+          "title": "Participant ID"
+        },
+        "missingPlaceholders": {
+          "country": "{COUNTRY} not set",
+          "protocol": "{PROTOCOL} not set",
+          "site": "{SITE} not set"
+        },
+        "validations": {
+          "minLength": "Min characters: {{minLength}}",
+          "patternFormat": "Incorrect format"
+        }
+      },
+      "review": {
+        "skipped": "Skipped"
+      },
+      "text": {
+        "defaultPlaceholder": " ",
+        "passwordReenterLabel": "Re-enter {{passwordLabel}}",
+        "validations": {
+          "isRequired": "The field is required",
+          "isSimplePassword": "This is similar to commonly used passwords. Add another word or two. Uncommon words are better.",
+          "passwordMismatch": "The passwords do not match, please enter a matching password.",
+          "same": "The texts do not match",
+          "validPhoneNumber": "Please enter a valid phone number. Numbers must include your country/area codes"
+        }
+      },
+      "textScale": {
+        "placeholder": "Select value",
+        "validations": {
+          "isRequired": "The field is required"
+        }
+      },
+      "timeInterval": {
+        "hoursSelectionEmpty": "Hour",
+        "hours_few": "{{count}} hours",
+        "hours_many": "{{count}} hours",
+        "hours_one": "{{count}} hour",
+        "hours_other": "{{count}} hours",
+        "hours_two": "{{count}} hours",
+        "hours_zero": "{{count}} hours",
+        "minutesSelectionEmpty": "Minute",
+        "minutes_few": "{{count}} minutes",
+        "minutes_many": "{{count}} minutes",
+        "minutes_one": "{{count}} minute",
+        "minutes_other": "{{count}} minutes",
+        "minutes_two": "{{count}} minutes",
+        "minutes_zero": "{{count}} minutes",
+        "placeholder": "Select value",
+        "selectedTime": "$t(steps.timeInterval.hours, {\"count\": {{hours}} }) $t(steps.timeInterval.minutes, {\"count\": {{minutes}} })",
+        "validations": {
+          "isRequired": "The field is required"
+        }
+      },
+      "timeOfDay": {
+        "hourEmptyText": "Hour",
+        "hourPlaceholder": "hh",
+        "minuteEmptyText": "Minute",
+        "minutePlaceholder": "mm",
+        "validations": {
+          "invalidFormat": "The time format is invalid",
+          "isRequired": "The field is required"
+        }
+      },
+      "valuePicker": {
+        "emptySelectionText": "Select an answer",
+        "validations": {
+          "isRequired": "The field is required"
+        }
+      },
+      "webview": {
+        "no": "No",
+        "yes": "Yes"
+      }
+    },
+    "task": {
+      "headings": {
+        "cancel": "Cancel"
+      },
+      "leaveDialog": {
+        "actions": {
+          "cancel": "Cancel",
+          "confirm": "OK"
+        },
+        "message": "Are you sure you want to leave this activity and discard its results?",
+        "title": "Leave Activity"
+      },
+      "reviewDialog": {
+        "discardDialog": {
+          "actions": {
+            "cancel": "Cancel",
+            "discard": "Yes, Discard"
+          },
+          "message": "Please note that any changes will be discarded if you proceed.",
+          "title": "Discard your changes?"
+        },
+        "saveDialog": {
+          "actions": {
+            "discard": "No, Discard",
+            "save": "Yes, Save"
+          },
+          "message": "Other responses may be cleared and you may be asked to submit new information.",
+          "title": "Save your changes?"
+        }
+      }
+    }
+  },
+  "dirty": true,
+  "extensible": true,
+  "locale": "en_US",
+  "name": "web__axon_en_US_axon",
+  "namespace": "axon",
+  "object": "i18n",
+  "overridable": true,
+  "tags": [],
+  "weight": 0
+}

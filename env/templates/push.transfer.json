@@ -1,0 +1,21 @@
+{
+  "description": "Ownership Transfer",
+  "label": "Ownership Transfer",
+  "localizations": [
+    {
+      "locale": [
+        "en_US"
+      ],
+      "content": [
+        {
+          "data": "/env/templates/tpl/template.push.transfer.en_US.message.txt",
+          "name": "message"
+        }
+      ]
+    }
+  ],
+  "name": "transfer",
+  "object": "template",
+  "partial": false,
+  "type": "push"
+}

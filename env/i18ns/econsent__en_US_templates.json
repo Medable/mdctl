@@ -1,0 +1,64 @@
+{
+  "aliases": [],
+  "assets": [],
+  "data": {
+    "identity": {
+      "locale": "en_US",
+      "version": "1.14.0"
+    },
+    "template": {
+      "email": {
+        "ec__document_complete": {
+          "document_completed": "The document you signed for the {{c_study.c_name}} study is now complete.",
+          "link_instruction": "To access this document for your reference, you can click the link below.",
+          "link_text": "Go to Document",
+          "subject": "Document Complete",
+          "title": "Document Complete"
+        },
+        "ec__document_invite": {
+          "document_invite": "You have been invited to review and sign a document for the {{c_study.c_name}} study, using the Medable portal.",
+          "link_instruction": "To read and sign now, please click the link below.",
+          "link_text": "Go to sign",
+          "security_instructions": "Note that to ensure your security and privacy, you will be asked to create a password.",
+          "subject": "Document available for signature",
+          "title": "Document available for signature"
+        },
+        "ec__document_signer_complete": {
+          "link_instructions": "To access this document for your reference, you can click the link below.",
+          "link_text": "Go to Document",
+          "study_signed": "Thank you, you have successfully signed a document for the {{c_study.c_name}} study.",
+          "subject": "Document Signed",
+          "title": "Document Signed"
+        },
+        "ec__pts_document_invite": {
+          "ask_password_info": "You will be asked to create a password before proceeding.",
+          "invited_message": "You are invited to review a document for the {{c_study.c_name}} study in the Medable portal.",
+          "link_instruction": "Click the link below to read and review the document.",
+          "link_text": "Go to Document",
+          "subject": "Document available for review",
+          "title": "Document available for review"
+        },
+        "layout": {
+          "alt_logo": "Logo",
+          "copyright": "Copyright"
+        }
+      },
+      "sms": {
+        "ec__signature_invite_sms": {
+          "message": "You have been invited to sign a doc at:"
+        }
+      }
+    }
+  },
+  "dirty": true,
+  "extensible": true,
+  "locale": "en_US",
+  "name": "econsent__en_US_templates",
+  "namespace": "econsent",
+  "object": "i18n",
+  "overridable": true,
+  "tags": [
+    "template"
+  ],
+  "weight": 0
+}

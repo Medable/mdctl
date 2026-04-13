@@ -1,0 +1,21 @@
+{
+  "description": "Post Update",
+  "label": "Post Update",
+  "localizations": [
+    {
+      "locale": [
+        "en_US"
+      ],
+      "content": [
+        {
+          "data": "/env/templates/tpl/template.push.post-update.en_US.message.txt",
+          "name": "message"
+        }
+      ]
+    }
+  ],
+  "name": "post-update",
+  "object": "template",
+  "partial": false,
+  "type": "push"
+}

@@ -1,0 +1,26 @@
+{
+  "allowNameMapping": true,
+  "authDuration": 1800,
+  "blacklist": [],
+  "cors": [
+    "*"
+  ],
+  "csrf": false,
+  "enabled": true,
+  "expires": null,
+  "expose": false,
+  "label": "Scheduler App",
+  "maxTokensPerPrincipal": 10,
+  "name": "scheduler__app",
+  "object": "app",
+  "readOnly": false,
+  "sessions": true,
+  "urls": {
+    "connection": "",
+    "resetPassword": "",
+    "createPassword": "",
+    "activateAccount": "",
+    "verifyAccount": ""
+  },
+  "whitelist": []
+}

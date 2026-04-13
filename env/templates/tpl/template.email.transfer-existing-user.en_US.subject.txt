@@ -1,0 +1,1 @@
+A {{{i18n transfer.context.object}}} has been transferred to you at {{{org.name}}}

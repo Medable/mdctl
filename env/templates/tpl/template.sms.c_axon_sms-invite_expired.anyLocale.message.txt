@@ -1,0 +1,3 @@
+{{{i18n "axon:template.sms.c_axon_sms-invite_expired.message_1" study_name=study_name}}}
+
+{{{i18n "axon:template.sms.c_axon_sms-invite_expired.instructions"}}}

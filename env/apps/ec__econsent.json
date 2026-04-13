@@ -1,0 +1,26 @@
+{
+  "allowNameMapping": true,
+  "authDuration": 4000,
+  "blacklist": [],
+  "cors": [
+    "https://consent-m6269.alpha-latest.medable.com"
+  ],
+  "csrf": false,
+  "enabled": true,
+  "expires": null,
+  "expose": false,
+  "label": "eConsent App",
+  "maxTokensPerPrincipal": 10,
+  "name": "ec__econsent",
+  "object": "app",
+  "readOnly": false,
+  "sessions": true,
+  "urls": {
+    "connection": "",
+    "resetPassword": "",
+    "createPassword": "",
+    "activateAccount": "",
+    "verifyAccount": ""
+  },
+  "whitelist": []
+}

@@ -1,0 +1,7 @@
+Hi {{{account.name.first}}},
+
+You're one step away from completing your {{{org.name}}} signup.
+
+Follow the link below to activate your account and confirm your email address:
+
+{{{activation.url}}}

@@ -1,0 +1,20 @@
+{
+  "active": true,
+  "configuration": {
+    "event": "create.before",
+    "inline": false,
+    "object": "c_call",
+    "paths": []
+  },
+  "description": "Trigger on call creation to set defaults & kick-off creation of Cortex room for televisit.",
+  "environment": "*",
+  "label": "Axon - c_call beforeCreate",
+  "language": "javascript/es6",
+  "name": "c_axon_c_call_beforeCreate",
+  "object": "script",
+  "optimized": false,
+  "principal": "serviceAccount.c_system_user",
+  "script": "/env/scripts/js/trigger.c_axon_c_call_beforeCreate.js",
+  "type": "trigger",
+  "weight": 0
+}

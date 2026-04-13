@@ -1,0 +1,24 @@
+{
+  "allowNameMapping": true,
+  "authDuration": 4000,
+  "blacklist": [],
+  "cors": [],
+  "csrf": false,
+  "enabled": true,
+  "expires": null,
+  "expose": false,
+  "label": "Translation Management App",
+  "maxTokensPerPrincipal": 10,
+  "name": "tm__app",
+  "object": "app",
+  "readOnly": false,
+  "sessions": true,
+  "urls": {
+    "connection": "",
+    "resetPassword": "",
+    "createPassword": "",
+    "activateAccount": "",
+    "verifyAccount": ""
+  },
+  "whitelist": []
+}

@@ -1,0 +1,27 @@
+{
+  "active": true,
+  "configuration": {
+    "acl": [
+      "account.public"
+    ],
+    "apiKey": null,
+    "authValidation": "legacy",
+    "method": "post",
+    "path": "research_auth",
+    "plainText": false,
+    "priority": 0,
+    "system": false,
+    "urlEncoded": false
+  },
+  "description": "Axon study/group authentication and public user linking",
+  "environment": "*",
+  "label": "Axon - Research Authentication",
+  "language": "javascript/es6",
+  "name": "c_axon_research_authentication",
+  "object": "script",
+  "optimized": false,
+  "principal": "serviceAccount.c_system_user",
+  "script": "/env/scripts/js/route.c_axon_research_authentication.js",
+  "type": "route",
+  "weight": 0
+}

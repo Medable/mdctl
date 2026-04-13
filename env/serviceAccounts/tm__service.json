@@ -1,0 +1,9 @@
+{
+  "label": "Translation Manager Service Account",
+  "locked": false,
+  "name": "tm__service",
+  "object": "serviceAccount",
+  "roles": [
+    "administrator"
+  ]
+}

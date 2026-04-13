@@ -1,0 +1,21 @@
+{
+  "description": "User pin has expired",
+  "label": "Axon SMS pin expired",
+  "localizations": [
+    {
+      "locale": [
+        "*"
+      ],
+      "content": [
+        {
+          "data": "/env/templates/tpl/template.sms.c_axon_sms-pin_expired.anyLocale.message.txt",
+          "name": "message"
+        }
+      ]
+    }
+  ],
+  "name": "c_axon_sms-pin_expired",
+  "object": "template",
+  "partial": false,
+  "type": "sms"
+}

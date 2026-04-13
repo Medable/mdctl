@@ -1,0 +1,21 @@
+{
+  "description": "Signature Invite SMS",
+  "label": "Signature Invite SMS",
+  "localizations": [
+    {
+      "locale": [
+        "*"
+      ],
+      "content": [
+        {
+          "data": "/env/templates/tpl/template.sms.ec__signature_invite_sms.anyLocale.message.txt",
+          "name": "message"
+        }
+      ]
+    }
+  ],
+  "name": "ec__signature_invite_sms",
+  "object": "template",
+  "partial": false,
+  "type": "sms"
+}

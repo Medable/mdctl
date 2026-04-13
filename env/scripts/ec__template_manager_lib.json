@@ -1,0 +1,17 @@
+{
+  "active": true,
+  "configuration": {
+    "export": "ec__template_manager_lib"
+  },
+  "description": "Library to manage eConsent Template",
+  "environment": "*",
+  "label": "eConsent - eConsent Template Management Library",
+  "language": "javascript/es6",
+  "name": "ec__template_manager_lib",
+  "object": "script",
+  "optimized": false,
+  "principal": null,
+  "script": "/env/scripts/js/library.ec__template_manager_lib.js",
+  "type": "library",
+  "weight": 0
+}

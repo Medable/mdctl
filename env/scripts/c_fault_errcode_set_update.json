@@ -1,0 +1,20 @@
+{
+  "active": false,
+  "configuration": {
+    "event": "update.before",
+    "inline": false,
+    "object": "c_fault",
+    "paths": []
+  },
+  "description": "Setting the correct Error code on object update (Deactivated, remove in 4.14)",
+  "environment": "*",
+  "label": "Fault - Err Code Set Create",
+  "language": "javascript/es6",
+  "name": "c_fault_errcode_set_update",
+  "object": "script",
+  "optimized": false,
+  "principal": null,
+  "script": "/env/scripts/js/trigger.c_fault_errcode_set_update.js",
+  "type": "trigger",
+  "weight": 0
+}

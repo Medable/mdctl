@@ -1,0 +1,21 @@
+{
+  "description": "Connection Created",
+  "label": "Connection Created",
+  "localizations": [
+    {
+      "locale": [
+        "en_US"
+      ],
+      "content": [
+        {
+          "data": "/env/templates/tpl/template.push.connection.en_US.message.txt",
+          "name": "message"
+        }
+      ]
+    }
+  ],
+  "name": "connection",
+  "object": "template",
+  "partial": false,
+  "type": "push"
+}

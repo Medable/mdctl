@@ -1,0 +1,21 @@
+{
+  "description": "Location verification Text Message",
+  "label": "Location Verification",
+  "localizations": [
+    {
+      "locale": [
+        "*"
+      ],
+      "content": [
+        {
+          "data": "/env/templates/tpl/template.sms.location-verification.anyLocale.message.txt",
+          "name": "message"
+        }
+      ]
+    }
+  ],
+  "name": "location-verification",
+  "object": "template",
+  "partial": false,
+  "type": "sms"
+}

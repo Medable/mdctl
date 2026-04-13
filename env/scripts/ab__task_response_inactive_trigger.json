@@ -1,0 +1,16 @@
+{
+  "active": true,
+  "configuration": {
+    "export": "ab__task_response_inactive_trigger"
+  },
+  "environment": "*",
+  "label": "Task response inactive trigger",
+  "language": "javascript/es6",
+  "name": "ab__task_response_inactive_trigger",
+  "object": "script",
+  "optimized": false,
+  "principal": null,
+  "script": "/env/scripts/js/library.ab__task_response_inactive_trigger.js",
+  "type": "library",
+  "weight": 0
+}

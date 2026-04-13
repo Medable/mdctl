@@ -1,0 +1,27 @@
+{
+  "active": true,
+  "configuration": {
+    "acl": [
+      "account.public"
+    ],
+    "apiKey": null,
+    "authValidation": "all",
+    "method": "post",
+    "path": "add_review",
+    "plainText": false,
+    "priority": 0,
+    "system": false,
+    "urlEncoded": false
+  },
+  "description": "Adds a new review to Task Response , if the required reviews are met the Task Response is set to 'Reviewed'",
+  "environment": "*",
+  "label": "Axon - Hybrid - Add Review",
+  "language": "javascript/es6",
+  "name": "c_axon_hybrid_add_review",
+  "object": "script",
+  "optimized": false,
+  "principal": null,
+  "script": "/env/scripts/js/route.c_axon_hybrid_add_review.js",
+  "type": "route",
+  "weight": 0
+}

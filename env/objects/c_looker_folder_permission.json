@@ -1,0 +1,110 @@
+{
+  "allowConnections": false,
+  "auditing": {
+    "enabled": false
+  },
+  "canCascadeDelete": false,
+  "connectionOptions": {
+    "requireAccept": true,
+    "requiredAccess": 5,
+    "sendNotifications": true
+  },
+  "createAcl": [
+    "account.public"
+  ],
+  "defaultAcl": [
+    "owner.delete",
+    "role.administrator.delete",
+    "role.c_axon_site_user.update",
+    "role.c_site_user.update"
+  ],
+  "defaultType": null,
+  "favorite": false,
+  "hasETag": false,
+  "hasOwner": true,
+  "isDeletable": true,
+  "isUnmanaged": false,
+  "isVersioned": false,
+  "label": "Role Permissions for Looker Folders",
+  "localized": false,
+  "name": "c_looker_folder_permission",
+  "object": "object",
+  "objectTypes": [],
+  "properties": [
+    {
+      "acl": [],
+      "aclOverride": false,
+      "array": true,
+      "auditable": false,
+      "canPull": true,
+      "canPush": true,
+      "cascadeDelete": false,
+      "creatable": false,
+      "defaultValue": [],
+      "dependencies": [],
+      "history": false,
+      "include": [],
+      "indexed": true,
+      "label": "Access Roles For Folder",
+      "maxItems": 1000,
+      "maxShift": false,
+      "minItems": 0,
+      "name": "c_folder_access_roles",
+      "optional": false,
+      "readAccess": "read",
+      "readable": true,
+      "removable": false,
+      "type": "ObjectId",
+      "unique": false,
+      "uniqueValues": false,
+      "validators": [],
+      "writable": true,
+      "writeAccess": "update",
+      "writeOnCreate": true
+    },
+    {
+      "acl": [],
+      "aclOverride": false,
+      "array": false,
+      "auditable": false,
+      "canPull": true,
+      "canPush": true,
+      "creatable": false,
+      "defaultValue": [],
+      "dependencies": [],
+      "description": "Describes the external service",
+      "history": false,
+      "include": [],
+      "indexed": true,
+      "label": "Looker Folder Id",
+      "maxItems": 100,
+      "maxShift": false,
+      "minItems": 0,
+      "name": "c_folder_id",
+      "optional": false,
+      "readAccess": "read",
+      "readable": true,
+      "removable": false,
+      "type": "Number",
+      "unique": true,
+      "uniqueValues": false,
+      "validators": [],
+      "writable": true,
+      "writeAccess": "update",
+      "writeOnCreate": true
+    }
+  ],
+  "reporting": {
+    "enabled": false
+  },
+  "shareAcl": [],
+  "shareChain": [
+    "share",
+    "read",
+    "connected"
+  ],
+  "uniqueKey": "",
+  "useBuildVersion": false,
+  "useBundles": false,
+  "validateOwner": true
+}

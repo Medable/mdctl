@@ -1,0 +1,17 @@
+{
+  "active": true,
+  "configuration": {
+    "export": "c_browse_data_transform"
+  },
+  "description": "Browse data transform",
+  "environment": "*",
+  "label": "DMWEB - Browse Data Transform",
+  "language": "javascript/es6",
+  "name": "c_browse_data_transform",
+  "object": "script",
+  "optimized": false,
+  "principal": null,
+  "script": "/env/scripts/js/library.c_browse_data_transform.js",
+  "type": "library",
+  "weight": 0
+}

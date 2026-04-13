@@ -1,0 +1,19 @@
+{
+  "active": true,
+  "configuration": {
+    "event": "update.after",
+    "inline": false,
+    "object": "c_task_response",
+    "paths": []
+  },
+  "environment": "*",
+  "label": "Nucleus - TR Check Tasks",
+  "language": "javascript/es6",
+  "name": "c_nucleus_tr_check_tasks",
+  "object": "script",
+  "optimized": false,
+  "principal": "serviceAccount.c_system_user",
+  "script": "/env/scripts/js/trigger.c_nucleus_tr_check_tasks.js",
+  "type": "trigger",
+  "weight": 0
+}

@@ -1,0 +1,7 @@
+{{i18n "econsent:template.email.ec__pts_document_invite.invited_message" c_study=c_study}}
+
+{{i18n "econsent:template.email.ec__pts_document_invite.link_instruction"}}
+
+{{i18n "econsent:template.email.ec__pts_document_invite.ask_password_info"}}
+
+{{url}}/invite/{{token}}?org={{orgCode}}

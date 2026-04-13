@@ -1,0 +1,29 @@
+{
+  "description": "Account welcome email to provider tole",
+  "label": "Account Welcome Provider",
+  "localizations": [
+    {
+      "locale": [
+        "en_US"
+      ],
+      "content": [
+        {
+          "data": "/env/templates/tpl/template.email.account-welcome-provider.en_US.html.html",
+          "name": "html"
+        },
+        {
+          "data": "/env/templates/tpl/template.email.account-welcome-provider.en_US.plain.txt",
+          "name": "plain"
+        },
+        {
+          "data": "/env/templates/tpl/template.email.account-welcome-provider.en_US.subject.txt",
+          "name": "subject"
+        }
+      ]
+    }
+  ],
+  "name": "account-welcome-provider",
+  "object": "template",
+  "partial": false,
+  "type": "email"
+}

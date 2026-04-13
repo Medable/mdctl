@@ -1,0 +1,207 @@
+{
+  "isPublic": false,
+  "name": "axon__app_urls",
+  "object": "config",
+  "value": {
+    "api-int-dev.medable.com": {
+      "c_android_patient_app": {
+        "resetPassword": "https://app-int-dev.medable.com/$orgCode/reset-password/$token"
+      },
+      "c_ios_patient_app": {
+        "resetPassword": "https://app-int-dev.medable.com/$orgCode/reset-password/$token"
+      },
+      "c_mystudy": {
+        "resetPassword": "https://mystudy-int-dev.medable.com/reset-password/$token?org=$orgCode"
+      },
+      "c_portal": {
+        "resetPassword": "https://portal-int-dev.medable.com/reset-password/$token?org=$orgCode"
+      },
+      "c_site_app_demo": {
+        "resetPassword": "https://site-int-dev.medable.com/reset-password/$token?org=$orgCode"
+      },
+      "c_study_builder": {
+        "resetPassword": "https://builder-int-dev.medable.com/reset-password/$token?org=$orgCode"
+      }
+    },
+    "api.qa.medable.com": {
+      "c_android_patient_app": {
+        "resetPassword": "https://app.qa.medable.com/$orgCode/reset-password/$token"
+      },
+      "c_ios_patient_app": {
+        "resetPassword": "https://app.qa.medable.com/$orgCode/reset-password/$token"
+      },
+      "c_mystudy": {
+        "resetPassword": "https://mystudy.qa.medable.com/reset-password/$token?org=$orgCode"
+      },
+      "c_portal": {
+        "resetPassword": "https://portal.qa.medable.com/reset-password/$token?org=$orgCode"
+      },
+      "c_site_app_demo": {
+        "resetPassword": "https://site-qa.medable.com/reset-password/$token?org=$orgCode"
+      },
+      "c_study_builder": {
+        "resetPassword": "https://builder-qa.medable.com/reset-password/$token?org=$orgCode"
+      }
+    },
+    "api.test.medable.com": {
+      "c_android_patient_app": {
+        "resetPassword": "https://app.test.medable.com/$orgCode/reset-password/$token"
+      },
+      "c_ios_patient_app": {
+        "resetPassword": "https://app.test.medable.com/$orgCode/reset-password/$token"
+      },
+      "c_mystudy": {
+        "resetPassword": "https://mystudy-test.medable.com/reset-password/$token?org=$orgCode"
+      },
+      "c_portal": {
+        "resetPassword": "https://portal-test.medable.com/reset-password/$token?org=$orgCode"
+      },
+      "c_site_app_demo": {
+        "resetPassword": "https://site-test.medable.com/reset-password/$token?org=$orgCode"
+      },
+      "c_study_builder": {
+        "resetPassword": "https://builder-test.medable.com/reset-password/$token?org=$orgCode"
+      }
+    },
+    "api.dev.medable.com": {
+      "c_android_patient_app": {
+        "resetPassword": "https://app.dev.medable.com/$orgCode/reset-password/$token"
+      },
+      "c_ios_patient_app": {
+        "resetPassword": "https://app.dev.medable.com/$orgCode/reset-password/$token"
+      },
+      "c_mystudy": {
+        "resetPassword": "https://mystudy.dev.medable.com/reset-password/$token?org=$orgCode"
+      },
+      "c_portal": {
+        "resetPassword": "https://portal.dev.medable.com/reset-password/$token?org=$orgCode"
+      },
+      "c_site_app_demo": {
+        "resetPassword": "https://site-dev.medable.com/reset-password/$token?org=$orgCode"
+      },
+      "c_study_builder": {
+        "resetPassword": "https://builder-dev.medable.com/reset-password/$token?org=$orgCode"
+      }
+    },
+    "api.eu1-dev.medable.com": {
+      "c_android_patient_app": {
+        "resetPassword": "https://app.eu1-dev.medable.com/$orgCode/reset-password/$token"
+      },
+      "c_ios_patient_app": {
+        "resetPassword": "https://app.eu1-dev.medable.com/$orgCode/reset-password/$token"
+      },
+      "c_mystudy": {
+        "resetPassword": "https://mystudy-eu1-dev.medable.com/reset-password/$token?org=$orgCode"
+      },
+      "c_portal": {
+        "resetPassword": "https://portal-eu1-dev.medable.com/reset-password/$token?org=$orgCode"
+      },
+      "c_site_app_demo": {
+        "resetPassword": "https://site-eu1-dev.medable.com/reset-password/$token?org=$orgCode"
+      },
+      "c_study_builder": {
+        "resetPassword": "https://builder-eu1-dev.medable.com/reset-password/$token?org=$orgCode"
+      }
+    },
+    "api.eu1.medable.com": {
+      "c_android_patient_app": {
+        "resetPassword": "https://app.eu1.medable.com/$orgCode/reset-password/$token"
+      },
+      "c_ios_patient_app": {
+        "resetPassword": "https://app.eu1.medable.com/$orgCode/reset-password/$token"
+      },
+      "c_mystudy": {
+        "resetPassword": "https://mystudy-eu1.medable.com/reset-password/$token?org=$orgCode"
+      },
+      "c_portal": {
+        "resetPassword": "https://portal-eu1.medable.com/reset-password/$token?org=$orgCode"
+      },
+      "c_site_app_demo": {
+        "resetPassword": "https://site-eu1.medable.com/reset-password/$token?org=$orgCode"
+      },
+      "c_study_builder": {
+        "resetPassword": "https://builder-eu1.medable.com/reset-password/$token?org=$orgCode"
+      }
+    },
+    "api.medable.com": {
+      "c_android_patient_app": {
+        "resetPassword": "https://app.medable.com/$orgCode/reset-password/$token"
+      },
+      "c_ios_patient_app": {
+        "resetPassword": "https://app.medable.com/$orgCode/reset-password/$token"
+      },
+      "c_mystudy": {
+        "resetPassword": "https://mystudy.medable.com/reset-password/$token?org=$orgCode"
+      },
+      "c_portal": {
+        "resetPassword": "https://portal.medable.com/reset-password/$token?org=$orgCode"
+      },
+      "c_site_app_demo": {
+        "resetPassword": "https://site.medable.com/reset-password/$token?org=$orgCode"
+      },
+      "c_study_builder": {
+        "resetPassword": "https://builder.medable.com/reset-password/$token?org=$orgCode"
+      }
+    },
+    "api.medable.cn": {
+      "c_android_patient_app": {
+        "resetPassword": "https://app.medable.cn/$orgCode/reset-password/$token"
+      },
+      "c_ios_patient_app": {
+        "resetPassword": "https://app.medable.cn/$orgCode/reset-password/$token"
+      },
+      "c_mystudy": {
+        "resetPassword": "https://mystudy.medable.cn/reset-password/$token?org=$orgCode"
+      },
+      "c_portal": {
+        "resetPassword": "https://portal.medable.cn/reset-password/$token?org=$orgCode"
+      },
+      "c_site_app_demo": {
+        "resetPassword": "https://site.medable.cn/reset-password/$token?org=$orgCode"
+      },
+      "c_study_builder": {
+        "resetPassword": "https://builder.medable.cn/reset-password/$token?org=$orgCode"
+      }
+    },
+    "api.dev.medable.cn": {
+      "c_android_patient_app": {
+        "resetPassword": "https://app.dev.medable.cn/$orgCode/reset-password/$token"
+      },
+      "c_ios_patient_app": {
+        "resetPassword": "https://app.dev.medable.cn/$orgCode/reset-password/$token"
+      },
+      "c_mystudy": {
+        "resetPassword": "https://mystudy-dev.medable.cn/reset-password/$token?org=$orgCode"
+      },
+      "c_portal": {
+        "resetPassword": "https://portal-dev.medable.cn/reset-password/$token?org=$orgCode"
+      },
+      "c_site_app_demo": {
+        "resetPassword": "https://site-dev.medable.cn/reset-password/$token?org=$orgCode"
+      },
+      "c_study_builder": {
+        "resetPassword": "https://builder-dev.medable.cn/reset-password/$token?org=$orgCode"
+      }
+    },
+    "api-m6269.alpha-latest.medable.com": {
+      "c_android_patient_app": {
+        "resetPassword": "https://app-m6269.alpha-latest.medable.com/$orgCode/reset-password/$token"
+      },
+      "c_ios_patient_app": {
+        "resetPassword": "https://app-m6269.alpha-latest.medable.com/$orgCode/reset-password/$token"
+      },
+      "c_mystudy": {
+        "resetPassword": "https://mystudy-m6269.alpha-latest.medable.com/reset-password/$token?org=$orgCode"
+      },
+      "c_portal": {
+        "resetPassword": "https://portal-m6269.alpha-latest.medable.com/reset-password/$token?org=$orgCode"
+      },
+      "c_site_app_demo": {
+        "resetPassword": "https://site-m6269.alpha-latest.medable.com/reset-password/$token?org=$orgCode"
+      },
+      "c_study_builder": {
+        "resetPassword": "https://builder-m6269.alpha-latest.medable.com/reset-password/$token?org=$orgCode"
+      }
+    }
+  }
+}

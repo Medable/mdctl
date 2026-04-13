@@ -1,0 +1,29 @@
+{
+  "description": "Email sent to public user (participant) when virtual visit is rescheduled.",
+  "label": "Axon - Virtual Visit Rescheduled",
+  "localizations": [
+    {
+      "locale": [
+        "*"
+      ],
+      "content": [
+        {
+          "data": "/env/templates/tpl/template.email.c_axon_virtual_visit_rescheduled.anyLocale.html.html",
+          "name": "html"
+        },
+        {
+          "data": "/env/templates/tpl/template.email.c_axon_virtual_visit_rescheduled.anyLocale.plain.txt",
+          "name": "plain"
+        },
+        {
+          "data": "/env/templates/tpl/template.email.c_axon_virtual_visit_rescheduled.anyLocale.subject.txt",
+          "name": "subject"
+        }
+      ]
+    }
+  ],
+  "name": "c_axon_virtual_visit_rescheduled",
+  "object": "template",
+  "partial": false,
+  "type": "email"
+}

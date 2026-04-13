@@ -1,0 +1,21 @@
+{
+  "description": "Notification sent to participant when they miss a virtual visit.",
+  "label": "Axon - Virtual Visit Missed Push Notification",
+  "localizations": [
+    {
+      "locale": [
+        "*"
+      ],
+      "content": [
+        {
+          "data": "/env/templates/tpl/template.push.c_axon_virtual_visit_missed.anyLocale.message.txt",
+          "name": "message"
+        }
+      ]
+    }
+  ],
+  "name": "c_axon_virtual_visit_missed",
+  "object": "template",
+  "partial": false,
+  "type": "push"
+}

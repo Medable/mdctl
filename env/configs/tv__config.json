@@ -1,0 +1,75 @@
+{
+  "isPublic": false,
+  "name": "tv__config",
+  "object": "config",
+  "value": {
+    "version": "1.5.0",
+    "rooms": {
+      "useGC": false,
+      "gcExpiry": 60000
+    },
+    "televisit": {
+      "waitThreshold": 5,
+      "defaultAppointmentLength": 30,
+      "showOnParticipant": false
+    },
+    "wss": {
+      "issuer": "tv__ws_issuer",
+      "endpoint": null,
+      "tokenExpirySeconds": 86400,
+      "endpoints": [
+        {
+          "server": "*",
+          "url": "https://api-ws.medable.com"
+        },
+        {
+          "server": [
+            "api.dev.medable.com"
+          ],
+          "url": "https://api-ws-dev.medable.com"
+        },
+        {
+          "server": [
+            "api.medable.cn"
+          ],
+          "url": "https://api-ws.medable.cn"
+        },
+        {
+          "server": [
+            "api.dev.medable.cn"
+          ],
+          "url": "https://api-ws.medable.cn"
+        },
+        {
+          "server": [
+            "api-eu1.medable.com"
+          ],
+          "url": "https://api-ws-eu1.medable.com"
+        },
+        {
+          "server": [
+            "api-eu1-dev.medable.com"
+          ],
+          "url": "https://api-ws-eu1-dev.medable.com"
+        },
+        {
+          "server": [
+            "api.edge.medable.com",
+            "api-int-dev.medable.com",
+            "api.demo.medable.com",
+            "api.qa.medable.com",
+            "api.test.medable.com",
+            "api-int-dev.medable.com"
+          ],
+          "url": "https://api-ws-edge.medable.com"
+        },
+        {
+          "server": [
+            "api-m6269.alpha-latest.medable.com"
+          ],
+          "url": "https://api-ws-m6269.alpha-latest.medable.com"
+        }
+      ]
+    }
+  }
+}

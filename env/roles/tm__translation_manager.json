@@ -1,0 +1,11 @@
+{
+  "code": "tm__translation_manager",
+  "include": [
+    "c_study_viewer",
+    "tm__create_jobs",
+    "tm__read_jobs"
+  ],
+  "name": "Translation Management: Translation Manager",
+  "object": "role",
+  "scope": []
+}

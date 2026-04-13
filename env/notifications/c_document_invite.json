@@ -1,0 +1,27 @@
+{
+  "duplicates": false,
+  "endpoints": [
+    {
+      "configurable": true,
+      "defaultUserState": 0,
+      "label": "Email",
+      "name": "email",
+      "state": "Enabled",
+      "template": "ec__document_invite",
+      "type": "email"
+    },
+    {
+      "configurable": true,
+      "defaultUserState": 0,
+      "label": "SMS",
+      "name": "sms",
+      "state": "Enabled",
+      "template": "ec__signature_invite_sms",
+      "type": "sms"
+    }
+  ],
+  "label": "EC Signature Invite",
+  "name": "c_document_invite",
+  "object": "notification",
+  "persists": true
+}

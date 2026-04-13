@@ -1,0 +1,17 @@
+{
+  "active": true,
+  "configuration": {
+    "export": "c_org_notifications"
+  },
+  "description": "Retrieve Org Configuration Notifications",
+  "environment": "*",
+  "label": "Library to retrieve Org Configuration Notifications",
+  "language": "javascript/es6",
+  "name": "c_org_notifications",
+  "object": "script",
+  "optimized": false,
+  "principal": null,
+  "script": "/env/scripts/js/library.c_org_notifications.js",
+  "type": "library",
+  "weight": 0
+}

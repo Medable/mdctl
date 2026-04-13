@@ -1,0 +1,18 @@
+{
+  "duplicates": false,
+  "endpoints": [
+    {
+      "configurable": true,
+      "defaultUserState": 0,
+      "label": "Email",
+      "name": "email",
+      "state": "User",
+      "template": "cdb__threshold_common",
+      "type": "email"
+    }
+  ],
+  "label": "Threshold Common",
+  "name": "cdb__threshold_common",
+  "object": "notification",
+  "persists": false
+}

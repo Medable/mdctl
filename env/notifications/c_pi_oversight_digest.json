@@ -1,0 +1,18 @@
+{
+  "duplicates": false,
+  "endpoints": [
+    {
+      "configurable": true,
+      "defaultUserState": 0,
+      "label": "Email",
+      "name": "email",
+      "state": "Enabled",
+      "template": "c_pi_oversight_digest",
+      "type": "email"
+    }
+  ],
+  "label": "PI Oversight Digest",
+  "name": "c_pi_oversight_digest",
+  "object": "notification",
+  "persists": false
+}

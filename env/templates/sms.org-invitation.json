@@ -1,0 +1,21 @@
+{
+  "description": "Message to new user in private org with registration link",
+  "label": "Private Org Invitation",
+  "localizations": [
+    {
+      "locale": [
+        "en_US"
+      ],
+      "content": [
+        {
+          "data": "/env/templates/tpl/template.sms.org-invitation.en_US.message.txt",
+          "name": "message"
+        }
+      ]
+    }
+  ],
+  "name": "org-invitation",
+  "object": "template",
+  "partial": false,
+  "type": "sms"
+}

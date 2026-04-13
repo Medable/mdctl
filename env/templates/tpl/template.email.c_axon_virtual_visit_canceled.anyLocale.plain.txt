@@ -1,0 +1,5 @@
+{{i18n "axon:template.email.c_axon_virtual_visit_canceled.hello" account=account}}
+
+{{{i18n "axon:template.email.c_axon_virtual_visit_canceled.title" date=date time=time timezone=timezone}}}
+
+{{i18n "axon:template.email.c_axon_virtual_visit_canceled.instruction"}}

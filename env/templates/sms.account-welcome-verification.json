@@ -1,0 +1,21 @@
+{
+  "description": "Account verification Message",
+  "label": "Account Verification",
+  "localizations": [
+    {
+      "locale": [
+        "en_US"
+      ],
+      "content": [
+        {
+          "data": "/env/templates/tpl/template.sms.account-welcome-verification.en_US.message.txt",
+          "name": "message"
+        }
+      ]
+    }
+  ],
+  "name": "account-welcome-verification",
+  "object": "template",
+  "partial": false,
+  "type": "sms"
+}

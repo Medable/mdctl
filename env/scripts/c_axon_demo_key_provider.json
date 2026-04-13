@@ -1,0 +1,27 @@
+{
+  "active": true,
+  "configuration": {
+    "acl": [
+      "account.anonymous"
+    ],
+    "apiKey": "c_axon_demo_app",
+    "authValidation": "legacy",
+    "method": "get",
+    "path": "demo_key_provider",
+    "plainText": false,
+    "priority": 0,
+    "system": false,
+    "urlEncoded": false
+  },
+  "description": "Route for anonymously returning demo app api key",
+  "environment": "*",
+  "label": "Axon - Demo Key Provider",
+  "language": "javascript/es6",
+  "name": "c_axon_demo_key_provider",
+  "object": "script",
+  "optimized": false,
+  "principal": null,
+  "script": "/env/scripts/js/route.c_axon_demo_key_provider.js",
+  "type": "route",
+  "weight": 0
+}

@@ -1,0 +1,17 @@
+{
+  "active": true,
+  "configuration": {
+    "export": "c_axon_query_management"
+  },
+  "description": "Library for managing open queries in",
+  "environment": "*",
+  "label": "Axon - Query Management Library",
+  "language": "javascript/es6",
+  "name": "c_axon_query_management",
+  "object": "script",
+  "optimized": false,
+  "principal": null,
+  "script": "/env/scripts/js/library.c_axon_query_management.js",
+  "type": "library",
+  "weight": 0
+}

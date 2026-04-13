@@ -1,0 +1,5 @@
+Hi {{{account.name.first}}},
+
+Welcome to {{{org.name}}}!
+
+Confirm your account at {{{verification.url}}}

@@ -1,0 +1,31 @@
+{
+  "active": true,
+  "configuration": {
+    "event": "update.after",
+    "inline": true,
+    "object": "c_task_response",
+    "paths": []
+  },
+  "description": "Sets the Task Response to 'Reviewed' if all required reviews are supplied",
+  "environment": "*",
+  "if": {
+    "$gte": [
+      {
+        "$indexOfArray": [
+          "$$SCRIPT.arguments.modified",
+          "c_reviews"
+        ]
+      },
+      0
+    ]
+  },
+  "label": "Axon - Hybrid - AU Task Response - Set c_status to 'Reviewed'",
+  "language": "javascript/es6",
+  "name": "c_axon_hybrid_au_set_reviewed",
+  "object": "script",
+  "optimized": false,
+  "principal": "serviceAccount.c_system_user",
+  "script": "/env/scripts/js/trigger.c_axon_hybrid_au_set_reviewed.js",
+  "type": "trigger",
+  "weight": 0
+}

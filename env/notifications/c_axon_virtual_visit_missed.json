@@ -1,0 +1,18 @@
+{
+  "duplicates": false,
+  "endpoints": [
+    {
+      "configurable": true,
+      "defaultUserState": 0,
+      "label": "Push",
+      "name": "push",
+      "state": "Enabled",
+      "template": "c_axon_virtual_visit_missed",
+      "type": "push"
+    }
+  ],
+  "label": "Axon - Virtual Visit Missed",
+  "name": "c_axon_virtual_visit_missed",
+  "object": "notification",
+  "persists": false
+}

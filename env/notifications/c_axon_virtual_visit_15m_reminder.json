@@ -1,0 +1,18 @@
+{
+  "duplicates": false,
+  "endpoints": [
+    {
+      "configurable": true,
+      "defaultUserState": 0,
+      "label": "Push",
+      "name": "push",
+      "state": "Enabled",
+      "template": "c_axon_virtual_visit_15m_reminder",
+      "type": "push"
+    }
+  ],
+  "label": "Axon - Virtual Visit 15m Reminder",
+  "name": "c_axon_virtual_visit_15m_reminder",
+  "object": "notification",
+  "persists": false
+}

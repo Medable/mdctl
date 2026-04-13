@@ -1,0 +1,27 @@
+{
+  "active": true,
+  "configuration": {
+    "acl": [
+      "role.administrator"
+    ],
+    "apiKey": null,
+    "authValidation": "legacy",
+    "method": "post",
+    "path": "retroQueryPop",
+    "plainText": false,
+    "priority": 0,
+    "system": false,
+    "urlEncoded": false
+  },
+  "description": "Nucleus - Retroactive Query Evaluation - Run one",
+  "environment": "*",
+  "label": "Nucleus - Retro Query Eval - Run one",
+  "language": "javascript/es6",
+  "name": "c_nucleus_retro_query_eval_run_one",
+  "object": "script",
+  "optimized": false,
+  "principal": null,
+  "script": "/env/scripts/js/route.c_nucleus_retro_query_eval_run_one.js",
+  "type": "route",
+  "weight": 0
+}

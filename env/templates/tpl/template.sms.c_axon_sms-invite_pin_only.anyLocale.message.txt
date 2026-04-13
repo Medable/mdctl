@@ -1,0 +1,13 @@
+{{{i18n "axon:template.sms.c_axon_sms-invite_pin_only.message_1" study_name=study_name}}}
+
+{{{i18n "axon:template.sms.c_axon_sms-invite_pin_only.instructionsOne"}}}
+
+{{{i18n "axon:template.sms.c_axon_sms-invite_pin_only.email" email=email}}}
+{{{i18n "axon:template.sms.c_axon_sms-invite_pin_only.code" access_code=access_code}}}
+
+{{{i18n "axon:template.sms.c_axon_sms-invite_pin_only.instructionsTwo"}}}
+{{{i18n "axon:template.sms.c_axon_sms-invite_pin_only.appStoreLink"}}}
+{{{i18n "axon:template.sms.c_axon_sms-invite_pin_only.googlePlayLink"}}}
+
+{{{i18n "axon:template.sms.c_axon_sms-invite_pin_only.webLink" paweb_url=paweb_url}}}
+

@@ -1,0 +1,17 @@
+{
+  "isPublic": false,
+  "name": "dcr_intake__iam_urls",
+  "object": "config",
+  "value": {
+    "api-int-dev.medable.com": "latest",
+    "api.qa.medable.com": "test",
+    "api.platform.medable.cn": "test",
+    "api.test.medable.com": "staging",
+    "api-eu1-dev.medable.com": "production",
+    "api.dev.medable.com": "production",
+    "api.dev.medable.cn": "production",
+    "api.medable.cn": "production",
+    "api-eu1.medable.com": "production",
+    "api.medable.com": "production"
+  }
+}

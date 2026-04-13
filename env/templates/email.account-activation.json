@@ -1,0 +1,29 @@
+{
+  "description": "This is sent to activate and verify accounts in orgs where there is manual activation",
+  "label": "Account activation with verification link",
+  "localizations": [
+    {
+      "locale": [
+        "en_US"
+      ],
+      "content": [
+        {
+          "data": "/env/templates/tpl/template.email.account-activation.en_US.html.html",
+          "name": "html"
+        },
+        {
+          "data": "/env/templates/tpl/template.email.account-activation.en_US.plain.txt",
+          "name": "plain"
+        },
+        {
+          "data": "/env/templates/tpl/template.email.account-activation.en_US.subject.txt",
+          "name": "subject"
+        }
+      ]
+    }
+  ],
+  "name": "account-activation",
+  "object": "template",
+  "partial": false,
+  "type": "email"
+}

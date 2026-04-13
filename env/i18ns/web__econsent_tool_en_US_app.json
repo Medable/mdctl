@@ -1,0 +1,804 @@
+{
+  "aliases": [],
+  "assets": [],
+  "data": {
+    "account": {
+      "alerts": {
+        "locked": "Account locked",
+        "unlocked": "Account unlocked"
+      },
+      "labels": {
+        "lock": "Lock",
+        "unlock": "Unlock"
+      }
+    },
+    "components": {
+      "layout": {
+        "actions": {
+          "logout": "Log Out"
+        }
+      }
+    },
+    "documents": {
+      "actions": {
+        "cancel": "Cancel",
+        "create": "Create"
+      },
+      "documentStatuses": {
+        "voided": "Voided"
+      },
+      "errors": {
+        "email": "Email is not valid",
+        "failedSignerLink": "Unable to obtain link for signer"
+      },
+      "labels": {
+        "completionDate": "Completion date",
+        "completionDateAndTime": "Completion Date & Time",
+        "created": "created",
+        "documentTemplate": "Document Template",
+        "documentUploaded": "Document Uploaded",
+        "id": "ID",
+        "reasonForCancellation": "Reason for void document",
+        "signedUploadedDocument": "Signed uploaded document",
+        "status": "status"
+      },
+      "landing": {
+        "buttonText": "Send the first consent",
+        "heading": "Welcome to the Medable Consent Manager.",
+        "message": "No consents have been sent."
+      },
+      "manage": {
+        "actionsPopoverButton": "Actions",
+        "assignOrResend": "Assign or Resend",
+        "assignSigner": "Assign Signer",
+        "breadcrumbs": {
+          "consents": "Documents",
+          "manageConsent": "...",
+          "newConsent": "New document"
+        },
+        "cancelButton": "Cancel",
+        "cancelReason": "User requested",
+        "downloadDocumentButton": "Download",
+        "invitationSent": "Invitation sent",
+        "reasonForCancellation": {
+          "charactersRemaining": "{{REMAINING_CHARACTERS}} characters remaining.",
+          "exceededBy": "exceeded by {{CHARACTERS_EXCEEDED}}",
+          "fieldValidationLabel": "Reason",
+          "maxCharacters": "{{CHAR_LIMIT}} max characters",
+          "name": "Reason for cancellation",
+          "no": "No",
+          "placeholder": "Enter the reason for voiding the document (required)",
+          "title": "Would you like to continue with voiding your document?",
+          "yes": "Yes"
+        },
+        "resendInvite": "Resend Invite",
+        "sendDocumentButton": "Send Document",
+        "sendingDocumentButton": "Sending Document",
+        "sentDocumentButton": "Document Sent",
+        "signNowButton": "Sign Now",
+        "signatureComplete": {
+          "dateInstructions": "Select the date the participant signed the document",
+          "dateLabel": "Date",
+          "datePlaceholder": "Select a date",
+          "title": "Signature Complete",
+          "uploadDocNotice": "You are not required to upload a document at this time for a participant to consent"
+        },
+        "signatureCompleteButton": "Signature Complete",
+        "tabViewDigitalDocument": "View Digital Document",
+        "tabViewDocument": "View Document",
+        "tabVoid": "Void",
+        "tabVoidDocument": "Void Document",
+        "templateSelect": {
+          "downloadDocument": "Download Document",
+          "dropdownSelectText": "{{TEMPLATE_NAME}} - published - {{PUBLISHED_DATE}}",
+          "eSignature": "E-signature",
+          "emptyText": "Select document template",
+          "participantSearchText": "Search Participant Name, ID, Email",
+          "participantSelectText": "Select Participant Name, ID, Email",
+          "printToSign": "Print to sign",
+          "signatureTypeLabel": "Signature Type",
+          "templateLabel": "Document Template",
+          "title": "New Document"
+        },
+        "uploadNewDocumentButton": "Upload New Document",
+        "voidCancelButton": "Cancel",
+        "voidDialog": {
+          "content": "Are you sure you want to void this document?",
+          "title": "Confirm Void Document?"
+        },
+        "voidProcessButton": "Void"
+      },
+      "percentageRead": "Read",
+      "signers": {
+        "title": "Signers"
+      },
+      "sourceDocument": "Source document:",
+      "title": "Documents",
+      "titleBuilder": "Builder View"
+    },
+    "download": {
+      "buttonText": "PDF Copy",
+      "heading": "Download a copy"
+    },
+    "generic": {
+      "cancel": "Cancel",
+      "leave": "Leave"
+    },
+    "identity": {
+      "locale": "en_US",
+      "version": "1.1.1"
+    },
+    "invite": {
+      "label": {
+        "cancel": "Cancel",
+        "send": "Send"
+      }
+    },
+    "leavePage": {
+      "description": "Changes you made may not be saved.",
+      "title": "Leave page?"
+    },
+    "menu": {
+      "applications": "Applications",
+      "documents": "Documents",
+      "messages": {
+        "userOrgNotInstalled": "Please contact your Administrator to request User and Site Management access."
+      },
+      "participants": "Participant",
+      "templates": "Templates",
+      "users": "Users"
+    },
+    "participant": {
+      "descriptions": {
+        "autoParticipantIdInfo": "Study is configured to generate Participant ID automatically",
+        "piiCommsAcknowledgement": "Participant acknowledges email address may be used for study-related communications"
+      },
+      "documents": {
+        "actions": {
+          "add": "Add Document"
+        },
+        "columns": {
+          "updated": "Updated"
+        }
+      },
+      "headings": {
+        "create": "New Participant",
+        "documents": "Documents",
+        "participant": "Participant",
+        "read": "Profile"
+      },
+      "labels": {
+        "email": "Email",
+        "language": "Language",
+        "participantGroup": "Participant Group",
+        "participantId": "Participant ID",
+        "status": "Status"
+      },
+      "tabHeadings": {
+        "visitSchedule": "Visit Schedule"
+      },
+      "validation": {
+        "email": "Must be a valid email"
+      },
+      "visitSchedule": {
+        "columns": {
+          "tasks": "Tasks",
+          "visit": "Visit"
+        }
+      }
+    },
+    "participants": {
+      "actions": {
+        "create": "New Participant"
+      },
+      "headings": {
+        "created": "Created",
+        "name": "Name",
+        "participantList": "Participant List",
+        "participants": "Participants"
+      }
+    },
+    "profile": {
+      "actions": {
+        "changePassword": "Change Password",
+        "done": "done"
+      },
+      "labels": {
+        "email": "email",
+        "mobile": "mobile phone number"
+      },
+      "languageSelection": {
+        "label": "preferred language"
+      }
+    },
+    "registration": {
+      "actions": {
+        "submitRegistration": "Done"
+      },
+      "instructions": {
+        "mobileNumber": "Please include your country code. For example, +1 for the US: +1 212-555-1212",
+        "register": "Register Now",
+        "rememberPassword": "You will need to enter this again when you sign - so be sure to remember it"
+      },
+      "labels": {
+        "confirmPassword": "Confirm Password",
+        "edit": "edit",
+        "email": "Email Address",
+        "firstname": "First Name",
+        "gender": "gender",
+        "lastname": "Last Name",
+        "mobileNumber": "Mobile Number",
+        "participantId": "Participant Id",
+        "password": "Password",
+        "phoneNumber": "phone number",
+        "status": "status",
+        "timeZone": "time zone",
+        "visitSchedule": "Visit Schedule"
+      },
+      "validations": {
+        "validPhoneNumber": "Please enter a valid phone number. Numbers must include your country/area codes. For example, +1 for the US: +1 212-555-1212"
+      }
+    },
+    "resetPassword": {
+      "actions": {
+        "cancel": "Cancel",
+        "resetPassword": "Reset Password",
+        "sendLink": "Send Reset Link",
+        "setPassword": "Set Password"
+      },
+      "alerts": {
+        "resetLinkSent": "A password reset link has been sent to {{email}}.",
+        "setSuccess": "The password has been successfully set."
+      },
+      "labels": {
+        "newPassword": "New Password",
+        "requireChange": "Require change at next log in",
+        "resetPassword": "Reset Password"
+      }
+    },
+    "site": {
+      "actions": {
+        "cancel": "Cancel",
+        "change": "change",
+        "select": "Select"
+      },
+      "errors": {
+        "selectSite": "Select a site"
+      },
+      "headings": {
+        "selectSite": "Select Site"
+      },
+      "labels": {
+        "site": "Site"
+      }
+    },
+    "study": {
+      "labels": {
+        "name": "Study",
+        "protocol": "Protocol",
+        "sponsoredBy": "Sponsored By"
+      }
+    },
+    "televisit": {
+      "actions": {
+        "joinCall": "JOIN CALL",
+        "reschedule": "Reschedule",
+        "testAudioAndVideo": "TEST AUDIO & VIDEO"
+      },
+      "messages": {
+        "scheduledForToday": "A televisit with the participant is scheduled {{time}} minutes ago.",
+        "scheduledForToday_plural": "A televisit with the participant is scheduled {{time}} minutes ago.",
+        "waitingMessage": "The participant joined the call."
+      }
+    },
+    "templateDesigner": {
+      "uploadText": "Upload a .docx document"
+    },
+    "templates": {
+      "config": {
+        "actions": {
+          "add": "Add",
+          "archive": "Archive",
+          "back": "Back",
+          "cancel": "Cancel",
+          "create": "Create",
+          "edit": "Edit",
+          "publish": "Publish",
+          "save": "Save",
+          "settings": "Settings",
+          "uploadDocument": "Upload New Document"
+        },
+        "alert": {
+          "created": "created",
+          "noChange": "No change",
+          "noTranslations": "The template cannot be published because there are no translations for {{templateLocale}}. Please select a different language on the Template Configuration page in order to Publish.",
+          "onlyOneParticipant": "You can have only one role of type 'Participant' in the template.",
+          "templateArchived": "The template has been archived",
+          "templateMigration": "We upgraded your template to the latest version. Template content is not affected.",
+          "templatePublished": "The template has been published",
+          "updated": "updated"
+        },
+        "archiveDialog": {
+          "content": "Are you sure you want to archive this template? This is a one-way process, and you will not be able to un-archive, edit, or publish this template in the future.",
+          "title": "Confirm Archival?"
+        },
+        "completionScreen": {
+          "subtitle": "This text will appear on the completion screen that appears after the document is reviewed and signed.",
+          "title": "Completion Screen Content"
+        },
+        "configSettingsTitle": "Configuration Settings",
+        "customData": {
+          "heading": "Custom Fields",
+          "message": "Create custom fields to attach to the document."
+        },
+        "delayedSigning": {
+          "description": "This will delay participant signing until document is enabled by a site user.",
+          "label": "Read-only"
+        },
+        "designerTitle": "Template Designer",
+        "headerTitle": "Template Configuration",
+        "instructionScreen": {
+          "subtitle": "This text will appear on the instruction screen that appears before the document is reviewed and signed.",
+          "title": "Instruction Screen Content"
+        },
+        "labels": {
+          "eSign": "Digital Document",
+          "printToSign": "Printed Document",
+          "signatureType": "Signature Type"
+        },
+        "printToSign": {
+          "canBePublishedNow": "can be published now",
+          "confirmationDialog": {
+            "cancel": "CANCEL",
+            "content": "Clicking print to sign will disable the template designer",
+            "continue": "CONTINUE",
+            "title": "Print To Sign Only Confirmation"
+          },
+          "documentWarning": "Document must be in specified language",
+          "linkText": "Print-to-Sign Only Template",
+          "uploadDocumentDialog": {
+            "content": "Upload a document from your device now or wait until a later time. You do not need to upload a document for the participant to consent.",
+            "fields": {
+              "description": "Select the section above to upload a document. File formats accepted: PDF, JPEG. Max file size: {{file_size_limit}}MB.",
+              "label": "Upload From Device",
+              "uploadText": "Upload a document"
+            },
+            "fileUploadError": "Error: File size greater than {{file_size_limit}}MB limit",
+            "fileUploadExtError": "Wrong file type: The file you selected could not be uploaded. Only files with extensions PDF and JPEG are allowed.",
+            "title": "Upload Print-to-Sign Document",
+            "warning": "When you upload a new document, existing content is removed."
+          },
+          "uploadFieldError": "Print to sign document is required",
+          "uploadSuccess": "The document has been uploaded",
+          "uploadText": "Upload print-to-sign document in PDF format"
+        },
+        "publishDialog": {
+          "content": "Are you sure you want to publish this template? You will need to make a new draft version to make changes after publishing.",
+          "contentWithManyAssignedSitesConfirmationText": "Are you sure you want to publish? <br><br>After publishing, additional sites may be assigned, but the template's contents cannot be changed.",
+          "contentWithManyAssignedSitesInfoText": "Number of sites assigned to this template:",
+          "contentWithOneAssignedSite": "There is <b>1 site</b> assigned to this template. Are you sure you want to publish? <br><br>After publishing, additional sites may be assigned, but the template's contents cannot be changed.",
+          "contentWithoutAssignedSites": "There are <b>no sites</b> assigned to this template. Are you sure you want to publish? <br><br>After publishing, additional sites may be assigned, but the template's contents cannot be changed.",
+          "title": "Confirm Publish?"
+        },
+        "publishStatus": {
+          "failed": "{{templateName}} could not be published. Please try again.",
+          "publishing": "{{templateName}} is being published...",
+          "success": "{{templateName}} was published successfully."
+        },
+        "roles": {
+          "heading": "Roles",
+          "message": "Add all roles that will sign or receive a document. If relevant, drag the roles into the order in which they must sign."
+        },
+        "sitesTable": {
+          "columns": {
+            "24HourPhoneNumber": "24-Hour Phone Number",
+            "address": "Address",
+            "city": "City / Town",
+            "country": "Country",
+            "dayTimePhoneNumber": "Daytime Phone Number",
+            "piName": "PI Name",
+            "state": "State",
+            "zipCode": "ZIP / Postal Code"
+          }
+        },
+        "sitesTitle": "Sites",
+        "sourceDocument": {
+          "heading": "Source Document"
+        },
+        "statusChange": "The template has been",
+        "subheaderTitle": "Enter your template configuration settings below",
+        "templateStatusLabel": {
+          "archived": "Archived",
+          "draft": "Draft",
+          "failed": "Failed",
+          "published": "Published",
+          "publishing": "Publishing"
+        },
+        "unsavedChangesPrompt": "Clicking OK will lose any changes not saved. Click cancel to go back and Save your changes. Click OK to leave this page without saving."
+      },
+      "documents": {
+        "complete": {
+          "completeHeading": "Signature Complete",
+          "readHeading": "Read & Sign"
+        }
+      },
+      "editor": {
+        "assetManager": {
+          "fileUploadError": "To add an image or video to this document, please first drag a Media component on to the canvas",
+          "pleaseWait": "Please wait",
+          "processing": "Processing",
+          "uploading": "Uploading"
+        },
+        "blocks": {
+          "expandable": "Expandable",
+          "header1": "Header 1",
+          "header2": "Header 2",
+          "header3": "Header 3",
+          "image": "Image",
+          "inputCheckbox": "Checkbox",
+          "inputDate": "Date Input",
+          "inputText": "Text Input",
+          "knowledgeCheck": "Knowledge Check",
+          "link": "Link",
+          "multipleChoice": "Multiple / Single Choice",
+          "pageFooter": "Page Footer",
+          "pageHeader": "Page Header",
+          "signature": "Signature / Initials",
+          "table": "Table",
+          "text": "Text",
+          "video": "Video"
+        },
+        "blocksCategories": {
+          "author": "Author",
+          "input": "Input",
+          "media": "Media"
+        },
+        "components": {
+          "checkbox": {
+            "label": "Checkbox"
+          },
+          "choice": {
+            "widgetTemplate": {
+              "addChoice": "Add choice",
+              "multipleChoiceTitle": "Configure Multiple Choice",
+              "singleChoiceTitle": "Configure Single Choice"
+            }
+          },
+          "expandable": {
+            "label": "Expandable",
+            "traits": {
+              "doNotPrint": {
+                "label": "Do not print"
+              },
+              "openByDefault": {
+                "label": "Open by default"
+              },
+              "title": {
+                "default": "Label",
+                "label": "Title"
+              }
+            }
+          },
+          "hrefLink": {
+            "defaultText": "More Information",
+            "defaultWebAddress": "https://medable.com",
+            "label": "Link",
+            "textLabel": "Text",
+            "textPlaceholder": "Text to display",
+            "webAddressLabel": "Web Address",
+            "webAddressPlaceholder": "To what URL should this link go?"
+          },
+          "image": {
+            "label": "Image"
+          },
+          "initials": {
+            "label": "{{ROLE}} INITIALS HERE"
+          },
+          "input": {
+            "widgetTemplate": {
+              "inputError": "Invalid Input",
+              "inputType": "Input Type",
+              "label": "Label",
+              "placeholder": "Placeholder",
+              "signerRole": "Signer Role",
+              "title": "Configure User Input"
+            }
+          },
+          "inputDate": {
+            "label": "Date"
+          },
+          "inputText": {
+            "label": "Input",
+            "placeholder": "Insert text here"
+          },
+          "knowledgeCheck": {
+            "alerts": {
+              "selectAnswerFirst": "Please select an answer first",
+              "submitFailed": "Answer could not be submitted. Please try again"
+            },
+            "defaultKcAnswerContext": "Some context to the answer",
+            "defaultKcLabel": "Title Here",
+            "defaultKcQuestion": "Question Here",
+            "label": "Knowledge Check",
+            "submitButton": "Submit",
+            "widgetTemplate": {
+              "answerContextFieldLabel": "Context / Description",
+              "choicesHeaderLabel": "Choices",
+              "doNotPrintLabel": "Do Not Print",
+              "labelFieldLabel": "Label",
+              "questionFieldLabel": "Question",
+              "title": "Configure Knowledge Check"
+            }
+          },
+          "multipleChoice": {
+            "label": "Checkbox"
+          },
+          "pageFooter": {
+            "defaultText": "Page Footer Text",
+            "label": "Page Footer"
+          },
+          "pageHeader": {
+            "defaultText": "Page Header Text",
+            "label": "Page Header"
+          },
+          "signature": {
+            "label": "{{ROLE}} SIGN HERE",
+            "placeholder": "Insert text here",
+            "widgetTemplate": {
+              "initials": "Initials",
+              "signature": "Signature",
+              "title": "Configure Signature/Initials"
+            }
+          },
+          "siteFields": {
+            "description": "Select the field that you would like to add to this template.",
+            "title": "Link Fields",
+            "widgetTemplate": {
+              "label": "Site Fields"
+            }
+          },
+          "table": {
+            "label": "Table"
+          },
+          "traits": {
+            "choiceType": {
+              "label": "Choice Type",
+              "options": {
+                "multiple": "Multiple Choice",
+                "single": "Single Choice"
+              }
+            },
+            "choices": {
+              "label": "Choices"
+            },
+            "customData": {
+              "btnAdd": "Add data",
+              "btnRemove": "Remove",
+              "key": "Key",
+              "label": "Custom Data",
+              "placeholderKey": "Enter key",
+              "placeholderValue": "Enter value",
+              "value": "Value"
+            },
+            "dataBgColor": {
+              "label": "Background Color"
+            },
+            "dataBorderSpacing": {
+              "label": "Border Spacing",
+              "options": {
+                "large": "Large",
+                "noSpacing": "No Spacing",
+                "small": "Small"
+              }
+            },
+            "dataCellBorders": {
+              "label": "Cell Borders",
+              "options": {
+                "medium": "Medium",
+                "noBorder": "No Border",
+                "thick": "Thick",
+                "thin": "Thin"
+              }
+            },
+            "dataCellPadding": {
+              "label": "Cell Padding (px)"
+            },
+            "dataChoices": {
+              "btnAdd": "Add Choice",
+              "btnRemove": "Remove Choice",
+              "defaultChoiceName": "Choice 1",
+              "defaultChoiceNameNew": "Choice ",
+              "placeholderLabel": "Choices",
+              "placeholderValue": "Enter choice"
+            },
+            "dataImageAligment": {
+              "label": "Image aligment",
+              "options": {
+                "center": "Center",
+                "left": "Left",
+                "right": "Right"
+              }
+            },
+            "dataImageFloating": {
+              "label": "Image Text Wrapping",
+              "options": {
+                "left": "On the right",
+                "none": "None",
+                "right": "On the left"
+              }
+            },
+            "dataImageProps": {
+              "headerImagePaddings": "Image paddings",
+              "headerImageSize": "Image size",
+              "height": "Height",
+              "horizontalPadding": "Horizontal",
+              "placeholders": {
+                "height": "Ex: auto or 300 or 50%",
+                "paddingHorizontal": "Ex: 15 or 15px",
+                "paddingVertical": "Ex: 15 or 15px",
+                "width": "Ex: auto or 300 or 50%"
+              },
+              "verticalPadding": "Vertical",
+              "width": "Width"
+            },
+            "dataTableBorders": {
+              "label": "Table Borders",
+              "options": {
+                "medium": "Medium",
+                "noBorder": "No Border",
+                "thick": "Thick",
+                "thin": "Thin"
+              }
+            },
+            "dataTableColumns": {
+              "label": "Columns"
+            },
+            "dataTableRows": {
+              "label": "Rows"
+            },
+            "dataTextAlign": {
+              "label": "Text Alignment",
+              "options": {
+                "center": "Center",
+                "left": "Left",
+                "right": "Right"
+              }
+            },
+            "dataTextColor": {
+              "label": "Text Color"
+            },
+            "dataType": {
+              "label": "Input Type",
+              "options": {
+                "email": "Email",
+                "number": "Number",
+                "text": "Text"
+              }
+            },
+            "dataVerticalAlign": {
+              "label": "Vertical Alignment",
+              "options": {
+                "bottom": "Bottom",
+                "center": "Center",
+                "top": "Top"
+              }
+            },
+            "dataWidth": {
+              "label": "Width (px, %, auto)"
+            },
+            "knowledgeCheck": {
+              "answerContext": "Some context to the answer",
+              "doNotPrint": "Do not print",
+              "label": "KC Label",
+              "question": "Your Question Here"
+            },
+            "label": {
+              "label": "Label"
+            },
+            "placeholder": {
+              "label": "Placeholder"
+            },
+            "requestedData": {
+              "description": "Description",
+              "initials": "Initials",
+              "label": "Data Info",
+              "required": "Required",
+              "signerRole": "Signer Role",
+              "title": "Title"
+            }
+          },
+          "video": {
+            "select": "Select a video provider",
+            "vimeo": "Vimeo",
+            "youtube": "Youtube",
+            "youtubeNoCookie": "Youtube (no cookie)"
+          },
+          "widgetTemplate": {
+            "addData": "Add Data",
+            "configurationDataDescription": "Backend only, will not appear on document",
+            "configurationDataTitle": "Configuration Data",
+            "customDataDescription": "Description",
+            "customDataKey": "Key",
+            "customDataTitle": "Title",
+            "customDataValue": "Value",
+            "required": "Required",
+            "signerRole": "Signer Role"
+          }
+        },
+        "panels": {
+          "downloadPDF": "Download",
+          "tabletDesktop": "Display tablet view",
+          "viewDesktop": "Display desktop view",
+          "viewMobile": "Display mobile view"
+        },
+        "upload": {
+          "fileSizeError": "Size limit error: This file is too large to upload. The maximum supported file size is 10 MB.",
+          "success": "The Docx document has been uploaded to your Template Designer template.",
+          "uploadError": "Upload error: The file you selected could not be uploaded.",
+          "wrongFileType": "Wrong file type: The file you selected could not be uploaded. Only files with extensions docx are allowed."
+        }
+      },
+      "landing": {
+        "buttonText": "Create the first template",
+        "heading": "Welcome to the Medable Template Manager.",
+        "labels": {
+          "clone": "Clone",
+          "newVersion": "New Version"
+        },
+        "message": "No templates have been created."
+      },
+      "list": {
+        "hideArchivedLabel": "Hide Archived",
+        "no": "No",
+        "yes": "Yes"
+      },
+      "preview": {
+        "button": "preview",
+        "close": "close",
+        "download": "download",
+        "options": {
+          "participant": "Participant preview",
+          "pdfPreview": "PDF preview"
+        },
+        "previewing": "Previewing:",
+        "viewingAs": "Viewing:"
+      },
+      "title": "Templates"
+    },
+    "users": {
+      "headings": {
+        "details": "User Details",
+        "list": "Users",
+        "newUser": "New User",
+        "users": "Users"
+      },
+      "sites": {
+        "actions": {
+          "assign": "Assign",
+          "cancel": "Cancel",
+          "unassign": "Unassign"
+        },
+        "alerts": {
+          "assigned": "Site(s) assigned successfully",
+          "unassigned": "Site unassigned successfully"
+        },
+        "labels": {
+          "selectSite": "Select Site"
+        },
+        "title": "Assign Sites"
+      }
+    },
+    "visits": {
+      "title": "Visits"
+    }
+  },
+  "dirty": true,
+  "extensible": true,
+  "locale": "en_US",
+  "name": "web__econsent_tool_en_US_app",
+  "namespace": "econsent-tool-app",
+  "object": "i18n",
+  "overridable": true,
+  "tags": [],
+  "weight": 0
+}

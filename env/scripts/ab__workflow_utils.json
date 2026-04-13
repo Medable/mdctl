@@ -1,0 +1,16 @@
+{
+  "active": true,
+  "configuration": {
+    "export": "ab__workflow_utils"
+  },
+  "environment": "*",
+  "label": "Workflow utils",
+  "language": "javascript/es6",
+  "name": "ab__workflow_utils",
+  "object": "script",
+  "optimized": false,
+  "principal": null,
+  "script": "/env/scripts/js/library.ab__workflow_utils.js",
+  "type": "library",
+  "weight": 0
+}

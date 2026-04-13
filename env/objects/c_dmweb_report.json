@@ -1,0 +1,7763 @@
+{
+  "allowConnections": true,
+  "auditing": {
+    "enabled": false
+  },
+  "canCascadeDelete": false,
+  "connectionOptions": {
+    "requireAccept": true,
+    "requiredAccess": 5,
+    "sendNotifications": true
+  },
+  "createAcl": [
+    "account.public"
+  ],
+  "defaultAcl": [
+    "account.public.read",
+    "role.administrator.delete",
+    "role.c_data_export.read",
+    "role.c_data_manager.read",
+    "role.c_data_reviewer.read",
+    "role.c_principal_data_manager.read",
+    "role.c_site_investigator.read",
+    "role.c_site_monitor.read",
+    "role.c_site_user.read",
+    "role.developer.read",
+    "role.support.read"
+  ],
+  "defaultType": null,
+  "description": "An object representing a blueprint for reports in Axon. It holds information about columns, how to get the data, the title of the report, etc",
+  "favorite": false,
+  "hasETag": false,
+  "hasOwner": true,
+  "isDeletable": true,
+  "isUnmanaged": false,
+  "isVersioned": false,
+  "label": "DMWEB Report",
+  "locales": {
+    "description": [
+      {
+        "locale": "en_US",
+        "value": "An object representing a blueprint for reports in Axon. It holds information about columns, how to get the data, the title of the report, etc"
+      }
+    ],
+    "label": [
+      {
+        "locale": "en_US",
+        "value": "DMWEB Report"
+      },
+      {
+        "locale": "af_ZA",
+        "value": "DMWEB Verslag"
+      },
+      {
+        "locale": "ar_SA",
+        "value": "تقرير DMWEB"
+      },
+      {
+        "locale": "bg_BG",
+        "value": "Отчет DMWEB"
+      },
+      {
+        "locale": "cs_CZ",
+        "value": "Zpráva DMWEB"
+      },
+      {
+        "locale": "da_DK",
+        "value": "DMWEB-rapport"
+      },
+      {
+        "locale": "de_CH",
+        "value": "DMWEB Report"
+      },
+      {
+        "locale": "de_DE",
+        "value": "DMWEB Report"
+      },
+      {
+        "locale": "el_GR",
+        "value": "Αναφορά DMWEB"
+      },
+      {
+        "locale": "es_ES",
+        "value": "Informe DMWEB"
+      },
+      {
+        "locale": "es_MX",
+        "value": "Informe DMWEB"
+      },
+      {
+        "locale": "es_US",
+        "value": "Informe DMWEB"
+      },
+      {
+        "locale": "fr_BE",
+        "value": "Rapport DMWEB"
+      },
+      {
+        "locale": "fr_CA",
+        "value": "Rapport DMWEB"
+      },
+      {
+        "locale": "fr_CH",
+        "value": "Rapport DMWEB"
+      },
+      {
+        "locale": "fr_FR",
+        "value": "Rapport DMWEB"
+      },
+      {
+        "locale": "he_IL",
+        "value": "דוח DMWEB"
+      },
+      {
+        "locale": "hu_HU",
+        "value": "DMWEB jelentés"
+      },
+      {
+        "locale": "it_IT",
+        "value": "Rapporto DMWEB"
+      },
+      {
+        "locale": "ja_JP",
+        "value": "DMWEB レポート"
+      },
+      {
+        "locale": "ka_GE",
+        "value": "DMWEB ანგარიში"
+      },
+      {
+        "locale": "ko_KR",
+        "value": "DMWEB 보고서"
+      },
+      {
+        "locale": "lt_LT",
+        "value": "DMWEB ataskaita"
+      },
+      {
+        "locale": "lv_LV",
+        "value": "DMWEB ziņojums"
+      },
+      {
+        "locale": "ms_MY",
+        "value": "Laporan DMWEB"
+      },
+      {
+        "locale": "nl_BE",
+        "value": "DMWEB-rapport"
+      },
+      {
+        "locale": "nl_NL",
+        "value": "DMWEB-rapport"
+      },
+      {
+        "locale": "pl_PL",
+        "value": "Raport DMWEB"
+      },
+      {
+        "locale": "pt_BR",
+        "value": "Relatório DMWEB"
+      },
+      {
+        "locale": "pt_PT",
+        "value": "Relatório DMWEB"
+      },
+      {
+        "locale": "ro_RO",
+        "value": "Raport DMWEB"
+      },
+      {
+        "locale": "ru_RU",
+        "value": "Отчет DMWEB"
+      },
+      {
+        "locale": "ru_UA",
+        "value": "Отчет DMWEB"
+      },
+      {
+        "locale": "sk_SK",
+        "value": "Správa DMWEB"
+      },
+      {
+        "locale": "sr_Latn_RS",
+        "value": "Izveštaj aplikacije DMWEB"
+      },
+      {
+        "locale": "st_ZA",
+        "value": "Tlaleho ya DMWEB"
+      },
+      {
+        "locale": "sv_SE",
+        "value": "DMWEB-rapport"
+      },
+      {
+        "locale": "tr_TR",
+        "value": "DMWEB Raporu"
+      },
+      {
+        "locale": "uk_UA",
+        "value": "Звіт DMWEB"
+      },
+      {
+        "locale": "zh_CN",
+        "value": "DMWEB 报告"
+      },
+      {
+        "locale": "zh_TW",
+        "value": "DMWEB 報告"
+      },
+      {
+        "locale": "zu_ZA",
+        "value": "Umbiko we-DMWEB"
+      },
+      {
+        "locale": "bn_IN",
+        "value": "DMWEB রিপোর্ট"
+      },
+      {
+        "locale": "de_AT",
+        "value": "DMWEB Report"
+      },
+      {
+        "locale": "en_AU",
+        "value": "DMWEB Report"
+      },
+      {
+        "locale": "en_CA",
+        "value": "DMWEB Report"
+      },
+      {
+        "locale": "en_GB",
+        "value": "DMWEB Report"
+      },
+      {
+        "locale": "en_NZ",
+        "value": "DMWEB Report"
+      },
+      {
+        "locale": "gu_IN",
+        "value": "DMWEB રિપોર્ટ"
+      },
+      {
+        "locale": "hi_IN",
+        "value": "DMWEB रिपोर्ट"
+      },
+      {
+        "locale": "hr_HR",
+        "value": "DMWEB izvješće"
+      },
+      {
+        "locale": "kn_IN",
+        "value": "DMWEB ವರದಿ"
+      },
+      {
+        "locale": "ml_IN",
+        "value": "DMWEB റിപ്പോർട്ട്"
+      },
+      {
+        "locale": "mr_IN",
+        "value": "DMWEB अहवाल"
+      },
+      {
+        "locale": "or_IN",
+        "value": "DMWEB ରିପୋର୍ଟ"
+      },
+      {
+        "locale": "pa_IN",
+        "value": "DMWEB ਰਿਪੋਰਟ"
+      },
+      {
+        "locale": "sl_SI",
+        "value": "Poročilo DMWEB (spletnega podatkovnega poštnega predala)"
+      },
+      {
+        "locale": "sr_Cyrl_RS",
+        "value": "Извештај апликације DMWEB"
+      },
+      {
+        "locale": "ta_IN",
+        "value": "DMWEB அறிக்கை"
+      },
+      {
+        "locale": "te_IN",
+        "value": "DMWEB రిపోర్టు"
+      },
+      {
+        "locale": "th_TH",
+        "value": "รายงาน DMWEB"
+      },
+      {
+        "locale": "sr_Latn",
+        "value": "Izveštaj DMWEB"
+      },
+      {
+        "locale": "ar_DZ",
+        "value": "تقرير DMWEB"
+      },
+      {
+        "locale": "ar_IL",
+        "value": "تقرير DMWEB"
+      },
+      {
+        "locale": "ar_LB",
+        "value": "تقرير DMWEB"
+      },
+      {
+        "locale": "as_IN",
+        "value": "DMWEB প্ৰতিৱেদন"
+      },
+      {
+        "locale": "ca_ES",
+        "value": "Informe DMWEB"
+      },
+      {
+        "locale": "ceb_PH",
+        "value": "DMWEB Report"
+      },
+      {
+        "locale": "de_BE",
+        "value": "DMWEB Report"
+      },
+      {
+        "locale": "en_BE",
+        "value": "DMWEB Report"
+      },
+      {
+        "locale": "en_HK",
+        "value": "DMWEB Report"
+      },
+      {
+        "locale": "en_IE",
+        "value": "DMWEB Report"
+      },
+      {
+        "locale": "en_IL",
+        "value": "DMWEB Report"
+      },
+      {
+        "locale": "en_IN",
+        "value": "DMWEB Report"
+      },
+      {
+        "locale": "en_JM",
+        "value": "DMWEB Report"
+      },
+      {
+        "locale": "en_MY",
+        "value": "DMWEB Report"
+      },
+      {
+        "locale": "en_PH",
+        "value": "DMWEB Report"
+      },
+      {
+        "locale": "en_SG",
+        "value": "DMWEB Report"
+      },
+      {
+        "locale": "en_ZA",
+        "value": "DMWEB report"
+      },
+      {
+        "locale": "es_419",
+        "value": "Informe DMWEB"
+      },
+      {
+        "locale": "es_AR",
+        "value": "Informe DMWEB"
+      },
+      {
+        "locale": "es_CL",
+        "value": "Informe DMWEB"
+      },
+      {
+        "locale": "es_CO",
+        "value": "Informe DMWEB"
+      },
+      {
+        "locale": "es_GT",
+        "value": "Informe DMWEB"
+      },
+      {
+        "locale": "es_PE",
+        "value": "Informe DMWEB"
+      },
+      {
+        "locale": "et_EE",
+        "value": "DMWEB aruanne"
+      },
+      {
+        "locale": "fi_FI",
+        "value": "DMWEB-raportti"
+      },
+      {
+        "locale": "fil_PH",
+        "value": "Ulat ng DMWEB"
+      },
+      {
+        "locale": "fr_DZ",
+        "value": "Rapport DMWEB"
+      },
+      {
+        "locale": "gl_ES",
+        "value": "Informe DMWEB"
+      },
+      {
+        "locale": "it_CH",
+        "value": "Rapporto DMWEB"
+      },
+      {
+        "locale": "ms_Arab_MY",
+        "value": "Laporan DMWEB"
+      },
+      {
+        "locale": "ms_Latn_MY",
+        "value": "Laporan DMWEB"
+      },
+      {
+        "locale": "ms_Latn_SG",
+        "value": "Laporan DMWEB"
+      },
+      {
+        "locale": "nn_NO",
+        "value": "DMWEB-rapport"
+      },
+      {
+        "locale": "nso_ZA",
+        "value": "Pego ya DMWEB"
+      },
+      {
+        "locale": "pa_Guru_IN",
+        "value": "DMWEB ਰਿਪੋਰਟ"
+      },
+      {
+        "locale": "ro_MD",
+        "value": "Raport DMWEB"
+      },
+      {
+        "locale": "ru_EE",
+        "value": "Отчет DMWEB"
+      },
+      {
+        "locale": "ru_IL",
+        "value": "Отчет DMWEB"
+      },
+      {
+        "locale": "ru_LT",
+        "value": "Отчет DMWEB"
+      },
+      {
+        "locale": "ru_LV",
+        "value": "Отчет DMWEB"
+      },
+      {
+        "locale": "si_LK",
+        "value": "DMWEB වාර්තාව"
+      },
+      {
+        "locale": "sv_FI",
+        "value": "DMWEB-rapport"
+      },
+      {
+        "locale": "ta_LK",
+        "value": "DMWEB அறிக்கை"
+      },
+      {
+        "locale": "ta_MY",
+        "value": "DMWEB அறிக்கை"
+      },
+      {
+        "locale": "ta_SG",
+        "value": "DMWEB அறிக்கை"
+      },
+      {
+        "locale": "tl_PH",
+        "value": "DMWEB na Ulat"
+      },
+      {
+        "locale": "ur_IN",
+        "value": "DMWEB رپورٹ"
+      },
+      {
+        "locale": "ur_PK",
+        "value": "DMWEB رپورٹ"
+      },
+      {
+        "locale": "vi_VN",
+        "value": "Báo cáo DMWEB"
+      },
+      {
+        "locale": "xh_ZA",
+        "value": "Ingxelo ye-DMWEB"
+      },
+      {
+        "locale": "zh_Hans_CN",
+        "value": "DMWEB报告"
+      },
+      {
+        "locale": "zh_Hans_MY",
+        "value": "DMWEB 报告"
+      },
+      {
+        "locale": "zh_Hans_SG",
+        "value": "DMWEB报告"
+      },
+      {
+        "locale": "zh_Hant_HK",
+        "value": "DMWEB 報告"
+      },
+      {
+        "locale": "zh_Hant_TW",
+        "value": "DMWEB 報告"
+      },
+      {
+        "locale": "ar_EG",
+        "value": "تقرير DMWEB"
+      },
+      {
+        "locale": "es_PR",
+        "value": "Informe DMWEB"
+      },
+      {
+        "locale": "es_PA",
+        "value": "Informe DMWEB"
+      }
+    ],
+    "objectTypes": [],
+    "properties": [
+      {
+        "description": [],
+        "documents": [],
+        "label": [
+          {
+            "locale": "en_US",
+            "value": "Report Config"
+          },
+          {
+            "locale": "af_ZA",
+            "value": "Verslag Konfigurasie"
+          },
+          {
+            "locale": "ar_SA",
+            "value": "تكوين التقرير"
+          },
+          {
+            "locale": "bg_BG",
+            "value": "Конфигурация на отчет"
+          },
+          {
+            "locale": "cs_CZ",
+            "value": "Konfigurace zprávy"
+          },
+          {
+            "locale": "da_DK",
+            "value": "Rapport-konfiguration"
+          },
+          {
+            "locale": "de_CH",
+            "value": "Report Konfiguration"
+          },
+          {
+            "locale": "de_DE",
+            "value": "Report Konfiguration"
+          },
+          {
+            "locale": "el_GR",
+            "value": "Διαμόρφωση αναφοράς"
+          },
+          {
+            "locale": "es_ES",
+            "value": "Configuración de informes"
+          },
+          {
+            "locale": "es_MX",
+            "value": "Configuración del informe"
+          },
+          {
+            "locale": "es_US",
+            "value": "Configuración del informe"
+          },
+          {
+            "locale": "fr_BE",
+            "value": "Config rapport"
+          },
+          {
+            "locale": "fr_CA",
+            "value": "Configuration du rapport"
+          },
+          {
+            "locale": "fr_CH",
+            "value": "Config rapport"
+          },
+          {
+            "locale": "fr_FR",
+            "value": "Config rapport"
+          },
+          {
+            "locale": "he_IL",
+            "value": "תצורת דוח"
+          },
+          {
+            "locale": "hu_HU",
+            "value": "Jelentés konfig"
+          },
+          {
+            "locale": "it_IT",
+            "value": "Config. rapporto"
+          },
+          {
+            "locale": "ja_JP",
+            "value": "レポート設定"
+          },
+          {
+            "locale": "ka_GE",
+            "value": "ანგარიშის კონფიგურაცია"
+          },
+          {
+            "locale": "ko_KR",
+            "value": "보고서 구성"
+          },
+          {
+            "locale": "lt_LT",
+            "value": "Ataskaitos konfigūracija"
+          },
+          {
+            "locale": "lv_LV",
+            "value": "Ziņojuma konfigurācija"
+          },
+          {
+            "locale": "ms_MY",
+            "value": "Konfigurasi Laporan"
+          },
+          {
+            "locale": "nl_BE",
+            "value": "Rapportconfiguratie"
+          },
+          {
+            "locale": "nl_NL",
+            "value": "Rapportconfiguratie"
+          },
+          {
+            "locale": "pl_PL",
+            "value": "Konfiguracja raportu"
+          },
+          {
+            "locale": "pt_BR",
+            "value": "Config. de relatórios"
+          },
+          {
+            "locale": "pt_PT",
+            "value": "Configuração do relatório"
+          },
+          {
+            "locale": "ro_RO",
+            "value": "Configurare raport"
+          },
+          {
+            "locale": "ru_RU",
+            "value": "Конфигурация отчета"
+          },
+          {
+            "locale": "ru_UA",
+            "value": "Конфигурация отчета"
+          },
+          {
+            "locale": "sk_SK",
+            "value": "Konfigurácia správy"
+          },
+          {
+            "locale": "sr_Latn_RS",
+            "value": "Konfiguracija izveštaja"
+          },
+          {
+            "locale": "st_ZA",
+            "value": "Tlaleha Tlhophiso"
+          },
+          {
+            "locale": "sv_SE",
+            "value": "Rapportkonfiguration"
+          },
+          {
+            "locale": "tr_TR",
+            "value": "Rapor Yapılandırması"
+          },
+          {
+            "locale": "uk_UA",
+            "value": "Налаштування звіту"
+          },
+          {
+            "locale": "zh_CN",
+            "value": "报告配置"
+          },
+          {
+            "locale": "zh_TW",
+            "value": "報告配置"
+          },
+          {
+            "locale": "zu_ZA",
+            "value": "Report Config"
+          },
+          {
+            "locale": "bn_IN",
+            "value": "রিপোর্ট কনফিগারেশন"
+          },
+          {
+            "locale": "de_AT",
+            "value": "Report Konfiguration"
+          },
+          {
+            "locale": "en_AU",
+            "value": "Report Config"
+          },
+          {
+            "locale": "en_CA",
+            "value": "Report Config"
+          },
+          {
+            "locale": "en_GB",
+            "value": "Report Config"
+          },
+          {
+            "locale": "en_NZ",
+            "value": "Report Config"
+          },
+          {
+            "locale": "gu_IN",
+            "value": "રિપોર્ટ રૂપરેખાંકન"
+          },
+          {
+            "locale": "hi_IN",
+            "value": "रिपोर्ट कॉन्फ़िगरेशन"
+          },
+          {
+            "locale": "hr_HR",
+            "value": "Konfiguracija izvješća"
+          },
+          {
+            "locale": "kn_IN",
+            "value": "ವರದಿ ಸಂರಚನೆ"
+          },
+          {
+            "locale": "ml_IN",
+            "value": "കോൺഫിഗ് റിപ്പോർട്ട് ചെയ്യുക"
+          },
+          {
+            "locale": "mr_IN",
+            "value": "अहवाल कॉनफिग"
+          },
+          {
+            "locale": "or_IN",
+            "value": "ରିପୋର୍ଟ କନଫିଗୁରେସନ୍"
+          },
+          {
+            "locale": "pa_IN",
+            "value": "ਰਿਪੋਰਟ ਕੌਂਫਿਗ"
+          },
+          {
+            "locale": "sl_SI",
+            "value": "Konfiguracija poročila"
+          },
+          {
+            "locale": "sr_Cyrl_RS",
+            "value": "Конфигурација извештаја"
+          },
+          {
+            "locale": "ta_IN",
+            "value": "அறிவிப்பு உள்ளமைவு"
+          },
+          {
+            "locale": "te_IN",
+            "value": "రిపోర్టు కాన్ఫిగరేషన్"
+          },
+          {
+            "locale": "th_TH",
+            "value": "การกําหนดค่ารายงาน"
+          },
+          {
+            "locale": "sr_Latn",
+            "value": "Konfiguracija izveštaja"
+          },
+          {
+            "locale": "ar_DZ",
+            "value": "تكوين التقرير"
+          },
+          {
+            "locale": "ar_IL",
+            "value": "تكوين التقرير"
+          },
+          {
+            "locale": "ar_LB",
+            "value": "تكوين التقرير"
+          },
+          {
+            "locale": "as_IN",
+            "value": "প্ৰতিৱেদন কনফিগ"
+          },
+          {
+            "locale": "ca_ES",
+            "value": "Configuració de l’informe"
+          },
+          {
+            "locale": "ceb_PH",
+            "value": "Config sa Report"
+          },
+          {
+            "locale": "de_BE",
+            "value": "Report Konfiguration"
+          },
+          {
+            "locale": "en_BE",
+            "value": "Report Config"
+          },
+          {
+            "locale": "en_HK",
+            "value": "Report Config"
+          },
+          {
+            "locale": "en_IE",
+            "value": "Report Config"
+          },
+          {
+            "locale": "en_IL",
+            "value": "Report Config"
+          },
+          {
+            "locale": "en_IN",
+            "value": "Report Config"
+          },
+          {
+            "locale": "en_JM",
+            "value": "Report Config"
+          },
+          {
+            "locale": "en_MY",
+            "value": "Report Config"
+          },
+          {
+            "locale": "en_PH",
+            "value": "Report Config"
+          },
+          {
+            "locale": "en_SG",
+            "value": "Report Config"
+          },
+          {
+            "locale": "en_ZA",
+            "value": "Report config"
+          },
+          {
+            "locale": "es_419",
+            "value": "Config. Informe"
+          },
+          {
+            "locale": "es_AR",
+            "value": "Configuración del informe"
+          },
+          {
+            "locale": "es_CL",
+            "value": "Configuración del informe"
+          },
+          {
+            "locale": "es_CO",
+            "value": "Configuración del informe"
+          },
+          {
+            "locale": "es_GT",
+            "value": "Configuración del informe"
+          },
+          {
+            "locale": "es_PE",
+            "value": "Configuración del informe"
+          },
+          {
+            "locale": "et_EE",
+            "value": "Aruande konfiguratsioon"
+          },
+          {
+            "locale": "fi_FI",
+            "value": "Raportin konfigurointi"
+          },
+          {
+            "locale": "fil_PH",
+            "value": "Pagsasaayos ng Ulat"
+          },
+          {
+            "locale": "fr_DZ",
+            "value": "Config rapport"
+          },
+          {
+            "locale": "gl_ES",
+            "value": "Configuración do informe"
+          },
+          {
+            "locale": "it_CH",
+            "value": "Config. rapporto"
+          },
+          {
+            "locale": "ms_Arab_MY",
+            "value": "Konfigurasi Laporan"
+          },
+          {
+            "locale": "ms_Latn_MY",
+            "value": "Konfigurasi Laporan"
+          },
+          {
+            "locale": "ms_Latn_SG",
+            "value": "Konfigurasi Laporan"
+          },
+          {
+            "locale": "nn_NO",
+            "value": "Rapportkonfig."
+          },
+          {
+            "locale": "nso_ZA",
+            "value": "Bega Hlakantšo"
+          },
+          {
+            "locale": "pa_Guru_IN",
+            "value": "ਸੰਰਚਨਾ ਦੀ ਰਿਪੋਰਟ ਕਰੋ"
+          },
+          {
+            "locale": "ro_MD",
+            "value": "Configurare raport"
+          },
+          {
+            "locale": "ru_EE",
+            "value": "Конфигурация отчета"
+          },
+          {
+            "locale": "ru_IL",
+            "value": "Конфигурация отчета"
+          },
+          {
+            "locale": "ru_LT",
+            "value": "Конфигурация отчета"
+          },
+          {
+            "locale": "ru_LV",
+            "value": "Конфигурация отчета"
+          },
+          {
+            "locale": "si_LK",
+            "value": "වාර්තා වින්‍යාසකරණය"
+          },
+          {
+            "locale": "sv_FI",
+            "value": "Rapportera konfigurering"
+          },
+          {
+            "locale": "ta_LK",
+            "value": "அறிக்கை கட்டமைப்பு"
+          },
+          {
+            "locale": "ta_MY",
+            "value": "அறிக்கை தகவலமைப்பு"
+          },
+          {
+            "locale": "ta_SG",
+            "value": "உள்ளமைவைப் புகாரளிக்கவும்"
+          },
+          {
+            "locale": "tl_PH",
+            "value": "Config ng Ulat"
+          },
+          {
+            "locale": "ur_IN",
+            "value": "رپورٹ کنفگریشن"
+          },
+          {
+            "locale": "ur_PK",
+            "value": "رپورٹ تشکیل"
+          },
+          {
+            "locale": "vi_VN",
+            "value": "Báo cáo cấu hình"
+          },
+          {
+            "locale": "xh_ZA",
+            "value": "Ingxelo Yoqwalaselo"
+          },
+          {
+            "locale": "zh_Hans_CN",
+            "value": "报告配置"
+          },
+          {
+            "locale": "zh_Hans_MY",
+            "value": "报告配置"
+          },
+          {
+            "locale": "zh_Hans_SG",
+            "value": "报告配置"
+          },
+          {
+            "locale": "zh_Hant_HK",
+            "value": "報告配置"
+          },
+          {
+            "locale": "zh_Hant_TW",
+            "value": "報告設定"
+          },
+          {
+            "locale": "ar_EG",
+            "value": "تكوين التقرير"
+          },
+          {
+            "locale": "es_PR",
+            "value": "Configuración del informe"
+          },
+          {
+            "locale": "es_PA",
+            "value": "Configuración del informe"
+          }
+        ],
+        "name": "c_config",
+        "properties": []
+      },
+      {
+        "description": [],
+        "documents": [],
+        "label": [
+          {
+            "locale": "en_US",
+            "value": "CSV Exportable"
+          },
+          {
+            "locale": "af_ZA",
+            "value": "CSV Uitvoerbare"
+          },
+          {
+            "locale": "ar_SA",
+            "value": "ملف CSV قابل للتصدير"
+          },
+          {
+            "locale": "bg_BG",
+            "value": "CSV за експортиране"
+          },
+          {
+            "locale": "cs_CZ",
+            "value": "Exportovatelné do CSV"
+          },
+          {
+            "locale": "da_DK",
+            "value": "CSV-eksporterbar"
+          },
+          {
+            "locale": "de_CH",
+            "value": "CSV exportierbar"
+          },
+          {
+            "locale": "de_DE",
+            "value": "CSV exportierbar"
+          },
+          {
+            "locale": "el_GR",
+            "value": "Εξαγώγιμο CSV"
+          },
+          {
+            "locale": "es_ES",
+            "value": "CSV exportable"
+          },
+          {
+            "locale": "es_MX",
+            "value": "CSV exportable"
+          },
+          {
+            "locale": "es_US",
+            "value": "CSV exportable"
+          },
+          {
+            "locale": "fr_BE",
+            "value": "CSV exportable"
+          },
+          {
+            "locale": "fr_CA",
+            "value": "CSV exportable"
+          },
+          {
+            "locale": "fr_CH",
+            "value": "CSV exportable"
+          },
+          {
+            "locale": "fr_FR",
+            "value": "CSV exportable"
+          },
+          {
+            "locale": "he_IL",
+            "value": "קובץ CSV ניתן לייצוא"
+          },
+          {
+            "locale": "hu_HU",
+            "value": "CSV exportálható"
+          },
+          {
+            "locale": "it_IT",
+            "value": "CSV esportabile"
+          },
+          {
+            "locale": "ja_JP",
+            "value": "エクスポート可能な CSV"
+          },
+          {
+            "locale": "ka_GE",
+            "value": "CSV ექსპორტირებადი"
+          },
+          {
+            "locale": "ko_KR",
+            "value": "CSV 내보내기 가능"
+          },
+          {
+            "locale": "lt_LT",
+            "value": "CSV eksportuojamas"
+          },
+          {
+            "locale": "lv_LV",
+            "value": "CSV eksportējams"
+          },
+          {
+            "locale": "ms_MY",
+            "value": "CSV Boleh Eksport"
+          },
+          {
+            "locale": "nl_BE",
+            "value": "CSV-exporteerbaar"
+          },
+          {
+            "locale": "nl_NL",
+            "value": "CSV-exporteerbaar"
+          },
+          {
+            "locale": "pl_PL",
+            "value": "CSV do wyeksportowania"
+          },
+          {
+            "locale": "pt_BR",
+            "value": "Exportável em CSV"
+          },
+          {
+            "locale": "pt_PT",
+            "value": "CSV exportável"
+          },
+          {
+            "locale": "ro_RO",
+            "value": "CSV exportabil"
+          },
+          {
+            "locale": "ru_RU",
+            "value": "Экспортируемый CSV файл"
+          },
+          {
+            "locale": "ru_UA",
+            "value": "Экспортируемый CSV файл"
+          },
+          {
+            "locale": "sk_SK",
+            "value": "CSV exportovateľné"
+          },
+          {
+            "locale": "sr_Latn_RS",
+            "value": "Izlazna CSV datoteka"
+          },
+          {
+            "locale": "st_ZA",
+            "value": "CSV e Romellwang Kantle"
+          },
+          {
+            "locale": "sv_SE",
+            "value": "Kan exporteras som CSV"
+          },
+          {
+            "locale": "tr_TR",
+            "value": "CSV Dışa Aktarılabilir"
+          },
+          {
+            "locale": "uk_UA",
+            "value": "Можна експортувати в CSV"
+          },
+          {
+            "locale": "zh_CN",
+            "value": "可导出 CSV"
+          },
+          {
+            "locale": "zh_TW",
+            "value": "可導出的CSV "
+          },
+          {
+            "locale": "zu_ZA",
+            "value": "CSV Exportable"
+          },
+          {
+            "locale": "bn_IN",
+            "value": "CSV এক্সপোর্টযোগ্য"
+          },
+          {
+            "locale": "de_AT",
+            "value": "CSV exportierbar"
+          },
+          {
+            "locale": "en_AU",
+            "value": "CSV Exportable"
+          },
+          {
+            "locale": "en_CA",
+            "value": "CSV Exportable"
+          },
+          {
+            "locale": "en_GB",
+            "value": "CSV Exportable"
+          },
+          {
+            "locale": "en_NZ",
+            "value": "CSV Exportable"
+          },
+          {
+            "locale": "gu_IN",
+            "value": "CSV એક્સપોર્ટ યોગ્ય"
+          },
+          {
+            "locale": "hi_IN",
+            "value": "CSV निर्यात-योग्य"
+          },
+          {
+            "locale": "hr_HR",
+            "value": "Izvozni CSV"
+          },
+          {
+            "locale": "kn_IN",
+            "value": "ರಫ್ತು ಮಾಡಬಹುದಾದ CSV"
+          },
+          {
+            "locale": "ml_IN",
+            "value": "CSV എക്‌സ്‌പോർട്ട് ചെയ്യാവുന്നതാണ്"
+          },
+          {
+            "locale": "mr_IN",
+            "value": "CSV निर्यात योग्य"
+          },
+          {
+            "locale": "or_IN",
+            "value": "CSV ରପ୍ତାନିଯୋଗ୍ୟ"
+          },
+          {
+            "locale": "pa_IN",
+            "value": "CSV ਏਕਸਪੌਰਟੇਬਲ "
+          },
+          {
+            "locale": "sl_SI",
+            "value": "Format CSV omogoča izvoz"
+          },
+          {
+            "locale": "sr_Cyrl_RS",
+            "value": "Излазна CSV датотека"
+          },
+          {
+            "locale": "ta_IN",
+            "value": "ஏற்றுமதி செய்யத்தக்க CSV"
+          },
+          {
+            "locale": "te_IN",
+            "value": "CSV ఎక్స్‌పోర్టబుల్"
+          },
+          {
+            "locale": "th_TH",
+            "value": "CSV ที่สามารถส่งออกได้"
+          },
+          {
+            "locale": "sr_Latn",
+            "value": "CSV se može izvesti"
+          },
+          {
+            "locale": "ar_DZ",
+            "value": "CSV قابل للتصدير"
+          },
+          {
+            "locale": "ar_IL",
+            "value": "CSV قابل للتصدير"
+          },
+          {
+            "locale": "ar_LB",
+            "value": "CSV قابل للتصدير"
+          },
+          {
+            "locale": "as_IN",
+            "value": "CSV এক্সপোৰ্টেবল"
+          },
+          {
+            "locale": "ca_ES",
+            "value": "CSV exportable"
+          },
+          {
+            "locale": "ceb_PH",
+            "value": "CSV Exportable"
+          },
+          {
+            "locale": "de_BE",
+            "value": "CSV exportierbar"
+          },
+          {
+            "locale": "en_BE",
+            "value": "CSV Exportable"
+          },
+          {
+            "locale": "en_HK",
+            "value": "CSV Exportable"
+          },
+          {
+            "locale": "en_IE",
+            "value": "CSV Exportable"
+          },
+          {
+            "locale": "en_IL",
+            "value": "CSV Exportable"
+          },
+          {
+            "locale": "en_IN",
+            "value": "CSV Exportable"
+          },
+          {
+            "locale": "en_JM",
+            "value": "CSV Exportable"
+          },
+          {
+            "locale": "en_MY",
+            "value": "CSV Exportable"
+          },
+          {
+            "locale": "en_PH",
+            "value": "CSV Exportable"
+          },
+          {
+            "locale": "en_SG",
+            "value": "CSV Exportable"
+          },
+          {
+            "locale": "en_ZA",
+            "value": "CSV exportable"
+          },
+          {
+            "locale": "es_419",
+            "value": "CSV Exportable"
+          },
+          {
+            "locale": "es_AR",
+            "value": "CSV exportable"
+          },
+          {
+            "locale": "es_CL",
+            "value": "CSV exportable"
+          },
+          {
+            "locale": "es_CO",
+            "value": "CSV exportable"
+          },
+          {
+            "locale": "es_GT",
+            "value": "CSV exportable"
+          },
+          {
+            "locale": "es_PE",
+            "value": "CSV exportable"
+          },
+          {
+            "locale": "et_EE",
+            "value": "CSV-vormingus eksporditav"
+          },
+          {
+            "locale": "fi_FI",
+            "value": "CSV siirrettävä"
+          },
+          {
+            "locale": "fil_PH",
+            "value": "Maaaring ilipat na CSV"
+          },
+          {
+            "locale": "fr_DZ",
+            "value": "CSV exportable"
+          },
+          {
+            "locale": "gl_ES",
+            "value": "CSV exportable"
+          },
+          {
+            "locale": "it_CH",
+            "value": "CSV esportabile"
+          },
+          {
+            "locale": "ms_Arab_MY",
+            "value": "CSV Boleh Eksport"
+          },
+          {
+            "locale": "ms_Latn_MY",
+            "value": "CSV Boleh Eksport"
+          },
+          {
+            "locale": "ms_Latn_SG",
+            "value": "CSV Boleh Eksport"
+          },
+          {
+            "locale": "nn_NO",
+            "value": "Kan eksporteres som CSV"
+          },
+          {
+            "locale": "nso_ZA",
+            "value": "Kgonego ya go Romela-ntle ya CSV"
+          },
+          {
+            "locale": "pa_Guru_IN",
+            "value": "CSV ਨਿਰਯਾਤਯੋਗ"
+          },
+          {
+            "locale": "ro_MD",
+            "value": "CSV exportabil"
+          },
+          {
+            "locale": "ru_EE",
+            "value": "Экспортируемый CSV файл"
+          },
+          {
+            "locale": "ru_IL",
+            "value": "Экспортируемый CSV файл"
+          },
+          {
+            "locale": "ru_LT",
+            "value": "Экспортируемый CSV файл"
+          },
+          {
+            "locale": "ru_LV",
+            "value": "Экспортируемый CSV файл"
+          },
+          {
+            "locale": "si_LK",
+            "value": "CSV අපනයනය කළ හැකි"
+          },
+          {
+            "locale": "sv_FI",
+            "value": "CSV kan exporteras"
+          },
+          {
+            "locale": "ta_LK",
+            "value": "CSV ஏற்றுமதி செய்யக்கூடியது"
+          },
+          {
+            "locale": "ta_MY",
+            "value": "CSV ஏற்றுமதி செய்யக்கூடியது"
+          },
+          {
+            "locale": "ta_SG",
+            "value": "CSV ஏற்றுமதி செய்யக்கூடியது"
+          },
+          {
+            "locale": "tl_PH",
+            "value": "CSV na Naeeksport"
+          },
+          {
+            "locale": "ur_IN",
+            "value": "CSV قابل اکسپورٹ"
+          },
+          {
+            "locale": "ur_PK",
+            "value": "CSV قابل برآمد"
+          },
+          {
+            "locale": "vi_VN",
+            "value": "CSV có thể xuất"
+          },
+          {
+            "locale": "xh_ZA",
+            "value": "Ukuthunyelwa kwe-CSV"
+          },
+          {
+            "locale": "zh_Hans_CN",
+            "value": "CSV可导出"
+          },
+          {
+            "locale": "zh_Hans_MY",
+            "value": "CSV 可导出"
+          },
+          {
+            "locale": "zh_Hans_SG",
+            "value": "CSV可导出"
+          },
+          {
+            "locale": "zh_Hant_HK",
+            "value": "CSV 可導出"
+          },
+          {
+            "locale": "zh_Hant_TW",
+            "value": "CSV 可匯出"
+          },
+          {
+            "locale": "ar_EG",
+            "value": "ملف CSV قابل للتصدير"
+          },
+          {
+            "locale": "es_PR",
+            "value": "CSV exportable"
+          },
+          {
+            "locale": "es_PA",
+            "value": "CSV exportable"
+          }
+        ],
+        "name": "c_csv_exportable",
+        "properties": []
+      },
+      {
+        "description": [],
+        "documents": [],
+        "label": [
+          {
+            "locale": "en_US",
+            "value": "Report Data"
+          },
+          {
+            "locale": "af_ZA",
+            "value": "Rapport Data"
+          },
+          {
+            "locale": "ar_SA",
+            "value": "تصدير البيانات"
+          },
+          {
+            "locale": "bg_BG",
+            "value": "Данни на отчет"
+          },
+          {
+            "locale": "cs_CZ",
+            "value": "Data zprávy"
+          },
+          {
+            "locale": "da_DK",
+            "value": "Rapporteringsdata"
+          },
+          {
+            "locale": "de_CH",
+            "value": "Daten melden"
+          },
+          {
+            "locale": "de_DE",
+            "value": "Daten melden"
+          },
+          {
+            "locale": "el_GR",
+            "value": "Δεδομένα αναφοράς"
+          },
+          {
+            "locale": "es_ES",
+            "value": "Informe de datos"
+          },
+          {
+            "locale": "es_MX",
+            "value": "Datos del informe"
+          },
+          {
+            "locale": "es_US",
+            "value": "Datos del informe"
+          },
+          {
+            "locale": "fr_BE",
+            "value": "Données de rapport"
+          },
+          {
+            "locale": "fr_CA",
+            "value": "Données du rapport"
+          },
+          {
+            "locale": "fr_CH",
+            "value": "Données de rapport"
+          },
+          {
+            "locale": "fr_FR",
+            "value": "Données de rapport"
+          },
+          {
+            "locale": "he_IL",
+            "value": "נתוני דוח"
+          },
+          {
+            "locale": "hu_HU",
+            "value": "Jelentés adatai"
+          },
+          {
+            "locale": "it_IT",
+            "value": "Dati rapporto"
+          },
+          {
+            "locale": "ja_JP",
+            "value": "レポート データ"
+          },
+          {
+            "locale": "ka_GE",
+            "value": "ანგარიშის მონაცემები"
+          },
+          {
+            "locale": "ko_KR",
+            "value": "보고서 데이터"
+          },
+          {
+            "locale": "lt_LT",
+            "value": "Ataskaitos duomenys"
+          },
+          {
+            "locale": "lv_LV",
+            "value": "Ziņojuma dati"
+          },
+          {
+            "locale": "ms_MY",
+            "value": "Data Laporan"
+          },
+          {
+            "locale": "nl_BE",
+            "value": "Rapportgegevens"
+          },
+          {
+            "locale": "nl_NL",
+            "value": "Rapportgegevens"
+          },
+          {
+            "locale": "pl_PL",
+            "value": "Dane raportu"
+          },
+          {
+            "locale": "pt_BR",
+            "value": "Dados do relatório"
+          },
+          {
+            "locale": "pt_PT",
+            "value": "Dados do relatório"
+          },
+          {
+            "locale": "ro_RO",
+            "value": "Date raport"
+          },
+          {
+            "locale": "ru_RU",
+            "value": "Данные отчета"
+          },
+          {
+            "locale": "ru_UA",
+            "value": "Данные отчета"
+          },
+          {
+            "locale": "sk_SK",
+            "value": "Údaje správy"
+          },
+          {
+            "locale": "sr_Latn_RS",
+            "value": "Podaci izveštaja"
+          },
+          {
+            "locale": "st_ZA",
+            "value": "Tlaleha Datha"
+          },
+          {
+            "locale": "sv_SE",
+            "value": "Rapportuppgifter"
+          },
+          {
+            "locale": "tr_TR",
+            "value": "Rapor Verileri"
+          },
+          {
+            "locale": "uk_UA",
+            "value": "Дані звіту"
+          },
+          {
+            "locale": "zh_CN",
+            "value": "报告数据"
+          },
+          {
+            "locale": "zh_TW",
+            "value": "報告數據"
+          },
+          {
+            "locale": "zu_ZA",
+            "value": "Idatha Yombiko"
+          },
+          {
+            "locale": "bn_IN",
+            "value": "রিপোর্ট ডেটা"
+          },
+          {
+            "locale": "de_AT",
+            "value": "Daten melden"
+          },
+          {
+            "locale": "en_AU",
+            "value": "Report Data"
+          },
+          {
+            "locale": "en_CA",
+            "value": "Report Data"
+          },
+          {
+            "locale": "en_GB",
+            "value": "Report Data"
+          },
+          {
+            "locale": "en_NZ",
+            "value": "Report Data"
+          },
+          {
+            "locale": "gu_IN",
+            "value": "ડેટા રિપોર્ટ કરો"
+          },
+          {
+            "locale": "hi_IN",
+            "value": "रिपोर्ट डेटा"
+          },
+          {
+            "locale": "hr_HR",
+            "value": "Podaci izvješća"
+          },
+          {
+            "locale": "kn_IN",
+            "value": "ದತ್ತಾಂಶವನ್ನು ವರದಿ ಮಾಡಿ"
+          },
+          {
+            "locale": "ml_IN",
+            "value": "ഡാറ്റ റിപ്പോർട്ട് ചെയ്യുക"
+          },
+          {
+            "locale": "mr_IN",
+            "value": "अहवाल डेटा"
+          },
+          {
+            "locale": "or_IN",
+            "value": "ତଥ୍ୟ ରିପୋର୍ଟ କରନ୍ତୁ"
+          },
+          {
+            "locale": "pa_IN",
+            "value": "ਰਿਪੋਰਟ ਦਾ ਡਾਟਾ"
+          },
+          {
+            "locale": "sl_SI",
+            "value": "Podatki iz poročila"
+          },
+          {
+            "locale": "sr_Cyrl_RS",
+            "value": "Подаци извештаја"
+          },
+          {
+            "locale": "ta_IN",
+            "value": "அறிக்கைத் தரவு"
+          },
+          {
+            "locale": "te_IN",
+            "value": "రిపోర్టు డేటా"
+          },
+          {
+            "locale": "th_TH",
+            "value": "ข้อมูลรายงาน"
+          },
+          {
+            "locale": "sr_Latn",
+            "value": "Podaci iz izveštaja"
+          },
+          {
+            "locale": "ar_DZ",
+            "value": "بيانات التقرير"
+          },
+          {
+            "locale": "ar_IL",
+            "value": "بيانات التقرير"
+          },
+          {
+            "locale": "ar_LB",
+            "value": "بيانات التقرير"
+          },
+          {
+            "locale": "as_IN",
+            "value": "প্ৰতিৱেদন তথ্য"
+          },
+          {
+            "locale": "ca_ES",
+            "value": "Dades de l’informe"
+          },
+          {
+            "locale": "ceb_PH",
+            "value": "Pagreport sa Datos"
+          },
+          {
+            "locale": "de_BE",
+            "value": "Daten melden"
+          },
+          {
+            "locale": "en_BE",
+            "value": "Report Data"
+          },
+          {
+            "locale": "en_HK",
+            "value": "Report Data"
+          },
+          {
+            "locale": "en_IE",
+            "value": "Report Data"
+          },
+          {
+            "locale": "en_IL",
+            "value": "Report Data"
+          },
+          {
+            "locale": "en_IN",
+            "value": "Report Data"
+          },
+          {
+            "locale": "en_JM",
+            "value": "Report Data"
+          },
+          {
+            "locale": "en_MY",
+            "value": "Report Data"
+          },
+          {
+            "locale": "en_PH",
+            "value": "Report Data"
+          },
+          {
+            "locale": "en_SG",
+            "value": "Report Data"
+          },
+          {
+            "locale": "en_ZA",
+            "value": "Report data"
+          },
+          {
+            "locale": "es_419",
+            "value": "Datos de informe"
+          },
+          {
+            "locale": "es_AR",
+            "value": "Datos del informe"
+          },
+          {
+            "locale": "es_CL",
+            "value": "Datos del informe"
+          },
+          {
+            "locale": "es_CO",
+            "value": "Datos del informe"
+          },
+          {
+            "locale": "es_GT",
+            "value": "Datos del informe"
+          },
+          {
+            "locale": "es_PE",
+            "value": "Datos del informe"
+          },
+          {
+            "locale": "et_EE",
+            "value": "Aruande andmed"
+          },
+          {
+            "locale": "fi_FI",
+            "value": "Ilmoita tiedot"
+          },
+          {
+            "locale": "fil_PH",
+            "value": "Data ng Ulat"
+          },
+          {
+            "locale": "fr_DZ",
+            "value": "Données de rapport"
+          },
+          {
+            "locale": "gl_ES",
+            "value": "Datos do informe"
+          },
+          {
+            "locale": "it_CH",
+            "value": "Dati report"
+          },
+          {
+            "locale": "ms_Arab_MY",
+            "value": "Data Laporan"
+          },
+          {
+            "locale": "ms_Latn_MY",
+            "value": "Data Laporan"
+          },
+          {
+            "locale": "ms_Latn_SG",
+            "value": "Data Laporan"
+          },
+          {
+            "locale": "nn_NO",
+            "value": "Rapportdata"
+          },
+          {
+            "locale": "nso_ZA",
+            "value": "Bega Tsebišo"
+          },
+          {
+            "locale": "pa_Guru_IN",
+            "value": "ਰਿਪੋਰਟ ਡੇਟਾ"
+          },
+          {
+            "locale": "ro_MD",
+            "value": "Date raport"
+          },
+          {
+            "locale": "ru_EE",
+            "value": "Данные отчета"
+          },
+          {
+            "locale": "ru_IL",
+            "value": "Данные отчета"
+          },
+          {
+            "locale": "ru_LT",
+            "value": "Данные отчета"
+          },
+          {
+            "locale": "ru_LV",
+            "value": "Данные отчета"
+          },
+          {
+            "locale": "si_LK",
+            "value": "වාර්තා දත්ත"
+          },
+          {
+            "locale": "sv_FI",
+            "value": "Rapportera data"
+          },
+          {
+            "locale": "ta_LK",
+            "value": "அறிக்கை தரவு"
+          },
+          {
+            "locale": "ta_MY",
+            "value": "அறிக்கை தரவு"
+          },
+          {
+            "locale": "ta_SG",
+            "value": "தரவைப் புகாரளிக்கவும்"
+          },
+          {
+            "locale": "tl_PH",
+            "value": "Data ng Ulat"
+          },
+          {
+            "locale": "ur_IN",
+            "value": "رپورٹ ڈیٹا"
+          },
+          {
+            "locale": "ur_PK",
+            "value": "ڈیٹا کی رپورٹ کریں"
+          },
+          {
+            "locale": "vi_VN",
+            "value": "Báo cáo dữ liệu"
+          },
+          {
+            "locale": "xh_ZA",
+            "value": "Ingxelo Yenkcukacha"
+          },
+          {
+            "locale": "zh_Hans_CN",
+            "value": "报告数据"
+          },
+          {
+            "locale": "zh_Hans_MY",
+            "value": "报告数据"
+          },
+          {
+            "locale": "zh_Hans_SG",
+            "value": "报告数据"
+          },
+          {
+            "locale": "zh_Hant_HK",
+            "value": "報告數據"
+          },
+          {
+            "locale": "zh_Hant_TW",
+            "value": "報告資料"
+          },
+          {
+            "locale": "ar_EG",
+            "value": "تصدير البيانات"
+          },
+          {
+            "locale": "es_PR",
+            "value": "Datos del informe"
+          },
+          {
+            "locale": "es_PA",
+            "value": "Datos del informe"
+          }
+        ],
+        "name": "c_data",
+        "properties": []
+      },
+      {
+        "description": [],
+        "documents": [],
+        "label": [
+          {
+            "locale": "en_US",
+            "value": "Minimum package versions"
+          }
+        ],
+        "name": "c_min_package_versions",
+        "properties": [
+          {
+            "description": [],
+            "label": [
+              {
+                "locale": "en_US",
+                "value": "Package key name"
+              }
+            ],
+            "name": "c_name"
+          },
+          {
+            "description": [],
+            "label": [
+              {
+                "locale": "en_US",
+                "value": "Min Package version"
+              }
+            ],
+            "name": "c_version"
+          },
+          {
+            "description": [],
+            "label": [
+              {
+                "locale": "en_US",
+                "value": "Key"
+              }
+            ],
+            "name": "c_key"
+          }
+        ]
+      },
+      {
+        "description": [],
+        "documents": [],
+        "label": [
+          {
+            "locale": "en_US",
+            "value": "Description"
+          },
+          {
+            "locale": "af_ZA",
+            "value": "Beskrywing"
+          },
+          {
+            "locale": "ar_SA",
+            "value": "الوصف"
+          },
+          {
+            "locale": "bg_BG",
+            "value": "Описание"
+          },
+          {
+            "locale": "cs_CZ",
+            "value": "Popis"
+          },
+          {
+            "locale": "da_DK",
+            "value": "Beskrivelse"
+          },
+          {
+            "locale": "de_CH",
+            "value": "Beschreibung"
+          },
+          {
+            "locale": "de_DE",
+            "value": "Beschreibung"
+          },
+          {
+            "locale": "el_GR",
+            "value": "Περιγραφή"
+          },
+          {
+            "locale": "es_ES",
+            "value": "Descripción"
+          },
+          {
+            "locale": "es_MX",
+            "value": "Descripción"
+          },
+          {
+            "locale": "es_US",
+            "value": "Descripción"
+          },
+          {
+            "locale": "fr_BE",
+            "value": "Description"
+          },
+          {
+            "locale": "fr_CA",
+            "value": "Description"
+          },
+          {
+            "locale": "fr_CH",
+            "value": "Description"
+          },
+          {
+            "locale": "fr_FR",
+            "value": "Description"
+          },
+          {
+            "locale": "he_IL",
+            "value": "תיאור"
+          },
+          {
+            "locale": "hu_HU",
+            "value": "Leírás"
+          },
+          {
+            "locale": "it_IT",
+            "value": "Descrizione"
+          },
+          {
+            "locale": "ja_JP",
+            "value": "説明"
+          },
+          {
+            "locale": "ka_GE",
+            "value": "აღწერილობა"
+          },
+          {
+            "locale": "ko_KR",
+            "value": "설명"
+          },
+          {
+            "locale": "lt_LT",
+            "value": "Aprašas"
+          },
+          {
+            "locale": "lv_LV",
+            "value": "Apraksts"
+          },
+          {
+            "locale": "ms_MY",
+            "value": "Pemerihalan"
+          },
+          {
+            "locale": "nl_BE",
+            "value": "Beschrijving"
+          },
+          {
+            "locale": "nl_NL",
+            "value": "Beschrijving"
+          },
+          {
+            "locale": "pl_PL",
+            "value": "Opis"
+          },
+          {
+            "locale": "pt_BR",
+            "value": "Descrição"
+          },
+          {
+            "locale": "pt_PT",
+            "value": "Descrição"
+          },
+          {
+            "locale": "ro_RO",
+            "value": "Descriere"
+          },
+          {
+            "locale": "ru_RU",
+            "value": "Описание"
+          },
+          {
+            "locale": "ru_UA",
+            "value": "Описание"
+          },
+          {
+            "locale": "sk_SK",
+            "value": "Popis"
+          },
+          {
+            "locale": "sr_Latn_RS",
+            "value": "Opis"
+          },
+          {
+            "locale": "st_ZA",
+            "value": "Tlhaloso"
+          },
+          {
+            "locale": "sv_SE",
+            "value": "Beskrivning"
+          },
+          {
+            "locale": "tr_TR",
+            "value": "Açıklama"
+          },
+          {
+            "locale": "uk_UA",
+            "value": "Опис"
+          },
+          {
+            "locale": "zh_CN",
+            "value": "描述"
+          },
+          {
+            "locale": "zh_TW",
+            "value": "描述"
+          },
+          {
+            "locale": "zu_ZA",
+            "value": "Incazelo"
+          },
+          {
+            "locale": "bn_IN",
+            "value": "বিবরণ"
+          },
+          {
+            "locale": "de_AT",
+            "value": "Beschreibung"
+          },
+          {
+            "locale": "en_AU",
+            "value": "Description"
+          },
+          {
+            "locale": "en_CA",
+            "value": "Description"
+          },
+          {
+            "locale": "en_GB",
+            "value": "Description"
+          },
+          {
+            "locale": "en_NZ",
+            "value": "Description"
+          },
+          {
+            "locale": "gu_IN",
+            "value": "વર્ણન"
+          },
+          {
+            "locale": "hi_IN",
+            "value": "विवरण"
+          },
+          {
+            "locale": "hr_HR",
+            "value": "Opis"
+          },
+          {
+            "locale": "kn_IN",
+            "value": "ವಿವರಣೆ"
+          },
+          {
+            "locale": "ml_IN",
+            "value": "വിവരണം"
+          },
+          {
+            "locale": "mr_IN",
+            "value": "वर्णन"
+          },
+          {
+            "locale": "or_IN",
+            "value": "ବର୍ଣ୍ଣନା"
+          },
+          {
+            "locale": "pa_IN",
+            "value": "ਵੇਰਵਾ"
+          },
+          {
+            "locale": "sl_SI",
+            "value": "Opis"
+          },
+          {
+            "locale": "sr_Cyrl_RS",
+            "value": "Опис"
+          },
+          {
+            "locale": "ta_IN",
+            "value": "விவரிப்பு"
+          },
+          {
+            "locale": "te_IN",
+            "value": "వివరణ"
+          },
+          {
+            "locale": "th_TH",
+            "value": "คําอธิบาย"
+          },
+          {
+            "locale": "sr_Latn",
+            "value": "Opis"
+          },
+          {
+            "locale": "ar_DZ",
+            "value": "الوصف"
+          },
+          {
+            "locale": "ar_IL",
+            "value": "الوصف"
+          },
+          {
+            "locale": "ar_LB",
+            "value": "الوصف"
+          },
+          {
+            "locale": "as_IN",
+            "value": "বিৱৰণ"
+          },
+          {
+            "locale": "ca_ES",
+            "value": "Descripció"
+          },
+          {
+            "locale": "ceb_PH",
+            "value": "Paghulagway"
+          },
+          {
+            "locale": "de_BE",
+            "value": "Beschreibung"
+          },
+          {
+            "locale": "en_BE",
+            "value": "Description"
+          },
+          {
+            "locale": "en_HK",
+            "value": "Description"
+          },
+          {
+            "locale": "en_IE",
+            "value": "Description"
+          },
+          {
+            "locale": "en_IL",
+            "value": "Description"
+          },
+          {
+            "locale": "en_IN",
+            "value": "Description"
+          },
+          {
+            "locale": "en_JM",
+            "value": "Description"
+          },
+          {
+            "locale": "en_MY",
+            "value": "Description"
+          },
+          {
+            "locale": "en_PH",
+            "value": "Description"
+          },
+          {
+            "locale": "en_SG",
+            "value": "Description"
+          },
+          {
+            "locale": "en_ZA",
+            "value": "Description"
+          },
+          {
+            "locale": "es_419",
+            "value": "Descripción"
+          },
+          {
+            "locale": "es_AR",
+            "value": "Descripción"
+          },
+          {
+            "locale": "es_CL",
+            "value": "Descripción"
+          },
+          {
+            "locale": "es_CO",
+            "value": "Descripción"
+          },
+          {
+            "locale": "es_GT",
+            "value": "Descripción"
+          },
+          {
+            "locale": "es_PE",
+            "value": "Descripción"
+          },
+          {
+            "locale": "et_EE",
+            "value": "Kirjeldus"
+          },
+          {
+            "locale": "fi_FI",
+            "value": "Kuvaus"
+          },
+          {
+            "locale": "fil_PH",
+            "value": "Paglalarawan"
+          },
+          {
+            "locale": "fr_DZ",
+            "value": "Description"
+          },
+          {
+            "locale": "gl_ES",
+            "value": "Descrición"
+          },
+          {
+            "locale": "it_CH",
+            "value": "Descrizione"
+          },
+          {
+            "locale": "ms_Arab_MY",
+            "value": "Penerangan"
+          },
+          {
+            "locale": "ms_Latn_MY",
+            "value": "Penerangan"
+          },
+          {
+            "locale": "ms_Latn_SG",
+            "value": "Penerangan"
+          },
+          {
+            "locale": "nn_NO",
+            "value": "Beskrivelse"
+          },
+          {
+            "locale": "nso_ZA",
+            "value": "Hlaloso"
+          },
+          {
+            "locale": "pa_Guru_IN",
+            "value": "ਵਰਣਨ"
+          },
+          {
+            "locale": "ro_MD",
+            "value": "Descriere"
+          },
+          {
+            "locale": "ru_EE",
+            "value": "Описание"
+          },
+          {
+            "locale": "ru_IL",
+            "value": "Описание"
+          },
+          {
+            "locale": "ru_LT",
+            "value": "Описание"
+          },
+          {
+            "locale": "ru_LV",
+            "value": "Описание"
+          },
+          {
+            "locale": "si_LK",
+            "value": "විස්තරය"
+          },
+          {
+            "locale": "sv_FI",
+            "value": "Beskrivning"
+          },
+          {
+            "locale": "ta_LK",
+            "value": "விளக்கம்"
+          },
+          {
+            "locale": "ta_MY",
+            "value": "விபரம்"
+          },
+          {
+            "locale": "ta_SG",
+            "value": "விபரம்"
+          },
+          {
+            "locale": "tl_PH",
+            "value": "Paglalarawan"
+          },
+          {
+            "locale": "ur_IN",
+            "value": "وضاحت"
+          },
+          {
+            "locale": "ur_PK",
+            "value": "بیان"
+          },
+          {
+            "locale": "vi_VN",
+            "value": "Mô tả"
+          },
+          {
+            "locale": "xh_ZA",
+            "value": "Inkcazelo"
+          },
+          {
+            "locale": "zh_Hans_CN",
+            "value": "描述"
+          },
+          {
+            "locale": "zh_Hans_MY",
+            "value": "描述"
+          },
+          {
+            "locale": "zh_Hans_SG",
+            "value": "描述"
+          },
+          {
+            "locale": "zh_Hant_HK",
+            "value": "描述"
+          },
+          {
+            "locale": "zh_Hant_TW",
+            "value": "描述資訊"
+          },
+          {
+            "locale": "ar_EG",
+            "value": "الوصف"
+          },
+          {
+            "locale": "es_PR",
+            "value": "Descripción"
+          },
+          {
+            "locale": "es_PA",
+            "value": "Descripción"
+          }
+        ],
+        "name": "c_description",
+        "properties": []
+      },
+      {
+        "description": [],
+        "documents": [],
+        "label": [
+          {
+            "locale": "en_US",
+            "value": "Headers"
+          },
+          {
+            "locale": "af_ZA",
+            "value": "Opskrifte"
+          },
+          {
+            "locale": "ar_SA",
+            "value": "العناوين الرأسية"
+          },
+          {
+            "locale": "bg_BG",
+            "value": "Горен колонтитул"
+          },
+          {
+            "locale": "cs_CZ",
+            "value": "Záhlaví"
+          },
+          {
+            "locale": "da_DK",
+            "value": "Sidehoved"
+          },
+          {
+            "locale": "de_CH",
+            "value": "Header"
+          },
+          {
+            "locale": "de_DE",
+            "value": "Header"
+          },
+          {
+            "locale": "el_GR",
+            "value": "Επικεφαλίδες"
+          },
+          {
+            "locale": "es_ES",
+            "value": "Encabezados"
+          },
+          {
+            "locale": "es_MX",
+            "value": "Encabezados"
+          },
+          {
+            "locale": "es_US",
+            "value": "Encabezados"
+          },
+          {
+            "locale": "fr_BE",
+            "value": "Titres"
+          },
+          {
+            "locale": "fr_CA",
+            "value": "En-têtes"
+          },
+          {
+            "locale": "fr_CH",
+            "value": "Titres"
+          },
+          {
+            "locale": "fr_FR",
+            "value": "Titres"
+          },
+          {
+            "locale": "he_IL",
+            "value": "כותרות"
+          },
+          {
+            "locale": "hu_HU",
+            "value": "Fejlécek"
+          },
+          {
+            "locale": "it_IT",
+            "value": "Intestazioni"
+          },
+          {
+            "locale": "ja_JP",
+            "value": "ヘッダー"
+          },
+          {
+            "locale": "ka_GE",
+            "value": "სათაურები"
+          },
+          {
+            "locale": "ko_KR",
+            "value": "헤더"
+          },
+          {
+            "locale": "lt_LT",
+            "value": "Antraštės"
+          },
+          {
+            "locale": "lv_LV",
+            "value": "Galvenes"
+          },
+          {
+            "locale": "ms_MY",
+            "value": "Pengepala"
+          },
+          {
+            "locale": "nl_BE",
+            "value": "Kopteksten"
+          },
+          {
+            "locale": "nl_NL",
+            "value": "Kopteksten"
+          },
+          {
+            "locale": "pl_PL",
+            "value": "Nagłówki"
+          },
+          {
+            "locale": "pt_BR",
+            "value": "Cabeçalhos"
+          },
+          {
+            "locale": "pt_PT",
+            "value": "Cabeçalhos"
+          },
+          {
+            "locale": "ro_RO",
+            "value": "Anteturi"
+          },
+          {
+            "locale": "ru_RU",
+            "value": "Заголовки"
+          },
+          {
+            "locale": "ru_UA",
+            "value": "Заголовки"
+          },
+          {
+            "locale": "sk_SK",
+            "value": "Hlavičky"
+          },
+          {
+            "locale": "sr_Latn_RS",
+            "value": "Zaglavlja"
+          },
+          {
+            "locale": "st_ZA",
+            "value": "Mengolo e ka hodimo leqepheng"
+          },
+          {
+            "locale": "sv_SE",
+            "value": "Rubriker"
+          },
+          {
+            "locale": "tr_TR",
+            "value": "Başlıklar"
+          },
+          {
+            "locale": "uk_UA",
+            "value": "Заголовки"
+          },
+          {
+            "locale": "zh_CN",
+            "value": "页眉"
+          },
+          {
+            "locale": "zh_TW",
+            "value": "頁眉"
+          },
+          {
+            "locale": "zu_ZA",
+            "value": "Headers"
+          },
+          {
+            "locale": "bn_IN",
+            "value": "হেডার"
+          },
+          {
+            "locale": "de_AT",
+            "value": "Header"
+          },
+          {
+            "locale": "en_AU",
+            "value": "Headers"
+          },
+          {
+            "locale": "en_CA",
+            "value": "Headers"
+          },
+          {
+            "locale": "en_GB",
+            "value": "Headers"
+          },
+          {
+            "locale": "en_NZ",
+            "value": "Headers"
+          },
+          {
+            "locale": "gu_IN",
+            "value": "હેડર"
+          },
+          {
+            "locale": "hi_IN",
+            "value": "शीर्ष लेख"
+          },
+          {
+            "locale": "hr_HR",
+            "value": "Zaglavlja"
+          },
+          {
+            "locale": "kn_IN",
+            "value": "ಶಿರೋನಾಮೆಗಳು"
+          },
+          {
+            "locale": "ml_IN",
+            "value": "തലക്കെട്ടുകൾ"
+          },
+          {
+            "locale": "mr_IN",
+            "value": "हेडर्स"
+          },
+          {
+            "locale": "or_IN",
+            "value": "ହେଡର୍ ଗୁଡ଼ିକ"
+          },
+          {
+            "locale": "pa_IN",
+            "value": "ਸਿਰਲੇਖ"
+          },
+          {
+            "locale": "sl_SI",
+            "value": "Naslovi"
+          },
+          {
+            "locale": "sr_Cyrl_RS",
+            "value": "Заглавља"
+          },
+          {
+            "locale": "ta_IN",
+            "value": "மேற்குறிப்புகள்"
+          },
+          {
+            "locale": "te_IN",
+            "value": "హెడ్డర్‌లు"
+          },
+          {
+            "locale": "th_TH",
+            "value": "ส่วนหัว"
+          },
+          {
+            "locale": "sr_Latn",
+            "value": "Zaglavlja"
+          },
+          {
+            "locale": "ar_DZ",
+            "value": "الرؤوس"
+          },
+          {
+            "locale": "ar_IL",
+            "value": "الرؤوس"
+          },
+          {
+            "locale": "ar_LB",
+            "value": "الرؤوس"
+          },
+          {
+            "locale": "as_IN",
+            "value": "হেডাৰসমূহ"
+          },
+          {
+            "locale": "ca_ES",
+            "value": "Capçaleres"
+          },
+          {
+            "locale": "ceb_PH",
+            "value": "Mga Header"
+          },
+          {
+            "locale": "de_BE",
+            "value": "Header"
+          },
+          {
+            "locale": "en_BE",
+            "value": "Headers"
+          },
+          {
+            "locale": "en_HK",
+            "value": "Headers"
+          },
+          {
+            "locale": "en_IE",
+            "value": "Headers"
+          },
+          {
+            "locale": "en_IL",
+            "value": "Headers"
+          },
+          {
+            "locale": "en_IN",
+            "value": "Headers"
+          },
+          {
+            "locale": "en_JM",
+            "value": "Headers"
+          },
+          {
+            "locale": "en_MY",
+            "value": "Headers"
+          },
+          {
+            "locale": "en_PH",
+            "value": "Headers"
+          },
+          {
+            "locale": "en_SG",
+            "value": "Headers"
+          },
+          {
+            "locale": "en_ZA",
+            "value": "Headers"
+          },
+          {
+            "locale": "es_419",
+            "value": "Encabezados"
+          },
+          {
+            "locale": "es_AR",
+            "value": "Encabezados"
+          },
+          {
+            "locale": "es_CL",
+            "value": "Encabezados"
+          },
+          {
+            "locale": "es_CO",
+            "value": "Encabezados"
+          },
+          {
+            "locale": "es_GT",
+            "value": "Encabezados"
+          },
+          {
+            "locale": "es_PE",
+            "value": "Encabezados"
+          },
+          {
+            "locale": "et_EE",
+            "value": "Päised"
+          },
+          {
+            "locale": "fi_FI",
+            "value": "Ylätunnisteet"
+          },
+          {
+            "locale": "fil_PH",
+            "value": "Mga Titulo"
+          },
+          {
+            "locale": "fr_DZ",
+            "value": "Titres"
+          },
+          {
+            "locale": "gl_ES",
+            "value": "Cabeceiras"
+          },
+          {
+            "locale": "it_CH",
+            "value": "Intestazioni"
+          },
+          {
+            "locale": "ms_Arab_MY",
+            "value": "Pengepala"
+          },
+          {
+            "locale": "ms_Latn_MY",
+            "value": "Pengepala"
+          },
+          {
+            "locale": "ms_Latn_SG",
+            "value": "Pengepala"
+          },
+          {
+            "locale": "nn_NO",
+            "value": "Headere"
+          },
+          {
+            "locale": "nso_ZA",
+            "value": "Dihlogongwalo"
+          },
+          {
+            "locale": "pa_Guru_IN",
+            "value": "ਹੈਡਰ"
+          },
+          {
+            "locale": "ro_MD",
+            "value": "Anteturi"
+          },
+          {
+            "locale": "ru_EE",
+            "value": "Заголовки"
+          },
+          {
+            "locale": "ru_IL",
+            "value": "Заголовки"
+          },
+          {
+            "locale": "ru_LT",
+            "value": "Заголовки"
+          },
+          {
+            "locale": "ru_LV",
+            "value": "Заголовки"
+          },
+          {
+            "locale": "si_LK",
+            "value": "ශීර්ෂක"
+          },
+          {
+            "locale": "sv_FI",
+            "value": "Rubriker"
+          },
+          {
+            "locale": "ta_LK",
+            "value": "தலைப்புகள்"
+          },
+          {
+            "locale": "ta_MY",
+            "value": "முகப்பிகள்"
+          },
+          {
+            "locale": "ta_SG",
+            "value": "மேற்குறிப்புகள்"
+          },
+          {
+            "locale": "tl_PH",
+            "value": "Mga Header"
+          },
+          {
+            "locale": "ur_IN",
+            "value": "ہیڈرز"
+          },
+          {
+            "locale": "ur_PK",
+            "value": "سرتحریر"
+          },
+          {
+            "locale": "vi_VN",
+            "value": "Tiêu đề"
+          },
+          {
+            "locale": "xh_ZA",
+            "value": "Izihloko"
+          },
+          {
+            "locale": "zh_Hans_CN",
+            "value": "标头"
+          },
+          {
+            "locale": "zh_Hans_MY",
+            "value": "页眉"
+          },
+          {
+            "locale": "zh_Hans_SG",
+            "value": "页眉"
+          },
+          {
+            "locale": "zh_Hant_HK",
+            "value": "標題"
+          },
+          {
+            "locale": "zh_Hant_TW",
+            "value": "標題"
+          },
+          {
+            "locale": "ar_EG",
+            "value": "العناوين الرأسية"
+          },
+          {
+            "locale": "es_PR",
+            "value": "Encabezados"
+          },
+          {
+            "locale": "es_PA",
+            "value": "Encabezados"
+          }
+        ],
+        "name": "c_headers",
+        "properties": []
+      },
+      {
+        "description": [],
+        "documents": [],
+        "label": [
+          {
+            "locale": "en_US",
+            "value": "Key"
+          },
+          {
+            "locale": "af_ZA",
+            "value": "Sleutel"
+          },
+          {
+            "locale": "ar_SA",
+            "value": "المفتاح"
+          },
+          {
+            "locale": "bg_BG",
+            "value": "Ключ"
+          },
+          {
+            "locale": "cs_CZ",
+            "value": "Klíč"
+          },
+          {
+            "locale": "da_DK",
+            "value": "Nøgle"
+          },
+          {
+            "locale": "de_CH",
+            "value": "Schlüssel"
+          },
+          {
+            "locale": "de_DE",
+            "value": "Schlüssel"
+          },
+          {
+            "locale": "el_GR",
+            "value": "Κλειδί"
+          },
+          {
+            "locale": "es_ES",
+            "value": "Clave"
+          },
+          {
+            "locale": "es_MX",
+            "value": "Clave"
+          },
+          {
+            "locale": "es_US",
+            "value": "Clave"
+          },
+          {
+            "locale": "fr_BE",
+            "value": "Clé"
+          },
+          {
+            "locale": "fr_CA",
+            "value": "Clé"
+          },
+          {
+            "locale": "fr_CH",
+            "value": "Clé"
+          },
+          {
+            "locale": "fr_FR",
+            "value": "Clé"
+          },
+          {
+            "locale": "he_IL",
+            "value": "מפתח"
+          },
+          {
+            "locale": "hu_HU",
+            "value": "Kulcs"
+          },
+          {
+            "locale": "it_IT",
+            "value": "Chiave"
+          },
+          {
+            "locale": "ja_JP",
+            "value": "キー"
+          },
+          {
+            "locale": "ka_GE",
+            "value": "გასაღები"
+          },
+          {
+            "locale": "ko_KR",
+            "value": "키"
+          },
+          {
+            "locale": "lt_LT",
+            "value": "Raktas"
+          },
+          {
+            "locale": "lv_LV",
+            "value": "Atslēga"
+          },
+          {
+            "locale": "ms_MY",
+            "value": "Kunci"
+          },
+          {
+            "locale": "nl_BE",
+            "value": "Toets"
+          },
+          {
+            "locale": "nl_NL",
+            "value": "Sleutel"
+          },
+          {
+            "locale": "pl_PL",
+            "value": "Klucz"
+          },
+          {
+            "locale": "pt_BR",
+            "value": "Chave"
+          },
+          {
+            "locale": "pt_PT",
+            "value": "Chave"
+          },
+          {
+            "locale": "ro_RO",
+            "value": "Cheie"
+          },
+          {
+            "locale": "ru_RU",
+            "value": "Ключ"
+          },
+          {
+            "locale": "ru_UA",
+            "value": "Ключ"
+          },
+          {
+            "locale": "sk_SK",
+            "value": "Kľúč"
+          },
+          {
+            "locale": "sr_Latn_RS",
+            "value": "Ključ"
+          },
+          {
+            "locale": "st_ZA",
+            "value": "Senotlolo"
+          },
+          {
+            "locale": "sv_SE",
+            "value": "Nyckel"
+          },
+          {
+            "locale": "tr_TR",
+            "value": "Anahtar"
+          },
+          {
+            "locale": "uk_UA",
+            "value": "Ключ"
+          },
+          {
+            "locale": "zh_CN",
+            "value": "密钥"
+          },
+          {
+            "locale": "zh_TW",
+            "value": "密鑰"
+          },
+          {
+            "locale": "zu_ZA",
+            "value": "Ukhiye"
+          },
+          {
+            "locale": "bn_IN",
+            "value": "কী"
+          },
+          {
+            "locale": "de_AT",
+            "value": "Schlüssel"
+          },
+          {
+            "locale": "en_AU",
+            "value": "Key"
+          },
+          {
+            "locale": "en_CA",
+            "value": "Key"
+          },
+          {
+            "locale": "en_GB",
+            "value": "Key"
+          },
+          {
+            "locale": "en_NZ",
+            "value": "Key"
+          },
+          {
+            "locale": "gu_IN",
+            "value": "કી"
+          },
+          {
+            "locale": "hi_IN",
+            "value": "कुंजी"
+          },
+          {
+            "locale": "hr_HR",
+            "value": "Ključ"
+          },
+          {
+            "locale": "kn_IN",
+            "value": "ಕೀಲಿ"
+          },
+          {
+            "locale": "ml_IN",
+            "value": "കീ"
+          },
+          {
+            "locale": "mr_IN",
+            "value": "की"
+          },
+          {
+            "locale": "or_IN",
+            "value": "କୀ"
+          },
+          {
+            "locale": "pa_IN",
+            "value": "ਕੁੰਜੀ"
+          },
+          {
+            "locale": "sl_SI",
+            "value": "Ključ"
+          },
+          {
+            "locale": "sr_Cyrl_RS",
+            "value": "Кључ"
+          },
+          {
+            "locale": "ta_IN",
+            "value": "முக்கிய தொகுப்பு"
+          },
+          {
+            "locale": "te_IN",
+            "value": "కీ"
+          },
+          {
+            "locale": "th_TH",
+            "value": "แก่นสำคัญ"
+          },
+          {
+            "locale": "sr_Latn",
+            "value": "Ključ"
+          },
+          {
+            "locale": "ar_DZ",
+            "value": "مفتاح"
+          },
+          {
+            "locale": "ar_IL",
+            "value": "مفتاح"
+          },
+          {
+            "locale": "ar_LB",
+            "value": "مفتاح"
+          },
+          {
+            "locale": "as_IN",
+            "value": "কী"
+          },
+          {
+            "locale": "ca_ES",
+            "value": "Clau"
+          },
+          {
+            "locale": "ceb_PH",
+            "value": "Key"
+          },
+          {
+            "locale": "de_BE",
+            "value": "Schlüssel"
+          },
+          {
+            "locale": "en_BE",
+            "value": "Key"
+          },
+          {
+            "locale": "en_HK",
+            "value": "Key"
+          },
+          {
+            "locale": "en_IE",
+            "value": "Key"
+          },
+          {
+            "locale": "en_IL",
+            "value": "Key"
+          },
+          {
+            "locale": "en_IN",
+            "value": "Key"
+          },
+          {
+            "locale": "en_JM",
+            "value": "Key"
+          },
+          {
+            "locale": "en_MY",
+            "value": "Key"
+          },
+          {
+            "locale": "en_PH",
+            "value": "Key"
+          },
+          {
+            "locale": "en_SG",
+            "value": "Key"
+          },
+          {
+            "locale": "en_ZA",
+            "value": "Key"
+          },
+          {
+            "locale": "es_419",
+            "value": "Clave"
+          },
+          {
+            "locale": "es_AR",
+            "value": "Clave"
+          },
+          {
+            "locale": "es_CL",
+            "value": "Clave"
+          },
+          {
+            "locale": "es_CO",
+            "value": "Clave"
+          },
+          {
+            "locale": "es_GT",
+            "value": "Clave"
+          },
+          {
+            "locale": "es_PE",
+            "value": "Clave"
+          },
+          {
+            "locale": "et_EE",
+            "value": "Võti"
+          },
+          {
+            "locale": "fi_FI",
+            "value": "Avain"
+          },
+          {
+            "locale": "fil_PH",
+            "value": "Key"
+          },
+          {
+            "locale": "fr_DZ",
+            "value": "Clé"
+          },
+          {
+            "locale": "gl_ES",
+            "value": "Clave"
+          },
+          {
+            "locale": "it_CH",
+            "value": "Chiave"
+          },
+          {
+            "locale": "ms_Arab_MY",
+            "value": "Kunci"
+          },
+          {
+            "locale": "ms_Latn_MY",
+            "value": "Kunci"
+          },
+          {
+            "locale": "ms_Latn_SG",
+            "value": "Kunci"
+          },
+          {
+            "locale": "nn_NO",
+            "value": "Nøkkel"
+          },
+          {
+            "locale": "nso_ZA",
+            "value": "Konopi"
+          },
+          {
+            "locale": "pa_Guru_IN",
+            "value": "ਕੁੰਜੀ"
+          },
+          {
+            "locale": "ro_MD",
+            "value": "Cheie"
+          },
+          {
+            "locale": "ru_EE",
+            "value": "Ключ"
+          },
+          {
+            "locale": "ru_IL",
+            "value": "Ключ"
+          },
+          {
+            "locale": "ru_LT",
+            "value": "Ключ"
+          },
+          {
+            "locale": "ru_LV",
+            "value": "Ключ"
+          },
+          {
+            "locale": "si_LK",
+            "value": "යතුර"
+          },
+          {
+            "locale": "sv_FI",
+            "value": "Nyckel"
+          },
+          {
+            "locale": "ta_LK",
+            "value": "முக்கிய"
+          },
+          {
+            "locale": "ta_MY",
+            "value": "சாவி"
+          },
+          {
+            "locale": "ta_SG",
+            "value": "சாவி"
+          },
+          {
+            "locale": "tl_PH",
+            "value": "Key"
+          },
+          {
+            "locale": "ur_IN",
+            "value": "کلید"
+          },
+          {
+            "locale": "ur_PK",
+            "value": "کلید"
+          },
+          {
+            "locale": "vi_VN",
+            "value": "Chìa khóa"
+          },
+          {
+            "locale": "xh_ZA",
+            "value": "Isitshixo"
+          },
+          {
+            "locale": "zh_Hans_CN",
+            "value": "关键"
+          },
+          {
+            "locale": "zh_Hans_MY",
+            "value": "密钥"
+          },
+          {
+            "locale": "zh_Hans_SG",
+            "value": "密钥"
+          },
+          {
+            "locale": "zh_Hant_HK",
+            "value": "鑰匙"
+          },
+          {
+            "locale": "zh_Hant_TW",
+            "value": "密鑰"
+          },
+          {
+            "locale": "ar_EG",
+            "value": "المفتاح"
+          },
+          {
+            "locale": "es_PR",
+            "value": "Clave"
+          },
+          {
+            "locale": "es_PA",
+            "value": "Clave"
+          }
+        ],
+        "name": "c_key",
+        "properties": []
+      },
+      {
+        "description": [],
+        "documents": [],
+        "label": [
+          {
+            "locale": "en_US",
+            "value": "PDF Exportable"
+          },
+          {
+            "locale": "af_ZA",
+            "value": "PDF Uitvoerbare"
+          },
+          {
+            "locale": "ar_SA",
+            "value": "ملف PDF قابل للتصدير"
+          },
+          {
+            "locale": "bg_BG",
+            "value": "PDF за експортиране"
+          },
+          {
+            "locale": "cs_CZ",
+            "value": "Exportovatelné do PDF"
+          },
+          {
+            "locale": "da_DK",
+            "value": "PDF-eksporterbar"
+          },
+          {
+            "locale": "de_CH",
+            "value": "PDF exportierbar"
+          },
+          {
+            "locale": "de_DE",
+            "value": "PDF exportierbar"
+          },
+          {
+            "locale": "el_GR",
+            "value": "Εξαγώγιμο PDF"
+          },
+          {
+            "locale": "es_ES",
+            "value": "PDF exportable"
+          },
+          {
+            "locale": "es_MX",
+            "value": "Exportable en PDF"
+          },
+          {
+            "locale": "es_US",
+            "value": "Exportable en PDF"
+          },
+          {
+            "locale": "fr_BE",
+            "value": "PDF exportable"
+          },
+          {
+            "locale": "fr_CA",
+            "value": "PDF exportable"
+          },
+          {
+            "locale": "fr_CH",
+            "value": "PDF exportable"
+          },
+          {
+            "locale": "fr_FR",
+            "value": "PDF exportable"
+          },
+          {
+            "locale": "he_IL",
+            "value": "קובץ PDF ניתן לייצוא"
+          },
+          {
+            "locale": "hu_HU",
+            "value": "PDF exportálható"
+          },
+          {
+            "locale": "it_IT",
+            "value": "PDF esportabile"
+          },
+          {
+            "locale": "ja_JP",
+            "value": "エクスポート可能な PDF"
+          },
+          {
+            "locale": "ka_GE",
+            "value": "PDF ექსპორტირებადი"
+          },
+          {
+            "locale": "ko_KR",
+            "value": "PDF 내보내기 가능"
+          },
+          {
+            "locale": "lt_LT",
+            "value": "PDF eksportuojamas"
+          },
+          {
+            "locale": "lv_LV",
+            "value": "PDF eksportējams"
+          },
+          {
+            "locale": "ms_MY",
+            "value": "PDF Boleh Eksport"
+          },
+          {
+            "locale": "nl_BE",
+            "value": "PDF exporteerbaar"
+          },
+          {
+            "locale": "nl_NL",
+            "value": "PDF-exporteerbaar"
+          },
+          {
+            "locale": "pl_PL",
+            "value": "Plik PDF do wyeksportowania"
+          },
+          {
+            "locale": "pt_BR",
+            "value": "Exportável em PDF"
+          },
+          {
+            "locale": "pt_PT",
+            "value": "PDF exportável"
+          },
+          {
+            "locale": "ro_RO",
+            "value": "PDF exportabil"
+          },
+          {
+            "locale": "ru_RU",
+            "value": "Экспортируемый PDF файл"
+          },
+          {
+            "locale": "ru_UA",
+            "value": "Экспортируемый PDF файл"
+          },
+          {
+            "locale": "sk_SK",
+            "value": "PDF exportovateľné"
+          },
+          {
+            "locale": "sr_Latn_RS",
+            "value": "Izlazna PDF datoteka"
+          },
+          {
+            "locale": "st_ZA",
+            "value": "PDF e Romellwang kantle"
+          },
+          {
+            "locale": "sv_SE",
+            "value": "Kan exporteras som PDF"
+          },
+          {
+            "locale": "tr_TR",
+            "value": "PDF Dışa Aktarılabilir"
+          },
+          {
+            "locale": "uk_UA",
+            "value": "Можна експортувати в PDF"
+          },
+          {
+            "locale": "zh_CN",
+            "value": "可导出 PDF"
+          },
+          {
+            "locale": "zh_TW",
+            "value": "可導出的PDF"
+          },
+          {
+            "locale": "zu_ZA",
+            "value": "PDF Exportable"
+          },
+          {
+            "locale": "bn_IN",
+            "value": "PDF এক্সপোর্টযোগ্য"
+          },
+          {
+            "locale": "de_AT",
+            "value": "PDF exportierbar"
+          },
+          {
+            "locale": "en_AU",
+            "value": "PDF Exportable"
+          },
+          {
+            "locale": "en_CA",
+            "value": "PDF Exportable"
+          },
+          {
+            "locale": "en_GB",
+            "value": "PDF Exportable"
+          },
+          {
+            "locale": "en_NZ",
+            "value": "PDF Exportable"
+          },
+          {
+            "locale": "gu_IN",
+            "value": "PDF એક્સપોર્ટ યોગ્ય"
+          },
+          {
+            "locale": "hi_IN",
+            "value": "PDF निर्यात-योग्य"
+          },
+          {
+            "locale": "hr_HR",
+            "value": "PDF za izvoz"
+          },
+          {
+            "locale": "kn_IN",
+            "value": "ರಫ್ತು ಮಾಡಬಹುದಾದ PDF"
+          },
+          {
+            "locale": "ml_IN",
+            "value": "PDF എക്‌സ്‌പോർട്ട് ചെയ്യാവുന്നതാണ്"
+          },
+          {
+            "locale": "mr_IN",
+            "value": "PDF निर्यात योग्य"
+          },
+          {
+            "locale": "or_IN",
+            "value": "PDF ରପ୍ତାନିଯୋଗ୍ୟ"
+          },
+          {
+            "locale": "pa_IN",
+            "value": "PDF ਏਕਸਪੌਰਟੇਬਲ"
+          },
+          {
+            "locale": "sl_SI",
+            "value": "Format PDF omogoča izvoz"
+          },
+          {
+            "locale": "sr_Cyrl_RS",
+            "value": "Излазна PDF датотека"
+          },
+          {
+            "locale": "ta_IN",
+            "value": "ஏற்றுமதி செய்யத்தக்க PDF"
+          },
+          {
+            "locale": "te_IN",
+            "value": "PDF ఎక్స్‌పోర్టబుల్"
+          },
+          {
+            "locale": "th_TH",
+            "value": "PDF ที่สามารถส่งออกได้"
+          },
+          {
+            "locale": "sr_Latn",
+            "value": "PDF se može izvesti"
+          },
+          {
+            "locale": "ar_DZ",
+            "value": "PDF قابل للتصدير"
+          },
+          {
+            "locale": "ar_IL",
+            "value": "PDF قابل للتصدير"
+          },
+          {
+            "locale": "ar_LB",
+            "value": "PDF قابل للتصدير"
+          },
+          {
+            "locale": "as_IN",
+            "value": "PDF এক্সপোৰ্টেবল"
+          },
+          {
+            "locale": "ca_ES",
+            "value": "PDF exportable"
+          },
+          {
+            "locale": "ceb_PH",
+            "value": "PDF Exportable"
+          },
+          {
+            "locale": "de_BE",
+            "value": "PDF exportierbar"
+          },
+          {
+            "locale": "en_BE",
+            "value": "PDF Exportable"
+          },
+          {
+            "locale": "en_HK",
+            "value": "PDF Exportable"
+          },
+          {
+            "locale": "en_IE",
+            "value": "PDF Exportable"
+          },
+          {
+            "locale": "en_IL",
+            "value": "PDF Exportable"
+          },
+          {
+            "locale": "en_IN",
+            "value": "PDF Exportable"
+          },
+          {
+            "locale": "en_JM",
+            "value": "PDF Exportable"
+          },
+          {
+            "locale": "en_MY",
+            "value": "PDF Exportable"
+          },
+          {
+            "locale": "en_PH",
+            "value": "PDF Exportable"
+          },
+          {
+            "locale": "en_SG",
+            "value": "PDF Exportable"
+          },
+          {
+            "locale": "en_ZA",
+            "value": "PDF exportable"
+          },
+          {
+            "locale": "es_419",
+            "value": "PDF Exportable"
+          },
+          {
+            "locale": "es_AR",
+            "value": "Exportable en PDF"
+          },
+          {
+            "locale": "es_CL",
+            "value": "Exportable en PDF"
+          },
+          {
+            "locale": "es_CO",
+            "value": "Exportable en PDF"
+          },
+          {
+            "locale": "es_GT",
+            "value": "Exportable en PDF"
+          },
+          {
+            "locale": "es_PE",
+            "value": "Exportable en PDF"
+          },
+          {
+            "locale": "et_EE",
+            "value": "PDF-vormingus eksporditav"
+          },
+          {
+            "locale": "fi_FI",
+            "value": "PDF siirrettävä"
+          },
+          {
+            "locale": "fil_PH",
+            "value": "Maaaring ilipat sa PDF"
+          },
+          {
+            "locale": "fr_DZ",
+            "value": "PDF exportable"
+          },
+          {
+            "locale": "gl_ES",
+            "value": "PDF exportable"
+          },
+          {
+            "locale": "it_CH",
+            "value": "PDF esportabile"
+          },
+          {
+            "locale": "ms_Arab_MY",
+            "value": "PDF Boleh Eksport"
+          },
+          {
+            "locale": "ms_Latn_MY",
+            "value": "PDF Boleh Eksport"
+          },
+          {
+            "locale": "ms_Latn_SG",
+            "value": "PDF Boleh Eksport"
+          },
+          {
+            "locale": "nn_NO",
+            "value": "Kan eksporteres som PDF"
+          },
+          {
+            "locale": "nso_ZA",
+            "value": "Kgonego ya go Romela-ntle ya PDF"
+          },
+          {
+            "locale": "pa_Guru_IN",
+            "value": "PDF ਨਿਰਯਾਤਯੋਗ"
+          },
+          {
+            "locale": "ro_MD",
+            "value": "PDF exportabil"
+          },
+          {
+            "locale": "ru_EE",
+            "value": "Экспортируемый PDF файл"
+          },
+          {
+            "locale": "ru_IL",
+            "value": "Экспортируемый PDF файл"
+          },
+          {
+            "locale": "ru_LT",
+            "value": "Экспортируемый PDF файл"
+          },
+          {
+            "locale": "ru_LV",
+            "value": "Экспортируемый PDF файл"
+          },
+          {
+            "locale": "si_LK",
+            "value": "PDF අපනයනය කළ හැකි"
+          },
+          {
+            "locale": "sv_FI",
+            "value": "PDF kan exporteras"
+          },
+          {
+            "locale": "ta_LK",
+            "value": "PDF ஏற்றுமதி செய்யக்கூடியது"
+          },
+          {
+            "locale": "ta_MY",
+            "value": "PDF ஏற்றுமதி செய்யக்கூடியது"
+          },
+          {
+            "locale": "ta_SG",
+            "value": "PDF ஏற்றுமதி செய்யக்கூடியது"
+          },
+          {
+            "locale": "tl_PH",
+            "value": "PDF na Naeeksport"
+          },
+          {
+            "locale": "ur_IN",
+            "value": "PDF قابل اکسپورٹ"
+          },
+          {
+            "locale": "ur_PK",
+            "value": "PDF قابل برآمد"
+          },
+          {
+            "locale": "vi_VN",
+            "value": "PDF có thể xuất"
+          },
+          {
+            "locale": "xh_ZA",
+            "value": "Ukuthunyelwa kwe-PDF"
+          },
+          {
+            "locale": "zh_Hans_CN",
+            "value": "PDF可导出"
+          },
+          {
+            "locale": "zh_Hans_MY",
+            "value": "PDF 可导出"
+          },
+          {
+            "locale": "zh_Hans_SG",
+            "value": "PDF可导出"
+          },
+          {
+            "locale": "zh_Hant_HK",
+            "value": "PDF 可導出"
+          },
+          {
+            "locale": "zh_Hant_TW",
+            "value": "PDF 可匯出"
+          },
+          {
+            "locale": "ar_EG",
+            "value": "ملف PDF قابل للتصدير"
+          },
+          {
+            "locale": "es_PR",
+            "value": "Exportable en PDF"
+          },
+          {
+            "locale": "es_PA",
+            "value": "Exportable en PDF"
+          }
+        ],
+        "name": "c_pdf_exportable",
+        "properties": []
+      },
+      {
+        "description": [],
+        "documents": [],
+        "label": [
+          {
+            "locale": "en_US",
+            "value": "PDF Template"
+          },
+          {
+            "locale": "af_ZA",
+            "value": "PDF Sjabloon"
+          },
+          {
+            "locale": "ar_SA",
+            "value": "قالب PDF"
+          },
+          {
+            "locale": "bg_BG",
+            "value": "PDF шаблон"
+          },
+          {
+            "locale": "cs_CZ",
+            "value": "Šablona PDF"
+          },
+          {
+            "locale": "da_DK",
+            "value": "PDF-skabelon"
+          },
+          {
+            "locale": "de_CH",
+            "value": "PDF Vorlage"
+          },
+          {
+            "locale": "de_DE",
+            "value": "PDF Vorlage"
+          },
+          {
+            "locale": "el_GR",
+            "value": "Πρότυπο PDF"
+          },
+          {
+            "locale": "es_ES",
+            "value": "Plantilla PDF"
+          },
+          {
+            "locale": "es_MX",
+            "value": "Plantilla en PDF"
+          },
+          {
+            "locale": "es_US",
+            "value": "Plantilla en PDF"
+          },
+          {
+            "locale": "fr_BE",
+            "value": "Modèle PDF"
+          },
+          {
+            "locale": "fr_CA",
+            "value": "Modèle PDF"
+          },
+          {
+            "locale": "fr_CH",
+            "value": "Modèle PDF"
+          },
+          {
+            "locale": "fr_FR",
+            "value": "Modèle PDF"
+          },
+          {
+            "locale": "he_IL",
+            "value": "תבנית PDF"
+          },
+          {
+            "locale": "hu_HU",
+            "value": "PDF-sablon"
+          },
+          {
+            "locale": "it_IT",
+            "value": "Modello PDF"
+          },
+          {
+            "locale": "ja_JP",
+            "value": "PDF テンプレート"
+          },
+          {
+            "locale": "ka_GE",
+            "value": "PDF შაბლონი"
+          },
+          {
+            "locale": "ko_KR",
+            "value": "PDF 템플릿"
+          },
+          {
+            "locale": "lt_LT",
+            "value": "PDF šablonas"
+          },
+          {
+            "locale": "lv_LV",
+            "value": "PDF veidne"
+          },
+          {
+            "locale": "ms_MY",
+            "value": "Templat PDF"
+          },
+          {
+            "locale": "nl_BE",
+            "value": "PDF-sjabloon"
+          },
+          {
+            "locale": "nl_NL",
+            "value": "PDF-sjabloon"
+          },
+          {
+            "locale": "pl_PL",
+            "value": "Szablon PDF"
+          },
+          {
+            "locale": "pt_BR",
+            "value": "Modelo em PDF"
+          },
+          {
+            "locale": "pt_PT",
+            "value": "Modelo de PDF"
+          },
+          {
+            "locale": "ro_RO",
+            "value": "Șablon PDF"
+          },
+          {
+            "locale": "ru_RU",
+            "value": "Шаблон PDF"
+          },
+          {
+            "locale": "ru_UA",
+            "value": "Шаблон PDF"
+          },
+          {
+            "locale": "sk_SK",
+            "value": "Šablóna PDF"
+          },
+          {
+            "locale": "sr_Latn_RS",
+            "value": "PDF šablon"
+          },
+          {
+            "locale": "st_ZA",
+            "value": "Thempoleiti ya PDF"
+          },
+          {
+            "locale": "sv_SE",
+            "value": "PDF-mall"
+          },
+          {
+            "locale": "tr_TR",
+            "value": "PDF Şablonu"
+          },
+          {
+            "locale": "uk_UA",
+            "value": "Шаблон PDF"
+          },
+          {
+            "locale": "zh_CN",
+            "value": "PDF 模板"
+          },
+          {
+            "locale": "zh_TW",
+            "value": "PDF模板"
+          },
+          {
+            "locale": "zu_ZA",
+            "value": "PDF Template"
+          },
+          {
+            "locale": "bn_IN",
+            "value": "PDF টেমপ্লেট"
+          },
+          {
+            "locale": "de_AT",
+            "value": "PDF Vorlage"
+          },
+          {
+            "locale": "en_AU",
+            "value": "PDF Template"
+          },
+          {
+            "locale": "en_CA",
+            "value": "PDF Template"
+          },
+          {
+            "locale": "en_GB",
+            "value": "PDF Template"
+          },
+          {
+            "locale": "en_NZ",
+            "value": "PDF Template"
+          },
+          {
+            "locale": "gu_IN",
+            "value": "PDF ટેમ્પલેટ"
+          },
+          {
+            "locale": "hi_IN",
+            "value": "PDF टेम्प्लेट"
+          },
+          {
+            "locale": "hr_HR",
+            "value": "PDF predložak"
+          },
+          {
+            "locale": "kn_IN",
+            "value": "PDF ಟೆಂಪ್ಲೇಟ್‌"
+          },
+          {
+            "locale": "ml_IN",
+            "value": "PDF ടെംപ്ലേറ്റ്"
+          },
+          {
+            "locale": "mr_IN",
+            "value": "PDF टेम्पलेट"
+          },
+          {
+            "locale": "or_IN",
+            "value": "PDF ଟେମ୍ପଲେଟ୍"
+          },
+          {
+            "locale": "pa_IN",
+            "value": "PDF ਟੈਂਪਲੇਟ"
+          },
+          {
+            "locale": "sl_SI",
+            "value": "Predloga PDF"
+          },
+          {
+            "locale": "sr_Cyrl_RS",
+            "value": "PDF шаблон"
+          },
+          {
+            "locale": "ta_IN",
+            "value": "PDF வார்ப்புரு"
+          },
+          {
+            "locale": "te_IN",
+            "value": "PDF టెంప్లెట్"
+          },
+          {
+            "locale": "th_TH",
+            "value": "แม่แบบ PDF"
+          },
+          {
+            "locale": "sr_Latn",
+            "value": "Predložak PDF"
+          },
+          {
+            "locale": "ar_DZ",
+            "value": "قالب PDF"
+          },
+          {
+            "locale": "ar_IL",
+            "value": "قالب PDF"
+          },
+          {
+            "locale": "ar_LB",
+            "value": "قالب PDF"
+          },
+          {
+            "locale": "as_IN",
+            "value": "PDF টেমপ্লেট"
+          },
+          {
+            "locale": "ca_ES",
+            "value": "Plantilla PDF"
+          },
+          {
+            "locale": "ceb_PH",
+            "value": "PDF Template"
+          },
+          {
+            "locale": "de_BE",
+            "value": "PDF Vorlage"
+          },
+          {
+            "locale": "en_BE",
+            "value": "PDF Template"
+          },
+          {
+            "locale": "en_HK",
+            "value": "PDF Template"
+          },
+          {
+            "locale": "en_IE",
+            "value": "PDF Template"
+          },
+          {
+            "locale": "en_IL",
+            "value": "PDF Template"
+          },
+          {
+            "locale": "en_IN",
+            "value": "PDF Template"
+          },
+          {
+            "locale": "en_JM",
+            "value": "PDF Template"
+          },
+          {
+            "locale": "en_MY",
+            "value": "PDF Template"
+          },
+          {
+            "locale": "en_PH",
+            "value": "PDF Template"
+          },
+          {
+            "locale": "en_SG",
+            "value": "PDF Template"
+          },
+          {
+            "locale": "en_ZA",
+            "value": "PDF template"
+          },
+          {
+            "locale": "es_419",
+            "value": "Plantilla PDF"
+          },
+          {
+            "locale": "es_AR",
+            "value": "Plantilla en PDF"
+          },
+          {
+            "locale": "es_CL",
+            "value": "Plantilla en PDF"
+          },
+          {
+            "locale": "es_CO",
+            "value": "Plantilla en PDF"
+          },
+          {
+            "locale": "es_GT",
+            "value": "Plantilla en PDF"
+          },
+          {
+            "locale": "es_PE",
+            "value": "Plantilla en PDF"
+          },
+          {
+            "locale": "et_EE",
+            "value": "PDF-mall"
+          },
+          {
+            "locale": "fi_FI",
+            "value": "PDF-malli"
+          },
+          {
+            "locale": "fil_PH",
+            "value": "Template ng PDF"
+          },
+          {
+            "locale": "fr_DZ",
+            "value": "Modèle PDF"
+          },
+          {
+            "locale": "gl_ES",
+            "value": "Modelo PDF"
+          },
+          {
+            "locale": "it_CH",
+            "value": "Modello PDF"
+          },
+          {
+            "locale": "ms_Arab_MY",
+            "value": "Templat PDF"
+          },
+          {
+            "locale": "ms_Latn_MY",
+            "value": "Templat PDF"
+          },
+          {
+            "locale": "ms_Latn_SG",
+            "value": "Templat PDF"
+          },
+          {
+            "locale": "nn_NO",
+            "value": "PDF-mal"
+          },
+          {
+            "locale": "nso_ZA",
+            "value": "Sešupetšo sa PDF"
+          },
+          {
+            "locale": "pa_Guru_IN",
+            "value": "PDF ਟੈਮਪਲੇਟ"
+          },
+          {
+            "locale": "ro_MD",
+            "value": "Șablon PDF"
+          },
+          {
+            "locale": "ru_EE",
+            "value": "Шаблон PDF"
+          },
+          {
+            "locale": "ru_IL",
+            "value": "Шаблон PDF"
+          },
+          {
+            "locale": "ru_LT",
+            "value": "Шаблон PDF"
+          },
+          {
+            "locale": "ru_LV",
+            "value": "Шаблон PDF"
+          },
+          {
+            "locale": "si_LK",
+            "value": "PDF ටෙම්ප්ලේට"
+          },
+          {
+            "locale": "sv_FI",
+            "value": "PDF-mall"
+          },
+          {
+            "locale": "ta_LK",
+            "value": "PDF டெம்ப்ளேட்"
+          },
+          {
+            "locale": "ta_MY",
+            "value": "PDF வார்ப்புரு"
+          },
+          {
+            "locale": "ta_SG",
+            "value": "PDF டெம்ப்ளேட்"
+          },
+          {
+            "locale": "tl_PH",
+            "value": "PDF na Template"
+          },
+          {
+            "locale": "ur_IN",
+            "value": "PDF ٹیمپلٹ"
+          },
+          {
+            "locale": "ur_PK",
+            "value": "PDF ٹیمپلیٹ"
+          },
+          {
+            "locale": "vi_VN",
+            "value": "Mẫu PDF"
+          },
+          {
+            "locale": "xh_ZA",
+            "value": "Ithemplethi Ye-PDF"
+          },
+          {
+            "locale": "zh_Hans_CN",
+            "value": "PDF模板"
+          },
+          {
+            "locale": "zh_Hans_MY",
+            "value": "PDF 模板"
+          },
+          {
+            "locale": "zh_Hans_SG",
+            "value": "PDF模板"
+          },
+          {
+            "locale": "zh_Hant_HK",
+            "value": "PDF 範本"
+          },
+          {
+            "locale": "zh_Hant_TW",
+            "value": "PDF 範本"
+          },
+          {
+            "locale": "ar_EG",
+            "value": "قالب PDF"
+          },
+          {
+            "locale": "es_PR",
+            "value": "Plantilla en PDF"
+          },
+          {
+            "locale": "es_PA",
+            "value": "Plantilla en PDF"
+          }
+        ],
+        "name": "c_pdf_template",
+        "properties": []
+      },
+      {
+        "description": [],
+        "documents": [],
+        "label": [
+          {
+            "locale": "en_US",
+            "value": "Preview"
+          },
+          {
+            "locale": "af_ZA",
+            "value": "Voorskou"
+          },
+          {
+            "locale": "ar_SA",
+            "value": "معاينة"
+          },
+          {
+            "locale": "bg_BG",
+            "value": "Преглед"
+          },
+          {
+            "locale": "cs_CZ",
+            "value": "Náhled"
+          },
+          {
+            "locale": "da_DK",
+            "value": "Forhåndsvisning"
+          },
+          {
+            "locale": "de_CH",
+            "value": "Vorschau"
+          },
+          {
+            "locale": "de_DE",
+            "value": "Vorschau"
+          },
+          {
+            "locale": "el_GR",
+            "value": "Προεπισκόπηση"
+          },
+          {
+            "locale": "es_ES",
+            "value": "Vista previa"
+          },
+          {
+            "locale": "es_MX",
+            "value": "Vista previa"
+          },
+          {
+            "locale": "es_US",
+            "value": "Vista previa"
+          },
+          {
+            "locale": "fr_BE",
+            "value": "Aperçu"
+          },
+          {
+            "locale": "fr_CA",
+            "value": "Aperçu"
+          },
+          {
+            "locale": "fr_CH",
+            "value": "Aperçu"
+          },
+          {
+            "locale": "fr_FR",
+            "value": "Aperçu"
+          },
+          {
+            "locale": "he_IL",
+            "value": "תצוגה מקדימה"
+          },
+          {
+            "locale": "hu_HU",
+            "value": "Előnézet"
+          },
+          {
+            "locale": "it_IT",
+            "value": "Anteprima"
+          },
+          {
+            "locale": "ja_JP",
+            "value": "プレビュー"
+          },
+          {
+            "locale": "ka_GE",
+            "value": "წინასწარ ნახვა"
+          },
+          {
+            "locale": "ko_KR",
+            "value": "미리보기"
+          },
+          {
+            "locale": "lt_LT",
+            "value": "Peržiūrėti"
+          },
+          {
+            "locale": "lv_LV",
+            "value": "Priekšskatījums"
+          },
+          {
+            "locale": "ms_MY",
+            "value": "Pratonton"
+          },
+          {
+            "locale": "nl_BE",
+            "value": "Voorbeeld"
+          },
+          {
+            "locale": "nl_NL",
+            "value": "Voorbeeldweergave"
+          },
+          {
+            "locale": "pl_PL",
+            "value": "Podgląd"
+          },
+          {
+            "locale": "pt_BR",
+            "value": "Pré-visualização"
+          },
+          {
+            "locale": "pt_PT",
+            "value": "Pré-visualização"
+          },
+          {
+            "locale": "ro_RO",
+            "value": "Previzualizare"
+          },
+          {
+            "locale": "ru_RU",
+            "value": "Предварительный просмотр"
+          },
+          {
+            "locale": "ru_UA",
+            "value": "Предварительный просмотр"
+          },
+          {
+            "locale": "sk_SK",
+            "value": "Náhľad"
+          },
+          {
+            "locale": "sr_Latn_RS",
+            "value": "Pretpregled"
+          },
+          {
+            "locale": "st_ZA",
+            "value": "Sheba hape"
+          },
+          {
+            "locale": "sv_SE",
+            "value": "Förhandsgranskning"
+          },
+          {
+            "locale": "tr_TR",
+            "value": "Önizleme"
+          },
+          {
+            "locale": "uk_UA",
+            "value": "Попередній перегляд"
+          },
+          {
+            "locale": "zh_CN",
+            "value": "预览"
+          },
+          {
+            "locale": "zh_TW",
+            "value": "預覽"
+          },
+          {
+            "locale": "zu_ZA",
+            "value": "Buka"
+          },
+          {
+            "locale": "bn_IN",
+            "value": "প্রিভিউ"
+          },
+          {
+            "locale": "de_AT",
+            "value": "Vorschau"
+          },
+          {
+            "locale": "en_AU",
+            "value": "Preview"
+          },
+          {
+            "locale": "en_CA",
+            "value": "Preview"
+          },
+          {
+            "locale": "en_GB",
+            "value": "Preview"
+          },
+          {
+            "locale": "en_NZ",
+            "value": "Preview"
+          },
+          {
+            "locale": "gu_IN",
+            "value": "પ્રિવ્યૂ"
+          },
+          {
+            "locale": "hi_IN",
+            "value": "पूर्वदर्शन"
+          },
+          {
+            "locale": "hr_HR",
+            "value": "Pregled"
+          },
+          {
+            "locale": "kn_IN",
+            "value": "ಮುನ್ನೋಟ"
+          },
+          {
+            "locale": "ml_IN",
+            "value": "പ്രിവ്യൂ"
+          },
+          {
+            "locale": "mr_IN",
+            "value": "पूर्वावलोकन"
+          },
+          {
+            "locale": "or_IN",
+            "value": "ପୂର୍ବାବଲୋକନ"
+          },
+          {
+            "locale": "pa_IN",
+            "value": "ਪ੍ਰੀਵ੍ਯੂ"
+          },
+          {
+            "locale": "sl_SI",
+            "value": "Predogled"
+          },
+          {
+            "locale": "sr_Cyrl_RS",
+            "value": "Претпреглед"
+          },
+          {
+            "locale": "ta_IN",
+            "value": "முன்னோட்டம்"
+          },
+          {
+            "locale": "te_IN",
+            "value": "ప్రివ్యూ"
+          },
+          {
+            "locale": "th_TH",
+            "value": "แสดงตัวอย่าง"
+          },
+          {
+            "locale": "sr_Latn",
+            "value": "Pregled"
+          },
+          {
+            "locale": "ar_DZ",
+            "value": "معاينة"
+          },
+          {
+            "locale": "ar_IL",
+            "value": "معاينة"
+          },
+          {
+            "locale": "ar_LB",
+            "value": "معاينة"
+          },
+          {
+            "locale": "as_IN",
+            "value": "প্ৰিভিউ"
+          },
+          {
+            "locale": "ca_ES",
+            "value": "Vista prèvia"
+          },
+          {
+            "locale": "ceb_PH",
+            "value": "Preview"
+          },
+          {
+            "locale": "de_BE",
+            "value": "Vorschau"
+          },
+          {
+            "locale": "en_BE",
+            "value": "Preview"
+          },
+          {
+            "locale": "en_HK",
+            "value": "Preview"
+          },
+          {
+            "locale": "en_IE",
+            "value": "Preview"
+          },
+          {
+            "locale": "en_IL",
+            "value": "Preview"
+          },
+          {
+            "locale": "en_IN",
+            "value": "Preview"
+          },
+          {
+            "locale": "en_JM",
+            "value": "Preview"
+          },
+          {
+            "locale": "en_MY",
+            "value": "Preview"
+          },
+          {
+            "locale": "en_PH",
+            "value": "Preview"
+          },
+          {
+            "locale": "en_SG",
+            "value": "Preview"
+          },
+          {
+            "locale": "en_ZA",
+            "value": "Preview"
+          },
+          {
+            "locale": "es_419",
+            "value": "Avance"
+          },
+          {
+            "locale": "es_AR",
+            "value": "Vista previa"
+          },
+          {
+            "locale": "es_CL",
+            "value": "Vista previa"
+          },
+          {
+            "locale": "es_CO",
+            "value": "Vista previa"
+          },
+          {
+            "locale": "es_GT",
+            "value": "Vista previa"
+          },
+          {
+            "locale": "es_PE",
+            "value": "Vista previa"
+          },
+          {
+            "locale": "et_EE",
+            "value": "Eelvaade"
+          },
+          {
+            "locale": "fi_FI",
+            "value": "Esikatselu"
+          },
+          {
+            "locale": "fil_PH",
+            "value": "Paunang Pagtingin"
+          },
+          {
+            "locale": "fr_DZ",
+            "value": "Aperçu"
+          },
+          {
+            "locale": "gl_ES",
+            "value": "Vista previa"
+          },
+          {
+            "locale": "it_CH",
+            "value": "Anteprima"
+          },
+          {
+            "locale": "ms_Arab_MY",
+            "value": "Pratonton"
+          },
+          {
+            "locale": "ms_Latn_MY",
+            "value": "Pratonton"
+          },
+          {
+            "locale": "ms_Latn_SG",
+            "value": "Pratonton"
+          },
+          {
+            "locale": "nn_NO",
+            "value": "Forhåndsvisning"
+          },
+          {
+            "locale": "nso_ZA",
+            "value": "Bona-pele"
+          },
+          {
+            "locale": "pa_Guru_IN",
+            "value": "ਪੂਰਵ-ਝਲਕ"
+          },
+          {
+            "locale": "ro_MD",
+            "value": "Previzualizare"
+          },
+          {
+            "locale": "ru_EE",
+            "value": "Предварительный просмотр"
+          },
+          {
+            "locale": "ru_IL",
+            "value": "Предварительный просмотр"
+          },
+          {
+            "locale": "ru_LT",
+            "value": "Предварительный просмотр"
+          },
+          {
+            "locale": "ru_LV",
+            "value": "Предварительный просмотр"
+          },
+          {
+            "locale": "si_LK",
+            "value": "පෙරදැක්ම"
+          },
+          {
+            "locale": "sv_FI",
+            "value": "Förhandsgranskning"
+          },
+          {
+            "locale": "ta_LK",
+            "value": "முன்னோட்ட"
+          },
+          {
+            "locale": "ta_MY",
+            "value": "முன்னோட்டம்"
+          },
+          {
+            "locale": "ta_SG",
+            "value": "முன்னோட்டம்"
+          },
+          {
+            "locale": "tl_PH",
+            "value": "Pasilip"
+          },
+          {
+            "locale": "ur_IN",
+            "value": "پریویو"
+          },
+          {
+            "locale": "ur_PK",
+            "value": "پیش منظر"
+          },
+          {
+            "locale": "vi_VN",
+            "value": "Xem trước"
+          },
+          {
+            "locale": "xh_ZA",
+            "value": "Ukujonga ngaphambili"
+          },
+          {
+            "locale": "zh_Hans_CN",
+            "value": "预览"
+          },
+          {
+            "locale": "zh_Hans_MY",
+            "value": "预览"
+          },
+          {
+            "locale": "zh_Hans_SG",
+            "value": "预览"
+          },
+          {
+            "locale": "zh_Hant_HK",
+            "value": "預覽"
+          },
+          {
+            "locale": "zh_Hant_TW",
+            "value": "預覽"
+          },
+          {
+            "locale": "ar_EG",
+            "value": "معاينة"
+          },
+          {
+            "locale": "es_PR",
+            "value": "Vista previa"
+          },
+          {
+            "locale": "es_PA",
+            "value": "Vista previa"
+          }
+        ],
+        "name": "c_preview",
+        "properties": []
+      },
+      {
+        "description": [],
+        "documents": [],
+        "label": [
+          {
+            "locale": "en_US",
+            "value": "Report Reading"
+          },
+          {
+            "locale": "af_ZA",
+            "value": "Rapport Lesing"
+          },
+          {
+            "locale": "ar_SA",
+            "value": "قراءة التقرير"
+          },
+          {
+            "locale": "bg_BG",
+            "value": "Четене на отчет"
+          },
+          {
+            "locale": "cs_CZ",
+            "value": "Čtení zprávy"
+          },
+          {
+            "locale": "da_DK",
+            "value": "Rapport-læsning"
+          },
+          {
+            "locale": "de_CH",
+            "value": "Bericht lesen"
+          },
+          {
+            "locale": "de_DE",
+            "value": "Bericht lesen"
+          },
+          {
+            "locale": "el_GR",
+            "value": "Ανάγνωση αναφοράς"
+          },
+          {
+            "locale": "es_ES",
+            "value": "Lectura de informes"
+          },
+          {
+            "locale": "es_MX",
+            "value": "Lectura del informe"
+          },
+          {
+            "locale": "es_US",
+            "value": "Lectura del informe"
+          },
+          {
+            "locale": "fr_BE",
+            "value": "Lecture du rapport"
+          },
+          {
+            "locale": "fr_CA",
+            "value": "Lecture du rapport"
+          },
+          {
+            "locale": "fr_CH",
+            "value": "Lecture du rapport"
+          },
+          {
+            "locale": "fr_FR",
+            "value": "Lecture du rapport"
+          },
+          {
+            "locale": "he_IL",
+            "value": "קריאת דוח"
+          },
+          {
+            "locale": "hu_HU",
+            "value": "Jelentésolvasás"
+          },
+          {
+            "locale": "it_IT",
+            "value": "Lettura rapporto"
+          },
+          {
+            "locale": "ja_JP",
+            "value": "レポートの読み取り"
+          },
+          {
+            "locale": "ka_GE",
+            "value": "ანგარიშის წაკითხვა"
+          },
+          {
+            "locale": "ko_KR",
+            "value": "보고서 읽기"
+          },
+          {
+            "locale": "lt_LT",
+            "value": "Ataskaitos rodmenys"
+          },
+          {
+            "locale": "lv_LV",
+            "value": "Ziņojuma lasīšana"
+          },
+          {
+            "locale": "ms_MY",
+            "value": "Bacaan Laporan"
+          },
+          {
+            "locale": "nl_BE",
+            "value": "Rapport lezen"
+          },
+          {
+            "locale": "nl_NL",
+            "value": "Rapport lezen"
+          },
+          {
+            "locale": "pl_PL",
+            "value": "Odczytywanie raportu"
+          },
+          {
+            "locale": "pt_BR",
+            "value": "Leitura de relatório"
+          },
+          {
+            "locale": "pt_PT",
+            "value": "Leitura de relatórios"
+          },
+          {
+            "locale": "ro_RO",
+            "value": "Citire raport"
+          },
+          {
+            "locale": "ru_RU",
+            "value": "Чтение отчета"
+          },
+          {
+            "locale": "ru_UA",
+            "value": "Чтение отчета"
+          },
+          {
+            "locale": "sk_SK",
+            "value": "Čítanie správy"
+          },
+          {
+            "locale": "sr_Latn_RS",
+            "value": "Čitanje izveštaja"
+          },
+          {
+            "locale": "st_ZA",
+            "value": "Tlaleha Palo"
+          },
+          {
+            "locale": "sv_SE",
+            "value": "Rapportläsning"
+          },
+          {
+            "locale": "tr_TR",
+            "value": "Rapor Okuma"
+          },
+          {
+            "locale": "uk_UA",
+            "value": "Читання звіту"
+          },
+          {
+            "locale": "zh_CN",
+            "value": "报告阅读"
+          },
+          {
+            "locale": "zh_TW",
+            "value": "報告閱讀"
+          },
+          {
+            "locale": "zu_ZA",
+            "value": "Ukufunda Umbiko"
+          },
+          {
+            "locale": "bn_IN",
+            "value": "রিপোর্ট পড়া"
+          },
+          {
+            "locale": "de_AT",
+            "value": "Bericht lesen"
+          },
+          {
+            "locale": "en_AU",
+            "value": "Report Reading"
+          },
+          {
+            "locale": "en_CA",
+            "value": "Report Reading"
+          },
+          {
+            "locale": "en_GB",
+            "value": "Report Reading"
+          },
+          {
+            "locale": "en_NZ",
+            "value": "Report Reading"
+          },
+          {
+            "locale": "gu_IN",
+            "value": "વાંચન રિપોર્ટ કરો"
+          },
+          {
+            "locale": "hi_IN",
+            "value": "रिपोर्ट पठन"
+          },
+          {
+            "locale": "hr_HR",
+            "value": "Čitanje izvješća"
+          },
+          {
+            "locale": "kn_IN",
+            "value": "ವರದಿ ಓದುವಿಕೆ"
+          },
+          {
+            "locale": "ml_IN",
+            "value": "റിപ്പോർട്ട് വായന"
+          },
+          {
+            "locale": "mr_IN",
+            "value": "अहवाल वाचन"
+          },
+          {
+            "locale": "or_IN",
+            "value": "ରିଡିଙ୍ଗ୍ ରିପୋର୍ଟ କରନ୍ତୁ"
+          },
+          {
+            "locale": "pa_IN",
+            "value": "ਰਿਪੋਰਟ ਰੀਡਿੰਗ"
+          },
+          {
+            "locale": "sl_SI",
+            "value": "Branje poročila"
+          },
+          {
+            "locale": "sr_Cyrl_RS",
+            "value": "Читање извештаја"
+          },
+          {
+            "locale": "ta_IN",
+            "value": "அறிக்கை வாசிப்பு"
+          },
+          {
+            "locale": "te_IN",
+            "value": "రిపోర్టు చదవడం"
+          },
+          {
+            "locale": "th_TH",
+            "value": "การอ่านรายงาน"
+          },
+          {
+            "locale": "sr_Latn",
+            "value": "Čitanje izveštaja"
+          },
+          {
+            "locale": "ar_DZ",
+            "value": "قراءة التقرير"
+          },
+          {
+            "locale": "ar_IL",
+            "value": "قراءة التقرير"
+          },
+          {
+            "locale": "ar_LB",
+            "value": "قراءة التقرير"
+          },
+          {
+            "locale": "as_IN",
+            "value": "প্ৰতিৱেদন পাঠ"
+          },
+          {
+            "locale": "ca_ES",
+            "value": "Lectura d’informes"
+          },
+          {
+            "locale": "ceb_PH",
+            "value": "Pagbasa sa Report"
+          },
+          {
+            "locale": "de_BE",
+            "value": "Bericht lesen"
+          },
+          {
+            "locale": "en_BE",
+            "value": "Report Reading"
+          },
+          {
+            "locale": "en_HK",
+            "value": "Report Reading"
+          },
+          {
+            "locale": "en_IE",
+            "value": "Report Reading"
+          },
+          {
+            "locale": "en_IL",
+            "value": "Report Reading"
+          },
+          {
+            "locale": "en_IN",
+            "value": "Report Reading"
+          },
+          {
+            "locale": "en_JM",
+            "value": "Report Reading"
+          },
+          {
+            "locale": "en_MY",
+            "value": "Report Reading"
+          },
+          {
+            "locale": "en_PH",
+            "value": "Report Reading"
+          },
+          {
+            "locale": "en_SG",
+            "value": "Report Reading"
+          },
+          {
+            "locale": "en_ZA",
+            "value": "Report reading"
+          },
+          {
+            "locale": "es_419",
+            "value": "Lectura de informe"
+          },
+          {
+            "locale": "es_AR",
+            "value": "Lectura del informe"
+          },
+          {
+            "locale": "es_CL",
+            "value": "Lectura del informe"
+          },
+          {
+            "locale": "es_CO",
+            "value": "Lectura del informe"
+          },
+          {
+            "locale": "es_GT",
+            "value": "Lectura del informe"
+          },
+          {
+            "locale": "es_PE",
+            "value": "Lectura del informe"
+          },
+          {
+            "locale": "et_EE",
+            "value": "Aruande lugemine"
+          },
+          {
+            "locale": "fi_FI",
+            "value": "Raportin lukeminen"
+          },
+          {
+            "locale": "fil_PH",
+            "value": "Pagbabasa ng Ulat"
+          },
+          {
+            "locale": "fr_DZ",
+            "value": "Lecture du rapport"
+          },
+          {
+            "locale": "gl_ES",
+            "value": "Lectura de informes"
+          },
+          {
+            "locale": "it_CH",
+            "value": "Lettura report"
+          },
+          {
+            "locale": "ms_Arab_MY",
+            "value": "Pembacaan Laporan"
+          },
+          {
+            "locale": "ms_Latn_MY",
+            "value": "Pembacaan Laporan"
+          },
+          {
+            "locale": "ms_Latn_SG",
+            "value": "Pembacaan Laporan"
+          },
+          {
+            "locale": "nn_NO",
+            "value": "Rapportlesing"
+          },
+          {
+            "locale": "nso_ZA",
+            "value": "Palo ya Pego"
+          },
+          {
+            "locale": "pa_Guru_IN",
+            "value": "ਰਿਪੋਰਟ ਪੜ੍ਹਨਾ"
+          },
+          {
+            "locale": "ro_MD",
+            "value": "Citire raport"
+          },
+          {
+            "locale": "ru_EE",
+            "value": "Чтение отчета"
+          },
+          {
+            "locale": "ru_IL",
+            "value": "Чтение отчета"
+          },
+          {
+            "locale": "ru_LT",
+            "value": "Чтение отчета"
+          },
+          {
+            "locale": "ru_LV",
+            "value": "Чтение отчета"
+          },
+          {
+            "locale": "si_LK",
+            "value": "වාර්තා කියවීම"
+          },
+          {
+            "locale": "sv_FI",
+            "value": "Läsning av rapport"
+          },
+          {
+            "locale": "ta_LK",
+            "value": "அறிக்கை படித்தல்"
+          },
+          {
+            "locale": "ta_MY",
+            "value": "அறிக்கை வாசிப்பு"
+          },
+          {
+            "locale": "ta_SG",
+            "value": "அறிக்கை வாசிப்பு"
+          },
+          {
+            "locale": "tl_PH",
+            "value": "Pagbasa sa Ulat"
+          },
+          {
+            "locale": "ur_IN",
+            "value": "رپورٹ ریڈنگ"
+          },
+          {
+            "locale": "ur_PK",
+            "value": "رپورٹ پڑھنا"
+          },
+          {
+            "locale": "vi_VN",
+            "value": "Đọc báo cáo"
+          },
+          {
+            "locale": "xh_ZA",
+            "value": "Ingxelo Yokufunda"
+          },
+          {
+            "locale": "zh_Hans_CN",
+            "value": "报告读取中"
+          },
+          {
+            "locale": "zh_Hans_MY",
+            "value": "报告阅读"
+          },
+          {
+            "locale": "zh_Hans_SG",
+            "value": "报告阅读"
+          },
+          {
+            "locale": "zh_Hant_HK",
+            "value": "報告閱讀"
+          },
+          {
+            "locale": "zh_Hant_TW",
+            "value": "報告讀取"
+          },
+          {
+            "locale": "ar_EG",
+            "value": "قراءة التقرير"
+          },
+          {
+            "locale": "es_PR",
+            "value": "Lectura del informe"
+          },
+          {
+            "locale": "es_PA",
+            "value": "Lectura del informe"
+          }
+        ],
+        "name": "c_reading",
+        "properties": []
+      },
+      {
+        "description": [],
+        "documents": [],
+        "label": [
+          {
+            "locale": "en_US",
+            "value": "Report Name"
+          },
+          {
+            "locale": "af_ZA",
+            "value": "Rapport Naam"
+          },
+          {
+            "locale": "ar_SA",
+            "value": "اسم التقرير"
+          },
+          {
+            "locale": "bg_BG",
+            "value": "Име на отчет"
+          },
+          {
+            "locale": "cs_CZ",
+            "value": "Název zprávy"
+          },
+          {
+            "locale": "da_DK",
+            "value": "Rapportnavn"
+          },
+          {
+            "locale": "de_CH",
+            "value": "Bericht Name"
+          },
+          {
+            "locale": "de_DE",
+            "value": "Bericht Name"
+          },
+          {
+            "locale": "el_GR",
+            "value": "Όνομα αναφοράς"
+          },
+          {
+            "locale": "es_ES",
+            "value": "Nombre del informe"
+          },
+          {
+            "locale": "es_MX",
+            "value": "Nombre del informe"
+          },
+          {
+            "locale": "es_US",
+            "value": "Nombre del informe"
+          },
+          {
+            "locale": "fr_BE",
+            "value": "Nom du rapport"
+          },
+          {
+            "locale": "fr_CA",
+            "value": "Nom du rapport"
+          },
+          {
+            "locale": "fr_CH",
+            "value": "Nom du rapport"
+          },
+          {
+            "locale": "fr_FR",
+            "value": "Nom du rapport"
+          },
+          {
+            "locale": "he_IL",
+            "value": "שם דוח"
+          },
+          {
+            "locale": "hu_HU",
+            "value": "Jelentés neve"
+          },
+          {
+            "locale": "it_IT",
+            "value": "Nome del report"
+          },
+          {
+            "locale": "ja_JP",
+            "value": "レポート名"
+          },
+          {
+            "locale": "ka_GE",
+            "value": "ანგარიშის სახელი"
+          },
+          {
+            "locale": "ko_KR",
+            "value": "보고서 이름"
+          },
+          {
+            "locale": "lt_LT",
+            "value": "Ataskaitos pavadinimas"
+          },
+          {
+            "locale": "lv_LV",
+            "value": "Ziņojuma nosaukums"
+          },
+          {
+            "locale": "ms_MY",
+            "value": "Nama Laporan"
+          },
+          {
+            "locale": "nl_BE",
+            "value": "Rapportnaam"
+          },
+          {
+            "locale": "nl_NL",
+            "value": "Naam rapport"
+          },
+          {
+            "locale": "pl_PL",
+            "value": "Nazwa raportu"
+          },
+          {
+            "locale": "pt_BR",
+            "value": "Nome do relatório"
+          },
+          {
+            "locale": "pt_PT",
+            "value": "Nome do relatório"
+          },
+          {
+            "locale": "ro_RO",
+            "value": "Denumire raport"
+          },
+          {
+            "locale": "ru_RU",
+            "value": "Название отчета"
+          },
+          {
+            "locale": "ru_UA",
+            "value": "Название отчета"
+          },
+          {
+            "locale": "sk_SK",
+            "value": "Názov správy"
+          },
+          {
+            "locale": "sr_Latn_RS",
+            "value": "Naziv izveštaja"
+          },
+          {
+            "locale": "st_ZA",
+            "value": "Tlaleha Lebitso"
+          },
+          {
+            "locale": "sv_SE",
+            "value": "Rapportnamn"
+          },
+          {
+            "locale": "tr_TR",
+            "value": "Rapor Adı"
+          },
+          {
+            "locale": "uk_UA",
+            "value": "Ім’я звіту"
+          },
+          {
+            "locale": "zh_CN",
+            "value": "报告名称"
+          },
+          {
+            "locale": "zh_TW",
+            "value": "報告名稱"
+          },
+          {
+            "locale": "zu_ZA",
+            "value": "Igama Lombiko"
+          },
+          {
+            "locale": "bn_IN",
+            "value": "রিপোর্টের নাম"
+          },
+          {
+            "locale": "de_AT",
+            "value": "Bericht Name"
+          },
+          {
+            "locale": "en_AU",
+            "value": "Report Name"
+          },
+          {
+            "locale": "en_CA",
+            "value": "Report Name"
+          },
+          {
+            "locale": "en_GB",
+            "value": "Report Name"
+          },
+          {
+            "locale": "en_NZ",
+            "value": "Report Name"
+          },
+          {
+            "locale": "gu_IN",
+            "value": "નામ રિપોર્ટ કરો"
+          },
+          {
+            "locale": "hi_IN",
+            "value": "रिपोर्ट का नाम"
+          },
+          {
+            "locale": "hr_HR",
+            "value": "Naziv izvješća"
+          },
+          {
+            "locale": "kn_IN",
+            "value": "ವರದಿಯ ಹೆಸರು"
+          },
+          {
+            "locale": "ml_IN",
+            "value": "റിപ്പോർട്ട് പേര്"
+          },
+          {
+            "locale": "mr_IN",
+            "value": "अहवाल नाव"
+          },
+          {
+            "locale": "or_IN",
+            "value": "ରିପୋର୍ଟ ନାମ"
+          },
+          {
+            "locale": "pa_IN",
+            "value": "ਰਿਪੋਰਟ ਦਾ ਨਾਮ"
+          },
+          {
+            "locale": "sl_SI",
+            "value": "Ime poročila"
+          },
+          {
+            "locale": "sr_Cyrl_RS",
+            "value": "Назив извештаја"
+          },
+          {
+            "locale": "ta_IN",
+            "value": "அறிக்கைப் பெயர்"
+          },
+          {
+            "locale": "te_IN",
+            "value": "రిపోర్టు పేరు"
+          },
+          {
+            "locale": "th_TH",
+            "value": "ชื่อรายงาน"
+          },
+          {
+            "locale": "sr_Latn",
+            "value": "Naziv izveštaja"
+          },
+          {
+            "locale": "ar_DZ",
+            "value": "اسم التقرير"
+          },
+          {
+            "locale": "ar_IL",
+            "value": "اسم التقرير"
+          },
+          {
+            "locale": "ar_LB",
+            "value": "اسم التقرير"
+          },
+          {
+            "locale": "as_IN",
+            "value": "প্ৰতিৱেদন নাম"
+          },
+          {
+            "locale": "ca_ES",
+            "value": "Nom de l’informe"
+          },
+          {
+            "locale": "ceb_PH",
+            "value": "Ngalan sa Report"
+          },
+          {
+            "locale": "de_BE",
+            "value": "Bericht Name"
+          },
+          {
+            "locale": "en_BE",
+            "value": "Report Name"
+          },
+          {
+            "locale": "en_HK",
+            "value": "Report Name"
+          },
+          {
+            "locale": "en_IE",
+            "value": "Report Name"
+          },
+          {
+            "locale": "en_IL",
+            "value": "Report Name"
+          },
+          {
+            "locale": "en_IN",
+            "value": "Report Name"
+          },
+          {
+            "locale": "en_JM",
+            "value": "Report Name"
+          },
+          {
+            "locale": "en_MY",
+            "value": "Report Name"
+          },
+          {
+            "locale": "en_PH",
+            "value": "Report Name"
+          },
+          {
+            "locale": "en_SG",
+            "value": "Report Name"
+          },
+          {
+            "locale": "en_ZA",
+            "value": "Report name"
+          },
+          {
+            "locale": "es_419",
+            "value": "Nombre de informe"
+          },
+          {
+            "locale": "es_AR",
+            "value": "Nombre del informe"
+          },
+          {
+            "locale": "es_CL",
+            "value": "Nombre del informe"
+          },
+          {
+            "locale": "es_CO",
+            "value": "Nombre del informe"
+          },
+          {
+            "locale": "es_GT",
+            "value": "Nombre del informe"
+          },
+          {
+            "locale": "es_PE",
+            "value": "Nombre del informe"
+          },
+          {
+            "locale": "et_EE",
+            "value": "Aruande nimi"
+          },
+          {
+            "locale": "fi_FI",
+            "value": "Raportin nimi"
+          },
+          {
+            "locale": "fil_PH",
+            "value": "Pangalan ng Ulat"
+          },
+          {
+            "locale": "fr_DZ",
+            "value": "Nom du rapport"
+          },
+          {
+            "locale": "gl_ES",
+            "value": "Nome do informe"
+          },
+          {
+            "locale": "it_CH",
+            "value": "Nome del report"
+          },
+          {
+            "locale": "ms_Arab_MY",
+            "value": "Nama Laporan"
+          },
+          {
+            "locale": "ms_Latn_MY",
+            "value": "Nama Laporan"
+          },
+          {
+            "locale": "ms_Latn_SG",
+            "value": "Nama Laporan"
+          },
+          {
+            "locale": "nn_NO",
+            "value": "Rapportnavn"
+          },
+          {
+            "locale": "nso_ZA",
+            "value": "Leina la Pego"
+          },
+          {
+            "locale": "pa_Guru_IN",
+            "value": "ਰਿਪੋਰਟ ਦਾ ਨਾਮ"
+          },
+          {
+            "locale": "ro_MD",
+            "value": "Denumire raport"
+          },
+          {
+            "locale": "ru_EE",
+            "value": "Название отчета"
+          },
+          {
+            "locale": "ru_IL",
+            "value": "Название отчета"
+          },
+          {
+            "locale": "ru_LT",
+            "value": "Название отчета"
+          },
+          {
+            "locale": "ru_LV",
+            "value": "Название отчета"
+          },
+          {
+            "locale": "si_LK",
+            "value": "වාර්තා නාමය"
+          },
+          {
+            "locale": "sv_FI",
+            "value": "Namn på rapport"
+          },
+          {
+            "locale": "ta_LK",
+            "value": "அறிக்கை பெயர்"
+          },
+          {
+            "locale": "ta_MY",
+            "value": "அறிக்கையின் பெயர்"
+          },
+          {
+            "locale": "ta_SG",
+            "value": "புகாரின் பெயர்"
+          },
+          {
+            "locale": "tl_PH",
+            "value": "Pangalan ng Ulat"
+          },
+          {
+            "locale": "ur_IN",
+            "value": "رپورٹ کا نام"
+          },
+          {
+            "locale": "ur_PK",
+            "value": "رپورٹ نام"
+          },
+          {
+            "locale": "vi_VN",
+            "value": "Tên báo cáo"
+          },
+          {
+            "locale": "xh_ZA",
+            "value": "Igama Lengxelo"
+          },
+          {
+            "locale": "zh_Hans_CN",
+            "value": "报告名称"
+          },
+          {
+            "locale": "zh_Hans_MY",
+            "value": "报告名称"
+          },
+          {
+            "locale": "zh_Hans_SG",
+            "value": "报告名称"
+          },
+          {
+            "locale": "zh_Hant_HK",
+            "value": "報告名稱"
+          },
+          {
+            "locale": "zh_Hant_TW",
+            "value": "報告名稱"
+          },
+          {
+            "locale": "ar_EG",
+            "value": "اسم التقرير"
+          },
+          {
+            "locale": "es_PR",
+            "value": "Nombre del informe"
+          },
+          {
+            "locale": "es_PA",
+            "value": "Nombre del informe"
+          }
+        ],
+        "name": "c_title",
+        "properties": []
+      },
+      {
+        "description": [],
+        "documents": [],
+        "label": [
+          {
+            "locale": "en_US",
+            "value": "Report Transformation"
+          },
+          {
+            "locale": "af_ZA",
+            "value": "Rapport Transformasie"
+          },
+          {
+            "locale": "ar_SA",
+            "value": "تحويل التقرير"
+          },
+          {
+            "locale": "bg_BG",
+            "value": "Преобразуване на отчет"
+          },
+          {
+            "locale": "cs_CZ",
+            "value": "Transformace zprávy"
+          },
+          {
+            "locale": "da_DK",
+            "value": "Rapport-transformation"
+          },
+          {
+            "locale": "de_CH",
+            "value": "Bericht Umwandlung"
+          },
+          {
+            "locale": "de_DE",
+            "value": "Bericht Umwandlung"
+          },
+          {
+            "locale": "el_GR",
+            "value": "Μετασχηματισμός αναφοράς"
+          },
+          {
+            "locale": "es_ES",
+            "value": "Transformación de informes"
+          },
+          {
+            "locale": "es_MX",
+            "value": "Transformación del informe"
+          },
+          {
+            "locale": "es_US",
+            "value": "Transformación del informe"
+          },
+          {
+            "locale": "fr_BE",
+            "value": "Transformation du rapport"
+          },
+          {
+            "locale": "fr_CA",
+            "value": "Transformation du rapport"
+          },
+          {
+            "locale": "fr_CH",
+            "value": "Transformation du rapport"
+          },
+          {
+            "locale": "fr_FR",
+            "value": "Transformation du rapport"
+          },
+          {
+            "locale": "he_IL",
+            "value": "התמרת דוח"
+          },
+          {
+            "locale": "hu_HU",
+            "value": "Jelentés átalakítása"
+          },
+          {
+            "locale": "it_IT",
+            "value": "Trasformazione dei report"
+          },
+          {
+            "locale": "ja_JP",
+            "value": "レポート変換"
+          },
+          {
+            "locale": "ka_GE",
+            "value": "ანგარიშის ტრანსფორმაცია"
+          },
+          {
+            "locale": "ko_KR",
+            "value": "보고서 변환"
+          },
+          {
+            "locale": "lt_LT",
+            "value": "Ataskaitos pakeitimas"
+          },
+          {
+            "locale": "lv_LV",
+            "value": "Ziņojuma transformācija"
+          },
+          {
+            "locale": "ms_MY",
+            "value": "Transformasi Laporan"
+          },
+          {
+            "locale": "nl_BE",
+            "value": "Rapporttransformatie"
+          },
+          {
+            "locale": "nl_NL",
+            "value": "Rapporttransformatie"
+          },
+          {
+            "locale": "pl_PL",
+            "value": "Przekształcenie raportu"
+          },
+          {
+            "locale": "pt_BR",
+            "value": "Transformação do relatório"
+          },
+          {
+            "locale": "pt_PT",
+            "value": "Transformação de relatório"
+          },
+          {
+            "locale": "ro_RO",
+            "value": "Transformare raport"
+          },
+          {
+            "locale": "ru_RU",
+            "value": "Трансформация отчета"
+          },
+          {
+            "locale": "ru_UA",
+            "value": "Трансформация отчета"
+          },
+          {
+            "locale": "sk_SK",
+            "value": "Transformácia správy"
+          },
+          {
+            "locale": "sr_Latn_RS",
+            "value": "Transformacija izveštaja"
+          },
+          {
+            "locale": "st_ZA",
+            "value": "Tlaleha Phetoho"
+          },
+          {
+            "locale": "sv_SE",
+            "value": "Rapportomvandling"
+          },
+          {
+            "locale": "tr_TR",
+            "value": "Rapor Dönüşümü"
+          },
+          {
+            "locale": "uk_UA",
+            "value": "Трансформація звіту"
+          },
+          {
+            "locale": "zh_CN",
+            "value": "报告转换"
+          },
+          {
+            "locale": "zh_TW",
+            "value": "報告轉換"
+          },
+          {
+            "locale": "zu_ZA",
+            "value": "Ukuguqulwa Kombiko"
+          },
+          {
+            "locale": "bn_IN",
+            "value": "রিপোর্ট রূপান্তর"
+          },
+          {
+            "locale": "de_AT",
+            "value": "Bericht Umwandlung"
+          },
+          {
+            "locale": "en_AU",
+            "value": "Report Transformation"
+          },
+          {
+            "locale": "en_CA",
+            "value": "Report Transformation"
+          },
+          {
+            "locale": "en_GB",
+            "value": "Report Transformation"
+          },
+          {
+            "locale": "en_NZ",
+            "value": "Report Transformation"
+          },
+          {
+            "locale": "gu_IN",
+            "value": "પરિવર્તન રિપોર્ટ કરો"
+          },
+          {
+            "locale": "hi_IN",
+            "value": "रिपोर्ट रूपांतरण"
+          },
+          {
+            "locale": "hr_HR",
+            "value": "Izvješće o pretvorbi"
+          },
+          {
+            "locale": "kn_IN",
+            "value": "ವರದಿಯ ರೂಪಾಂತರ"
+          },
+          {
+            "locale": "ml_IN",
+            "value": "പരിവർത്തനം റിപ്പോർട്ട് ചെയ്യുക"
+          },
+          {
+            "locale": "mr_IN",
+            "value": "अहवाल रूपांतरण"
+          },
+          {
+            "locale": "or_IN",
+            "value": "ରୂପାନ୍ତର ରିପୋର୍ଟ କରନ୍ତୁ"
+          },
+          {
+            "locale": "pa_IN",
+            "value": "ਰਿਪੋਰਟ ਟ੍ਰਾਂਸਫ੍ਰਮੇਸ਼ਨ"
+          },
+          {
+            "locale": "sl_SI",
+            "value": "Transformacija poročila"
+          },
+          {
+            "locale": "sr_Cyrl_RS",
+            "value": "Трансформација извештаја"
+          },
+          {
+            "locale": "ta_IN",
+            "value": "அறிக்கை மாற்றம்"
+          },
+          {
+            "locale": "te_IN",
+            "value": "రిపోర్టు ట్రాన్స్‌మిషన్"
+          },
+          {
+            "locale": "th_TH",
+            "value": "การเปลี่ยนแปลงรายงาน"
+          },
+          {
+            "locale": "sr_Latn",
+            "value": "Transformacija izveštaja"
+          },
+          {
+            "locale": "ar_DZ",
+            "value": "تحويل التقرير"
+          },
+          {
+            "locale": "ar_IL",
+            "value": "تحويل التقرير"
+          },
+          {
+            "locale": "ar_LB",
+            "value": "تحويل التقرير"
+          },
+          {
+            "locale": "as_IN",
+            "value": "প্ৰতিৱেদন ৰূপান্তৰণ"
+          },
+          {
+            "locale": "ca_ES",
+            "value": "Informe de transformació"
+          },
+          {
+            "locale": "ceb_PH",
+            "value": "Transformation sa Report"
+          },
+          {
+            "locale": "de_BE",
+            "value": "Bericht Umwandlung"
+          },
+          {
+            "locale": "en_BE",
+            "value": "Report Transformation"
+          },
+          {
+            "locale": "en_HK",
+            "value": "Report Transformation"
+          },
+          {
+            "locale": "en_IE",
+            "value": "Report Transformation"
+          },
+          {
+            "locale": "en_IL",
+            "value": "Report Transformation"
+          },
+          {
+            "locale": "en_IN",
+            "value": "Report Transformation"
+          },
+          {
+            "locale": "en_JM",
+            "value": "Report Transformation"
+          },
+          {
+            "locale": "en_MY",
+            "value": "Report Transformation"
+          },
+          {
+            "locale": "en_PH",
+            "value": "Report Transformation"
+          },
+          {
+            "locale": "en_SG",
+            "value": "Report Transformation"
+          },
+          {
+            "locale": "en_ZA",
+            "value": "Report transformation"
+          },
+          {
+            "locale": "es_419",
+            "value": "Transformación de informe"
+          },
+          {
+            "locale": "es_AR",
+            "value": "Transformación del informe"
+          },
+          {
+            "locale": "es_CL",
+            "value": "Transformación del informe"
+          },
+          {
+            "locale": "es_CO",
+            "value": "Transformación del informe"
+          },
+          {
+            "locale": "es_GT",
+            "value": "Transformación del informe"
+          },
+          {
+            "locale": "es_PE",
+            "value": "Transformación del informe"
+          },
+          {
+            "locale": "et_EE",
+            "value": "Aruande teisendamine"
+          },
+          {
+            "locale": "fi_FI",
+            "value": "Raportin muunnos"
+          },
+          {
+            "locale": "fil_PH",
+            "value": "Ulat ng Pagbabago"
+          },
+          {
+            "locale": "fr_DZ",
+            "value": "Transformation du rapport"
+          },
+          {
+            "locale": "gl_ES",
+            "value": "Transformación do informe"
+          },
+          {
+            "locale": "it_CH",
+            "value": "Trasformazione dei report"
+          },
+          {
+            "locale": "ms_Arab_MY",
+            "value": "Transformasi Laporan"
+          },
+          {
+            "locale": "ms_Latn_MY",
+            "value": "Transformasi Laporan"
+          },
+          {
+            "locale": "ms_Latn_SG",
+            "value": "Transformasi Laporan"
+          },
+          {
+            "locale": "nn_NO",
+            "value": "Rapporttransformasjon"
+          },
+          {
+            "locale": "nso_ZA",
+            "value": "Phetogo ya Pego"
+          },
+          {
+            "locale": "pa_Guru_IN",
+            "value": "ਪਰਿਵਰਤਨ ਦੀ ਰਿਪੋਰਟ ਕਰੋ"
+          },
+          {
+            "locale": "ro_MD",
+            "value": "Transformare raport"
+          },
+          {
+            "locale": "ru_EE",
+            "value": "Трансформация отчета"
+          },
+          {
+            "locale": "ru_IL",
+            "value": "Трансформация отчета"
+          },
+          {
+            "locale": "ru_LT",
+            "value": "Трансформация отчета"
+          },
+          {
+            "locale": "ru_LV",
+            "value": "Трансформация отчета"
+          },
+          {
+            "locale": "si_LK",
+            "value": "වාර්තා පරිවර්තනය"
+          },
+          {
+            "locale": "sv_FI",
+            "value": "Omvandling av rapport"
+          },
+          {
+            "locale": "ta_LK",
+            "value": "அறிக்கை மாற்றம்"
+          },
+          {
+            "locale": "ta_MY",
+            "value": "அறிக்கை மாற்றம்"
+          },
+          {
+            "locale": "ta_SG",
+            "value": "அறிக்கை மாற்றம்"
+          },
+          {
+            "locale": "tl_PH",
+            "value": "Transpormasyon ng Ulat"
+          },
+          {
+            "locale": "ur_IN",
+            "value": "رپورٹ کی منتقلی"
+          },
+          {
+            "locale": "ur_PK",
+            "value": "رپورٹ تبدیلی"
+          },
+          {
+            "locale": "vi_VN",
+            "value": "Chuyển đổi báo cáo"
+          },
+          {
+            "locale": "xh_ZA",
+            "value": "Ingxelo Yokuguquka"
+          },
+          {
+            "locale": "zh_Hans_CN",
+            "value": "报告转换"
+          },
+          {
+            "locale": "zh_Hans_MY",
+            "value": "报告转换"
+          },
+          {
+            "locale": "zh_Hans_SG",
+            "value": "报告转换"
+          },
+          {
+            "locale": "zh_Hant_HK",
+            "value": "報告轉換"
+          },
+          {
+            "locale": "zh_Hant_TW",
+            "value": "報告轉換"
+          },
+          {
+            "locale": "ar_EG",
+            "value": "تحويل التقرير"
+          },
+          {
+            "locale": "es_PR",
+            "value": "Transformación del informe"
+          },
+          {
+            "locale": "es_PA",
+            "value": "Transformación del informe"
+          }
+        ],
+        "name": "c_transformation",
+        "properties": []
+      },
+      {
+        "description": [],
+        "documents": [],
+        "label": [
+          {
+            "locale": "en_US",
+            "value": "XLS Exportable"
+          },
+          {
+            "locale": "af_ZA",
+            "value": "XLS Uitvoerbare"
+          },
+          {
+            "locale": "ar_SA",
+            "value": "ملف XLS قابل للتصدير"
+          },
+          {
+            "locale": "bg_BG",
+            "value": "XLS за експортиране"
+          },
+          {
+            "locale": "cs_CZ",
+            "value": "Exportovatelné do XLS"
+          },
+          {
+            "locale": "da_DK",
+            "value": "XLS-eksporterbar"
+          },
+          {
+            "locale": "de_CH",
+            "value": "XLS exportierbar"
+          },
+          {
+            "locale": "de_DE",
+            "value": "XLS exportierbar"
+          },
+          {
+            "locale": "el_GR",
+            "value": "Εξαγώγιμο XLS"
+          },
+          {
+            "locale": "es_ES",
+            "value": "XLS exportable"
+          },
+          {
+            "locale": "es_MX",
+            "value": "XLS exportable"
+          },
+          {
+            "locale": "es_US",
+            "value": "XLS exportable"
+          },
+          {
+            "locale": "fr_BE",
+            "value": "XLS exportable"
+          },
+          {
+            "locale": "fr_CA",
+            "value": "XLS exportable"
+          },
+          {
+            "locale": "fr_CH",
+            "value": "XLS exportable"
+          },
+          {
+            "locale": "fr_FR",
+            "value": "XLS exportable"
+          },
+          {
+            "locale": "he_IL",
+            "value": "קובץ XLS ניתן לייצוא"
+          },
+          {
+            "locale": "hu_HU",
+            "value": "XLS exportálható"
+          },
+          {
+            "locale": "it_IT",
+            "value": "XLS esportabile"
+          },
+          {
+            "locale": "ja_JP",
+            "value": "エクスポート可能な XLS"
+          },
+          {
+            "locale": "ka_GE",
+            "value": "XLS ექსპორტირებადი"
+          },
+          {
+            "locale": "ko_KR",
+            "value": "XLS 내보내기 가능"
+          },
+          {
+            "locale": "lt_LT",
+            "value": "XLS eksportuojamas"
+          },
+          {
+            "locale": "lv_LV",
+            "value": "XLS eksportējams"
+          },
+          {
+            "locale": "ms_MY",
+            "value": "XLS Boleh Eksport"
+          },
+          {
+            "locale": "nl_BE",
+            "value": "XLS exporteerbaar"
+          },
+          {
+            "locale": "nl_NL",
+            "value": "XLS-exporteerbaar"
+          },
+          {
+            "locale": "pl_PL",
+            "value": "XLS do wyeksportowania"
+          },
+          {
+            "locale": "pt_BR",
+            "value": "Exportável em XLS"
+          },
+          {
+            "locale": "pt_PT",
+            "value": "XLS exportável"
+          },
+          {
+            "locale": "ro_RO",
+            "value": "XLS exportabil"
+          },
+          {
+            "locale": "ru_RU",
+            "value": "Экспортируемый XLS файл"
+          },
+          {
+            "locale": "ru_UA",
+            "value": "Экспортируемый XLS файл"
+          },
+          {
+            "locale": "sk_SK",
+            "value": "XLS exportovateľné"
+          },
+          {
+            "locale": "sr_Latn_RS",
+            "value": "Izlazna XLS datoteka"
+          },
+          {
+            "locale": "st_ZA",
+            "value": "XLS e Romellwang Kantle"
+          },
+          {
+            "locale": "sv_SE",
+            "value": "Kan exporteras som XLS"
+          },
+          {
+            "locale": "tr_TR",
+            "value": "XLS Dışa Aktarılabilir"
+          },
+          {
+            "locale": "uk_UA",
+            "value": "Можна експортувати в XLS"
+          },
+          {
+            "locale": "zh_CN",
+            "value": "可导出 XLS"
+          },
+          {
+            "locale": "zh_TW",
+            "value": "可導出的XLS"
+          },
+          {
+            "locale": "zu_ZA",
+            "value": "XLS Exportable"
+          },
+          {
+            "locale": "bn_IN",
+            "value": "XLS এক্সপোর্টযোগ্য"
+          },
+          {
+            "locale": "de_AT",
+            "value": "XLS exportierbar"
+          },
+          {
+            "locale": "en_AU",
+            "value": "XLS Exportable"
+          },
+          {
+            "locale": "en_CA",
+            "value": "XLS Exportable"
+          },
+          {
+            "locale": "en_GB",
+            "value": "XLS Exportable"
+          },
+          {
+            "locale": "en_NZ",
+            "value": "XLS Exportable"
+          },
+          {
+            "locale": "gu_IN",
+            "value": "XLS એક્સપોર્ટ યોગ્ય"
+          },
+          {
+            "locale": "hi_IN",
+            "value": "XLS निर्यात-योग्य"
+          },
+          {
+            "locale": "hr_HR",
+            "value": "XLS za izvoz"
+          },
+          {
+            "locale": "kn_IN",
+            "value": "ರಫ್ತು ಮಾಡಬಹುದಾದ XLS"
+          },
+          {
+            "locale": "ml_IN",
+            "value": "XLS എക്‌സ്‌പോർട്ട്"
+          },
+          {
+            "locale": "mr_IN",
+            "value": "XLS निर्यात योग्य"
+          },
+          {
+            "locale": "or_IN",
+            "value": "XLS ରପ୍ତାନିଯୋଗ୍ୟ"
+          },
+          {
+            "locale": "pa_IN",
+            "value": "XLS ਏਕਸਪੌਰਟੇਬਲ"
+          },
+          {
+            "locale": "sl_SI",
+            "value": "Format XLS omogoča izvoz"
+          },
+          {
+            "locale": "sr_Cyrl_RS",
+            "value": "Излазна XLS датотека"
+          },
+          {
+            "locale": "ta_IN",
+            "value": "ஏற்றுமதி செய்யத்தக்க XLS"
+          },
+          {
+            "locale": "te_IN",
+            "value": "XLS ఎక్స్‌పోర్టబుల్"
+          },
+          {
+            "locale": "th_TH",
+            "value": "XLS ที่สามารถส่งออกได้"
+          },
+          {
+            "locale": "sr_Latn",
+            "value": "XLS se može izvesti"
+          },
+          {
+            "locale": "ar_DZ",
+            "value": "XLS قابل للتصدير"
+          },
+          {
+            "locale": "ar_IL",
+            "value": "XLS قابل للتصدير"
+          },
+          {
+            "locale": "ar_LB",
+            "value": "XLS قابل للتصدير"
+          },
+          {
+            "locale": "as_IN",
+            "value": "XLS এক্সপোৰ্টেবল"
+          },
+          {
+            "locale": "ca_ES",
+            "value": "XLS exportable"
+          },
+          {
+            "locale": "ceb_PH",
+            "value": "XLS Exportable"
+          },
+          {
+            "locale": "de_BE",
+            "value": "XLS exportierbar"
+          },
+          {
+            "locale": "en_BE",
+            "value": "XLS Exportable"
+          },
+          {
+            "locale": "en_HK",
+            "value": "XLS Exportable"
+          },
+          {
+            "locale": "en_IE",
+            "value": "XLS Exportable"
+          },
+          {
+            "locale": "en_IL",
+            "value": "XLS Exportable"
+          },
+          {
+            "locale": "en_IN",
+            "value": "XLS Exportable"
+          },
+          {
+            "locale": "en_JM",
+            "value": "XLS Exportable"
+          },
+          {
+            "locale": "en_MY",
+            "value": "XLS Exportable"
+          },
+          {
+            "locale": "en_PH",
+            "value": "XLS Exportable"
+          },
+          {
+            "locale": "en_SG",
+            "value": "XLS Exportable"
+          },
+          {
+            "locale": "en_ZA",
+            "value": "XLS exportable"
+          },
+          {
+            "locale": "es_419",
+            "value": "XLS Exportable"
+          },
+          {
+            "locale": "es_AR",
+            "value": "XLS exportable"
+          },
+          {
+            "locale": "es_CL",
+            "value": "XLS exportable"
+          },
+          {
+            "locale": "es_CO",
+            "value": "XLS exportable"
+          },
+          {
+            "locale": "es_GT",
+            "value": "XLS exportable"
+          },
+          {
+            "locale": "es_PE",
+            "value": "XLS exportable"
+          },
+          {
+            "locale": "et_EE",
+            "value": "XLS-vormingus eksporditav"
+          },
+          {
+            "locale": "fi_FI",
+            "value": "XLS siirrettävä"
+          },
+          {
+            "locale": "fil_PH",
+            "value": "Maaaring ilipat na XLS"
+          },
+          {
+            "locale": "fr_DZ",
+            "value": "XLS exportable"
+          },
+          {
+            "locale": "gl_ES",
+            "value": "XLS exportable"
+          },
+          {
+            "locale": "it_CH",
+            "value": "XLS esportabile"
+          },
+          {
+            "locale": "ms_Arab_MY",
+            "value": "XLS Boleh Eksport"
+          },
+          {
+            "locale": "ms_Latn_MY",
+            "value": "XLS Boleh Eksport"
+          },
+          {
+            "locale": "ms_Latn_SG",
+            "value": "XLS Boleh Eksport"
+          },
+          {
+            "locale": "nn_NO",
+            "value": "Kan eksporteres som XLS"
+          },
+          {
+            "locale": "nso_ZA",
+            "value": "Kgonego ya go Romela-ntle ya XLS"
+          },
+          {
+            "locale": "pa_Guru_IN",
+            "value": "XLS ਨਿਰਯਾਤਯੋਗ"
+          },
+          {
+            "locale": "ro_MD",
+            "value": "XLS exportabil"
+          },
+          {
+            "locale": "ru_EE",
+            "value": "Экспортируемый XLS файл"
+          },
+          {
+            "locale": "ru_IL",
+            "value": "Экспортируемый XLS файл"
+          },
+          {
+            "locale": "ru_LT",
+            "value": "Экспортируемый XLS файл"
+          },
+          {
+            "locale": "ru_LV",
+            "value": "Экспортируемый XLS файл"
+          },
+          {
+            "locale": "si_LK",
+            "value": "XLS අපනයනය කළ හැකි"
+          },
+          {
+            "locale": "sv_FI",
+            "value": "XLS kan exporteras"
+          },
+          {
+            "locale": "ta_LK",
+            "value": "எக்ஸ்எல்எஸ் ஏற்றுமதி செய்யக்கூடியது"
+          },
+          {
+            "locale": "ta_MY",
+            "value": "XLS ஏற்றுமதி செய்யக்கூடியது"
+          },
+          {
+            "locale": "ta_SG",
+            "value": "XLS ஏற்றுமதி செய்யக்கூடியது"
+          },
+          {
+            "locale": "tl_PH",
+            "value": "XLS na Naeeksport"
+          },
+          {
+            "locale": "ur_IN",
+            "value": "XLS قابل اکسپورٹ"
+          },
+          {
+            "locale": "ur_PK",
+            "value": "XLS قابل برآمد"
+          },
+          {
+            "locale": "vi_VN",
+            "value": "XLS có thể xuất"
+          },
+          {
+            "locale": "xh_ZA",
+            "value": "Ukuthunyelwa kwe-XLS"
+          },
+          {
+            "locale": "zh_Hans_CN",
+            "value": "XLS可导出"
+          },
+          {
+            "locale": "zh_Hans_MY",
+            "value": "XLS 可导出"
+          },
+          {
+            "locale": "zh_Hans_SG",
+            "value": "XLS可导出"
+          },
+          {
+            "locale": "zh_Hant_HK",
+            "value": "XLS 可導出"
+          },
+          {
+            "locale": "zh_Hant_TW",
+            "value": "XLS 可匯出"
+          },
+          {
+            "locale": "ar_EG",
+            "value": "ملف XLS قابل للتصدير"
+          },
+          {
+            "locale": "es_PR",
+            "value": "XLS exportable"
+          },
+          {
+            "locale": "es_PA",
+            "value": "XLS exportable"
+          }
+        ],
+        "name": "c_xls_exportable",
+        "properties": []
+      },
+      {
+        "description": [],
+        "documents": [],
+        "label": [
+          {
+            "locale": "en_US",
+            "value": "Report Next"
+          }
+        ],
+        "name": "c_report_next",
+        "properties": []
+      },
+      {
+        "description": [],
+        "documents": [],
+        "label": [
+          {
+            "locale": "en_US",
+            "value": "Report Cursor"
+          }
+        ],
+        "name": "c_report_cursor",
+        "properties": []
+      },
+      {
+        "description": [],
+        "documents": [],
+        "label": [
+          {
+            "locale": "en_US",
+            "value": "Required Packages"
+          }
+        ],
+        "name": "c_required_packages",
+        "properties": []
+      },
+      {
+        "description": [],
+        "documents": [],
+        "label": [
+          {
+            "locale": "en_US",
+            "value": "ATS Version"
+          }
+        ],
+        "name": "c_ats_version",
+        "properties": []
+      }
+    ]
+  },
+  "localized": true,
+  "name": "c_dmweb_report",
+  "object": "object",
+  "objectTypes": [],
+  "properties": [
+    {
+      "acl": [],
+      "aclOverride": false,
+      "array": false,
+      "auditable": false,
+      "canPull": true,
+      "canPush": true,
+      "creatable": false,
+      "defaultValue": [],
+      "dependencies": [],
+      "history": false,
+      "include": [],
+      "indexed": false,
+      "label": "ATS Version",
+      "maxItems": 100,
+      "maxShift": false,
+      "minItems": 0,
+      "name": "c_ats_version",
+      "optional": false,
+      "readAccess": "read",
+      "readable": true,
+      "removable": false,
+      "type": "Boolean",
+      "unique": false,
+      "uniqueValues": false,
+      "validators": [],
+      "writable": true,
+      "writeAccess": "update",
+      "writeOnCreate": true
+    },
+    {
+      "acl": [],
+      "aclOverride": false,
+      "array": false,
+      "auditable": false,
+      "canPull": true,
+      "canPush": true,
+      "creatable": false,
+      "defaultValue": [],
+      "dependencies": [],
+      "history": false,
+      "include": [],
+      "label": "Report Config",
+      "maxItems": 100,
+      "maxShift": false,
+      "maxSize": 0,
+      "minItems": 0,
+      "name": "c_config",
+      "optional": false,
+      "readAccess": "read",
+      "readable": true,
+      "removable": false,
+      "serializeData": true,
+      "type": "Any",
+      "validators": [],
+      "writable": true,
+      "writeAccess": "update",
+      "writeOnCreate": true
+    },
+    {
+      "acl": [],
+      "aclOverride": false,
+      "array": false,
+      "auditable": false,
+      "canPull": true,
+      "canPush": true,
+      "creatable": false,
+      "defaultValue": [],
+      "dependencies": [],
+      "history": false,
+      "include": [],
+      "indexed": false,
+      "label": "CSV Exportable",
+      "maxItems": 100,
+      "maxShift": false,
+      "minItems": 0,
+      "name": "c_csv_exportable",
+      "optional": false,
+      "readAccess": "read",
+      "readable": true,
+      "removable": false,
+      "type": "Boolean",
+      "unique": false,
+      "uniqueValues": false,
+      "validators": [],
+      "writable": true,
+      "writeAccess": "update",
+      "writeOnCreate": true
+    },
+    {
+      "acl": [],
+      "aclOverride": false,
+      "array": false,
+      "auditable": false,
+      "canPull": true,
+      "canPush": true,
+      "creatable": false,
+      "defaultValue": [],
+      "dependencies": [],
+      "history": false,
+      "include": [],
+      "label": "Report Data",
+      "maxItems": 100,
+      "maxShift": false,
+      "maxSize": 0,
+      "minItems": 0,
+      "name": "c_data",
+      "optional": false,
+      "readAccess": "read",
+      "readable": true,
+      "removable": false,
+      "serializeData": true,
+      "type": "Any",
+      "validators": [],
+      "writable": true,
+      "writeAccess": "update",
+      "writeOnCreate": true
+    },
+    {
+      "acl": [],
+      "aclOverride": false,
+      "array": false,
+      "auditable": false,
+      "canPull": true,
+      "canPush": true,
+      "creatable": false,
+      "defaultValue": [],
+      "dependencies": [],
+      "history": false,
+      "include": [],
+      "indexed": true,
+      "label": "Description",
+      "localization": {
+        "acl": [],
+        "aclOverride": false,
+        "enabled": false,
+        "fallback": true,
+        "fixed": "",
+        "namespace": "cortex",
+        "readAccess": "read",
+        "strict": true,
+        "valid": [],
+        "writeAccess": "update"
+      },
+      "lowercase": false,
+      "maxItems": 100,
+      "maxShift": false,
+      "minItems": 0,
+      "name": "c_description",
+      "optional": false,
+      "readAccess": "read",
+      "readable": true,
+      "removable": false,
+      "trim": false,
+      "type": "String",
+      "unique": false,
+      "uniqueValues": false,
+      "uppercase": false,
+      "validators": [
+        {
+          "definition": {
+            "min": 0,
+            "max": 512
+          },
+          "name": "string"
+        }
+      ],
+      "writable": true,
+      "writeAccess": "update",
+      "writeOnCreate": true
+    },
+    {
+      "acl": [],
+      "aclOverride": false,
+      "array": false,
+      "auditable": false,
+      "canPull": true,
+      "canPush": true,
+      "creatable": false,
+      "defaultValue": [],
+      "dependencies": [],
+      "history": false,
+      "include": [],
+      "label": "Headers",
+      "maxItems": 100,
+      "maxShift": false,
+      "maxSize": 0,
+      "minItems": 0,
+      "name": "c_headers",
+      "optional": false,
+      "readAccess": "read",
+      "readable": true,
+      "removable": false,
+      "serializeData": true,
+      "type": "Any",
+      "validators": [],
+      "writable": true,
+      "writeAccess": "update",
+      "writeOnCreate": true
+    },
+    {
+      "acl": [],
+      "aclOverride": false,
+      "array": false,
+      "auditable": false,
+      "autoGenerate": true,
+      "canPull": true,
+      "canPush": true,
+      "creatable": false,
+      "defaultValue": [],
+      "dependencies": [],
+      "history": false,
+      "include": [],
+      "indexed": true,
+      "label": "Key",
+      "maxItems": 100,
+      "maxShift": false,
+      "minItems": 0,
+      "name": "c_key",
+      "optional": false,
+      "readAccess": "read",
+      "readable": true,
+      "removable": false,
+      "type": "UUID",
+      "unique": true,
+      "uniqueValues": false,
+      "uuidVersion": 4,
+      "validators": [
+        {
+          "name": "required"
+        }
+      ],
+      "writable": true,
+      "writeAccess": "update",
+      "writeOnCreate": true
+    },
+    {
+      "acl": [],
+      "aclOverride": false,
+      "array": true,
+      "canPull": true,
+      "canPush": true,
+      "creatable": false,
+      "defaultValue": [],
+      "dependencies": [],
+      "include": [],
+      "label": "Minimum package versions",
+      "maxItems": 100,
+      "maxShift": false,
+      "minItems": 0,
+      "name": "c_min_package_versions",
+      "optional": false,
+      "properties": [
+        {
+          "acl": [],
+          "aclOverride": false,
+          "array": false,
+          "auditable": false,
+          "autoGenerate": true,
+          "canPull": true,
+          "canPush": true,
+          "creatable": false,
+          "defaultValue": [],
+          "dependencies": [],
+          "history": false,
+          "include": [],
+          "indexed": false,
+          "label": "Key",
+          "maxItems": 100,
+          "maxShift": false,
+          "minItems": 0,
+          "name": "c_key",
+          "optional": false,
+          "readAccess": "read",
+          "readable": true,
+          "removable": false,
+          "type": "UUID",
+          "unique": false,
+          "uniqueValues": false,
+          "uuidVersion": 4,
+          "validators": [
+            {
+              "name": "uniqueInArray"
+            }
+          ],
+          "writable": true,
+          "writeAccess": "update",
+          "writeOnCreate": true
+        },
+        {
+          "acl": [],
+          "aclOverride": false,
+          "array": false,
+          "auditable": false,
+          "canPull": true,
+          "canPush": true,
+          "creatable": false,
+          "defaultValue": [],
+          "dependencies": [],
+          "history": false,
+          "include": [],
+          "indexed": true,
+          "label": "Package key name",
+          "localization": {
+            "acl": [],
+            "aclOverride": false,
+            "enabled": false,
+            "fallback": true,
+            "fixed": "",
+            "namespace": "cortex",
+            "readAccess": "read",
+            "strict": true,
+            "valid": [],
+            "writeAccess": "update"
+          },
+          "lowercase": false,
+          "maxItems": 100,
+          "maxShift": false,
+          "minItems": 0,
+          "name": "c_name",
+          "optional": false,
+          "readAccess": "read",
+          "readable": true,
+          "removable": false,
+          "trim": false,
+          "type": "String",
+          "unique": false,
+          "uniqueValues": false,
+          "uppercase": false,
+          "validators": [],
+          "writable": true,
+          "writeAccess": "update",
+          "writeOnCreate": true
+        },
+        {
+          "acl": [],
+          "aclOverride": false,
+          "array": false,
+          "auditable": false,
+          "canPull": true,
+          "canPush": true,
+          "creatable": false,
+          "defaultValue": [],
+          "dependencies": [],
+          "history": false,
+          "include": [],
+          "indexed": true,
+          "label": "Min Package version",
+          "localization": {
+            "acl": [],
+            "aclOverride": false,
+            "enabled": false,
+            "fallback": true,
+            "fixed": "",
+            "namespace": "cortex",
+            "readAccess": "read",
+            "strict": true,
+            "valid": [],
+            "writeAccess": "update"
+          },
+          "lowercase": false,
+          "maxItems": 100,
+          "maxShift": false,
+          "minItems": 0,
+          "name": "c_version",
+          "optional": false,
+          "readAccess": "read",
+          "readable": true,
+          "removable": false,
+          "trim": false,
+          "type": "String",
+          "unique": false,
+          "uniqueValues": false,
+          "uppercase": false,
+          "validators": [
+            {
+              "definition": {
+                "min": 0,
+                "max": 20
+              },
+              "name": "string"
+            }
+          ],
+          "writable": true,
+          "writeAccess": "update",
+          "writeOnCreate": true
+        }
+      ],
+      "readAccess": "read",
+      "readable": true,
+      "removable": false,
+      "type": "Document",
+      "uniqueKey": "c_key",
+      "validators": [],
+      "writable": true,
+      "writeAccess": "update",
+      "writeOnCreate": true
+    },
+    {
+      "acl": [],
+      "aclOverride": false,
+      "array": false,
+      "auditable": false,
+      "canPull": true,
+      "canPush": true,
+      "creatable": false,
+      "defaultValue": [],
+      "dependencies": [],
+      "history": false,
+      "include": [],
+      "indexed": false,
+      "label": "PDF Exportable",
+      "maxItems": 100,
+      "maxShift": false,
+      "minItems": 0,
+      "name": "c_pdf_exportable",
+      "optional": false,
+      "readAccess": "read",
+      "readable": true,
+      "removable": false,
+      "type": "Boolean",
+      "unique": false,
+      "uniqueValues": false,
+      "validators": [],
+      "writable": true,
+      "writeAccess": "update",
+      "writeOnCreate": true
+    },
+    {
+      "acl": [],
+      "aclOverride": false,
+      "array": false,
+      "auditable": false,
+      "canPull": true,
+      "canPush": true,
+      "creatable": false,
+      "defaultValue": [],
+      "dependencies": [],
+      "history": false,
+      "include": [],
+      "indexed": false,
+      "label": "PDF Template",
+      "localization": {
+        "acl": [],
+        "aclOverride": false,
+        "enabled": false,
+        "fallback": true,
+        "fixed": "",
+        "namespace": "cortex",
+        "readAccess": "read",
+        "strict": true,
+        "valid": [],
+        "writeAccess": "update"
+      },
+      "lowercase": false,
+      "maxItems": 100,
+      "maxShift": false,
+      "minItems": 0,
+      "name": "c_pdf_template",
+      "optional": false,
+      "readAccess": "read",
+      "readable": true,
+      "removable": false,
+      "trim": false,
+      "type": "String",
+      "unique": false,
+      "uniqueValues": false,
+      "uppercase": false,
+      "validators": [
+        {
+          "definition": {
+            "min": 0,
+            "max": 512
+          },
+          "name": "string"
+        }
+      ],
+      "writable": true,
+      "writeAccess": "update",
+      "writeOnCreate": true
+    },
+    {
+      "acl": [],
+      "aclOverride": false,
+      "array": false,
+      "auditable": false,
+      "canPull": true,
+      "canPush": true,
+      "creatable": false,
+      "defaultValue": [],
+      "dependencies": [],
+      "history": false,
+      "include": [],
+      "label": "Preview",
+      "maxItems": 100,
+      "maxShift": false,
+      "maxSize": 0,
+      "minItems": 0,
+      "name": "c_preview",
+      "optional": false,
+      "readAccess": "read",
+      "readable": true,
+      "removable": false,
+      "serializeData": true,
+      "type": "Any",
+      "validators": [],
+      "writable": true,
+      "writeAccess": "update",
+      "writeOnCreate": true
+    },
+    {
+      "acl": [],
+      "aclOverride": false,
+      "array": false,
+      "auditable": false,
+      "canPull": true,
+      "canPush": true,
+      "creatable": false,
+      "defaultValue": [],
+      "dependencies": [],
+      "history": false,
+      "include": [],
+      "label": "Report Reading",
+      "maxItems": 100,
+      "maxShift": false,
+      "maxSize": 0,
+      "minItems": 0,
+      "name": "c_reading",
+      "optional": false,
+      "readAccess": "read",
+      "readable": true,
+      "removable": false,
+      "serializeData": true,
+      "type": "Any",
+      "validators": [],
+      "writable": true,
+      "writeAccess": "update",
+      "writeOnCreate": true
+    },
+    {
+      "acl": [],
+      "aclOverride": false,
+      "array": false,
+      "auditable": false,
+      "canPull": true,
+      "canPush": true,
+      "creatable": false,
+      "defaultValue": [],
+      "dependencies": [],
+      "history": false,
+      "include": [],
+      "label": "Report Cursor",
+      "maxItems": 100,
+      "maxShift": false,
+      "maxSize": 0,
+      "minItems": 0,
+      "name": "c_report_cursor",
+      "optional": false,
+      "readAccess": "read",
+      "readable": true,
+      "removable": false,
+      "serializeData": true,
+      "type": "Any",
+      "validators": [],
+      "writable": true,
+      "writeAccess": "update",
+      "writeOnCreate": true
+    },
+    {
+      "acl": [],
+      "aclOverride": false,
+      "array": false,
+      "auditable": false,
+      "canPull": true,
+      "canPush": true,
+      "creatable": false,
+      "defaultValue": [
+        {
+          "type": "static",
+          "value": false
+        }
+      ],
+      "dependencies": [],
+      "history": false,
+      "include": [],
+      "indexed": false,
+      "label": "Report Next",
+      "maxItems": 100,
+      "maxShift": false,
+      "minItems": 0,
+      "name": "c_report_next",
+      "optional": false,
+      "readAccess": "read",
+      "readable": true,
+      "removable": false,
+      "type": "Boolean",
+      "unique": false,
+      "uniqueValues": false,
+      "validators": [],
+      "writable": true,
+      "writeAccess": "update",
+      "writeOnCreate": true
+    },
+    {
+      "acl": [],
+      "aclOverride": false,
+      "array": true,
+      "auditable": false,
+      "canPull": true,
+      "canPush": true,
+      "creatable": false,
+      "defaultValue": [],
+      "dependencies": [],
+      "history": false,
+      "include": [],
+      "indexed": false,
+      "label": "Required Packages",
+      "localization": {
+        "acl": [],
+        "aclOverride": false,
+        "enabled": false,
+        "fallback": true,
+        "fixed": "",
+        "namespace": "cortex",
+        "readAccess": "read",
+        "strict": true,
+        "valid": [],
+        "writeAccess": "update"
+      },
+      "lowercase": false,
+      "maxItems": 100,
+      "maxShift": false,
+      "minItems": 0,
+      "name": "c_required_packages",
+      "optional": false,
+      "readAccess": "read",
+      "readable": true,
+      "removable": false,
+      "trim": false,
+      "type": "String",
+      "unique": false,
+      "uniqueValues": false,
+      "uppercase": false,
+      "validators": [
+        {
+          "definition": {
+            "min": 0,
+            "max": 512
+          },
+          "name": "string"
+        },
+        {
+          "definition": {
+            "values": [
+              {
+                "value": "econsent",
+                "label": "eConsent"
+              }
+            ]
+          },
+          "name": "options"
+        }
+      ],
+      "writable": true,
+      "writeAccess": "update",
+      "writeOnCreate": true
+    },
+    {
+      "acl": [],
+      "aclOverride": false,
+      "array": false,
+      "auditable": false,
+      "canPull": true,
+      "canPush": true,
+      "creatable": false,
+      "defaultValue": [],
+      "dependencies": [],
+      "history": false,
+      "include": [],
+      "indexed": true,
+      "label": "Report Name",
+      "localization": {
+        "acl": [],
+        "aclOverride": false,
+        "enabled": false,
+        "fallback": true,
+        "fixed": "",
+        "namespace": "cortex",
+        "readAccess": "read",
+        "strict": true,
+        "valid": [],
+        "writeAccess": "update"
+      },
+      "lowercase": false,
+      "maxItems": 100,
+      "maxShift": false,
+      "minItems": 0,
+      "name": "c_title",
+      "optional": false,
+      "readAccess": "read",
+      "readable": true,
+      "removable": false,
+      "trim": false,
+      "type": "String",
+      "unique": false,
+      "uniqueValues": false,
+      "uppercase": false,
+      "validators": [
+        {
+          "definition": {
+            "min": 0,
+            "max": 512
+          },
+          "name": "string"
+        }
+      ],
+      "writable": true,
+      "writeAccess": "update",
+      "writeOnCreate": true
+    },
+    {
+      "acl": [],
+      "aclOverride": false,
+      "array": false,
+      "auditable": false,
+      "canPull": true,
+      "canPush": true,
+      "creatable": false,
+      "defaultValue": [],
+      "dependencies": [],
+      "history": false,
+      "include": [],
+      "label": "Report Transformation",
+      "maxItems": 100,
+      "maxShift": false,
+      "maxSize": 0,
+      "minItems": 0,
+      "name": "c_transformation",
+      "optional": false,
+      "readAccess": "read",
+      "readable": true,
+      "removable": false,
+      "serializeData": true,
+      "type": "Any",
+      "validators": [],
+      "writable": true,
+      "writeAccess": "update",
+      "writeOnCreate": true
+    },
+    {
+      "acl": [],
+      "aclOverride": false,
+      "array": false,
+      "auditable": false,
+      "canPull": true,
+      "canPush": true,
+      "creatable": false,
+      "defaultValue": [],
+      "dependencies": [],
+      "history": false,
+      "include": [],
+      "indexed": false,
+      "label": "XLS Exportable",
+      "maxItems": 100,
+      "maxShift": false,
+      "minItems": 0,
+      "name": "c_xls_exportable",
+      "optional": false,
+      "readAccess": "read",
+      "readable": true,
+      "removable": false,
+      "type": "Boolean",
+      "unique": false,
+      "uniqueValues": false,
+      "validators": [],
+      "writable": true,
+      "writeAccess": "update",
+      "writeOnCreate": true
+    }
+  ],
+  "reporting": {
+    "enabled": false
+  },
+  "shareAcl": [],
+  "shareChain": [
+    "share",
+    "read",
+    "connected"
+  ],
+  "uniqueKey": "c_key",
+  "useBuildVersion": false,
+  "useBundles": false,
+  "validateOwner": true
+}

@@ -1,0 +1,1 @@
+{{i18n "econsent:template.email.ec__document_invite.subject"}}

@@ -1,0 +1,147 @@
+{
+  "aliases": [],
+  "assets": [],
+  "data": {
+    "documents": {
+      "actions": {
+        "cancel": "Cancel",
+        "complete": "Done",
+        "dateField": "Enter Date",
+        "downloadPDF": "Download",
+        "initials": "Initials",
+        "next": "Next",
+        "participantLegalName": "Participant’s Legal Name (first and last name)",
+        "printedName": "Printed Name",
+        "selectDate": "Select Date",
+        "signature": "Signature",
+        "submit": "Submit",
+        "subtitle": "Enter Credentials below to accept."
+      },
+      "complete": {
+        "completeHeading": "Signature Complete",
+        "listItem1": "Thank you for signing this document.",
+        "listItem2": "When all signatures are complete, a copy will be emailed to you.",
+        "listItem3": "We have generated a signed version that was uploaded to our secure cloud. You can review and download it now or later from your profile.",
+        "readHeading": "Read & Sign"
+      },
+      "completePts": {
+        "completeHeading": "Document Reviewed",
+        "listItem1": "To confirm your understanding of this document and that you agree to join the study, you will be asked to sign a printed version of this document.",
+        "listItem2": "Thank you for reviewing this document."
+      },
+      "errors": {
+        "invalidPassword": "Invalid password, please try again",
+        "kcSubmitFailed": "Answer could not be submitted. Please try again"
+      },
+      "initials": {
+        "adoptedInitialedText": "accepts with username and password credentials",
+        "initialedText": "initialled with password credentials",
+        "label": "{{ROLE}} INITIALS HERE"
+      },
+      "knowledgeCheck": {
+        "correctAnswerPromptText": "Your answer is correct",
+        "wrongAnswerPromptText": "Incorrect, the correct answer is"
+      },
+      "networkError": {
+        "actions": {
+          "retry": "Try Again"
+        },
+        "message": "There is a problem with your internet connection. Please check your connection and try again. Until connection is restored, you will not be able to add or change information."
+      },
+      "select": {
+        "heading": "Documents for signature"
+      },
+      "sessionError": {
+        "actions": {
+          "ok": "OK"
+        },
+        "message": "You have been signed out due to inactivity."
+      },
+      "signature": {
+        "adoptedSignedText": "accepts with username and password credentials",
+        "label": "{{ROLE}} SIGN HERE",
+        "modal": {
+          "title": {
+            "initials": "{{ROLE}} Initials",
+            "signature": "{{ROLE}} Signature"
+          }
+        },
+        "reasonForSigningInstruction": "Enter credentials below to accept",
+        "signedText": "signed with password credentials",
+        "ssoSignatureSuccessAlert": "Document signed with Single Sign On (SSO) successfully",
+        "ssoSignedText": "accepts with Single Sign On (SSO)"
+      },
+      "statuses": {
+        "documents": {
+          "cancelled": "Canceled",
+          "complete": "Complete",
+          "partial": "Partial",
+          "sent": "Sent",
+          "voided": "Voided"
+        },
+        "invites": {
+          "complete": "Complete",
+          "partial": "Partial",
+          "pending": "Pending",
+          "sent": "Sent"
+        }
+      },
+      "validations": {
+        "isRequired": "This field is required"
+      }
+    },
+    "identity": {
+      "locale": "en_US",
+      "version": "1.2.1"
+    },
+    "instructions": {
+      "actions": {
+        "next": "Next"
+      },
+      "heading": "Instructions",
+      "items": {
+        "listItem1": "Please read this document thoroughly and make sure that you understand all of it before signing.",
+        "listItem2": "If there is anything that you do not understand, stop, do not sign, and contact us.",
+        "listItem3": "Signatures and information that you need to enter will be highlighted.",
+        "listItem4": "For security purposes, you will be asked to enter your password every time you sign your name.",
+        "listItem5": "You can stop at any time.",
+        "listItem6": "If you leave and come back, you will need to sign in with your email address and password."
+      },
+      "ptsItems": {
+        "listItem1": "Please read this document thoroughly and make sure you understand all of it.",
+        "listItem2": "If there is anything that you do not understand, make a note to speak to someone at your site.",
+        "listItem3": "After reviewing this document, you will be asked to sign and complete a printed version of this document."
+      }
+    },
+    "login": {
+      "actions": {
+        "forgotPassword": "Forgot Password"
+      },
+      "labels": {
+        "password": "Password"
+      }
+    },
+    "templates": {
+      "landing": {
+        "buttonText": "Send the first consent",
+        "heading": "Welcome to the Medable Consent Manager.",
+        "message": "No consents have been sent."
+      },
+      "list": {
+        "no": "No",
+        "publishing": "Publishing",
+        "yes": "Yes"
+      },
+      "title": "Templates"
+    }
+  },
+  "dirty": true,
+  "extensible": true,
+  "locale": "en_US",
+  "name": "web__econsent_en_US_econsent",
+  "namespace": "econsent",
+  "object": "i18n",
+  "overridable": true,
+  "tags": [],
+  "weight": 0
+}

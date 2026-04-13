@@ -1,0 +1,64 @@
+{
+  "aliases": [],
+  "assets": [],
+  "data": {
+    "accepted": "This field must be accepted.",
+    "after": "The value must be after :after.",
+    "after_or_equal": "The value must be equal or after :after_or_equal.",
+    "alpha": "The field must contain only alphabetic characters.",
+    "alpha_dash": "The field must contain only alpha-numeric characters, dashes or underscores.",
+    "alpha_num": "The field must only contain alpha-numeric characters.",
+    "before": "The value must be before :before.",
+    "before_or_equal": "The value must be equal or before :before_or_equal.",
+    "between": "The value must be between :min and :max.",
+    "confirmed": "The field confirmation does not match.",
+    "date": "The field requires a valid date format.",
+    "def": "The field has errors.",
+    "different": "The fields must have different values.",
+    "digits": "The digit value must be :digits",
+    "digits_between": "The digit value must be between :min and :max.",
+    "email": "The field requires a valid format.",
+    "hex": "The value must contain only hexadecimal characters.",
+    "identity": {
+      "locale": "en_US",
+      "version": "1.1.1"
+    },
+    "in": "The selected field requires a valid format.",
+    "integer": "The value must be an integer.",
+    "max": {
+      "numeric": "The value may not be greater than :max.",
+      "string": "The character count may not be greater than :max."
+    },
+    "min": {
+      "numeric": "The value must be at least :min.",
+      "string": "The character count must be at least :min"
+    },
+    "not_in": "The selected field is invalid.",
+    "numeric": "The value must be a number.",
+    "present": "The field must be present (but can be empty).",
+    "regex": "The field format is invalid.",
+    "required": "The field is required.",
+    "required_if": "The field is required when :other is :value.",
+    "required_unless": "The field is required when :other is not :value.",
+    "required_with": "The field is required when :field is not empty.",
+    "required_with_all": "The field is required since other fields are not empty.",
+    "required_without": "The field is required when :field is empty.",
+    "required_without_all": "This field is required since other fields are empty.",
+    "same": "The fields must match.",
+    "size": {
+      "numeric": "The field must be :size.",
+      "string": "The character count must be :size."
+    },
+    "string": "The value must be a string.",
+    "url": "The field format is invalid."
+  },
+  "dirty": true,
+  "extensible": true,
+  "locale": "en_US",
+  "name": "web__framework_en_US_validation",
+  "namespace": "validation",
+  "object": "i18n",
+  "overridable": true,
+  "tags": [],
+  "weight": 0
+}

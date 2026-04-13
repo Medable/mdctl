@@ -1,0 +1,17 @@
+{
+  "active": true,
+  "configuration": {
+    "export": "c_dmweb_transforms_lib"
+  },
+  "description": "Dmweb - Transforms Library",
+  "environment": "*",
+  "label": "Dmweb - Transforms Library",
+  "language": "javascript/es6",
+  "name": "c_dmweb_transforms_lib",
+  "object": "script",
+  "optimized": false,
+  "principal": null,
+  "script": "/env/scripts/js/library.c_dmweb_transforms_lib.js",
+  "type": "library",
+  "weight": 0
+}

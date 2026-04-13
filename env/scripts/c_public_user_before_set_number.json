@@ -1,0 +1,31 @@
+{
+  "active": true,
+  "configuration": {
+    "event": "update.before",
+    "inline": false,
+    "object": "c_public_user",
+    "paths": []
+  },
+  "description": "Check for a reason for change before updating Participant ID number",
+  "environment": "*",
+  "if": {
+    "$gte": [
+      {
+        "$indexOfArray": [
+          "$$SCRIPT.arguments.modified",
+          "c_number"
+        ]
+      },
+      0
+    ]
+  },
+  "label": "PU Before Update - Check for a reason for change before updating c_number",
+  "language": "javascript/es6",
+  "name": "c_public_user_before_set_number",
+  "object": "script",
+  "optimized": false,
+  "principal": "serviceAccount.c_system_user",
+  "script": "/env/scripts/js/trigger.c_public_user_before_set_number.js",
+  "type": "trigger",
+  "weight": 0
+}

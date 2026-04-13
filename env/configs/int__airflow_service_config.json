@@ -1,0 +1,18 @@
+{
+  "isPublic": true,
+  "name": "int__airflow_service_config",
+  "object": "config",
+  "value": {
+    "serviceUrls": {
+      "api.medable.com": "https://airflow.medable.tech/api/v1",
+      "api-eu1.medable.com": "https://airflow-eu1.medable.tech/api/v1",
+      "api-eu1-dev.medable.com": "https://airflow-eu1-dev.medable.tech/api/v1",
+      "api.medable.cn": "https://airflow.medable.cn/api/v1",
+      "api.dev.medable.cn": "https://airflow-dev.medable.cn",
+      "api.dev.medable.com": "https://airflow-dev.medable.tech/api/v1",
+      "api.qa.medable.com": "https://airflow-qa.medable.tech/api/v1",
+      "api-int-dev.medable.com": "https://airflow-int-dev.medable.tech/api/v1",
+      "api.test.medable.com": "https://airflow-test.medable.tech/api/v1"
+    }
+  }
+}

@@ -1,0 +1,49 @@
+{
+  "aliases": [],
+  "assets": [],
+  "data": {
+    "identity": {
+      "locale": "en_US",
+      "version": "1.0.1"
+    },
+    "nucleus-file-uploader": {
+      "Delete": "Delete",
+      "Error": "Error",
+      "Preparing": "Preparing",
+      "Upload-file": "Upload file",
+      "Uploading": "Uploading"
+    },
+    "nucleus-form-element": {
+      "label-optional": "{label} (optional)"
+    },
+    "nucleus-pill": {
+      "Dismiss": "Dismiss"
+    },
+    "nucleus-select": {
+      "empty-selection": "---"
+    },
+    "nucleus-table": {
+      "Loading---": "Loading...",
+      "Select-All": "Select All",
+      "Select-Row--index-": "Select Row {index}",
+      "Unselect-All": "Unselect All",
+      "rows-selected": "{count, plural, one {# Row Selected} other {# Rows Selected}}"
+    },
+    "nucleus-time-picker": {
+      "All-fields-are-required": "All fields are required",
+      "day-period-label": "AM/PM",
+      "hour-label": "Hour",
+      "minute-label": "Minute",
+      "time-zone-label": "TimeZone"
+    }
+  },
+  "dirty": true,
+  "extensible": true,
+  "locale": "en_US",
+  "name": "nucleus__en_US_main",
+  "namespace": "nucleus",
+  "object": "i18n",
+  "overridable": true,
+  "tags": [],
+  "weight": 0
+}

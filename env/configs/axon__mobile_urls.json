@@ -1,0 +1,22 @@
+{
+  "isPublic": false,
+  "name": "axon__mobile_urls",
+  "object": "config",
+  "value": {
+    "patientAppUrls": [
+      {
+        "env": "*",
+        "ios": "https://itunes.apple.com/us/app/axon-prod/id1160464791?ls=1&mt=8",
+        "android": "https://play.google.com/store/apps/details?id=com.medable.axon.flask"
+      },
+      {
+        "env": "api.dev.medable.cn",
+        "ios": "https://apps.apple.com/cn/app/medable-for-china/id6744926564"
+      },
+      {
+        "env": "api.medable.cn",
+        "ios": "https://apps.apple.com/cn/app/medable-for-china/id6744926564"
+      }
+    ]
+  }
+}

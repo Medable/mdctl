@@ -1,0 +1,17 @@
+{
+  "active": true,
+  "configuration": {
+    "export": "c_axon_org_lib"
+  },
+  "description": "Library relating to Org operations in Axon",
+  "environment": "*",
+  "label": "Axon Org Library",
+  "language": "javascript/es6",
+  "name": "c_axon_org_lib",
+  "object": "script",
+  "optimized": false,
+  "principal": null,
+  "script": "/env/scripts/js/library.c_axon_org_lib.js",
+  "type": "library",
+  "weight": 0
+}

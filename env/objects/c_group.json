@@ -1,0 +1,497 @@
+{
+  "allowConnections": true,
+  "auditing": {
+    "enabled": true
+  },
+  "canCascadeDelete": false,
+  "connectionOptions": {
+    "requireAccept": true,
+    "requiredAccess": 5,
+    "sendNotifications": true
+  },
+  "createAcl": [
+    "role.administrator",
+    "role.c_study_designer"
+  ],
+  "defaultAcl": [
+    "owner.delete",
+    "role.administrator.delete",
+    "role.c_data_export.read",
+    "role.c_data_manager.read",
+    "role.c_data_reviewer.read",
+    "role.c_principal_data_manager.read",
+    "role.c_site_investigator.read",
+    "role.c_site_monitor.read",
+    "role.c_site_user.read",
+    "role.c_study_designer.delete",
+    "role.c_study_participant.read",
+    "role.c_study_viewer.read"
+  ],
+  "defaultType": null,
+  "description": "An object representing a participant group in a study in Axon",
+  "favorite": false,
+  "hasETag": false,
+  "hasOwner": true,
+  "isDeletable": true,
+  "isUnmanaged": false,
+  "isVersioned": false,
+  "label": "Participant Group",
+  "localized": true,
+  "name": "c_group",
+  "object": "object",
+  "objectTypes": [],
+  "properties": [
+    {
+      "acl": [],
+      "aclOverride": false,
+      "array": false,
+      "auditable": false,
+      "canPull": true,
+      "canPush": true,
+      "creatable": false,
+      "defaultValue": [],
+      "dependencies": [],
+      "description": "A human friendly description of the group, for display in study builder.",
+      "history": false,
+      "include": [],
+      "indexed": false,
+      "label": "Description",
+      "localization": {
+        "acl": [],
+        "aclOverride": false,
+        "enabled": false,
+        "fallback": true,
+        "fixed": "",
+        "namespace": "axon",
+        "readAccess": "read",
+        "strict": true,
+        "valid": [],
+        "writeAccess": "update"
+      },
+      "lowercase": false,
+      "maxItems": 100,
+      "maxShift": false,
+      "minItems": 0,
+      "name": "c_description",
+      "optional": false,
+      "readAccess": "read",
+      "readable": true,
+      "removable": true,
+      "trim": false,
+      "type": "String",
+      "unique": false,
+      "uniqueValues": false,
+      "uppercase": false,
+      "validators": [
+        {
+          "definition": {
+            "min": 0,
+            "max": 512
+          },
+          "name": "string"
+        }
+      ],
+      "writable": true,
+      "writeAccess": "update",
+      "writeOnCreate": true
+    },
+    {
+      "acl": [],
+      "aclOverride": false,
+      "array": false,
+      "auditable": false,
+      "canPull": true,
+      "canPush": true,
+      "creatable": false,
+      "defaultValue": [
+        {
+          "type": "static",
+          "value": false
+        }
+      ],
+      "dependencies": [],
+      "history": false,
+      "include": [],
+      "indexed": true,
+      "label": "Display in Invite List",
+      "maxItems": 100,
+      "maxShift": false,
+      "minItems": 0,
+      "name": "c_display_in_invite_list",
+      "optional": false,
+      "readAccess": "read",
+      "readable": true,
+      "removable": false,
+      "type": "Boolean",
+      "unique": false,
+      "uniqueValues": false,
+      "validators": [],
+      "writable": true,
+      "writeAccess": "update",
+      "writeOnCreate": true
+    },
+    {
+      "accessTransforms": [],
+      "acl": [],
+      "aclOverride": false,
+      "creatable": false,
+      "createAcl": [
+        "role.administrator"
+      ],
+      "createAclOverride": false,
+      "defaultAcl": [
+        "account.public.read",
+        "owner.delete",
+        "role.administrator.delete",
+        "role.c_study_participant.read"
+      ],
+      "defaultAclOverride": false,
+      "defaultLimit": 0,
+      "defaultValue": [],
+      "dependencies": [
+        "_id"
+      ],
+      "grant": "none",
+      "hoistList": false,
+      "implicitCreateAccessLevel": null,
+      "include": [],
+      "inheritInstanceRoles": true,
+      "inheritPropertyAccess": false,
+      "label": "Task Assignments",
+      "linkedProperty": "c_group",
+      "linkedReferences": [],
+      "name": "c_group_tasks",
+      "optional": false,
+      "readAccess": "read",
+      "readThrough": true,
+      "readable": true,
+      "removable": false,
+      "roles": [],
+      "skipAcl": false,
+      "sourceObject": "c_group_task",
+      "type": "List",
+      "uniqueValues": false,
+      "updateOnWriteThrough": true,
+      "validators": [],
+      "where": "{\"c_group\": \"{{input._id}}\"}",
+      "writeAccess": "update",
+      "writeThrough": true
+    },
+    {
+      "acl": [],
+      "aclOverride": false,
+      "array": false,
+      "auditable": false,
+      "canPull": true,
+      "canPush": true,
+      "cascadeDelete": false,
+      "creatable": false,
+      "defaultValue": [],
+      "dependencies": [],
+      "history": false,
+      "include": [],
+      "indexed": false,
+      "label": "Import ID",
+      "maxItems": 100,
+      "maxShift": false,
+      "minItems": 0,
+      "name": "c_import_id",
+      "optional": false,
+      "readAccess": "read",
+      "readable": true,
+      "removable": false,
+      "type": "ObjectId",
+      "unique": false,
+      "uniqueValues": false,
+      "validators": [],
+      "writable": true,
+      "writeAccess": "update",
+      "writeOnCreate": true
+    },
+    {
+      "acl": [],
+      "aclOverride": false,
+      "array": false,
+      "auditable": false,
+      "autoGenerate": true,
+      "canPull": true,
+      "canPush": true,
+      "creatable": false,
+      "defaultValue": [],
+      "dependencies": [],
+      "history": false,
+      "include": [],
+      "indexed": true,
+      "label": "Key",
+      "maxItems": 100,
+      "maxShift": false,
+      "minItems": 0,
+      "name": "c_key",
+      "optional": false,
+      "readAccess": "read",
+      "readable": true,
+      "removable": false,
+      "type": "UUID",
+      "unique": true,
+      "uniqueValues": false,
+      "uuidVersion": 4,
+      "validators": [],
+      "writable": true,
+      "writeAccess": "update",
+      "writeOnCreate": true
+    },
+    {
+      "acl": [],
+      "aclOverride": false,
+      "array": false,
+      "auditable": false,
+      "canPull": true,
+      "canPush": true,
+      "creatable": false,
+      "defaultValue": [],
+      "dependencies": [],
+      "history": false,
+      "include": [],
+      "indexed": true,
+      "label": "Name",
+      "localization": {
+        "acl": [],
+        "aclOverride": false,
+        "enabled": true,
+        "fallback": true,
+        "fixed": "",
+        "namespace": "axon",
+        "readAccess": "read",
+        "strict": true,
+        "valid": [],
+        "writeAccess": "update"
+      },
+      "lowercase": false,
+      "maxItems": 100,
+      "maxShift": false,
+      "minItems": 0,
+      "name": "c_name",
+      "optional": false,
+      "readAccess": "read",
+      "readable": true,
+      "removable": false,
+      "trim": false,
+      "type": "String",
+      "unique": false,
+      "uniqueValues": false,
+      "uppercase": false,
+      "validators": [
+        {
+          "definition": {
+            "min": 0,
+            "max": 512
+          },
+          "name": "string"
+        },
+        {
+          "name": "required"
+        }
+      ],
+      "writable": true,
+      "writeAccess": "update",
+      "writeOnCreate": true
+    },
+    {
+      "acl": [],
+      "aclOverride": false,
+      "array": false,
+      "auditable": false,
+      "canPull": true,
+      "canPush": true,
+      "creatable": false,
+      "defaultValue": [],
+      "dependencies": [],
+      "history": false,
+      "include": [],
+      "indexed": true,
+      "label": "Sequence",
+      "maxItems": 100,
+      "maxShift": false,
+      "minItems": 0,
+      "name": "c_sequence",
+      "optional": false,
+      "readAccess": "read",
+      "readable": true,
+      "removable": false,
+      "type": "Number",
+      "unique": false,
+      "uniqueValues": false,
+      "validators": [
+        {
+          "definition": {
+            "allowDecimal": true
+          },
+          "name": "number"
+        }
+      ],
+      "writable": true,
+      "writeAccess": "update",
+      "writeOnCreate": true
+    },
+    {
+      "accessTransforms": [],
+      "acl": [],
+      "aclOverride": false,
+      "auditable": false,
+      "autoCreate": false,
+      "cascadeDelete": true,
+      "creatable": false,
+      "defaultAcl": [
+        "role.administrator.delete"
+      ],
+      "defaultAclOverride": false,
+      "defaultValue": [],
+      "dependencies": [],
+      "expandable": true,
+      "grant": "none",
+      "history": false,
+      "include": [],
+      "indexed": true,
+      "inheritInstanceRoles": false,
+      "inheritPropertyAccess": false,
+      "label": "Study",
+      "name": "c_study",
+      "optional": false,
+      "pacl": [],
+      "paths": [],
+      "readAccess": "read",
+      "readable": true,
+      "referenceAccess": "none",
+      "removable": true,
+      "roles": [],
+      "sourceObject": "c_study",
+      "type": "Reference",
+      "unique": false,
+      "updateOnWriteThrough": false,
+      "validateReference": true,
+      "validators": [],
+      "writable": true,
+      "writeAccess": "update",
+      "writeThrough": false
+    },
+    {
+      "acl": [],
+      "aclOverride": false,
+      "array": false,
+      "auditable": false,
+      "canPull": true,
+      "canPush": true,
+      "creatable": false,
+      "defaultValue": [],
+      "dependencies": [],
+      "history": false,
+      "include": [],
+      "indexed": false,
+      "label": "Enable Televisit",
+      "maxItems": 100,
+      "maxShift": false,
+      "minItems": 0,
+      "name": "c_televisit_enabled",
+      "optional": false,
+      "readAccess": "read",
+      "readable": true,
+      "removable": false,
+      "type": "Boolean",
+      "unique": false,
+      "uniqueValues": false,
+      "validators": [
+        {
+          "definition": {
+            "$let": {
+              "vars": {
+                "roomsEnabled": {
+                  "$pathTo": [
+                    {
+                      "$dbNext": {
+                        "grant": 4,
+                        "maxTimeMS": 10000,
+                        "object": "org",
+                        "operation": "cursor",
+                        "paths": [
+                          "configuration.televisit"
+                        ],
+                        "skipAcl": true
+                      }
+                    },
+                    "configuration.televisit.roomsEnabled"
+                  ]
+                }
+              },
+              "in": {
+                "$cond": {
+                  "if": "$value",
+                  "then": {
+                    "$cond": [
+                      "$$roomsEnabled",
+                      true,
+                      {
+                        "$axon__throw_fault": {
+                          "err_code": "axon.validationError.roomsMustBeEnableForTheOrg"
+                        }
+                      }
+                    ]
+                  },
+                  "else": true
+                }
+              }
+            }
+          },
+          "name": "expression"
+        }
+      ],
+      "writable": true,
+      "writeAccess": "update",
+      "writeOnCreate": true
+    },
+    {
+      "acl": [],
+      "aclOverride": false,
+      "array": true,
+      "auditable": false,
+      "canPull": true,
+      "canPush": true,
+      "cascadeDelete": false,
+      "creatable": false,
+      "defaultValue": [],
+      "dependencies": [],
+      "history": false,
+      "include": [],
+      "indexed": true,
+      "label": "Visits",
+      "maxItems": 1,
+      "maxShift": false,
+      "minItems": 0,
+      "name": "c_visits",
+      "optional": false,
+      "readAccess": "read",
+      "readable": true,
+      "removable": true,
+      "sourceObject": "c_visit",
+      "type": "ObjectId",
+      "unique": false,
+      "uniqueValues": false,
+      "validators": [],
+      "writable": true,
+      "writeAccess": "update",
+      "writeOnCreate": true
+    }
+  ],
+  "reporting": {
+    "enabled": false
+  },
+  "shareAcl": [],
+  "shareChain": [
+    "share",
+    "read",
+    "connected"
+  ],
+  "uniqueKey": "c_key",
+  "useBuildVersion": true,
+  "useBundles": true,
+  "validateOwner": true
+}

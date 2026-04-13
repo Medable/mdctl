@@ -1,0 +1,10 @@
+{{#extend "layout"}}
+    {{#replace "title"}}
+       {{i18n "axon:template.email.mobile-change-notification.title"}}
+    {{/replace}}
+
+    {{#replace "body"}}
+		{{i18n "axon:template.email.mobile-change-notification.hello" account=account}}<br/><br/>
+		{{i18n "axon:template.email.mobile-change-notification.instructions" org=org}}
+    {{/replace}}
+{{/extend}}

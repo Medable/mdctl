@@ -1,0 +1,13 @@
+{
+  "isPublic": true,
+  "name": "ab__study_extensions",
+  "object": "config",
+  "value": [
+    {
+      "id": "364e0697-6f80-456d-acfe-a007b939719c",
+      "name": "resource1",
+      "mappingKey": "1e02da71-b8e7-470b-84e5-0f64277e7f41",
+      "description": ""
+    }
+  ]
+}

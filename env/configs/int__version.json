@@ -1,0 +1,8 @@
+{
+  "isPublic": false,
+  "name": "int__version",
+  "object": "config",
+  "value": {
+    "version": "2.3.0"
+  }
+}

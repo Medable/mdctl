@@ -1,0 +1,1 @@
+{{i18n "axon:template.email.account-provisioned.title" org=org}}

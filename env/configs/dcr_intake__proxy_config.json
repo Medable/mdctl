@@ -1,0 +1,9 @@
+{
+  "isPublic": false,
+  "name": "dcr_intake__proxy_config",
+  "object": "config",
+  "value": {
+    "url": "http://host.docker.internal:3000",
+    "token": ""
+  }
+}

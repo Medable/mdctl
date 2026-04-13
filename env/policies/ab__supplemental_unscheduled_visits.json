@@ -1,0 +1,39 @@
+{
+  "aclBlacklist": [],
+  "aclWhitelist": [],
+  "action": "Transform",
+  "active": true,
+  "appBlacklist": [],
+  "appWhitelist": [],
+  "condition": "and",
+  "environment": "*",
+  "faultCode": "kAccessDenied",
+  "faultReason": "Access denied by policy",
+  "faultStatusCode": 403,
+  "halt": false,
+  "ipBlacklist": [],
+  "ipWhitelist": [],
+  "label": "Visit schedule override for supplemental and unscheduled visits",
+  "methods": [
+    "get"
+  ],
+  "name": "ab__supplemental_unscheduled_visits",
+  "object": "policy",
+  "paths": [
+    "/routes/c_sites/:siteid/c_public_users/:publicuserid/c_visit_schedule"
+  ],
+  "pipeline": null,
+  "priority": 0,
+  "rateLimit": false,
+  "rateLimitCount": 300,
+  "rateLimitElements": [
+    "ip"
+  ],
+  "rateLimitReason": "Too many requests.",
+  "rateLimitWindow": 300,
+  "redirectStatusCode": 307,
+  "script": "/env/policies/js/policy.ab__supplemental_unscheduled_visits.js",
+  "trace": false,
+  "type": "api",
+  "weight": 0
+}

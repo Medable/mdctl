@@ -1,0 +1,9 @@
+{{i18n "axon:template.email.c_axon_virtual_visit_new.hello" account=account}}
+
+{{{i18n "axon:template.email.c_axon_virtual_visit_new.title" date=date time=time timezone=timezone}}}
+
+{{i18n "axon:template.email.c_axon_virtual_visit_new.instructionOne"}}
+
+{{i18n "axon:template.email.c_axon_virtual_visit_new.instructionTwo"}}
+
+{{i18n "axon:template.email.c_axon_virtual_visit_new.instructionThree"}}

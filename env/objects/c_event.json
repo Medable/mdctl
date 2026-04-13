@@ -1,0 +1,3378 @@
+{
+  "allowConnections": true,
+  "auditing": {
+    "enabled": false
+  },
+  "canCascadeDelete": false,
+  "connectionOptions": {
+    "requireAccept": false,
+    "requiredAccess": 5,
+    "sendNotifications": false
+  },
+  "createAcl": [
+    "account.public"
+  ],
+  "defaultAcl": [
+    "owner.delete",
+    "role.administrator.delete",
+    "role.c_axon_site_auditor.read",
+    "role.c_axon_site_monitor.read",
+    "role.c_axon_site_user.read"
+  ],
+  "defaultType": null,
+  "description": "An object representing different event types in Axon",
+  "favorite": false,
+  "hasETag": false,
+  "hasOwner": true,
+  "isDeletable": true,
+  "isUnmanaged": false,
+  "isVersioned": false,
+  "label": "Event",
+  "localized": true,
+  "name": "c_event",
+  "object": "object",
+  "objectTypes": [
+    {
+      "label": "Ad Hoc Task Event",
+      "name": "c_ad_hoc_task_event",
+      "properties": [
+        {
+          "acl": [],
+          "aclOverride": false,
+          "array": false,
+          "auditable": false,
+          "canPull": true,
+          "canPush": true,
+          "creatable": false,
+          "defaultValue": [
+            {
+              "type": "static",
+              "value": false
+            }
+          ],
+          "dependencies": [],
+          "description": "Will the clients automatically start this task if no other task is available",
+          "history": false,
+          "include": [],
+          "indexed": false,
+          "label": "Auto Start",
+          "maxItems": 100,
+          "maxShift": false,
+          "minItems": 0,
+          "name": "c_auto_start",
+          "optional": false,
+          "readAccess": "read",
+          "readable": true,
+          "removable": false,
+          "type": "Boolean",
+          "unique": false,
+          "uniqueValues": false,
+          "validators": [],
+          "writable": true,
+          "writeAccess": "update",
+          "writeOnCreate": true
+        },
+        {
+          "acl": [],
+          "aclOverride": false,
+          "array": false,
+          "auditable": false,
+          "canPull": true,
+          "canPush": true,
+          "creatable": false,
+          "defaultValue": [
+            {
+              "type": "expression",
+              "value": {
+                "$as": {
+                  "input": {
+                    "grant": "script"
+                  },
+                  "in": "$$ROOT.c_task_assignment.c_visit.c_enforce_order"
+                }
+              }
+            }
+          ],
+          "dependencies": [
+            "c_task_assignment"
+          ],
+          "history": false,
+          "include": [],
+          "indexed": false,
+          "label": "Enforce Order",
+          "maxItems": 100,
+          "maxShift": false,
+          "minItems": 0,
+          "name": "c_enforce_order",
+          "optional": false,
+          "readAccess": "read",
+          "readable": true,
+          "removable": false,
+          "type": "Boolean",
+          "unique": false,
+          "uniqueValues": false,
+          "validators": [],
+          "writable": true,
+          "writeAccess": "update",
+          "writeOnCreate": true
+        },
+        {
+          "acl": [],
+          "aclOverride": false,
+          "array": false,
+          "auditable": false,
+          "canPull": true,
+          "canPush": true,
+          "creatable": false,
+          "defaultValue": [
+            {
+              "type": "expression",
+              "value": {
+                "$as": {
+                  "input": {
+                    "grant": "script"
+                  },
+                  "in": "$$ROOT.c_task.c_modality"
+                }
+              }
+            }
+          ],
+          "dependencies": [
+            "c_task"
+          ],
+          "history": false,
+          "include": [],
+          "indexed": false,
+          "label": "Modality",
+          "localization": {
+            "acl": [],
+            "aclOverride": false,
+            "enabled": false,
+            "fallback": true,
+            "fixed": "",
+            "namespace": "cortex",
+            "readAccess": "read",
+            "strict": true,
+            "valid": [],
+            "writeAccess": "update"
+          },
+          "lowercase": false,
+          "maxItems": 100,
+          "maxShift": false,
+          "minItems": 0,
+          "name": "c_modality",
+          "optional": false,
+          "readAccess": "read",
+          "readable": true,
+          "removable": false,
+          "trim": false,
+          "type": "String",
+          "unique": false,
+          "uniqueValues": false,
+          "uppercase": false,
+          "validators": [],
+          "writable": true,
+          "writeAccess": "update",
+          "writeOnCreate": true
+        },
+        {
+          "acl": [],
+          "aclOverride": false,
+          "array": false,
+          "auditable": false,
+          "canPull": true,
+          "canPush": true,
+          "creatable": false,
+          "defaultValue": [
+            {
+              "type": "expression",
+              "value": {
+                "$as": {
+                  "input": {
+                    "grant": "script"
+                  },
+                  "in": "$$ROOT.c_task.c_observation_type"
+                }
+              }
+            }
+          ],
+          "dependencies": [
+            "c_task"
+          ],
+          "history": false,
+          "include": [],
+          "indexed": false,
+          "label": "Observation Type",
+          "localization": {
+            "acl": [],
+            "aclOverride": false,
+            "enabled": false,
+            "fallback": true,
+            "fixed": "",
+            "namespace": "cortex",
+            "readAccess": "read",
+            "strict": true,
+            "valid": [],
+            "writeAccess": "update"
+          },
+          "lowercase": false,
+          "maxItems": 100,
+          "maxShift": false,
+          "minItems": 0,
+          "name": "c_observation_type",
+          "optional": false,
+          "readAccess": "read",
+          "readable": true,
+          "removable": false,
+          "trim": false,
+          "type": "String",
+          "unique": false,
+          "uniqueValues": false,
+          "uppercase": false,
+          "validators": [
+            {
+              "definition": {
+                "values": [
+                  {
+                    "value": "epro",
+                    "label": "Patient Reported"
+                  },
+                  {
+                    "value": "clinro",
+                    "label": "Clinic Reported"
+                  },
+                  {
+                    "value": "obsro",
+                    "label": "Observer Reported"
+                  }
+                ]
+              },
+              "name": "options"
+            }
+          ],
+          "writable": true,
+          "writeAccess": "update",
+          "writeOnCreate": true
+        },
+        {
+          "acl": [],
+          "aclOverride": false,
+          "array": false,
+          "auditable": false,
+          "canPull": true,
+          "canPush": true,
+          "creatable": false,
+          "defaultValue": [
+            {
+              "type": "expression",
+              "value": {
+                "$as": {
+                  "input": {
+                    "grant": "script"
+                  },
+                  "in": "$$ROOT.c_task.c_order"
+                }
+              }
+            }
+          ],
+          "dependencies": [
+            "c_task"
+          ],
+          "history": false,
+          "include": [],
+          "indexed": false,
+          "label": "Task Order",
+          "maxItems": 100,
+          "maxShift": false,
+          "minItems": 0,
+          "name": "c_order",
+          "optional": false,
+          "readAccess": "read",
+          "readable": true,
+          "removable": false,
+          "type": "Number",
+          "unique": false,
+          "uniqueValues": false,
+          "validators": [
+            {
+              "definition": {
+                "allowDecimal": false
+              },
+              "name": "number"
+            }
+          ],
+          "writable": true,
+          "writeAccess": "update",
+          "writeOnCreate": true
+        },
+        {
+          "acl": [],
+          "aclOverride": false,
+          "array": false,
+          "auditable": false,
+          "canPull": true,
+          "canPush": true,
+          "creatable": false,
+          "defaultValue": [],
+          "dependencies": [],
+          "description": "Property to more easily track the specific event, ad hoc & scheduled only",
+          "history": false,
+          "include": [],
+          "indexed": false,
+          "label": "Recurrence Number",
+          "maxItems": 100,
+          "maxShift": false,
+          "minItems": 0,
+          "name": "c_recurrence_number",
+          "optional": false,
+          "readAccess": "read",
+          "readable": true,
+          "removable": true,
+          "type": "Number",
+          "unique": false,
+          "uniqueValues": false,
+          "validators": [
+            {
+              "definition": {
+                "allowDecimal": false
+              },
+              "name": "number"
+            }
+          ],
+          "writable": true,
+          "writeAccess": "update",
+          "writeOnCreate": true
+        },
+        {
+          "accessTransforms": [],
+          "acl": [],
+          "aclOverride": false,
+          "auditable": false,
+          "autoCreate": false,
+          "cascadeDelete": false,
+          "creatable": false,
+          "defaultAcl": [],
+          "defaultAclOverride": false,
+          "defaultValue": [],
+          "dependencies": [],
+          "description": "Task to be performed in this event",
+          "expandable": true,
+          "grant": "none",
+          "history": false,
+          "include": [],
+          "indexed": false,
+          "inheritInstanceRoles": false,
+          "inheritPropertyAccess": false,
+          "label": "Task",
+          "name": "c_task",
+          "optional": false,
+          "pacl": [],
+          "paths": [],
+          "readAccess": "read",
+          "readable": true,
+          "referenceAccess": "none",
+          "removable": false,
+          "roles": [],
+          "sourceObject": "c_task",
+          "type": "Reference",
+          "unique": false,
+          "updateOnWriteThrough": false,
+          "validateReference": true,
+          "validators": [],
+          "writable": true,
+          "writeAccess": "update",
+          "writeThrough": false
+        },
+        {
+          "accessTransforms": [],
+          "acl": [],
+          "aclOverride": false,
+          "auditable": false,
+          "autoCreate": false,
+          "cascadeDelete": false,
+          "creatable": false,
+          "defaultAcl": [],
+          "defaultAclOverride": false,
+          "defaultValue": [],
+          "dependencies": [],
+          "description": "The assignment that manages the creation and some updates of this event",
+          "expandable": true,
+          "grant": "none",
+          "history": false,
+          "include": [],
+          "indexed": true,
+          "inheritInstanceRoles": false,
+          "inheritPropertyAccess": false,
+          "label": "Task Assignment",
+          "name": "c_task_assignment",
+          "optional": false,
+          "pacl": [],
+          "paths": [],
+          "readAccess": "read",
+          "readable": true,
+          "referenceAccess": "none",
+          "removable": false,
+          "roles": [],
+          "sourceObject": "c_task_assignment",
+          "type": "Reference",
+          "unique": false,
+          "updateOnWriteThrough": false,
+          "validateReference": true,
+          "validators": [],
+          "writable": true,
+          "writeAccess": "update",
+          "writeThrough": false
+        },
+        {
+          "accessTransforms": [],
+          "acl": [],
+          "aclOverride": false,
+          "auditable": false,
+          "autoCreate": false,
+          "cascadeDelete": false,
+          "creatable": false,
+          "defaultAcl": [],
+          "defaultAclOverride": false,
+          "defaultValue": [],
+          "dependencies": [],
+          "description": "The completed response for this event",
+          "expandable": true,
+          "grant": "none",
+          "history": false,
+          "include": [],
+          "indexed": true,
+          "inheritInstanceRoles": false,
+          "inheritPropertyAccess": false,
+          "label": "Task Response",
+          "name": "c_task_response",
+          "optional": false,
+          "pacl": [],
+          "paths": [],
+          "readAccess": "read",
+          "readable": true,
+          "referenceAccess": "none",
+          "removable": false,
+          "roles": [],
+          "sourceObject": "c_task_response",
+          "type": "Reference",
+          "unique": true,
+          "updateOnWriteThrough": false,
+          "validateReference": true,
+          "validators": [],
+          "writable": true,
+          "writeAccess": "update",
+          "writeThrough": false
+        },
+        {
+          "acl": [],
+          "aclOverride": false,
+          "array": false,
+          "auditable": false,
+          "canPull": true,
+          "canPush": true,
+          "cascadeDelete": false,
+          "creatable": false,
+          "defaultValue": [
+            {
+              "type": "expression",
+              "value": {
+                "$as": {
+                  "input": {
+                    "grant": "script"
+                  },
+                  "in": "$$ROOT.c_task_assignment.c_visit._id"
+                }
+              }
+            }
+          ],
+          "dependencies": [
+            "c_task_assignment"
+          ],
+          "history": false,
+          "include": [],
+          "indexed": false,
+          "label": "Visit ID",
+          "maxItems": 100,
+          "maxShift": false,
+          "minItems": 0,
+          "name": "c_visit_id",
+          "optional": false,
+          "readAccess": "read",
+          "readable": true,
+          "removable": false,
+          "type": "ObjectId",
+          "unique": false,
+          "uniqueValues": false,
+          "validators": [],
+          "writable": true,
+          "writeAccess": "update",
+          "writeOnCreate": true
+        },
+        {
+          "acl": [],
+          "aclOverride": false,
+          "array": false,
+          "auditable": false,
+          "canPull": true,
+          "canPush": true,
+          "creatable": false,
+          "defaultValue": [
+            {
+              "type": "expression",
+              "value": {
+                "$as": {
+                  "input": {
+                    "grant": "script"
+                  },
+                  "in": "$$ROOT.c_task_assignment.c_visit.c_name"
+                }
+              }
+            }
+          ],
+          "dependencies": [
+            "c_task_assignment"
+          ],
+          "history": false,
+          "include": [],
+          "indexed": false,
+          "label": "Visit Name",
+          "localization": {
+            "acl": [],
+            "aclOverride": false,
+            "enabled": false,
+            "fallback": true,
+            "fixed": "",
+            "namespace": "cortex",
+            "readAccess": "read",
+            "strict": true,
+            "valid": [],
+            "writeAccess": "update"
+          },
+          "lowercase": false,
+          "maxItems": 100,
+          "maxShift": false,
+          "minItems": 0,
+          "name": "c_visit_name",
+          "optional": false,
+          "readAccess": "read",
+          "readable": true,
+          "removable": false,
+          "trim": false,
+          "type": "String",
+          "unique": false,
+          "uniqueValues": false,
+          "uppercase": false,
+          "validators": [],
+          "writable": true,
+          "writeAccess": "update",
+          "writeOnCreate": true
+        }
+      ]
+    },
+    {
+      "label": "Dependent Task Event",
+      "name": "c_dependent_task_event",
+      "properties": [
+        {
+          "acl": [],
+          "aclOverride": false,
+          "array": false,
+          "auditable": false,
+          "canPull": true,
+          "canPush": true,
+          "creatable": false,
+          "defaultValue": [
+            {
+              "type": "static",
+              "value": false
+            }
+          ],
+          "dependencies": [],
+          "description": "Have all the selected dependencies been met for this event",
+          "history": false,
+          "include": [],
+          "indexed": true,
+          "label": "All Dependencies Met",
+          "maxItems": 100,
+          "maxShift": false,
+          "minItems": 0,
+          "name": "c_all_dependencies_met",
+          "optional": false,
+          "readAccess": "read",
+          "readable": true,
+          "removable": false,
+          "type": "Boolean",
+          "unique": false,
+          "uniqueValues": false,
+          "validators": [],
+          "writable": true,
+          "writeAccess": "update",
+          "writeOnCreate": true
+        },
+        {
+          "acl": [],
+          "aclOverride": false,
+          "array": false,
+          "auditable": false,
+          "canPull": true,
+          "canPush": true,
+          "creatable": false,
+          "defaultValue": [
+            {
+              "type": "static",
+              "value": false
+            }
+          ],
+          "dependencies": [],
+          "description": "Will the clients automatically start this task if no other task is available",
+          "history": false,
+          "include": [],
+          "indexed": false,
+          "label": "Auto Start",
+          "maxItems": 100,
+          "maxShift": false,
+          "minItems": 0,
+          "name": "c_auto_start",
+          "optional": false,
+          "readAccess": "read",
+          "readable": true,
+          "removable": false,
+          "type": "Boolean",
+          "unique": false,
+          "uniqueValues": false,
+          "validators": [],
+          "writable": true,
+          "writeAccess": "update",
+          "writeOnCreate": true
+        },
+        {
+          "acl": [],
+          "aclOverride": false,
+          "array": true,
+          "canPull": true,
+          "canPush": true,
+          "creatable": false,
+          "defaultValue": [],
+          "dependencies": [],
+          "description": "An array of dependencies that manage this events availability",
+          "include": [],
+          "label": "Dependencies",
+          "maxItems": 100,
+          "maxShift": false,
+          "minItems": 0,
+          "name": "c_dependencies",
+          "optional": false,
+          "properties": [
+            {
+              "acl": [],
+              "aclOverride": false,
+              "array": false,
+              "auditable": false,
+              "canPull": true,
+              "canPush": true,
+              "creatable": false,
+              "defaultValue": [
+                {
+                  "type": "static",
+                  "value": false
+                }
+              ],
+              "dependencies": [],
+              "description": "Property to track if the parent criteria is met",
+              "history": false,
+              "include": [],
+              "indexed": false,
+              "label": "Dependency Met",
+              "maxItems": 100,
+              "maxShift": false,
+              "minItems": 0,
+              "name": "c_dependency_met",
+              "optional": false,
+              "readAccess": "read",
+              "readable": true,
+              "removable": false,
+              "type": "Boolean",
+              "unique": false,
+              "uniqueValues": false,
+              "validators": [],
+              "writable": true,
+              "writeAccess": "update",
+              "writeOnCreate": true
+            },
+            {
+              "acl": [],
+              "aclOverride": false,
+              "array": false,
+              "auditable": false,
+              "autoGenerate": true,
+              "canPull": true,
+              "canPush": true,
+              "creatable": false,
+              "defaultValue": [],
+              "dependencies": [],
+              "description": "Unique Key for export purposes",
+              "history": false,
+              "include": [],
+              "indexed": false,
+              "label": "Key",
+              "maxItems": 100,
+              "maxShift": false,
+              "minItems": 0,
+              "name": "c_key",
+              "optional": false,
+              "readAccess": "min",
+              "readable": true,
+              "removable": false,
+              "type": "UUID",
+              "unique": false,
+              "uniqueValues": false,
+              "uuidVersion": 4,
+              "validators": [
+                {
+                  "name": "uniqueInArray"
+                }
+              ],
+              "writable": true,
+              "writeAccess": "update",
+              "writeOnCreate": true
+            },
+            {
+              "accessTransforms": [],
+              "acl": [],
+              "aclOverride": false,
+              "auditable": false,
+              "autoCreate": false,
+              "cascadeDelete": false,
+              "creatable": false,
+              "defaultAcl": [],
+              "defaultAclOverride": false,
+              "defaultValue": [],
+              "dependencies": [],
+              "description": "Reference to the parent event",
+              "expandable": true,
+              "grant": "none",
+              "history": false,
+              "include": [],
+              "indexed": true,
+              "inheritInstanceRoles": false,
+              "inheritPropertyAccess": false,
+              "label": "Parent Event",
+              "name": "c_parent_event",
+              "optional": false,
+              "pacl": [],
+              "paths": [],
+              "readAccess": "read",
+              "readable": true,
+              "referenceAccess": "none",
+              "removable": false,
+              "roles": [],
+              "sourceObject": "c_event",
+              "type": "Reference",
+              "unique": false,
+              "updateOnWriteThrough": false,
+              "validateReference": true,
+              "validators": [],
+              "writable": true,
+              "writeAccess": "update",
+              "writeThrough": false
+            },
+            {
+              "acl": [],
+              "aclOverride": false,
+              "array": false,
+              "auditable": false,
+              "canPull": true,
+              "canPush": true,
+              "creatable": false,
+              "defaultValue": [],
+              "dependencies": [],
+              "description": "Hash that reference the parent event",
+              "history": false,
+              "include": [],
+              "indexed": true,
+              "label": "Parent Event Hash",
+              "localization": {
+                "acl": [],
+                "aclOverride": false,
+                "enabled": false,
+                "fallback": true,
+                "fixed": "",
+                "namespace": "cortex",
+                "readAccess": "read",
+                "strict": true,
+                "valid": [],
+                "writeAccess": "update"
+              },
+              "lowercase": false,
+              "maxItems": 100,
+              "maxShift": false,
+              "minItems": 0,
+              "name": "c_parent_hash",
+              "optional": false,
+              "readAccess": "read",
+              "readable": true,
+              "removable": false,
+              "trim": false,
+              "type": "String",
+              "unique": false,
+              "uniqueValues": false,
+              "uppercase": false,
+              "validators": [],
+              "writable": true,
+              "writeAccess": "update",
+              "writeOnCreate": true
+            },
+            {
+              "acl": [],
+              "aclOverride": false,
+              "array": false,
+              "auditable": false,
+              "canPull": true,
+              "canPush": true,
+              "creatable": false,
+              "defaultValue": [],
+              "dependencies": [],
+              "description": "An enum of dependency types: missed, complete, complete:success, complete:failure",
+              "history": false,
+              "include": [],
+              "indexed": false,
+              "label": "Type",
+              "localization": {
+                "acl": [],
+                "aclOverride": false,
+                "enabled": true,
+                "fallback": true,
+                "fixed": "",
+                "namespace": "axon",
+                "readAccess": "read",
+                "strict": true,
+                "valid": [],
+                "writeAccess": "update"
+              },
+              "lowercase": false,
+              "maxItems": 100,
+              "maxShift": false,
+              "minItems": 0,
+              "name": "c_type",
+              "optional": false,
+              "readAccess": "min",
+              "readable": true,
+              "removable": false,
+              "trim": false,
+              "type": "String",
+              "unique": false,
+              "uniqueValues": false,
+              "uppercase": false,
+              "validators": [
+                {
+                  "definition": {
+                    "min": 0,
+                    "max": 512
+                  },
+                  "name": "string"
+                },
+                {
+                  "definition": {
+                    "values": [
+                      {
+                        "value": "missed",
+                        "label": "Missed"
+                      },
+                      {
+                        "value": "complete",
+                        "label": "Completed"
+                      },
+                      {
+                        "value": "complete:success",
+                        "label": "Completed Successfully"
+                      },
+                      {
+                        "value": "complete:failure",
+                        "label": "Failed"
+                      }
+                    ]
+                  },
+                  "name": "options"
+                }
+              ],
+              "writable": true,
+              "writeAccess": "update",
+              "writeOnCreate": true
+            }
+          ],
+          "readAccess": "min",
+          "readable": true,
+          "removable": false,
+          "type": "Document",
+          "uniqueKey": "c_key",
+          "validators": [],
+          "writable": true,
+          "writeAccess": "update",
+          "writeOnCreate": true
+        },
+        {
+          "acl": [],
+          "aclOverride": false,
+          "array": false,
+          "auditable": false,
+          "canPull": true,
+          "canPush": true,
+          "creatable": false,
+          "defaultValue": [],
+          "dependencies": [],
+          "description": "The time (in minutes) from when this task event becomes available till it becomes unavailable again",
+          "history": false,
+          "include": [],
+          "indexed": false,
+          "label": "Duration",
+          "maxItems": 100,
+          "maxShift": false,
+          "minItems": 0,
+          "name": "c_duration",
+          "optional": false,
+          "readAccess": "read",
+          "readable": true,
+          "removable": true,
+          "type": "Number",
+          "unique": false,
+          "uniqueValues": false,
+          "validators": [
+            {
+              "definition": {
+                "allowDecimal": false
+              },
+              "name": "number"
+            }
+          ],
+          "writable": true,
+          "writeAccess": "update",
+          "writeOnCreate": true
+        },
+        {
+          "acl": [],
+          "aclOverride": false,
+          "array": false,
+          "auditable": false,
+          "canPull": true,
+          "canPush": true,
+          "creatable": false,
+          "defaultValue": [
+            {
+              "type": "expression",
+              "value": {
+                "$as": {
+                  "input": {
+                    "grant": "script"
+                  },
+                  "in": "$$ROOT.c_task_assignment.c_visit.c_enforce_order"
+                }
+              }
+            }
+          ],
+          "dependencies": [
+            "c_task_assignment"
+          ],
+          "history": false,
+          "include": [],
+          "indexed": false,
+          "label": "Enforce Order",
+          "maxItems": 100,
+          "maxShift": false,
+          "minItems": 0,
+          "name": "c_enforce_order",
+          "optional": false,
+          "readAccess": "read",
+          "readable": true,
+          "removable": false,
+          "type": "Boolean",
+          "unique": false,
+          "uniqueValues": false,
+          "validators": [],
+          "writable": true,
+          "writeAccess": "update",
+          "writeOnCreate": true
+        },
+        {
+          "acl": [],
+          "aclOverride": false,
+          "array": false,
+          "auditable": false,
+          "canPull": true,
+          "canPush": true,
+          "creatable": false,
+          "defaultValue": [
+            {
+              "type": "expression",
+              "value": {
+                "$as": {
+                  "input": {
+                    "grant": "script"
+                  },
+                  "in": "$$ROOT.c_task.c_modality"
+                }
+              }
+            }
+          ],
+          "dependencies": [
+            "c_task"
+          ],
+          "history": false,
+          "include": [],
+          "indexed": false,
+          "label": "Modality",
+          "localization": {
+            "acl": [],
+            "aclOverride": false,
+            "enabled": false,
+            "fallback": true,
+            "fixed": "",
+            "namespace": "cortex",
+            "readAccess": "read",
+            "strict": true,
+            "valid": [],
+            "writeAccess": "update"
+          },
+          "lowercase": false,
+          "maxItems": 100,
+          "maxShift": false,
+          "minItems": 0,
+          "name": "c_modality",
+          "optional": false,
+          "readAccess": "read",
+          "readable": true,
+          "removable": false,
+          "trim": false,
+          "type": "String",
+          "unique": false,
+          "uniqueValues": false,
+          "uppercase": false,
+          "validators": [],
+          "writable": true,
+          "writeAccess": "update",
+          "writeOnCreate": true
+        },
+        {
+          "acl": [],
+          "aclOverride": false,
+          "array": false,
+          "auditable": false,
+          "canPull": true,
+          "canPush": true,
+          "creatable": false,
+          "defaultValue": [
+            {
+              "type": "expression",
+              "value": {
+                "$as": {
+                  "input": {
+                    "grant": "script"
+                  },
+                  "in": "$$ROOT.c_task.c_observation_type"
+                }
+              }
+            }
+          ],
+          "dependencies": [
+            "c_task"
+          ],
+          "history": false,
+          "include": [],
+          "indexed": false,
+          "label": "Observation Type",
+          "localization": {
+            "acl": [],
+            "aclOverride": false,
+            "enabled": false,
+            "fallback": true,
+            "fixed": "",
+            "namespace": "cortex",
+            "readAccess": "read",
+            "strict": true,
+            "valid": [],
+            "writeAccess": "update"
+          },
+          "lowercase": false,
+          "maxItems": 100,
+          "maxShift": false,
+          "minItems": 0,
+          "name": "c_observation_type",
+          "optional": false,
+          "readAccess": "read",
+          "readable": true,
+          "removable": false,
+          "trim": false,
+          "type": "String",
+          "unique": false,
+          "uniqueValues": false,
+          "uppercase": false,
+          "validators": [
+            {
+              "definition": {
+                "values": [
+                  {
+                    "value": "epro",
+                    "label": "Patient Reported"
+                  },
+                  {
+                    "value": "clinro",
+                    "label": "Clinic Reported"
+                  },
+                  {
+                    "value": "obsro",
+                    "label": "Observer Reported"
+                  }
+                ]
+              },
+              "name": "options"
+            }
+          ],
+          "writable": true,
+          "writeAccess": "update",
+          "writeOnCreate": true
+        },
+        {
+          "acl": [],
+          "aclOverride": false,
+          "array": false,
+          "auditable": false,
+          "canPull": true,
+          "canPush": true,
+          "creatable": false,
+          "defaultValue": [
+            {
+              "type": "expression",
+              "value": {
+                "$as": {
+                  "input": {
+                    "grant": "script"
+                  },
+                  "in": "$$ROOT.c_task.c_order"
+                }
+              }
+            }
+          ],
+          "dependencies": [
+            "c_task"
+          ],
+          "history": false,
+          "include": [],
+          "indexed": false,
+          "label": "Task Order",
+          "maxItems": 100,
+          "maxShift": false,
+          "minItems": 0,
+          "name": "c_order",
+          "optional": false,
+          "readAccess": "read",
+          "readable": true,
+          "removable": false,
+          "type": "Number",
+          "unique": false,
+          "uniqueValues": false,
+          "validators": [
+            {
+              "definition": {
+                "allowDecimal": false
+              },
+              "name": "number"
+            }
+          ],
+          "writable": true,
+          "writeAccess": "update",
+          "writeOnCreate": true
+        },
+        {
+          "acl": [],
+          "aclOverride": false,
+          "array": false,
+          "auditable": false,
+          "canPull": true,
+          "canPush": true,
+          "creatable": false,
+          "defaultValue": [],
+          "dependencies": [],
+          "description": "The time (in minutes) from when the parent criteria was met after which this task event becomes available",
+          "history": false,
+          "include": [],
+          "indexed": false,
+          "label": "Parent Offset Time",
+          "maxItems": 100,
+          "maxShift": false,
+          "minItems": 0,
+          "name": "c_parent_offset_time",
+          "optional": false,
+          "readAccess": "read",
+          "readable": true,
+          "removable": true,
+          "type": "Number",
+          "unique": false,
+          "uniqueValues": false,
+          "validators": [
+            {
+              "definition": {
+                "allowDecimal": false
+              },
+              "name": "number"
+            }
+          ],
+          "writable": true,
+          "writeAccess": "update",
+          "writeOnCreate": true
+        },
+        {
+          "acl": [],
+          "aclOverride": false,
+          "array": false,
+          "auditable": false,
+          "canPull": true,
+          "canPush": true,
+          "creatable": false,
+          "defaultValue": [],
+          "dependencies": [],
+          "history": false,
+          "include": [],
+          "indexed": false,
+          "label": "Recurrence Number",
+          "maxItems": 100,
+          "maxShift": false,
+          "minItems": 0,
+          "name": "c_recurrence_number",
+          "optional": false,
+          "readAccess": "read",
+          "readable": true,
+          "removable": true,
+          "type": "Number",
+          "unique": false,
+          "uniqueValues": false,
+          "validators": [
+            {
+              "definition": {
+                "allowDecimal": false
+              },
+              "name": "number"
+            }
+          ],
+          "writable": true,
+          "writeAccess": "update",
+          "writeOnCreate": true
+        },
+        {
+          "accessTransforms": [],
+          "acl": [],
+          "aclOverride": false,
+          "auditable": false,
+          "autoCreate": false,
+          "cascadeDelete": false,
+          "creatable": false,
+          "defaultAcl": [],
+          "defaultAclOverride": false,
+          "defaultValue": [],
+          "dependencies": [],
+          "description": "Task to be performed in this event",
+          "expandable": true,
+          "grant": "none",
+          "history": false,
+          "include": [],
+          "indexed": false,
+          "inheritInstanceRoles": false,
+          "inheritPropertyAccess": false,
+          "label": "Task",
+          "name": "c_task",
+          "optional": false,
+          "pacl": [],
+          "paths": [],
+          "readAccess": "read",
+          "readable": true,
+          "referenceAccess": "none",
+          "removable": false,
+          "roles": [],
+          "sourceObject": "c_task",
+          "type": "Reference",
+          "unique": false,
+          "updateOnWriteThrough": false,
+          "validateReference": true,
+          "validators": [],
+          "writable": true,
+          "writeAccess": "update",
+          "writeThrough": false
+        },
+        {
+          "accessTransforms": [],
+          "acl": [],
+          "aclOverride": false,
+          "auditable": false,
+          "autoCreate": false,
+          "cascadeDelete": false,
+          "creatable": false,
+          "defaultAcl": [],
+          "defaultAclOverride": false,
+          "defaultValue": [],
+          "dependencies": [],
+          "description": "The assignment that manages the creation and some updates of this event",
+          "expandable": true,
+          "grant": "none",
+          "history": false,
+          "include": [],
+          "indexed": true,
+          "inheritInstanceRoles": false,
+          "inheritPropertyAccess": false,
+          "label": "Task Assignment",
+          "name": "c_task_assignment",
+          "optional": false,
+          "pacl": [],
+          "paths": [],
+          "readAccess": "read",
+          "readable": true,
+          "referenceAccess": "none",
+          "removable": false,
+          "roles": [],
+          "sourceObject": "c_task_assignment",
+          "type": "Reference",
+          "unique": false,
+          "updateOnWriteThrough": false,
+          "validateReference": true,
+          "validators": [],
+          "writable": true,
+          "writeAccess": "update",
+          "writeThrough": false
+        },
+        {
+          "accessTransforms": [],
+          "acl": [],
+          "aclOverride": false,
+          "auditable": false,
+          "autoCreate": false,
+          "cascadeDelete": false,
+          "creatable": false,
+          "defaultAcl": [],
+          "defaultAclOverride": false,
+          "defaultValue": [],
+          "dependencies": [],
+          "description": "The completed response for this event",
+          "expandable": true,
+          "grant": "none",
+          "history": false,
+          "include": [],
+          "indexed": true,
+          "inheritInstanceRoles": false,
+          "inheritPropertyAccess": false,
+          "label": "Task Response",
+          "name": "c_task_response",
+          "optional": false,
+          "pacl": [],
+          "paths": [],
+          "readAccess": "read",
+          "readable": true,
+          "referenceAccess": "none",
+          "removable": false,
+          "roles": [],
+          "sourceObject": "c_task_response",
+          "type": "Reference",
+          "unique": true,
+          "updateOnWriteThrough": false,
+          "validateReference": true,
+          "validators": [],
+          "writable": true,
+          "writeAccess": "update",
+          "writeThrough": false
+        },
+        {
+          "acl": [],
+          "aclOverride": false,
+          "array": false,
+          "auditable": false,
+          "canPull": true,
+          "canPush": true,
+          "cascadeDelete": false,
+          "creatable": false,
+          "defaultValue": [
+            {
+              "type": "expression",
+              "value": {
+                "$as": {
+                  "input": {
+                    "grant": "script"
+                  },
+                  "in": "$$ROOT.c_task_assignment.c_visit._id"
+                }
+              }
+            }
+          ],
+          "dependencies": [
+            "c_task_assignment"
+          ],
+          "history": false,
+          "include": [],
+          "indexed": false,
+          "label": "Visit ID",
+          "maxItems": 100,
+          "maxShift": false,
+          "minItems": 0,
+          "name": "c_visit_id",
+          "optional": false,
+          "readAccess": "read",
+          "readable": true,
+          "removable": false,
+          "type": "ObjectId",
+          "unique": false,
+          "uniqueValues": false,
+          "validators": [],
+          "writable": true,
+          "writeAccess": "update",
+          "writeOnCreate": true
+        },
+        {
+          "acl": [],
+          "aclOverride": false,
+          "array": false,
+          "auditable": false,
+          "canPull": true,
+          "canPush": true,
+          "creatable": false,
+          "defaultValue": [
+            {
+              "type": "expression",
+              "value": {
+                "$as": {
+                  "input": {
+                    "grant": "script"
+                  },
+                  "in": "$$ROOT.c_task_assignment.c_visit.c_name"
+                }
+              }
+            }
+          ],
+          "dependencies": [
+            "c_task_assignment"
+          ],
+          "history": false,
+          "include": [],
+          "indexed": false,
+          "label": "Visit Name",
+          "localization": {
+            "acl": [],
+            "aclOverride": false,
+            "enabled": false,
+            "fallback": true,
+            "fixed": "",
+            "namespace": "cortex",
+            "readAccess": "read",
+            "strict": true,
+            "valid": [],
+            "writeAccess": "update"
+          },
+          "lowercase": false,
+          "maxItems": 100,
+          "maxShift": false,
+          "minItems": 0,
+          "name": "c_visit_name",
+          "optional": false,
+          "readAccess": "read",
+          "readable": true,
+          "removable": false,
+          "trim": false,
+          "type": "String",
+          "unique": false,
+          "uniqueValues": false,
+          "uppercase": false,
+          "validators": [],
+          "writable": true,
+          "writeAccess": "update",
+          "writeOnCreate": true
+        }
+      ]
+    },
+    {
+      "label": "Scheduled Task Event",
+      "name": "c_scheduled_task_event",
+      "properties": [
+        {
+          "acl": [],
+          "aclOverride": false,
+          "array": false,
+          "auditable": false,
+          "canPull": true,
+          "canPush": true,
+          "creatable": false,
+          "defaultValue": [
+            {
+              "type": "static",
+              "value": false
+            }
+          ],
+          "dependencies": [],
+          "description": "Will the clients automatically start this task if no other task is available",
+          "history": false,
+          "include": [],
+          "indexed": false,
+          "label": "Auto Start",
+          "maxItems": 100,
+          "maxShift": false,
+          "minItems": 0,
+          "name": "c_auto_start",
+          "optional": false,
+          "readAccess": "read",
+          "readable": true,
+          "removable": false,
+          "type": "Boolean",
+          "unique": false,
+          "uniqueValues": false,
+          "validators": [],
+          "writable": true,
+          "writeAccess": "update",
+          "writeOnCreate": true
+        },
+        {
+          "acl": [],
+          "aclOverride": false,
+          "array": false,
+          "auditable": false,
+          "canPull": true,
+          "canPush": true,
+          "creatable": false,
+          "defaultValue": [
+            {
+              "type": "expression",
+              "value": {
+                "$as": {
+                  "input": {
+                    "grant": "script"
+                  },
+                  "in": "$$ROOT.c_task_assignment.c_visit.c_enforce_order"
+                }
+              }
+            }
+          ],
+          "dependencies": [
+            "c_task_assignment"
+          ],
+          "history": false,
+          "include": [],
+          "indexed": false,
+          "label": "Enforce Order",
+          "maxItems": 100,
+          "maxShift": false,
+          "minItems": 0,
+          "name": "c_enforce_order",
+          "optional": false,
+          "readAccess": "read",
+          "readable": true,
+          "removable": false,
+          "type": "Boolean",
+          "unique": false,
+          "uniqueValues": false,
+          "validators": [],
+          "writable": true,
+          "writeAccess": "update",
+          "writeOnCreate": true
+        },
+        {
+          "acl": [],
+          "aclOverride": false,
+          "array": false,
+          "auditable": false,
+          "canPull": true,
+          "canPush": true,
+          "creatable": false,
+          "defaultValue": [
+            {
+              "type": "expression",
+              "value": {
+                "$as": {
+                  "input": {
+                    "grant": "script"
+                  },
+                  "in": "$$ROOT.c_task.c_modality"
+                }
+              }
+            }
+          ],
+          "dependencies": [
+            "c_task"
+          ],
+          "history": false,
+          "include": [],
+          "indexed": false,
+          "label": "Modality",
+          "localization": {
+            "acl": [],
+            "aclOverride": false,
+            "enabled": false,
+            "fallback": true,
+            "fixed": "",
+            "namespace": "cortex",
+            "readAccess": "read",
+            "strict": true,
+            "valid": [],
+            "writeAccess": "update"
+          },
+          "lowercase": false,
+          "maxItems": 100,
+          "maxShift": false,
+          "minItems": 0,
+          "name": "c_modality",
+          "optional": false,
+          "readAccess": "read",
+          "readable": true,
+          "removable": false,
+          "trim": false,
+          "type": "String",
+          "unique": false,
+          "uniqueValues": false,
+          "uppercase": false,
+          "validators": [],
+          "writable": true,
+          "writeAccess": "update",
+          "writeOnCreate": true
+        },
+        {
+          "acl": [],
+          "aclOverride": false,
+          "array": false,
+          "auditable": false,
+          "canPull": true,
+          "canPush": true,
+          "creatable": false,
+          "defaultValue": [
+            {
+              "type": "expression",
+              "value": {
+                "$as": {
+                  "input": {
+                    "grant": "script"
+                  },
+                  "in": "$$ROOT.c_task.c_observation_type"
+                }
+              }
+            }
+          ],
+          "dependencies": [
+            "c_task"
+          ],
+          "history": false,
+          "include": [],
+          "indexed": false,
+          "label": "Observation Type",
+          "localization": {
+            "acl": [],
+            "aclOverride": false,
+            "enabled": false,
+            "fallback": true,
+            "fixed": "",
+            "namespace": "cortex",
+            "readAccess": "read",
+            "strict": true,
+            "valid": [],
+            "writeAccess": "update"
+          },
+          "lowercase": false,
+          "maxItems": 100,
+          "maxShift": false,
+          "minItems": 0,
+          "name": "c_observation_type",
+          "optional": false,
+          "readAccess": "read",
+          "readable": true,
+          "removable": false,
+          "trim": false,
+          "type": "String",
+          "unique": false,
+          "uniqueValues": false,
+          "uppercase": false,
+          "validators": [
+            {
+              "definition": {
+                "values": [
+                  {
+                    "value": "epro",
+                    "label": "Patient Reported"
+                  },
+                  {
+                    "value": "clinro",
+                    "label": "Clinic Reported"
+                  },
+                  {
+                    "value": "obsro",
+                    "label": "Observer Reported"
+                  }
+                ]
+              },
+              "name": "options"
+            }
+          ],
+          "writable": true,
+          "writeAccess": "update",
+          "writeOnCreate": true
+        },
+        {
+          "acl": [],
+          "aclOverride": false,
+          "array": false,
+          "auditable": false,
+          "canPull": true,
+          "canPush": true,
+          "creatable": false,
+          "defaultValue": [
+            {
+              "type": "expression",
+              "value": {
+                "$as": {
+                  "input": {
+                    "grant": "script"
+                  },
+                  "in": "$$ROOT.c_task.c_order"
+                }
+              }
+            }
+          ],
+          "dependencies": [
+            "c_task"
+          ],
+          "history": false,
+          "include": [],
+          "indexed": false,
+          "label": "Task Order",
+          "maxItems": 100,
+          "maxShift": false,
+          "minItems": 0,
+          "name": "c_order",
+          "optional": false,
+          "readAccess": "read",
+          "readable": true,
+          "removable": false,
+          "type": "Number",
+          "unique": false,
+          "uniqueValues": false,
+          "validators": [
+            {
+              "definition": {
+                "allowDecimal": false
+              },
+              "name": "number"
+            }
+          ],
+          "writable": true,
+          "writeAccess": "update",
+          "writeOnCreate": true
+        },
+        {
+          "acl": [],
+          "aclOverride": false,
+          "array": false,
+          "auditable": false,
+          "canPull": true,
+          "canPush": true,
+          "creatable": false,
+          "defaultValue": [],
+          "dependencies": [],
+          "description": "Property to more easily track the specific event, ad hoc & scheduled only",
+          "history": false,
+          "include": [],
+          "indexed": false,
+          "label": "Recurrence Number",
+          "maxItems": 100,
+          "maxShift": false,
+          "minItems": 0,
+          "name": "c_recurrence_number",
+          "optional": false,
+          "readAccess": "read",
+          "readable": true,
+          "removable": true,
+          "type": "Number",
+          "unique": false,
+          "uniqueValues": false,
+          "validators": [
+            {
+              "definition": {
+                "allowDecimal": false
+              },
+              "name": "number"
+            }
+          ],
+          "writable": true,
+          "writeAccess": "update",
+          "writeOnCreate": true
+        },
+        {
+          "accessTransforms": [],
+          "acl": [],
+          "aclOverride": false,
+          "auditable": false,
+          "autoCreate": false,
+          "cascadeDelete": false,
+          "creatable": false,
+          "defaultAcl": [],
+          "defaultAclOverride": false,
+          "defaultValue": [],
+          "dependencies": [],
+          "description": "Task to be performed in this event",
+          "expandable": true,
+          "grant": "none",
+          "history": false,
+          "include": [],
+          "indexed": false,
+          "inheritInstanceRoles": false,
+          "inheritPropertyAccess": false,
+          "label": "Task",
+          "name": "c_task",
+          "optional": false,
+          "pacl": [],
+          "paths": [],
+          "readAccess": "read",
+          "readable": true,
+          "referenceAccess": "none",
+          "removable": false,
+          "roles": [],
+          "sourceObject": "c_task",
+          "type": "Reference",
+          "unique": false,
+          "updateOnWriteThrough": false,
+          "validateReference": true,
+          "validators": [],
+          "writable": true,
+          "writeAccess": "update",
+          "writeThrough": false
+        },
+        {
+          "accessTransforms": [],
+          "acl": [],
+          "aclOverride": false,
+          "auditable": false,
+          "autoCreate": false,
+          "cascadeDelete": false,
+          "creatable": false,
+          "defaultAcl": [],
+          "defaultAclOverride": false,
+          "defaultValue": [],
+          "dependencies": [],
+          "description": "The assignment that manages the creation and some updates of this event",
+          "expandable": true,
+          "grant": "none",
+          "history": false,
+          "include": [],
+          "indexed": true,
+          "inheritInstanceRoles": false,
+          "inheritPropertyAccess": false,
+          "label": "Task Assignment",
+          "name": "c_task_assignment",
+          "optional": false,
+          "pacl": [],
+          "paths": [],
+          "readAccess": "read",
+          "readable": true,
+          "referenceAccess": "none",
+          "removable": false,
+          "roles": [],
+          "sourceObject": "c_task_assignment",
+          "type": "Reference",
+          "unique": false,
+          "updateOnWriteThrough": false,
+          "validateReference": true,
+          "validators": [],
+          "writable": true,
+          "writeAccess": "update",
+          "writeThrough": false
+        },
+        {
+          "accessTransforms": [],
+          "acl": [],
+          "aclOverride": false,
+          "auditable": false,
+          "autoCreate": false,
+          "cascadeDelete": false,
+          "creatable": false,
+          "defaultAcl": [],
+          "defaultAclOverride": false,
+          "defaultValue": [],
+          "dependencies": [],
+          "description": "The completed response for this event",
+          "expandable": true,
+          "grant": "none",
+          "history": false,
+          "include": [],
+          "indexed": true,
+          "inheritInstanceRoles": false,
+          "inheritPropertyAccess": false,
+          "label": "Task Response",
+          "name": "c_task_response",
+          "optional": false,
+          "pacl": [],
+          "paths": [],
+          "readAccess": "read",
+          "readable": true,
+          "referenceAccess": "none",
+          "removable": false,
+          "roles": [],
+          "sourceObject": "c_task_response",
+          "type": "Reference",
+          "unique": true,
+          "updateOnWriteThrough": false,
+          "validateReference": true,
+          "validators": [],
+          "writable": true,
+          "writeAccess": "update",
+          "writeThrough": false
+        },
+        {
+          "acl": [],
+          "aclOverride": false,
+          "array": false,
+          "auditable": false,
+          "canPull": true,
+          "canPush": true,
+          "cascadeDelete": false,
+          "creatable": false,
+          "defaultValue": [
+            {
+              "type": "expression",
+              "value": {
+                "$as": {
+                  "input": {
+                    "grant": "script"
+                  },
+                  "in": "$$ROOT.c_task_assignment.c_visit._id"
+                }
+              }
+            }
+          ],
+          "dependencies": [
+            "c_task_assignment"
+          ],
+          "history": false,
+          "include": [],
+          "indexed": false,
+          "label": "Visit ID",
+          "maxItems": 100,
+          "maxShift": false,
+          "minItems": 0,
+          "name": "c_visit_id",
+          "optional": false,
+          "readAccess": "read",
+          "readable": true,
+          "removable": false,
+          "type": "ObjectId",
+          "unique": false,
+          "uniqueValues": false,
+          "validators": [],
+          "writable": true,
+          "writeAccess": "update",
+          "writeOnCreate": true
+        },
+        {
+          "acl": [],
+          "aclOverride": false,
+          "array": false,
+          "auditable": false,
+          "canPull": true,
+          "canPush": true,
+          "creatable": false,
+          "defaultValue": [
+            {
+              "type": "expression",
+              "value": {
+                "$as": {
+                  "input": {
+                    "grant": "script"
+                  },
+                  "in": "$$ROOT.c_task_assignment.c_visit.c_name"
+                }
+              }
+            }
+          ],
+          "dependencies": [
+            "c_task_assignment"
+          ],
+          "history": false,
+          "include": [],
+          "indexed": false,
+          "label": "Visit Name",
+          "localization": {
+            "acl": [],
+            "aclOverride": false,
+            "enabled": false,
+            "fallback": true,
+            "fixed": "",
+            "namespace": "cortex",
+            "readAccess": "read",
+            "strict": true,
+            "valid": [],
+            "writeAccess": "update"
+          },
+          "lowercase": false,
+          "maxItems": 100,
+          "maxShift": false,
+          "minItems": 0,
+          "name": "c_visit_name",
+          "optional": false,
+          "readAccess": "read",
+          "readable": true,
+          "removable": false,
+          "trim": false,
+          "type": "String",
+          "unique": false,
+          "uniqueValues": false,
+          "uppercase": false,
+          "validators": [],
+          "writable": true,
+          "writeAccess": "update",
+          "writeOnCreate": true
+        }
+      ]
+    },
+    {
+      "label": "Televisit Event",
+      "name": "c_televisit_event",
+      "properties": [
+        {
+          "acl": [],
+          "aclOverride": false,
+          "array": false,
+          "auditable": false,
+          "canPull": true,
+          "canPush": true,
+          "creatable": false,
+          "defaultValue": [
+            {
+              "type": "static",
+              "value": false
+            }
+          ],
+          "dependencies": [],
+          "history": false,
+          "include": [],
+          "indexed": true,
+          "label": "Canceled",
+          "maxItems": 100,
+          "maxShift": false,
+          "minItems": 0,
+          "name": "c_canceled",
+          "optional": false,
+          "readAccess": "read",
+          "readable": true,
+          "removable": false,
+          "type": "Boolean",
+          "unique": false,
+          "uniqueValues": false,
+          "validators": [],
+          "writable": true,
+          "writeAccess": "update",
+          "writeOnCreate": true
+        },
+        {
+          "accessTransforms": [],
+          "acl": [],
+          "aclOverride": false,
+          "auditable": false,
+          "autoCreate": false,
+          "cascadeDelete": false,
+          "creatable": false,
+          "defaultAcl": [],
+          "defaultAclOverride": false,
+          "defaultValue": [],
+          "dependencies": [],
+          "expandable": false,
+          "grant": "none",
+          "history": false,
+          "include": [],
+          "indexed": true,
+          "inheritInstanceRoles": false,
+          "inheritPropertyAccess": false,
+          "label": "Group",
+          "name": "c_group",
+          "optional": false,
+          "pacl": [],
+          "paths": [],
+          "readAccess": "read",
+          "readable": true,
+          "referenceAccess": "none",
+          "removable": false,
+          "roles": [],
+          "sourceObject": "c_group",
+          "type": "Reference",
+          "unique": false,
+          "updateOnWriteThrough": false,
+          "validateReference": true,
+          "validators": [],
+          "writable": true,
+          "writeAccess": "update",
+          "writeThrough": false
+        },
+        {
+          "acl": [],
+          "aclOverride": false,
+          "array": false,
+          "auditable": false,
+          "canPull": true,
+          "canPush": true,
+          "creatable": false,
+          "defaultValue": [
+            {
+              "type": "expression",
+              "value": {
+                "$as": {
+                  "input": {
+                    "grant": "script"
+                  },
+                  "in": "$$ROOT.c_task.c_modality"
+                }
+              }
+            }
+          ],
+          "dependencies": [
+            "c_task"
+          ],
+          "history": false,
+          "include": [],
+          "indexed": false,
+          "label": "Modality",
+          "localization": {
+            "acl": [],
+            "aclOverride": false,
+            "enabled": false,
+            "fallback": true,
+            "fixed": "",
+            "namespace": "cortex",
+            "readAccess": "read",
+            "strict": true,
+            "valid": [],
+            "writeAccess": "update"
+          },
+          "lowercase": false,
+          "maxItems": 100,
+          "maxShift": false,
+          "minItems": 0,
+          "name": "c_modality",
+          "optional": false,
+          "readAccess": "read",
+          "readable": true,
+          "removable": false,
+          "trim": false,
+          "type": "String",
+          "unique": false,
+          "uniqueValues": false,
+          "uppercase": false,
+          "validators": [],
+          "writable": true,
+          "writeAccess": "update",
+          "writeOnCreate": true
+        },
+        {
+          "acl": [],
+          "aclOverride": false,
+          "array": false,
+          "auditable": false,
+          "canPull": true,
+          "canPush": true,
+          "creatable": false,
+          "defaultValue": [
+            {
+              "type": "expression",
+              "value": {
+                "$as": {
+                  "input": {
+                    "grant": "script"
+                  },
+                  "in": "$$ROOT.c_task.c_order"
+                }
+              }
+            }
+          ],
+          "dependencies": [
+            "c_task"
+          ],
+          "history": false,
+          "include": [],
+          "indexed": false,
+          "label": "Task Order",
+          "maxItems": 100,
+          "maxShift": false,
+          "minItems": 0,
+          "name": "c_order",
+          "optional": false,
+          "readAccess": "read",
+          "readable": true,
+          "removable": false,
+          "type": "Number",
+          "unique": false,
+          "uniqueValues": false,
+          "validators": [
+            {
+              "definition": {
+                "allowDecimal": false
+              },
+              "name": "number"
+            }
+          ],
+          "writable": true,
+          "writeAccess": "update",
+          "writeOnCreate": true
+        },
+        {
+          "acl": [],
+          "aclOverride": false,
+          "array": true,
+          "canPull": true,
+          "canPush": true,
+          "creatable": false,
+          "defaultValue": [],
+          "dependencies": [],
+          "include": [],
+          "label": "Reminder Type",
+          "maxItems": 5,
+          "maxShift": false,
+          "minItems": 0,
+          "name": "c_reminders",
+          "optional": false,
+          "properties": [
+            {
+              "acl": [],
+              "aclOverride": false,
+              "array": false,
+              "auditable": false,
+              "canPull": true,
+              "canPush": true,
+              "creatable": false,
+              "dateOnly": false,
+              "defaultValue": [],
+              "dependencies": [],
+              "history": false,
+              "include": [],
+              "indexed": true,
+              "label": "Date",
+              "maxItems": 100,
+              "maxShift": false,
+              "minItems": 0,
+              "name": "c_date",
+              "optional": false,
+              "readAccess": "read",
+              "readable": true,
+              "removable": false,
+              "type": "Date",
+              "unique": false,
+              "uniqueValues": false,
+              "validators": [
+                {
+                  "name": "required"
+                }
+              ],
+              "writable": true,
+              "writeAccess": "update",
+              "writeOnCreate": true
+            },
+            {
+              "acl": [],
+              "aclOverride": false,
+              "array": false,
+              "auditable": false,
+              "canPull": true,
+              "canPush": true,
+              "creatable": false,
+              "defaultValue": [],
+              "dependencies": [],
+              "history": false,
+              "include": [],
+              "indexed": false,
+              "label": "Reminder Type",
+              "localization": {
+                "acl": [],
+                "aclOverride": false,
+                "enabled": false,
+                "fallback": true,
+                "fixed": "",
+                "namespace": "axon",
+                "readAccess": "read",
+                "strict": true,
+                "valid": [],
+                "writeAccess": "update"
+              },
+              "lowercase": false,
+              "maxItems": 100,
+              "maxShift": false,
+              "minItems": 0,
+              "name": "c_reminder_type",
+              "optional": false,
+              "readAccess": "read",
+              "readable": true,
+              "removable": false,
+              "trim": false,
+              "type": "String",
+              "unique": false,
+              "uniqueValues": false,
+              "uppercase": false,
+              "validators": [
+                {
+                  "definition": {
+                    "min": 0,
+                    "max": 64
+                  },
+                  "name": "string"
+                }
+              ],
+              "writable": true,
+              "writeAccess": "update",
+              "writeOnCreate": true
+            }
+          ],
+          "readAccess": "read",
+          "readable": true,
+          "removable": false,
+          "type": "Document",
+          "uniqueKey": "",
+          "validators": [],
+          "writable": true,
+          "writeAccess": "update",
+          "writeOnCreate": true
+        },
+        {
+          "accessTransforms": [],
+          "acl": [],
+          "aclOverride": false,
+          "auditable": false,
+          "autoCreate": false,
+          "cascadeDelete": false,
+          "creatable": false,
+          "defaultAcl": [],
+          "defaultAclOverride": false,
+          "defaultValue": [],
+          "dependencies": [],
+          "expandable": false,
+          "grant": "none",
+          "history": false,
+          "include": [],
+          "indexed": true,
+          "inheritInstanceRoles": false,
+          "inheritPropertyAccess": false,
+          "label": "Signed Document",
+          "name": "ec__signed_document",
+          "optional": false,
+          "pacl": [],
+          "paths": [],
+          "readAccess": "read",
+          "readable": true,
+          "referenceAccess": "none",
+          "removable": false,
+          "roles": [],
+          "sourceObject": "ec__signed_document",
+          "type": "Reference",
+          "unique": false,
+          "updateOnWriteThrough": false,
+          "validateReference": true,
+          "validators": [],
+          "writable": true,
+          "writeAccess": "update",
+          "writeThrough": false
+        }
+      ]
+    },
+    {
+      "label": "Visit Event",
+      "name": "c_visit_event",
+      "properties": [
+        {
+          "acl": [],
+          "aclOverride": false,
+          "array": false,
+          "auditable": false,
+          "canPull": true,
+          "canPush": true,
+          "creatable": false,
+          "defaultValue": [
+            {
+              "type": "static",
+              "value": false
+            }
+          ],
+          "dependencies": [],
+          "history": true,
+          "include": [],
+          "indexed": true,
+          "label": "Active",
+          "maxItems": 100,
+          "maxShift": false,
+          "minItems": 0,
+          "name": "c_active",
+          "optional": false,
+          "readAccess": "read",
+          "readable": true,
+          "removable": false,
+          "type": "Boolean",
+          "unique": false,
+          "uniqueValues": false,
+          "validators": [],
+          "writable": true,
+          "writeAccess": "update",
+          "writeOnCreate": true
+        },
+        {
+          "acl": [],
+          "aclOverride": false,
+          "array": false,
+          "auditable": false,
+          "canPull": true,
+          "canPush": true,
+          "creatable": false,
+          "dateOnly": false,
+          "defaultValue": [],
+          "dependencies": [],
+          "history": true,
+          "include": [],
+          "indexed": false,
+          "label": "Ended",
+          "maxItems": 100,
+          "maxShift": false,
+          "minItems": 0,
+          "name": "c_ended",
+          "optional": false,
+          "readAccess": "read",
+          "readable": true,
+          "removable": false,
+          "type": "Date",
+          "unique": false,
+          "uniqueValues": false,
+          "validators": [],
+          "writable": true,
+          "writeAccess": "update",
+          "writeOnCreate": true
+        },
+        {
+          "acl": [],
+          "aclOverride": false,
+          "array": false,
+          "auditable": false,
+          "canPull": true,
+          "canPush": true,
+          "creatable": false,
+          "defaultValue": [
+            {
+              "type": "expression",
+              "value": {
+                "$as": {
+                  "input": {
+                    "grant": "script"
+                  },
+                  "in": "$$ROOT.c_task.c_modality"
+                }
+              }
+            }
+          ],
+          "dependencies": [
+            "c_task"
+          ],
+          "history": true,
+          "include": [],
+          "indexed": false,
+          "label": "Modality",
+          "localization": {
+            "acl": [],
+            "aclOverride": false,
+            "enabled": false,
+            "fallback": true,
+            "fixed": "",
+            "namespace": "cortex",
+            "readAccess": "read",
+            "strict": true,
+            "valid": [],
+            "writeAccess": "update"
+          },
+          "lowercase": false,
+          "maxItems": 100,
+          "maxShift": false,
+          "minItems": 0,
+          "name": "c_modality",
+          "optional": false,
+          "readAccess": "read",
+          "readable": true,
+          "removable": false,
+          "trim": false,
+          "type": "String",
+          "unique": false,
+          "uniqueValues": false,
+          "uppercase": false,
+          "validators": [],
+          "writable": true,
+          "writeAccess": "update",
+          "writeOnCreate": true
+        },
+        {
+          "acl": [],
+          "aclOverride": false,
+          "array": false,
+          "auditable": false,
+          "canPull": true,
+          "canPush": true,
+          "creatable": false,
+          "defaultValue": [
+            {
+              "type": "expression",
+              "value": {
+                "$as": {
+                  "input": {
+                    "grant": "script"
+                  },
+                  "in": "$$ROOT.c_task.c_order"
+                }
+              }
+            }
+          ],
+          "dependencies": [
+            "c_task"
+          ],
+          "history": true,
+          "include": [],
+          "indexed": false,
+          "label": "Task Order",
+          "maxItems": 100,
+          "maxShift": false,
+          "minItems": 0,
+          "name": "c_order",
+          "optional": false,
+          "readAccess": "read",
+          "readable": true,
+          "removable": false,
+          "type": "Number",
+          "unique": false,
+          "uniqueValues": false,
+          "validators": [
+            {
+              "definition": {
+                "allowDecimal": false
+              },
+              "name": "number"
+            }
+          ],
+          "writable": true,
+          "writeAccess": "update",
+          "writeOnCreate": true
+        },
+        {
+          "accessTransforms": [],
+          "acl": [],
+          "aclOverride": false,
+          "auditable": false,
+          "autoCreate": false,
+          "cascadeDelete": false,
+          "creatable": false,
+          "defaultAcl": [],
+          "defaultAclOverride": false,
+          "defaultValue": [],
+          "dependencies": [],
+          "expandable": true,
+          "grant": "none",
+          "history": true,
+          "include": [],
+          "indexed": true,
+          "inheritInstanceRoles": true,
+          "inheritPropertyAccess": false,
+          "label": "Schedule Visit",
+          "name": "c_schedule_visit",
+          "optional": false,
+          "pacl": [],
+          "paths": [],
+          "readAccess": "read",
+          "readable": true,
+          "referenceAccess": "none",
+          "removable": true,
+          "roles": [],
+          "sourceObject": "c_visit",
+          "type": "Reference",
+          "unique": false,
+          "updateOnWriteThrough": false,
+          "validateReference": true,
+          "validators": [],
+          "writable": true,
+          "writeAccess": "update",
+          "writeThrough": false
+        },
+        {
+          "acl": [],
+          "aclOverride": false,
+          "array": false,
+          "auditable": false,
+          "canPull": true,
+          "canPush": true,
+          "creatable": false,
+          "defaultValue": [],
+          "dependencies": [],
+          "history": true,
+          "include": [],
+          "indexed": false,
+          "label": "Skipped",
+          "maxItems": 100,
+          "maxShift": false,
+          "minItems": 0,
+          "name": "c_skipped",
+          "optional": false,
+          "readAccess": "read",
+          "readable": true,
+          "removable": true,
+          "type": "Boolean",
+          "unique": false,
+          "uniqueValues": false,
+          "validators": [],
+          "writable": true,
+          "writeAccess": "update",
+          "writeOnCreate": true
+        },
+        {
+          "acl": [],
+          "aclOverride": false,
+          "array": false,
+          "auditable": false,
+          "canPull": true,
+          "canPush": true,
+          "creatable": false,
+          "dateOnly": false,
+          "defaultValue": [],
+          "dependencies": [],
+          "history": true,
+          "include": [],
+          "indexed": false,
+          "label": "Skipped Date",
+          "maxItems": 100,
+          "maxShift": false,
+          "minItems": 0,
+          "name": "c_skipped_date",
+          "optional": false,
+          "readAccess": "read",
+          "readable": true,
+          "removable": false,
+          "type": "Date",
+          "unique": false,
+          "uniqueValues": false,
+          "validators": [],
+          "writable": true,
+          "writeAccess": "update",
+          "writeOnCreate": true
+        },
+        {
+          "acl": [],
+          "aclOverride": false,
+          "array": false,
+          "auditable": false,
+          "canPull": true,
+          "canPush": true,
+          "creatable": false,
+          "defaultValue": [],
+          "dependencies": [],
+          "history": true,
+          "include": [],
+          "indexed": false,
+          "label": "Skipped Reason",
+          "localization": {
+            "acl": [],
+            "aclOverride": false,
+            "enabled": false,
+            "fallback": true,
+            "fixed": "",
+            "namespace": "cortex",
+            "readAccess": "read",
+            "strict": true,
+            "valid": [],
+            "writeAccess": "update"
+          },
+          "lowercase": false,
+          "maxItems": 100,
+          "maxShift": false,
+          "minItems": 0,
+          "name": "c_skipped_reason",
+          "optional": false,
+          "readAccess": "read",
+          "readable": true,
+          "removable": true,
+          "trim": false,
+          "type": "String",
+          "unique": false,
+          "uniqueValues": false,
+          "uppercase": false,
+          "validators": [],
+          "writable": true,
+          "writeAccess": "update",
+          "writeOnCreate": true
+        },
+        {
+          "acl": [],
+          "aclOverride": false,
+          "array": false,
+          "auditable": false,
+          "canPull": true,
+          "canPush": true,
+          "creatable": false,
+          "dateOnly": false,
+          "defaultValue": [],
+          "dependencies": [],
+          "history": true,
+          "include": [],
+          "indexed": false,
+          "label": "Started",
+          "maxItems": 100,
+          "maxShift": false,
+          "minItems": 0,
+          "name": "c_started",
+          "optional": false,
+          "readAccess": "read",
+          "readable": true,
+          "removable": false,
+          "type": "Date",
+          "unique": false,
+          "uniqueValues": false,
+          "validators": [],
+          "writable": true,
+          "writeAccess": "update",
+          "writeOnCreate": true
+        },
+        {
+          "acl": [],
+          "aclOverride": false,
+          "array": true,
+          "auditable": false,
+          "canPull": true,
+          "canPush": true,
+          "cascadeDelete": false,
+          "creatable": false,
+          "defaultValue": [],
+          "dependencies": [],
+          "history": true,
+          "include": [],
+          "indexed": false,
+          "label": "Task Responses",
+          "maxItems": 100,
+          "maxShift": false,
+          "minItems": 0,
+          "name": "c_task_responses",
+          "optional": false,
+          "readAccess": "read",
+          "readable": true,
+          "removable": true,
+          "sourceObject": "c_task_response",
+          "type": "ObjectId",
+          "unique": false,
+          "uniqueValues": false,
+          "validators": [],
+          "writable": true,
+          "writeAccess": "update",
+          "writeOnCreate": true
+        },
+        {
+          "acl": [],
+          "aclOverride": false,
+          "array": true,
+          "auditable": false,
+          "canPull": true,
+          "canPush": true,
+          "cascadeDelete": false,
+          "creatable": false,
+          "defaultValue": [],
+          "dependencies": [],
+          "history": true,
+          "include": [],
+          "indexed": false,
+          "label": "Televisit Events",
+          "maxItems": 100,
+          "maxShift": false,
+          "minItems": 0,
+          "name": "c_televisit_events",
+          "optional": false,
+          "readAccess": "read",
+          "readable": true,
+          "removable": true,
+          "sourceObject": "c_event",
+          "type": "ObjectId",
+          "unique": false,
+          "uniqueValues": false,
+          "validators": [],
+          "writable": true,
+          "writeAccess": "update",
+          "writeOnCreate": true
+        }
+      ]
+    }
+  ],
+  "properties": [
+    {
+      "accessTransforms": [],
+      "acl": [],
+      "aclOverride": false,
+      "auditable": false,
+      "autoCreate": false,
+      "cascadeDelete": false,
+      "creatable": false,
+      "defaultAcl": [],
+      "defaultAclOverride": false,
+      "defaultValue": [],
+      "dependencies": [],
+      "expandable": true,
+      "grant": "read",
+      "history": true,
+      "include": [],
+      "indexed": true,
+      "inheritInstanceRoles": false,
+      "inheritPropertyAccess": false,
+      "label": "Caregiver Relationship",
+      "name": "c_caregiver_relationship",
+      "optional": false,
+      "pacl": [],
+      "paths": [],
+      "readAccess": "read",
+      "readable": true,
+      "referenceAccess": "none",
+      "removable": false,
+      "roles": [],
+      "sourceObject": "c_caregiver_relationship",
+      "type": "Reference",
+      "unique": false,
+      "updateOnWriteThrough": false,
+      "validateReference": true,
+      "validators": [],
+      "writable": true,
+      "writeAccess": "update",
+      "writeThrough": false
+    },
+    {
+      "acl": [],
+      "aclOverride": false,
+      "array": false,
+      "auditable": false,
+      "canPull": true,
+      "canPush": true,
+      "creatable": false,
+      "defaultValue": [
+        {
+          "type": "static",
+          "value": false
+        }
+      ],
+      "dependencies": [],
+      "description": "Is this event complete",
+      "history": true,
+      "include": [],
+      "indexed": true,
+      "label": "Completed",
+      "maxItems": 100,
+      "maxShift": false,
+      "minItems": 0,
+      "name": "c_completed",
+      "optional": false,
+      "readAccess": "read",
+      "readable": true,
+      "removable": false,
+      "type": "Boolean",
+      "unique": false,
+      "uniqueValues": false,
+      "validators": [],
+      "writable": true,
+      "writeAccess": "update",
+      "writeOnCreate": true
+    },
+    {
+      "acl": [],
+      "aclOverride": false,
+      "array": false,
+      "auditable": false,
+      "canPull": true,
+      "canPush": true,
+      "creatable": false,
+      "dateOnly": false,
+      "defaultValue": [],
+      "dependencies": [],
+      "history": false,
+      "include": [],
+      "indexed": true,
+      "label": "End",
+      "maxItems": 100,
+      "maxShift": false,
+      "minItems": 0,
+      "name": "c_end",
+      "optional": false,
+      "readAccess": "read",
+      "readable": true,
+      "removable": false,
+      "type": "Date",
+      "unique": false,
+      "uniqueValues": false,
+      "validators": [],
+      "writable": true,
+      "writeAccess": "update",
+      "writeOnCreate": true
+    },
+    {
+      "acl": [],
+      "aclOverride": false,
+      "array": false,
+      "auditable": false,
+      "canPull": true,
+      "canPush": true,
+      "creatable": false,
+      "dateOnly": false,
+      "defaultValue": [],
+      "dependencies": [],
+      "history": false,
+      "include": [],
+      "indexed": false,
+      "label": "End Wallclock",
+      "maxItems": 100,
+      "maxShift": false,
+      "minItems": 0,
+      "name": "c_end_wallclock",
+      "optional": false,
+      "readAccess": "read",
+      "readable": true,
+      "removable": false,
+      "type": "Date",
+      "unique": false,
+      "uniqueValues": false,
+      "validators": [],
+      "writable": true,
+      "writeAccess": "update",
+      "writeOnCreate": true
+    },
+    {
+      "acl": [],
+      "aclOverride": false,
+      "array": false,
+      "auditable": false,
+      "canPull": true,
+      "canPush": true,
+      "creatable": false,
+      "defaultValue": [],
+      "dependencies": [],
+      "description": "Hash of event",
+      "history": false,
+      "include": [],
+      "indexed": true,
+      "label": "Event Hash",
+      "localization": {
+        "acl": [],
+        "aclOverride": false,
+        "enabled": false,
+        "fallback": true,
+        "fixed": "",
+        "namespace": "cortex",
+        "readAccess": "read",
+        "strict": true,
+        "valid": [],
+        "writeAccess": "update"
+      },
+      "lowercase": false,
+      "maxItems": 100,
+      "maxShift": false,
+      "minItems": 0,
+      "name": "c_hash",
+      "optional": false,
+      "readAccess": "read",
+      "readable": true,
+      "removable": false,
+      "trim": false,
+      "type": "String",
+      "unique": true,
+      "uniqueValues": false,
+      "uppercase": false,
+      "validators": [],
+      "writable": true,
+      "writeAccess": "update",
+      "writeOnCreate": true
+    },
+    {
+      "acl": [],
+      "aclOverride": false,
+      "array": false,
+      "auditable": false,
+      "canPull": true,
+      "canPush": true,
+      "creatable": false,
+      "dateOnly": false,
+      "defaultValue": [
+        {
+          "type": "env",
+          "value": "now"
+        }
+      ],
+      "dependencies": [],
+      "description": "The time when the list was last regenerated",
+      "history": false,
+      "include": [],
+      "indexed": false,
+      "label": "Last Updated",
+      "maxItems": 100,
+      "maxShift": false,
+      "minItems": 0,
+      "name": "c_last_updated",
+      "optional": false,
+      "readAccess": "read",
+      "readable": true,
+      "removable": false,
+      "type": "Date",
+      "unique": false,
+      "uniqueValues": false,
+      "validators": [],
+      "writable": true,
+      "writeAccess": "update",
+      "writeOnCreate": true
+    },
+    {
+      "acl": [],
+      "aclOverride": false,
+      "array": false,
+      "auditable": false,
+      "canPull": true,
+      "canPush": true,
+      "creatable": false,
+      "defaultValue": [
+        {
+          "type": "static",
+          "value": false
+        }
+      ],
+      "dependencies": [],
+      "description": "Is this event missed",
+      "history": true,
+      "include": [],
+      "indexed": true,
+      "label": "Missed",
+      "maxItems": 100,
+      "maxShift": false,
+      "minItems": 0,
+      "name": "c_missed",
+      "optional": false,
+      "readAccess": "read",
+      "readable": true,
+      "removable": false,
+      "type": "Boolean",
+      "unique": false,
+      "uniqueValues": false,
+      "validators": [],
+      "writable": true,
+      "writeAccess": "update",
+      "writeOnCreate": true
+    },
+    {
+      "acl": [],
+      "aclOverride": false,
+      "array": false,
+      "auditable": false,
+      "canPull": true,
+      "canPush": true,
+      "creatable": false,
+      "dateOnly": false,
+      "defaultValue": [],
+      "dependencies": [],
+      "description": "The datetime when the event was missed",
+      "history": true,
+      "include": [],
+      "indexed": false,
+      "label": "Missed Time",
+      "maxItems": 100,
+      "maxShift": false,
+      "minItems": 0,
+      "name": "c_missed_time",
+      "optional": false,
+      "readAccess": "read",
+      "readable": true,
+      "removable": false,
+      "type": "Date",
+      "unique": false,
+      "uniqueValues": false,
+      "validators": [],
+      "writable": true,
+      "writeAccess": "update",
+      "writeOnCreate": true
+    },
+    {
+      "accessTransforms": [],
+      "acl": [],
+      "aclOverride": false,
+      "auditable": false,
+      "autoCreate": false,
+      "cascadeDelete": false,
+      "creatable": false,
+      "defaultAcl": [],
+      "defaultAclOverride": false,
+      "defaultValue": [],
+      "dependencies": [],
+      "expandable": true,
+      "grant": "read",
+      "history": true,
+      "include": [],
+      "indexed": true,
+      "inheritInstanceRoles": false,
+      "inheritPropertyAccess": false,
+      "label": "Observed Participant",
+      "name": "c_observed_participant",
+      "optional": false,
+      "pacl": [],
+      "paths": [],
+      "readAccess": "read",
+      "readable": true,
+      "referenceAccess": "none",
+      "removable": false,
+      "roles": [],
+      "sourceObject": "c_public_user",
+      "type": "Reference",
+      "unique": false,
+      "updateOnWriteThrough": false,
+      "validateReference": true,
+      "validators": [],
+      "writable": true,
+      "writeAccess": "update",
+      "writeThrough": false
+    },
+    {
+      "accessTransforms": [],
+      "acl": [],
+      "aclOverride": false,
+      "auditable": false,
+      "autoCreate": false,
+      "cascadeDelete": false,
+      "creatable": false,
+      "defaultAcl": [],
+      "defaultAclOverride": false,
+      "defaultValue": [],
+      "dependencies": [],
+      "expandable": true,
+      "grant": "read",
+      "history": true,
+      "include": [],
+      "indexed": true,
+      "inheritInstanceRoles": false,
+      "inheritPropertyAccess": false,
+      "label": "Observer",
+      "name": "c_observer",
+      "optional": false,
+      "pacl": [],
+      "paths": [],
+      "readAccess": "read",
+      "readable": true,
+      "referenceAccess": "none",
+      "removable": false,
+      "roles": [],
+      "sourceObject": "c_public_user",
+      "type": "Reference",
+      "unique": false,
+      "updateOnWriteThrough": false,
+      "validateReference": true,
+      "validators": [],
+      "writable": true,
+      "writeAccess": "update",
+      "writeThrough": false
+    },
+    {
+      "accessTransforms": [],
+      "acl": [],
+      "aclOverride": false,
+      "auditable": false,
+      "autoCreate": false,
+      "cascadeDelete": false,
+      "creatable": false,
+      "defaultAcl": [],
+      "defaultAclOverride": false,
+      "defaultValue": [],
+      "dependencies": [],
+      "expandable": true,
+      "grant": "none",
+      "history": false,
+      "include": [],
+      "indexed": true,
+      "inheritInstanceRoles": true,
+      "inheritPropertyAccess": true,
+      "label": "Participant",
+      "name": "c_public_user",
+      "optional": false,
+      "pacl": [],
+      "paths": [],
+      "readAccess": "read",
+      "readable": true,
+      "referenceAccess": "none",
+      "removable": false,
+      "roles": [],
+      "sourceObject": "c_public_user",
+      "type": "Reference",
+      "unique": false,
+      "updateOnWriteThrough": false,
+      "validateReference": true,
+      "validators": [],
+      "writable": true,
+      "writeAccess": "update",
+      "writeThrough": false
+    },
+    {
+      "acl": [],
+      "aclOverride": false,
+      "array": false,
+      "auditable": false,
+      "canPull": true,
+      "canPush": true,
+      "creatable": false,
+      "dateOnly": false,
+      "defaultValue": [],
+      "dependencies": [],
+      "history": false,
+      "include": [],
+      "indexed": true,
+      "label": "Start",
+      "maxItems": 100,
+      "maxShift": false,
+      "minItems": 0,
+      "name": "c_start",
+      "optional": false,
+      "readAccess": "read",
+      "readable": true,
+      "removable": false,
+      "type": "Date",
+      "unique": false,
+      "uniqueValues": false,
+      "validators": [],
+      "writable": true,
+      "writeAccess": "update",
+      "writeOnCreate": true
+    },
+    {
+      "acl": [],
+      "aclOverride": false,
+      "array": false,
+      "auditable": false,
+      "canPull": true,
+      "canPush": true,
+      "creatable": false,
+      "dateOnly": false,
+      "defaultValue": [],
+      "dependencies": [],
+      "history": false,
+      "include": [],
+      "indexed": false,
+      "label": "Start Wallclock",
+      "maxItems": 100,
+      "maxShift": false,
+      "minItems": 0,
+      "name": "c_start_wallclock",
+      "optional": false,
+      "readAccess": "read",
+      "readable": true,
+      "removable": false,
+      "type": "Date",
+      "unique": false,
+      "uniqueValues": false,
+      "validators": [],
+      "writable": true,
+      "writeAccess": "update",
+      "writeOnCreate": true
+    },
+    {
+      "acl": [],
+      "aclOverride": false,
+      "array": false,
+      "auditable": false,
+      "canPull": true,
+      "canPush": true,
+      "creatable": false,
+      "defaultValue": [],
+      "dependencies": [],
+      "history": false,
+      "include": [],
+      "indexed": false,
+      "label": "Timezone",
+      "localization": {
+        "acl": [],
+        "aclOverride": false,
+        "enabled": false,
+        "fallback": true,
+        "fixed": "",
+        "namespace": "econsent",
+        "readAccess": "read",
+        "strict": true,
+        "valid": [],
+        "writeAccess": "update"
+      },
+      "lowercase": false,
+      "maxItems": 100,
+      "maxShift": false,
+      "minItems": 0,
+      "name": "c_timezone",
+      "optional": false,
+      "readAccess": "read",
+      "readable": true,
+      "removable": false,
+      "trim": false,
+      "type": "String",
+      "unique": false,
+      "uniqueValues": false,
+      "uppercase": false,
+      "validators": [
+        {
+          "definition": {
+            "min": 0,
+            "max": 512
+          },
+          "name": "string"
+        }
+      ],
+      "writable": true,
+      "writeAccess": "update",
+      "writeOnCreate": true
+    },
+    {
+      "acl": [],
+      "aclOverride": false,
+      "array": false,
+      "auditable": false,
+      "canPull": true,
+      "canPush": true,
+      "creatable": false,
+      "defaultValue": [],
+      "dependencies": [],
+      "history": false,
+      "include": [],
+      "indexed": false,
+      "label": "Title",
+      "localization": {
+        "acl": [],
+        "aclOverride": false,
+        "enabled": false,
+        "fallback": true,
+        "fixed": "",
+        "namespace": "econsent",
+        "readAccess": "read",
+        "strict": true,
+        "valid": [],
+        "writeAccess": "update"
+      },
+      "lowercase": false,
+      "maxItems": 100,
+      "maxShift": false,
+      "minItems": 0,
+      "name": "c_title",
+      "optional": false,
+      "readAccess": "read",
+      "readable": true,
+      "removable": false,
+      "trim": false,
+      "type": "String",
+      "unique": false,
+      "uniqueValues": false,
+      "uppercase": false,
+      "validators": [
+        {
+          "definition": {
+            "min": 0,
+            "max": 512
+          },
+          "name": "string"
+        }
+      ],
+      "writable": true,
+      "writeAccess": "update",
+      "writeOnCreate": true
+    }
+  ],
+  "reporting": {
+    "enabled": false
+  },
+  "shareAcl": [],
+  "shareChain": [
+    "share",
+    "read",
+    "connected"
+  ],
+  "uniqueKey": "",
+  "useBuildVersion": false,
+  "useBundles": true,
+  "validateOwner": true
+}

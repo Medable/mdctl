@@ -1,0 +1,21 @@
+{
+  "description": "Changed mobile number",
+  "label": "Mobile change",
+  "localizations": [
+    {
+      "locale": [
+        "en_US"
+      ],
+      "content": [
+        {
+          "data": "/env/templates/tpl/template.sms.mobile-change-notification.en_US.message.txt",
+          "name": "message"
+        }
+      ]
+    }
+  ],
+  "name": "mobile-change-notification",
+  "object": "template",
+  "partial": false,
+  "type": "sms"
+}

@@ -1,0 +1,344 @@
+{
+  "aliases": [],
+  "assets": [],
+  "data": {
+    "accountSwitcher": {
+      "caregiver": "Caregiver {{count}}",
+      "confirmation": {
+        "actions": {
+          "cancel": "Cancel",
+          "confirm": "Switch"
+        },
+        "content": "You’ll be signed out of your account.",
+        "title": "Switch to a different user?"
+      },
+      "invited": "Invited",
+      "needHelp": "Need help?",
+      "participant": "Participant",
+      "yourStudy": "Your study"
+    },
+    "econsent": {
+      "document": {
+        "completion": {
+          "actions": {
+            "done": "Done"
+          },
+          "instructions": {
+            "download": "Click below to download the study app on your mobile phone:",
+            "studyCode": "When prompted by the app, please enter the study code below:"
+          }
+        },
+        "delayedSigning": {
+          "readOnly": {
+            "message": "Signing of this document is disabled until a study team member unlocks it.",
+            "title": "Read-only"
+          }
+        },
+        "instruction": {
+          "actions": {
+            "cancel": "Cancel"
+          }
+        },
+        "labels": {
+          "percentageRead": "Read"
+        },
+        "signature": {
+          "actions": {
+            "cancel": "Cancel",
+            "view": "Download"
+          }
+        }
+      },
+      "messages": {
+        "invalidToken": "The invitation token is invalid."
+      }
+    },
+    "error": {
+      "userNotEnrolled": {
+        "dialog": {
+          "actions": {
+            "ok": "OK"
+          },
+          "message": "You cannot access as your user account is not enrolled in this study.",
+          "title": "User not enrolled"
+        }
+      }
+    },
+    "forgotPassword": {
+      "instructions": {
+        "text": "If an email was used to create your account, enter it below to receive a reset link."
+      },
+      "support": {
+        "header": "If you have a username instead, or the reset link isn’t working, use the following support information."
+      },
+      "title": "Forgot password"
+    },
+    "home": {
+      "actions": {
+        "login": "Sign In",
+        "review": "Review Documents"
+      },
+      "event": {
+        "actions": {
+          "completeTask": "Complete task",
+          "loadMore": "Load more",
+          "loading": "Loading...",
+          "ok": "OK",
+          "start": "Start",
+          "startActivity": "Start activity",
+          "startTask": "Start task"
+        },
+        "headings": {
+          "asNeeded": "As needed",
+          "completed": "Completed",
+          "dateAndDateName": "<0>{{dateName}}</0> <1>{{date}}</1>",
+          "midnight": "Midnight",
+          "noon": "Noon"
+        },
+        "messages": {
+          "activityCompleted": "Activity is already completed",
+          "activityNoLongerAvailable": "This activity is no longer available.",
+          "activityStarted": "Activity is already started by another user",
+          "noActivitiesToday": "No activities today",
+          "noTasksToday": "No tasks today",
+          "taskNoLongerAvailable": "This task is no longer available."
+        }
+      },
+      "headings": {
+        "asNeeded": "AS NEEDED",
+        "completed": "Completed",
+        "label": "Tasks",
+        "month": "THIS MONTH",
+        "today": "TODAY",
+        "week": "THIS WEEK"
+      },
+      "messages": {
+        "AM": "AM",
+        "PM": "PM",
+        "allTasksCompleted": "You have completed all open tasks. Please sign in to view tasks assigned to you.",
+        "allTasksCompleted_isAuthenticated": "You have completed all open tasks. When new tasks are available, you'll find them here.",
+        "and": " and ",
+        "availableReviewDocuments": "Your schedule will become available once all parties sign the pending document(s)",
+        "availableTasks": "Select an available task",
+        "completedTasksHeader": "You’ve completed all your {{headerText}} tasks. Congratulations 🎉",
+        "daysRemaining": "{{count}} Day Remaining",
+        "daysRemaining_plural": "{{count}} Days Remaining",
+        "days_one": "{{count}} day",
+        "days_other": "{{count}} days",
+        "hours_few": "{{count}} hours",
+        "hours_many": "{{count}} hours",
+        "hours_one": "{{count}} hour",
+        "hours_other": "{{count}} hours",
+        "hours_two": "{{count}} hours",
+        "hours_zero": "{{count}} hours",
+        "minutes_few": "{{count}} minutes",
+        "minutes_many": "{{count}} minutes",
+        "minutes_one": "{{count}} minute",
+        "minutes_other": "{{count}} minutes",
+        "minutes_two": "{{count}} minutes",
+        "minutes_zero": "{{count}} minutes",
+        "missedTasks": "Missed",
+        "remaining": "$t(home.messages.hours, {\"count\": {{hours}} }) $t(home.messages.minutes, {\"count\": {{minutes}} }) remaining",
+        "remaining_hours": "$t(home.messages.hours, {\"count\": {{hours}} }) remaining",
+        "remaining_minutes": "$t(home.messages.minutes, {\"count\": {{minutes}} }) remaining"
+      }
+    },
+    "identity": {
+      "locale": "en_US",
+      "version": "1.3.1"
+    },
+    "inviteVerification": {
+      "actions": {
+        "back": "I don't have an invite",
+        "cancel": "Cancel",
+        "forgotPassword": "Forgot password",
+        "forgotUsername": "Forgot username",
+        "goBack": "Go back",
+        "resendInviteCode": "Forgot?",
+        "signIn": "Sign In",
+        "submit": "Submit"
+      },
+      "header": "Create your account",
+      "instructions": "Please enter the invite code you've received from your site to continue.",
+      "labels": {
+        "email": "Email",
+        "emailOrUsername": "Email or username",
+        "invitecode": "Invite Code",
+        "mobile": "Mobile",
+        "username": "Username"
+      },
+      "message": "The invitation code is no longer valid, please sign in or request a new invite code.",
+      "placeholders": {
+        "email": "name@example.com",
+        "invitecode": "000000",
+        "mobile": "mobile",
+        "username": "username"
+      },
+      "title": "Something went wrong"
+    },
+    "login": {
+      "actions": {
+        "login": "Sign In",
+        "register": "I don't have an account"
+      },
+      "instructions": {
+        "login": "Welcome, sign in to {{orgName}}"
+      }
+    },
+    "navigation": {
+      "activities": "Activities",
+      "login": "Sign In",
+      "profile": "Profile",
+      "resources": "Resources",
+      "schedule": "Schedule",
+      "settings": "Settings",
+      "signOut": "Sign Out",
+      "tasks": "Schedule"
+    },
+    "profile": {
+      "documents": {
+        "heading": "Documents",
+        "title": "Consent Documents"
+      },
+      "signedConsent": {
+        "status": "Completed",
+        "table": {
+          "consentLabel": "View Consent",
+          "headings": {
+            "date": "Date",
+            "name": "Name",
+            "status": "Status"
+          }
+        },
+        "title": "Signed Consents"
+      },
+      "studies": {
+        "actions": {
+          "leave": "Leave Study"
+        },
+        "headings": {
+          "label": "Study"
+        },
+        "title": "Currently Participating In"
+      }
+    },
+    "resendInviteCode": {
+      "instructions": "If an email was used to create your account, enter it below to resend the invite code.",
+      "support": {
+        "header": "If you have a username instead, use the following support information."
+      }
+    },
+    "resendPin": {
+      "actions": {
+        "back": "Back",
+        "resendPin": "Submit",
+        "send": "Send"
+      },
+      "instructions": "Enter the information below to resend your invite code.",
+      "labels": {
+        "email": "Email",
+        "phone": "Phone"
+      },
+      "messages": {
+        "pinResendSuccess": "Invite code sent! Please check your email for your new invite code."
+      },
+      "placeholders": {
+        "email": "name@example.com",
+        "phone": "Enter mobile number"
+      },
+      "title": "Resend invite code"
+    },
+    "resource": {
+      "back": "Back"
+    },
+    "resources": {
+      "headings": {
+        "label": "Resources",
+        "siteInformation": {
+          "label": "Site Information"
+        }
+      },
+      "messages": {
+        "noResourcesAvailable": "There are no study resource items available."
+      }
+    },
+    "sessionTimeout": {
+      "actions": {
+        "ok": "OK"
+      },
+      "kAccountLocked": {
+        "reason": "Your account has been disabled, please contact your administrator for access.",
+        "title": "Disabled user account"
+      },
+      "kLoggedInElsewhere": {
+        "reason": "You have been signed out due to signing in to another location.",
+        "title": "Simultaneous session"
+      },
+      "kSessionExpired": {
+        "reason": "You have been signed out due to inactivity.",
+        "title": "Session timeout"
+      }
+    },
+    "settings": {
+      "headings": {
+        "label": "Settings"
+      }
+    },
+    "signup": {
+      "actions": {
+        "signup": "Create account"
+      },
+      "instructions": {
+        "link": "Privacy Policy",
+        "pleaseView": "Please view",
+        "privacyNotice": "Privacy Notice",
+        "text": "By creating an account, you accept the"
+      },
+      "labels": {
+        "confirmPassword": "Confirm password",
+        "email": "Email",
+        "firstName": "First name",
+        "lastName": "Last name",
+        "password": "Password",
+        "phone": "Phone",
+        "username": "Username"
+      },
+      "messages": {
+        "invalidPhoneNumber": "Invalid phone number. Please select a country code and then enter your phone number.",
+        "signupSuccess": "Account created successfully",
+        "usernameReminder": "REMINDER: Please do not use your first name, last name/surname, initials, date of birth or any confidential/identifiable information in the username."
+      },
+      "title": "Create account"
+    },
+    "study": {
+      "code": "Study Code",
+      "leaveDialog": {
+        "cancel": "No",
+        "confirm": "Yes",
+        "infoMessage": "Are you sure you want to leave study? Clicking confirm will send an email to your study doctor to inform them that you would like to leave.",
+        "message": "Are you sure you want to leave study?",
+        "title": "Leave Study"
+      }
+    },
+    "support": {
+      "header": "Support information"
+    },
+    "televisit": {
+      "labels": {
+        "you": "You"
+      },
+      "messages": {
+        "scheduledForToday": "A televisit is scheduled for today at {{time}}"
+      }
+    }
+  },
+  "dirty": true,
+  "extensible": true,
+  "locale": "en_US",
+  "name": "web__patweb_en_US_app",
+  "namespace": "patweb-app",
+  "object": "i18n",
+  "overridable": true,
+  "tags": [],
+  "weight": 0
+}

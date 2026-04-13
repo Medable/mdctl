@@ -1,0 +1,20 @@
+{
+  "active": false,
+  "configuration": {
+    "event": "create.before",
+    "inline": false,
+    "object": "c_study",
+    "paths": []
+  },
+  "description": "Axon - Before Create - Filenames Study Validation",
+  "environment": "*",
+  "label": "Axon - BC - Fname Study Val",
+  "language": "javascript/es6",
+  "name": "c_axon_bc_fname_study_val",
+  "object": "script",
+  "optimized": false,
+  "principal": null,
+  "script": "/env/scripts/js/trigger.c_axon_bc_fname_study_val.js",
+  "type": "trigger",
+  "weight": 0
+}

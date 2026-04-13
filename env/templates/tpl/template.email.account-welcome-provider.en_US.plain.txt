@@ -1,0 +1,5 @@
+Hi {{{account.name.first}}},
+
+ Welcome to {{{org.name}}}! Your account has been successfully created.
+
+To get started, go to {{{urlFor "login"}}}

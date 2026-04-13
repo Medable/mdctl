@@ -1,0 +1,9 @@
+{
+  "isPublic": true,
+  "name": "ab__remote_activity_visit_schedule_map",
+  "object": "config",
+  "value": {
+    "c_group_task": {},
+    "c_task_assignment": {}
+  }
+}

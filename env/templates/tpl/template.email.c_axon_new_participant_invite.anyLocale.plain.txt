@@ -1,0 +1,18 @@
+
+{{i18n "axon:template.email.c_axon_new_participant_invite.title"}}
+
+    {{i18n "axon:template.email.c_axon_new_participant_invite.mobileInstructions"}}
+
+    {{i18n "axon:template.email.c_axon_new_participant_invite.appleStore"}} {{appleStore_url}}
+    {{i18n "axon:template.email.c_axon_new_participant_invite.googleStore"}} {{googleStore_url}}
+
+    {{i18n "axon:template.email.c_axon_new_participant_invite.codeInstructions"}}
+
+    {{i18n "axon:template.email.c_axon_new_participant_invite.studyCode"}} {{c_study_code}}
+    {{i18n "axon:template.email.c_axon_new_participant_invite.accessCode"}} {{access_code}}
+
+    {{i18n "axon:template.email.c_axon_new_participant_invite.pushNotificationsInstructions"}}
+
+    {{i18n "axon:template.email.c_axon_new_participant_invite.browserLink"}} {{paweb_url}}
+
+    {{i18n "axon:template.email.c_axon_new_participant_invite.thankYou"}}

@@ -1,0 +1,16 @@
+{
+  "active": true,
+  "configuration": {
+    "export": "dt__step_repository"
+  },
+  "environment": "*",
+  "label": "dt__step_repository",
+  "language": "javascript/es6",
+  "name": "dt__step_repository",
+  "object": "script",
+  "optimized": false,
+  "principal": null,
+  "script": "/env/scripts/js/library.dt__step_repository.js",
+  "type": "library",
+  "weight": 0
+}

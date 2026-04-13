@@ -1,0 +1,26 @@
+{
+  "active": false,
+  "configuration": {
+    "acl": [
+      "account.anonymous"
+    ],
+    "apiKey": null,
+    "authValidation": "legacy",
+    "method": "get",
+    "path": "study_subject_information",
+    "plainText": false,
+    "priority": 0,
+    "system": false,
+    "urlEncoded": false
+  },
+  "environment": "*",
+  "label": "Axon - Hybrid - Subject Info",
+  "language": "javascript/es6",
+  "name": "c_axon_hybrid_subject_info",
+  "object": "script",
+  "optimized": false,
+  "principal": "serviceAccount.c_system_user",
+  "script": "/env/scripts/js/route.c_axon_hybrid_subject_info.js",
+  "type": "route",
+  "weight": 0
+}

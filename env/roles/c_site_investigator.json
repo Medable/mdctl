@@ -1,0 +1,9 @@
+{
+  "code": "c_site_investigator",
+  "include": [
+    "c_site_user"
+  ],
+  "name": "Site Investigator",
+  "object": "role",
+  "scope": []
+}

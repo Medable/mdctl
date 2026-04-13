@@ -1,0 +1,11 @@
+{{i18n "axon:template.email.c_pi_oversight_digest.greeting" pi_name=pi_name}}
+
+{{i18n "axon:template.email.c_pi_oversight_digest.intro" site_name=site_name study_name=study_name}}
+
+{{#each participants}}
+- {{this.c_number}} ({{this.status}})
+{{/each}}
+
+{{i18n "axon:template.email.c_pi_oversight_digest.footer"}}
+{{signin_url}}
+
