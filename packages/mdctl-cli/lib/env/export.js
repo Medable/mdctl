@@ -15,6 +15,7 @@ const fs = require('fs'),
       {
         searchParamsToObject
       } = require('@medable/mdctl-core-utils'),
+      os = require('os'),
       { Config, Fault } = require('@medable/mdctl-core'),
       ExportStream = require('@medable/mdctl-core/streams/export_stream'),
       ExportFileTreeAdapter = require('@medable/mdctl-export-adapter-tree'),
@@ -24,9 +25,12 @@ const fs = require('fs'),
       exportEnv = async(input) => {
 
         const options = isSet(input) ? input : {},
-              { manifest: optionsManifest } = options,
-              client = options.client || new Client({ ...Config.global.client, ...options }),
-              outputDir = options.dir || process.cwd(),
+      { manifest: optionsManifest } = options
+
+let manifest = {}   
+
+const client = options.client || new Client({ ...Config.global.client, ...options }),
+      outputDir = options.dir || process.cwd(),
               packageFile = options.package || `${outputDir}/package.${options.format || 'json'}`,
               // stream = ndjson.parse(),
               url = new URL('/developer/environment/export', client.environment.url),
@@ -44,10 +48,11 @@ const fs = require('fs'),
                 clearOutput: options.clear
               },
               streamTransform = new ExportStream(),
-              adapter = options.adapter || new ExportFileTreeAdapter(outputDir, streamOptions),
+              adapter = options.adapter || new ExportFileTreeAdapter(outputDir, streamOptions)
               // eslint-disable-next-line max-len
               lockUnlock = new LockUnlock(outputDir, client.environment.endpoint, client.environment.env),
-              memo = {},
+              memo = {}
+
               logStream = new Transform({
                 objectMode: true,
                 transform(chunk, encoding, cb) {
@@ -58,7 +63,7 @@ const fs = require('fs'),
               })
 
         let manifestFile,
-            inputStream,
+            inputStream
             preExport = () => {},
             postExport = () => {}
 
@@ -72,8 +77,7 @@ const fs = require('fs'),
         if (!options.stream) {
 
           let pkg,
-              script,
-              manifest = {}
+              script
 
           const getScript = (...params) => {
             for (const param of params) { // eslint-disable-line no-restricted-syntax
@@ -132,15 +136,28 @@ const fs = require('fs'),
             }
           }
 
-          if (optionsManifest) {
-            manifest = optionsManifest
-          } else if (pkg && pkg.manifest) {
+         if (optionsManifest) {
+  const expandedManifest = optionsManifest.startsWith('~')
+    ? path.join(os.homedir(), optionsManifest.slice(1))
+    : optionsManifest
+
+  manifestFile = path.isAbsolute(expandedManifest)
+    ? expandedManifest
+    : path.join(outputDir, expandedManifest)
+
+  if (!fs.existsSync(manifestFile)) {
+    throw Fault.create('kNotFound', { reason: `Manifest file not found: ${manifestFile}` })
+  }
+
+  manifest = JSON.parse(fs.readFileSync(manifestFile, 'utf8'))
+} else if (pkg && pkg.manifest) {
             manifestFile = `${outputDir}/${pkg.manifest}`
           } else if (fs.existsSync(`${outputDir}/manifest.${options.format || 'json'}`)) {
             manifestFile = `${outputDir}/manifest.${options.format || 'json'}`
-          }
+          } 
+          // console.log('Using manifest:', JSON.stringify(manifest, null, 2))
 
-          if (fs.existsSync(manifestFile)) {
+          if (manifestFile && !optionsManifest && fs.existsSync(manifestFile)) {
             try {
               manifest = parseString(fs.readFileSync(manifestFile), options.format)
             } catch (e) {
@@ -162,38 +179,44 @@ const fs = require('fs'),
         }
 
         return new Promise((resolve, reject) => {
-          const resultStream = pump(inputStream, streamTransform, logStream, adapter, async(err) => {
 
-            try {
-              await postExport({
-                client, err, options, memo
-              })
-            } catch (e) {
-              return reject(e)
-            }
+  const isConsoleAdapter =
+    adapter && adapter.constructor && adapter.constructor.name === 'ExportConsoleAdapter'
 
-            if (err) {
-              return reject(err)
-            }
+  let resultStream
 
-            if (!streamTransform.complete()) {
-              return reject(new Error('Export not complete!'))
-            }
+  if (isConsoleAdapter) {
+    resultStream = pump(inputStream, logStream, adapter, async (err) => {
+      if (err) return reject(err)
 
-            if (options.docs) {
-              console.log('Documenting env')
-              return Docs.generateDocumentation({
-                destination: path.join(outputDir, 'docs'),
-                source: path.join(outputDir),
-                module: 'env',
-              }).then(() => {
-                resolve(resultStream)
-              })
-            }
-            return resolve(resultStream)
-
-          })
-        })
+      try {
+        await postExport({ client, err, options, memo })
+      } catch (e) {
+        return reject(e)
       }
+
+      return resolve(resultStream)
+    })
+  } else {
+    resultStream = pump(inputStream, streamTransform, logStream, adapter, async (err) => {
+      if (err) return reject(err)
+
+      try {
+        await postExport({ client, err, options, memo })
+      } catch (e) {
+        return reject(e)
+      }
+
+      if (!streamTransform.complete()) {
+        return reject(new Error('Export not complete!'))
+      }
+
+      return resolve(resultStream)
+    })
+  }
+
+})   
+
+}   
 
 module.exports = exportEnv
