@@ -1,6 +1,6 @@
 {
   "name": "@medable/mdctl-api-driver",
-  "version": "1.0.74-alpha.0",
+  "version": "1.0.75-alpha.0",
   "description": "Medable Developer Client Tools :: Api DB Driver",
   "repository": {
     "type": "git",

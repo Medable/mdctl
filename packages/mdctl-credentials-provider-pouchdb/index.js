@@ -1,270 +1,151 @@
-const PouchDB = require('pouchdb-core')
-        .plugin(require('pouchdb-adapter-node-websql'))
-        .plugin(require('pouchdb-find'))
-        .plugin(require('transform-pouch')),
-      async = require('async'),
-      {
-        createCipheriv, createDecipheriv, listCiphers
-      } = require('browserify-aes'),
-      cipherModes = require('browserify-aes/modes'),
-      createHash = require('create-hash'),
-      randomBytes = require('randombytes'),
+const { isSet, rString } = require('@medable/mdctl-core-utils/values'),
       { privatesAccessor } = require('@medable/mdctl-core-utils/privates'),
-      { isSet, rString, rPath } = require('@medable/mdctl-core-utils/values'),
       { CredentialsProvider } = require('@medable/mdctl-core/credentials/provider'),
-      { Fault } = require('@medable/mdctl-core')
+      { Fault } = require('@medable/mdctl-core'),
+      { EncryptionTransformer } = require('./lib/encryption'),
+      { FileStore } = require('./lib/store'),
+      { migrate, looksLikeLegacySqlite } = require('./lib/migrate')
 
-class EncryptionTransformer {
+let deprecationWarned = false
 
-  constructor(input) {
-
-    const options = isSet(input) ? input : {},
-          cipher = 'aes-256-cbc',
-          key = Buffer.from(rString(options.key, '')),
-          ciphers = listCiphers()
-
-    if (!ciphers.includes(cipher)) {
-      throw Fault.create('kInvalidArgument', { reason: `Invalid cipher "${cipher}"` })
-    }
-
-    if ((key.length * 8) !== 256) {
-      throw Fault.create('kInvalidArgument', { reason: `Invalid key length. Expected ${cipherModes[cipher].key} key but got ${key.length * 8}` })
-    }
-
-    Object.assign(
-      privatesAccessor(this), {
-        key,
-        keyCheck: sha256(key),
-        cipher
-      }
-    )
-
-  }
-
-  get keyCheck() {
-    return privatesAccessor(this).keyCheck
-  }
-
-  encrypt(data) {
-    const privates = privatesAccessor(this),
-          { cipher, key } = privates,
-          iv = randomBytes(16),
-          encipher = createCipheriv(cipher, key, iv),
-          encrypted = encipher.update(data)
-
-    return {
-      iv: iv.toString('hex'),
-      data: Buffer.concat([encrypted, encipher.final()]).toString('hex')
-    }
-  }
-
-  decrypt(doc) {
-    const privates = privatesAccessor(this),
-          { cipher, key } = privates,
-          { iv, data } = doc || {},
-          decipher = createDecipheriv(cipher, key, Buffer.from(iv, 'hex')),
-          decrypted = decipher.update(Buffer.from(data, 'hex'))
-
-    return Buffer.concat([decrypted, decipher.final()]).toString()
-  }
-
-  incoming(doc) {
-    if (doc.password) {
-      doc.password = this.encrypt(doc.password) // eslint-disable-line no-param-reassign
-    }
-    return doc
-  }
-
-  outgoing(doc) {
-    if (doc.password) {
-      doc.password = this.decrypt(doc.password) // eslint-disable-line no-param-reassign
-    }
-    return doc
-  }
-
+function warnDeprecated() {
+  if (deprecationWarned) return
+  deprecationWarned = true
+  if (process.env.MDCTL_SUPPRESS_POUCHDB_DEPRECATION) return
+  process.emitWarning(
+    '@medable/mdctl-credentials-provider-pouchdb is deprecated. The package '
+    + 'now stores credentials in a JSON file (PouchDB has been removed) and '
+    + 'will be renamed to @medable/mdctl-credentials-provider-file in a '
+    + 'future release. The exported class name and API remain unchanged.',
+    'DeprecationWarning',
+    'MDCTL_DEP_POUCHDB_PROVIDER'
+  )
 }
 
+// Drop-in replacement for the previous PouchDB-backed credentials
+// provider. Constructor signature is unchanged: `{ name, key }`.
+//
+// `name` is interpreted as it was before: an absolute file path. The
+// new JSON store lives at `<name>.json`. If a legacy SQLite file is
+// found at `<name>` (the previous adapter's database file), it is
+// migrated on first use; the legacy file is renamed to
+// `<name>.legacy-<timestamp>` afterwards but never deleted.
 class PouchDbCredentialsProvider extends CredentialsProvider {
 
-  /**
-   *
-   * @param input
-   *  name: database name
-   *  key: encryption key
-   */
   constructor(input) {
 
     super()
+    warnDeprecated()
 
     const options = isSet(input) ? input : {},
-          { name, key } = options,
-          encryption = new EncryptionTransformer({ key }),
-          privates = privatesAccessor(this)
+          name = rString(options.name, ''),
+          { key } = options
 
-    Object.assign(privates, {
+    if (!name) {
+      throw Fault.create('kInvalidArgument', { reason: '`name` is required (path to credentials store).' })
+    }
+
+    const encryption = new EncryptionTransformer({ key }),
+          store = new FileStore(`${name}.json`),
+          legacyPath = name
+
+    Object.assign(privatesAccessor(this), {
       encryption,
-      name,
-      initializing: false
+      store,
+      legacyPath,
+      initializing: false,
+      initPromise: null
     })
 
   }
 
   async initialize() {
 
-    const privates = privatesAccessor(this),
-          { name, encryption } = privates,
-          { keyCheck } = encryption
+    const privates = privatesAccessor(this)
 
-    let { db } = privates
+    // Re-entrant: a second concurrent call awaits the first.
+    if (privates.initPromise) {
+      return privates.initPromise
+    }
 
-    if (!db) {
+    if (privates.initialized) return true
 
-      // make this re-entrant
-      if (privates.initializing) {
-        return new Promise((resolve, reject) => {
-          async.whilst(
-            () => privates.initializing,
-            async() => sleep(10),
-            () => (privates.err ? reject(privates.err) : resolve())
-          )
-        })
-      }
+    privates.initPromise = (async() => {
+      const { store, encryption, legacyPath } = privates
 
-      privates.initializing = true
+      await store.withLock(async() => {
 
-      let err
+        // Already initialised by another in-process caller while we waited
+        // for the lock.
+        if (privates.initialized) return
 
-      try {
-
-        db = new PouchDB(name, { adapter: 'websql', auto_compaction: true, revs_limit: 0 })
-
-        db.transform(encryption)
-
-        await db.createIndex({
-          index: { fields: ['type', 'service', 'account'] }
-        })
-
-        const config = rPath(await db.find({
-          selector: { type: 'config' }
-        }), 'docs.0')
-
-        if (config && config.keyCheck !== keyCheck) {
-          err = Fault.create('kInvalidArgument', { reason: 'The encryption key used for this provider doesn\'t match.' })
-        } else if (!config) {
-          await db.put({
-            _id: 'config',
-            type: 'config',
-            keyCheck
-          })
+        if (store.exists()) {
+          // Existing JSON store: just load and verify keyCheck.
+          store.load(encryption.keyCheck)
+        } else if (looksLikeLegacySqlite(legacyPath)) {
+          // No JSON store yet but a legacy SQLite file is present.
+          // Migrate it.
+          migrate({ legacyPath, store, encryption })
+        } else {
+          // Fresh install. Create an empty store with the keyCheck
+          // recorded so a later wrong-key attempt is detected.
+          store.load(encryption.keyCheck) // load() seeds empty state
+          store.persist()
         }
-      } catch (e) {
-        err = e
-      }
+      })
 
-      privates.db = db
-      privates.initializing = false
-      if (err) {
-        privates.err = err
-        throw err
-      }
+      privates.initialized = true
+    })()
 
+    try {
+      await privates.initPromise
+    } finally {
+      privates.initPromise = null
     }
 
     return true
-
   }
 
   async getCredentials(service) {
-
     await this.initialize()
-
-    const { db } = privatesAccessor(this),
-          { docs } = await db.find({
-            selector: {
-              type: 'service',
-              service
-            }
-          })
-
-    return docs
+    const { store, encryption } = privatesAccessor(this)
+    return store.list(service).map(row => ({
+      _id: row._id,
+      type: row.type,
+      service: row.service,
+      account: row.account,
+      password: encryption.decrypt(row.password)
+    }))
   }
 
   async setCredentials(service, account, password) {
-
     await this.initialize()
-
-    const { db } = privatesAccessor(this),
-          doc = rPath(await db.find({
-            selector: {
-              type: 'service',
-              service,
-              account
-            },
-            fields: ['_id', '_rev']
-          }), 'docs.0'),
-          { _id, _rev } = doc || {}
-
-    await db.put({
-      _id: _id || md5(`${service}${account}`),
-      _rev,
-      type: 'service',
-      service,
-      account,
-      password
+    const { store, encryption } = privatesAccessor(this)
+    await store.withLock(async() => {
+      // Re-load before mutating so we don't clobber writes made by
+      // another process while we were idle.
+      store.load(encryption.keyCheck)
+      store.upsert(service, account, encryption.encrypt(password))
     })
-
   }
 
   async deleteCredentials(service, account) {
-
     await this.initialize()
-
-    const { db } = privatesAccessor(this),
-          doc = rPath(await db.find({
-            selector: {
-              type: 'service',
-              service,
-              account
-            },
-            fields: ['_id', '_rev']
-          }), 'docs.0'),
-          { _id, _rev } = doc || {}
-
-    if (!doc) {
-      return false
-    }
-    await db.remove({ _id, _rev })
-
-    return true
+    const { store, encryption } = privatesAccessor(this)
+    let removed = false
+    await store.withLock(async() => {
+      store.load(encryption.keyCheck)
+      removed = store.remove(service, account)
+    })
+    return removed
   }
 
   async close() {
-
     const privates = privatesAccessor(this)
-    if (privates.db) {
-      await privates.db.close()
-      privates.db = null
-    }
+    privates.initialized = false
     return true
-
   }
 
-}
-
-function md5(buf) {
-  const hash = createHash('md5')
-  hash.update(buf)
-  return hash.digest('hex')
-}
-
-function sha256(buf) {
-  const hash = createHash('sha256')
-  hash.update(buf)
-  return hash.digest('hex')
-}
-
-function sleep(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms))
 }
 
 module.exports = PouchDbCredentialsProvider
