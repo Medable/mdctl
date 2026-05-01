@@ -1,7 +1,8 @@
 {
   "name": "@medable/mdctl-credentials-provider-pouchdb",
-  "version": "1.0.74-alpha.0",
-  "description": "Medable Developer Client Tools :: PouchDB Creds Provider",
+  "version": "1.0.75-alpha.0",
+  "description": "Medable Developer Client Tools :: File-backed Credentials Provider (formerly PouchDB-backed; PouchDB has been removed). DEPRECATED: this package will be renamed to @medable/mdctl-credentials-provider-file. The exported class name and API are unchanged.",
+  "deprecated": "Renamed package incoming: this will become @medable/mdctl-credentials-provider-file. The current package continues to work as a drop-in replacement; PouchDB is no longer used.",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Medable/mdctl.git"
@@ -10,8 +11,8 @@
     "url": "https://github.com/Medable/mdctl/issues"
   },
   "engines": {
-    "node": ">=12",
-    "npm": ">=6"
+    "node": ">=18",
+    "npm": ">=8"
   },
   "author": "Medable, Inc. <mdctl@medable.com>",
   "license": "MIT",
@@ -20,23 +21,21 @@
     "test:prod": "npm run test",
     "test:only": "mocha --recursive",
     "test:watch": "npm run test:only -- --watch",
-    "test:examples": "node examples/",
     "cover": "istanbul cover ../../node_modules/mocha/bin/_mocha -- --recursive --timeout 10000",
-    "lint": "eslint *.js"
+    "lint": "eslint *.js lib/"
   },
   "dependencies": {
-    "@medable/mdctl-core": "^1.0.74-alpha.0",
-    "@medable/mdctl-core-utils": "^1.0.74-alpha.0",
-    "async": "^2.6.3",
+    "@medable/mdctl-core": "1.0.75-alpha.0",
+    "@medable/mdctl-core-utils": "1.0.75-alpha.0",
     "browserify-aes": "^1.2.0",
     "create-hash": "^1.2.0",
-    "pouchdb-adapter-node-websql": "^7.0.0",
-    "pouchdb-core": "^7.1.1",
-    "pouchdb-find": "^7.1.1",
-    "randombytes": "^2.1.0",
-    "transform-pouch": "^1.1.4"
+    "randombytes": "^2.1.0"
+  },
+  "optionalDependencies": {
+    "better-sqlite3": "^12.0.0"
   },
   "devDependencies": {
+    "better-sqlite3": "^12.0.0",
     "chai": "^4.1.2",
     "eslint": "^5.16.0",
     "eslint-config-airbnb": "^17.1.1",
@@ -48,9 +47,6 @@
     "istanbul": "^1.0.0-alpha",
     "mocha": "^10.3.0",
     "sinon": "^7.4.2"
-  },
-  "overrides": {
-    "nan": "^2.16.0"
   },
   "gitHead": "4d50c0a1a7e84d29ac2490436643434205ce3f6d"
 }
